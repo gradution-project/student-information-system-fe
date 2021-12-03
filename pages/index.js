@@ -5,27 +5,29 @@ export default function Index() {
         <div className="container">
             <Head>
                 <title>Öğrenci Bilgi Sistemi</title>
-                <link rel="icon" href="/banner.png"/>
+                <link rel="icon" href="/icon.png"/>
                 <link href="http://fonts.cdnfonts.com/css/phenomena" rel="stylesheet"/>
             </Head>
 
             <main>
-                <img src="/banner.png" alt="Öğrenci Bilgi Sistemi" className="banner"/>
+                <div className="container1">
+                    <img src="/banner.png" alt="Öğrenci Bilgi Sistemi" className="banner"/>
+                </div>
 
                 <div className="butonlar">
                     <div className="ogrenci">
                         <a href="" className="card">
-                            <h3>ÖĞRENCİ GİRİŞ&rarr;</h3>
+                            <h3>ÖĞRENCİ GİRİŞ</h3>
                         </a>
                     </div>
                     <div className="ogretmen">
                         <a href="" className="card1">
-                            <h3>ÖĞRETMEN GİRİŞİ&rarr;</h3>
+                            <h3>ÖĞRETMEN GİRİŞİ</h3>
                         </a>
                     </div>
                     <div className="personel">
                         <a href="" className="card2">
-                            <h3>PERSONEL GİRİŞİ&rarr;</h3>
+                            <h3>PERSONEL GİRİŞİ</h3>
                         </a>
                     </div>
                 </div>
@@ -38,24 +40,30 @@ export default function Index() {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Powered by{' '}
-                    <img src="/banner.jpg" alt="Agit & Berrin" className="logo"/>
-                    Agit & Berrin
+                    <img src="/icon.png" alt="Öğrenci Bilgi Sistemi" className="banner"/>
+                    Öğrenci Bilgi Sistemi
                 </a>
             </footer>
 
             <style jsx>{`
-              .container {
-                min-height: 100vh;
-                padding: 0 0.5rem;
+
+              .container1 {
+                background: #F8B040;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                margin-top: 30px;
+              }
+
+              .container {
+                min-height: 100vh;
+                padding: 0;
+                justify-content: center;
+                align-items: center;
               }
 
               main {
-                padding: 1rem 0;
-                flex: 1;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -65,25 +73,30 @@ export default function Index() {
 
 
               footer {
+                position: fixed;
                 width: 100%;
-                height: 100px;
-                margin-top: 250px;
-                border-top: 2px solid #eaeaea;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                height: 50px;
+                bottom: 0px;
+                left: 0px;
+                padding: 10px;
+                border-top: 1px solid #eaeaea;
 
               }
 
               footer img {
                 margin-left: 0.5rem;
+                height: 25px;
+                margin-top: 17px;
               }
 
               footer a {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 25px;
+
               }
+
 
               a {
                 color: inherit;
@@ -134,7 +147,7 @@ export default function Index() {
                 justify-content: center;
                 flex-wrap: wrap;
                 max-width: 800px;
-                margin-top: 3rem;
+                margin-top: 10rem;
 
               }
 
@@ -147,7 +160,7 @@ export default function Index() {
                 align-items: center;
                 flex-wrap: wrap;
                 max-width: 800px;
-                margin-top: 3rem;
+                margin-top: 10rem;
 
               }
 
@@ -160,7 +173,7 @@ export default function Index() {
                 align-items: center;
                 flex-wrap: wrap;
                 max-width: 800px;
-                margin-top: 3rem;
+                margin-top: 10rem;
 
 
               }
@@ -242,9 +255,8 @@ export default function Index() {
               }
 
               .banner {
-                height: 7em;
-                margin-bottom: 7em;
-
+                height: 10em;
+                margin-bottom: 15px;
               }
 
               @media (max-width: 600px) {
