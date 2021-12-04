@@ -1,16 +1,21 @@
 const plugin = require('tailwindcss/plugin')
+const {gray} = require("tailwindcss/colors");
 
 module.exports = {
     purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
+            fontFamily: {
+                phenomena: ['Phenomena'],
+            },
             colors: {
                 sis: {
                     yellow: '#F8B040',
                     darkblue: '#2A5081',
                     blue: '#3AAAE2',
                     lightblue: '#B8EBFF',
+                    gray: '#F9FAFB',
                     white: '#FFFFFF'
                 },
             }
@@ -163,5 +168,7 @@ module.exports = {
             zIndex: ['responsive', 'focus-within', 'focus']
         }
     },
-    plugins: []
+    plugins: [
+        require('@tailwindcss/forms')
+    ]
 }

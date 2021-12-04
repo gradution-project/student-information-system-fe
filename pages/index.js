@@ -1,44 +1,34 @@
 export default function Main() {
     return (
-        <div className="bg-gray-50">
+        <div className="bg-sis-gray h-screen ">
             <div
-                className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+                className=" max-w-7xl m-auto py-12 px-4 text-center sm:text-left sm:px-64 sm:py-72 lg:py-72 lg:px-12 lg:flex lg:items-center lg:justify-between">
                 <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                    <span className="block">Öğrenci</span>
-                    <span className="block text-indigo-600">Bilgi</span>
-                    <span className="block text-indigo-600">Sistemi</span>
+                    <img src="banner.png" className="h-40"/>
                 </h2>
                 <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
                     <div className="inline-flex rounded-md shadow">
                         <a
-                            href="/dashboard/student"
-                            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                            href="/login/student"
+                            className="h-16 inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-sis-yellow hover:bg-sis-yellow"
                         >
-                            Get started
+                            Öğrenci Girişi
                         </a>
                     </div>
                     <div className="ml-3 inline-flex rounded-md shadow">
                         <a
-                            href="#"
-                            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                            href="/login/teacher"
+                            className="h-16 inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-sis-darkblue hover:bg-sis-darkblue"
                         >
-                            Learn more
+                            Öğretmen Girişi
                         </a>
                     </div>
                     <div className="ml-3 inline-flex rounded-md shadow">
                         <a
-                            href="#"
-                            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50"
+                            href="/login/officer"
+                            className="h-16 inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-sis-blue hover:bg-sis-blue"
                         >
-                            Learn more
-                        </a>
-                    </div>
-                    <div className="ml-3 mr-72 inline-flex rounded-md shadow">
-                        <a
-                            href="#"
-                            className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50"
-                        >
-                            Learn more
+                            Personel Girişi
                         </a>
                     </div>
                 </div>
