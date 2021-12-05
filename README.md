@@ -1,6 +1,6 @@
 # Front-End Project of Student Information System
 
-##For Installation
+### For Installation
 ```
 yarn install
 ```
@@ -9,7 +9,7 @@ or
 npm install
 ```
 
-##For Execution
+### For Execution
 ```
 yarn dev
 ```
@@ -18,5 +18,5 @@ or
 npm run dev
 ```
 
-Local UI URL : http://localhost:3000/
+Local URL : http://localhost:3000/
 ------------------
