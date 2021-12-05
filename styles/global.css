@@ -24,7 +24,6 @@
 
 @font-face {
     font-family: 'Phenomena-Bold';
-    font-size: 800px;
     src: local('Phenomena-Bold'), url(/public/fonts/Phenomena-Bold.otf) format('otf');
 }
 
