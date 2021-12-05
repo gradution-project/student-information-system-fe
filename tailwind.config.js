@@ -7,7 +7,13 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                phenomena: ['Phenomena'],
+                phenomenaExtraLight: ['Phenomena-ExtraLight'],
+                phenomenaThin: ['Phenomena-Thin'],
+                phenomenaLight: ['Phenomena-Light'],
+                phenomenaRegular: ['Phenomena-Regular'],
+                phenomenaBold: ['Phenomena-Bold'],
+                phenomenaExtraBold: ['Phenomena-ExtraBold'],
+                phenomenaBlack: ['Phenomena-Black']
             },
             colors: {
                 sis: {

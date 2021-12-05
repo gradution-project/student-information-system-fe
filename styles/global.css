@@ -2,3 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'Phenomena-ExtraLight';
+    src: local('Phenomena-ExtraLight'), url(/public/fonts/Phenomena-ExtraLight.otf) format('otf');
+}
+
+@font-face {
+    font-family: 'Phenomena-Thin';
+    src: local('Phenomena-Thin'), url(/public/fonts/Phenomena-Thin.otf) format('otf');
+}
+
+@font-face {
+    font-family: 'Phenomena-Light';
+    src: local('Phenomena-Light'), url(/public/fonts/Phenomena-Light.otf) format('otf');
+}
+
+@font-face {
+    font-family: 'Phenomena-Regular';
+    src: local('Phenomena-Regular'), url(/public/fonts/Phenomena-Regular.otf) format('otf');
+}
+
+@font-face {
+    font-family: 'Phenomena-Bold';
+    font-size: 800px;
+    src: local('Phenomena-Bold'), url(/public/fonts/Phenomena-Bold.otf) format('otf');
+}
+
+@font-face {
+    font-family: 'Phenomena-ExtraBold';
+    src: local('Phenomena-ExtraBold'), url(/public/fonts/Phenomena-ExtraBold.otf) format('otf');
+}
+
+@font-face {
+    font-family: 'Phenomena-Black';
+    src: local('Phenomena-Black'), url(/public/fonts/Phenomena-Black.otf) format('otf');
+}
