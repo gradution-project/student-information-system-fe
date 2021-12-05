@@ -70,12 +70,10 @@ export default function StudentLogin() {
                     <div>
                         <button
                             type="submit"
-                            onClick="location.href=/dashboard/student"
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-sis-yellow hover:bg-sis-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow"
                         >
                             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                                <LockClosedIcon className="h-5 w-5 text-sis-white group-hover:text-sis-white"
-                                                aria-hidden="true"/>
+                                <LockClosedIcon className="h-5 w-5 text-sis-white group-hover:text-sis-white" aria-hidden="true"/>
                             </span>
                             <a href="/dashboard/student" className="font-phenomenaBold text-lg">
                                 Giriş Yap
@@ -85,6 +83,5 @@ export default function StudentLogin() {
                 </form>
             </div>
         </div>
-
     )
 }
