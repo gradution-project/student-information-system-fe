@@ -16,31 +16,31 @@ const solutions = [
     {
         name: 'Bölüm Dersleri',
         description: '',
-        href: '/dashboard/student/department-lesson',
+        href: '#',
         icon: ChartBarIcon,
     },
     {
         name: 'Ders Kayıt',
         description: '',
-        href: '/dashboard/student/course-registration',
+        href: '#',
         icon: CursorClickIcon,
     },
     {
         name: 'Ders Programı',
         description: "",
-        href: '/dashboard/student/syllabus',
+        href: '#',
         icon: ShieldCheckIcon
     },
     {
         name: 'Sınav Programı',
         description: "",
-        href: '/dashboard/student/exam-schedule',
+        href: '#',
         icon: ViewGridIcon,
     },
     {
         name: 'Staj Bilgileri',
         description: '',
-        href: '/dashboard/student/internship',
+        href: '#',
         icon: RefreshIcon,
     },
 ]
@@ -49,13 +49,13 @@ const resources = [
     {
         name: 'Not Bilgisi',
         description: '',
-        href: '/dashboard/student/note-info',
+        href: '#',
         icon: BookmarkAltIcon,
     },
     {
         name: 'TransKript',
         description: '',
-        href: '/dashboard/student/transcript',
+        href: '#',
         icon: CalendarIcon,
     },
 ]
@@ -64,7 +64,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function StudentComponent() {
+export default function TeacherComponent() {
 
     return (
         <Popover.Group as="nav" className="hidden md:flex space-x-10">
@@ -123,6 +123,10 @@ export default function StudentComponent() {
                 )}
             </Popover>
 
+            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                Yoklama Sistemi
+            </a>
+
             <Popover className="relative">
                 {({open}) => (
                     <>
@@ -177,11 +181,6 @@ export default function StudentComponent() {
                     </>
                 )}
             </Popover>
-
-            <a href="/dashboard/student/roll-call" className="text-base font-medium text-gray-500 hover:text-gray-900">
-                Yoklama Sistemi
-            </a>
-
         </Popover.Group>
     )
 }
