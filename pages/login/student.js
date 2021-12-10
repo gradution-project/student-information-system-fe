@@ -1,8 +1,10 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
+import SISTitle from "../../public/components/page-titles";
 
 export default function StudentLogin() {
     return (
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <SISTitle/>
             <div className="max-w-md w-full space-y-8">
                 <div>
                     <img
@@ -75,7 +77,7 @@ export default function StudentLogin() {
                             <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                                 <LockClosedIcon className="h-5 w-5 text-sis-white group-hover:text-sis-white" aria-hidden="true"/>
                             </span>
-                            <a href="/dashboard/student" className="font-phenomenaBold text-lg">
+                            <a href="/student" className="font-phenomenaBold text-lg">
                                 Giriş Yap
                             </a>
                         </button>
