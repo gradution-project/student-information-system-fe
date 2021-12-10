@@ -29,6 +29,7 @@ module.exports = {
     },
     variants: {
         variants: {
+            opacity: ({ after }) => after(['disabled']),
             accessibility: ['responsive', 'focus-within', 'focus'],
             alignContent: ['responsive'],
             alignItems: ['responsive'],
@@ -175,6 +176,7 @@ module.exports = {
         }
     },
     plugins: [
+        require('@tailwindcss/forms'),
         require('@tailwindcss/forms')
     ]
 }
