@@ -2,11 +2,11 @@ import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
 import {
     BookmarkAltIcon,
+    BriefcaseIcon,
     CalendarIcon,
     ChartBarIcon,
     CursorClickIcon,
-    RefreshIcon,
-    ShieldCheckIcon,
+    DocumentReportIcon,
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
@@ -16,32 +16,32 @@ const solutions = [
     {
         name: 'Bölüm Dersleri',
         description: '',
-        href: '#',
+        href: '/student/lesson/department',
         icon: ChartBarIcon,
     },
     {
         name: 'Ders Kayıt',
         description: '',
-        href: '#',
+        href: '/student/lesson/registration',
         icon: CursorClickIcon,
     },
     {
         name: 'Ders Programı',
         description: "",
-        href: '#',
-        icon: ShieldCheckIcon
+        href: '/student/schedule/lesson',
+        icon: CalendarIcon,
     },
     {
         name: 'Sınav Programı',
         description: "",
-        href: '#',
+        href: '/student/schedule/exam',
         icon: ViewGridIcon,
     },
     {
         name: 'Staj Bilgileri',
         description: '',
-        href: '#',
-        icon: RefreshIcon,
+        href: '/student/internship',
+        icon: BriefcaseIcon,
     },
 ]
 
@@ -49,14 +49,14 @@ const resources = [
     {
         name: 'Not Bilgisi',
         description: '',
-        href: '#',
+        href: '/student/notes',
         icon: BookmarkAltIcon,
     },
     {
-        name: 'TransKript',
+        name: 'Transkript',
         description: '',
-        href: '#',
-        icon: CalendarIcon,
+        href: '/student/transcript',
+        icon: DocumentReportIcon,
     },
 ]
 
@@ -64,24 +64,24 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function TeacherComponent() {
+export default function StudentComponent() {
 
     return (
-        <Popover.Group as="nav" className="hidden md:flex space-x-10">
+        <Popover.Group as="nav" className="hidden md:flex space-x-10 font-phenomenaBold">
             <Popover className="relative">
                 {({open}) => (
                     <>
                         <Popover.Button
                             className={classNames(
-                                open ? 'text-gray-900' : 'text-gray-500',
-                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                open ? 'text-sis-yellow' : 'text-gray-500',
+                                'group bg-white rounded-md inline-flex items-center text-xl font-medium hover:text-sis-yellow'
                             )}
                         >
-                            <span>Ders İşlemleri</span>
+                            <span>DERS İŞLEMLERİ</span>
                             <ChevronDownIcon
                                 className={classNames(
-                                    open ? 'text-gray-600' : 'text-gray-400',
-                                    'ml-2 h-5 w-5 group-hover:text-gray-500'
+                                    open ? 'text-sis-yellow' : 'text-gray-500',
+                                    'ml-2 h-5 w-5 group-hover:text-sis-yellow'
                                 )}
                                 aria-hidden="true"
                             />
@@ -107,11 +107,11 @@ export default function TeacherComponent() {
                                                 href={item.href}
                                                 className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                                             >
-                                                <item.icon className="flex-shrink-0 h-6 w-6 text-indigo-600"
+                                                <item.icon className="flex-shrink-0 h-6 w-6 text-sis-yellow"
                                                            aria-hidden="true"/>
                                                 <div className="ml-4">
-                                                    <p className="text-base font-medium text-gray-900">{item.name}</p>
-                                                    <p className="mt-1 text-sm text-gray-500">{item.description}</p>
+                                                    <p className="font-phenomenaRegular text-xl text-gray-800">{item.name}</p>
+                                                    <p className="mt-1 text-sm text-gray-500 font-phenomenaThin">{item.description}</p>
                                                 </div>
                                             </a>
                                         ))}
@@ -123,24 +123,20 @@ export default function TeacherComponent() {
                 )}
             </Popover>
 
-            <a href="#" className="text-base font-medium text-gray-500 hover:text-gray-900">
-                Yoklama Sistemi
-            </a>
-
             <Popover className="relative">
                 {({open}) => (
                     <>
                         <Popover.Button
                             className={classNames(
-                                open ? 'text-gray-900' : 'text-gray-500',
-                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                open ? 'text-sis-yellow' : 'text-gray-500',
+                                'group bg-white rounded-md inline-flex items-center text-xl hover:text-sis-yellow focus:outline-none'
                             )}
                         >
-                            <span>Not İşlemleri</span>
+                            <span>NOT İŞLEMLERİ</span>
                             <ChevronDownIcon
                                 className={classNames(
-                                    open ? 'text-gray-600' : 'text-gray-400',
-                                    'ml-2 h-5 w-5 group-hover:text-gray-500'
+                                    open ? 'text-sis-yellow' : 'text-gray-500',
+                                    'ml-2 h-5 w-5 group-hover:text-sis-yellow'
                                 )}
                                 aria-hidden="true"
                             />
@@ -166,10 +162,10 @@ export default function TeacherComponent() {
                                                 href={item.href}
                                                 className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                                             >
-                                                <item.icon className="flex-shrink-0 h-6 w-6 text-indigo-600"
+                                                <item.icon className="flex-shrink-0 h-6 w-6 text-sis-yellow"
                                                            aria-hidden="true"/>
                                                 <div className="ml-4">
-                                                    <p className="text-base font-medium text-gray-900">{item.name}</p>
+                                                    <p className="font-phenomenaRegular text-xl text-gray-800">{item.name}</p>
                                                     <p className="mt-1 text-sm text-gray-500">{item.description}</p>
                                                 </div>
                                             </a>
@@ -181,6 +177,12 @@ export default function TeacherComponent() {
                     </>
                 )}
             </Popover>
+
+            <a href="/student/roll-call-system"
+               className="text-xl font-medium text-gray-500 hover:text-sis-yellow">
+                YOKLAMA SİSTEMİ
+            </a>
+
         </Popover.Group>
     )
 }

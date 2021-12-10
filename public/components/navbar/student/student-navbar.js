@@ -15,8 +15,7 @@ export default function StudentNavbar() {
                 <div
                     className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
                     <div className="flex justify-start lg:w-0 lg:flex-1">
-                        <a href="/">
-                            <span className="sr-only">Workflow</span>
+                        <a href="/student">
                             <img
                                 className="h-8 w-auto sm:h-10"
                                 src="https://i.hizliresim.com/em7bd2l.png"
@@ -29,7 +28,7 @@ export default function StudentNavbar() {
                         <Menu as="div" className="ml-3 relative">
                             <div>
                                 <Menu.Button
-                                    className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow focus:ring-white">
+                                    className="bg-gray-800 flex text-sm rounded-full focus:outline-none">
                                     <span className="sr-only">Open user menu</span>
                                     <img
                                         className="h-8 w-8 rounded-full"
@@ -47,33 +46,27 @@ export default function StudentNavbar() {
                                 leaveFrom="transform opacity-100 scale-100"
                                 leaveTo="transform opacity-0 scale-95"
                             >
-                                <Menu.Items
-                                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-sis-yellow ring-opacity-5 focus:outline-none">
+                                <Menu.Items className="font-phenomenaRegular origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-sis-yellow ring-opacity-5 focus:outline-none">
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                className={classNames(active ? 'bg-sis-yellow' : '', 'block px-4 py-2 text-sm font-bold text-gray-700')}
+                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
                                             >
                                                 BARIŞ ALTUN
+                                                <p className="font-phenomenaLight text-center text-lg">202111012001</p>
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a
-                                                href="/dashboard/student/my-info"
-                                                className={classNames(active ? 'bg-sis-yellow' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                            >
+                                            <a href="/student/information" className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
                                                 Bilgilerim
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a
-                                                href="/"
-                                                className={classNames(active ? 'bg-sis-yellow' : 'border-t border-sis-yellow', 'block px-4 py-2 text-sm text-gray-700')}
-                                            >
+                                            <a href="/" className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}>
                                                 Çıkış Yap
                                             </a>
                                         )}
