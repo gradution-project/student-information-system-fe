@@ -2,6 +2,10 @@ import StudentNavbar from "../../components/navbar/student/student-navbar";
 
 export default function StudentDashboard() {
     return (
-        <StudentNavbar/>
+        <div>
+            <title>Öğrenci Bilgi Sistemi</title>
+
+            <StudentNavbar/>
+        </div>
     )
 }

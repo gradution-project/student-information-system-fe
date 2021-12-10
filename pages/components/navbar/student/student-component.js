@@ -2,10 +2,11 @@ import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
 import {
     BookmarkAltIcon,
+    BriefcaseIcon,
     CalendarIcon,
     ChartBarIcon,
     CursorClickIcon,
-    RefreshIcon,
+    DocumentReportIcon,
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
@@ -40,7 +41,7 @@ const solutions = [
         name: 'Staj Bilgileri',
         description: '',
         href: '/dashboard/student/internship',
-        icon: RefreshIcon,
+        icon: BriefcaseIcon,
     },
 ]
 
@@ -52,10 +53,10 @@ const resources = [
         icon: BookmarkAltIcon,
     },
     {
-        name: 'TransKript',
+        name: 'Transkript',
         description: '',
         href: '/dashboard/student/notes/transcript',
-        icon: CalendarIcon,
+        icon: DocumentReportIcon,
     },
 ]
 
@@ -73,14 +74,14 @@ export default function StudentComponent() {
                         <Popover.Button
                             className={classNames(
                                 open ? 'text-gray-900' : 'text-gray-500',
-                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-sis-lightblue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow'
+                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-sis-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow'
                             )}
                         >
                             <span>Ders İşlemleri</span>
                             <ChevronDownIcon
                                 className={classNames(
                                     open ? 'text-gray-600' : 'text-gray-400',
-                                    'ml-2 h-5 w-5 group-hover:text-sis-lightblue'
+                                    'ml-2 h-5 w-5 group-hover:text-sis-yellow'
                                 )}
                                 aria-hidden="true"
                             />
@@ -128,14 +129,14 @@ export default function StudentComponent() {
                         <Popover.Button
                             className={classNames(
                                 open ? 'text-gray-900' : 'text-gray-500',
-                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-sis-lightblue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow'
+                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-sis-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow'
                             )}
                         >
                             <span>Not İşlemleri</span>
                             <ChevronDownIcon
                                 className={classNames(
                                     open ? 'text-gray-600' : 'text-gray-400',
-                                    'ml-2 h-5 w-5 group-hover:text-sis-lightblue'
+                                    'ml-2 h-5 w-5 group-hover:text-sis-yellow'
                                 )}
                                 aria-hidden="true"
                             />
@@ -178,7 +179,7 @@ export default function StudentComponent() {
             </Popover>
 
             <a href="/dashboard/student/roll-call-system"
-               className="text-base font-medium text-gray-500 hover:text-sis-lightblue">
+               className="text-base font-medium text-gray-500 hover:text-sis-yellow">
                 Yoklama Sistemi
             </a>
 

@@ -52,7 +52,7 @@ export default function StudentNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                className={classNames(active ? 'bg-sis-lightblue' : '', 'block px-4 py-2 text-sm font-bold text-gray-700')}
+                                                className={classNames(active ? 'bg-sis-yellow' : '', 'block px-4 py-2 text-sm font-bold text-gray-700')}
                                             >
                                                 BARIŞ ALTUN
                                             </a>
@@ -62,7 +62,7 @@ export default function StudentNavbar() {
                                         {({active}) => (
                                             <a
                                                 href="/dashboard/student/my-info"
-                                                className={classNames(active ? 'bg-sis-lightblue' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                className={classNames(active ? 'bg-sis-yellow' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                             >
                                                 Bilgilerim
                                             </a>
@@ -72,7 +72,7 @@ export default function StudentNavbar() {
                                         {({active}) => (
                                             <a
                                                 href="/"
-                                                className={classNames(active ? 'bg-sis-lightblue' : 'border-t border-sis-darkblue border-fixed', 'block px-4 py-2 text-sm text-gray-700')}
+                                                className={classNames(active ? 'bg-sis-yellow' : 'border-t border-sis-yellow', 'block px-4 py-2 text-sm text-gray-700')}
                                             >
                                                 Çıkış Yap
                                             </a>

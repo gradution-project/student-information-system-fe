@@ -3,9 +3,11 @@ export default function Main() {
         <div className="bg-sis-gray h-screen font-phenomenaBold">
             <div
                 className=" max-w-7xl m-auto py-12 px-4 text-center sm:text-left sm:px-64 sm:py-72 lg:py-72 lg:px-12 lg:flex lg:items-center lg:justify-between">
+                <title>Öğrenci Bilgi Sistemi</title>
                 <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                     <img src="banner.png" className="h-40"/>
                 </h2>
+
                 <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
                     <div className="inline-flex rounded-md shadow">
                         <a
