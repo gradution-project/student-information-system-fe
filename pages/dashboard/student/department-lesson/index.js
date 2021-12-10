@@ -1,4 +1,4 @@
-export default function DepartmentLesson() {
+export default function Index() {
     return (
         <a>
             BÖLÜM DERSLERİ EKRANI

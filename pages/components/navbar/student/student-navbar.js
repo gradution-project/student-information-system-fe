@@ -29,7 +29,7 @@ export default function StudentNavbar() {
                         <Menu as="div" className="ml-3 relative">
                             <div>
                                 <Menu.Button
-                                    className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                                    className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow focus:ring-white">
                                     <span className="sr-only">Open user menu</span>
                                     <img
                                         className="h-8 w-8 rounded-full"
@@ -48,12 +48,21 @@ export default function StudentNavbar() {
                                 leaveTo="transform opacity-0 scale-95"
                             >
                                 <Menu.Items
-                                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-sis-yellow ring-opacity-5 focus:outline-none">
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                href="/dashboard/student/student-info"
-                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                className={classNames(active ? 'bg-sis-lightblue' : '', 'block px-4 py-2 text-sm font-bold text-gray-700')}
+                                            >
+                                                BARIŞ ALTUN
+                                            </a>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({active}) => (
+                                            <a
+                                                href="/dashboard/student/my-info"
+                                                className={classNames(active ? 'bg-sis-lightblue' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                             >
                                                 Bilgilerim
                                             </a>
@@ -63,7 +72,7 @@ export default function StudentNavbar() {
                                         {({active}) => (
                                             <a
                                                 href="/"
-                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                className={classNames(active ? 'bg-sis-lightblue' : 'border-t border-sis-darkblue border-fixed', 'block px-4 py-2 text-sm text-gray-700')}
                                             >
                                                 Çıkış Yap
                                             </a>

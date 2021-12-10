@@ -1,4 +1,4 @@
-export default function RollCall() {
+export default function Index() {
     return (
         <a>
             YOKLAMA SİSTEMİ EKRANI

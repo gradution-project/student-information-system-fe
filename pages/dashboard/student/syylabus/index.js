@@ -1,4 +1,4 @@
-export default function Syllabus() {
+export default function Index() {
     return (
         <a>
             DERS PROGRAMI EKRANI

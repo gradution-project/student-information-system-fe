@@ -1,4 +1,4 @@
-export default function Transcript() {
+export default function Index() {
     return (
         <a>
             TRANSKRİPT EKRANI

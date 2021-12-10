@@ -1,4 +1,4 @@
-export default function Internship() {
+export default function Index() {
     return (
         <a>
             STAJ BİLGİLERİ EKRANI

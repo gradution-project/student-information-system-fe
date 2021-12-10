@@ -6,7 +6,6 @@ import {
     ChartBarIcon,
     CursorClickIcon,
     RefreshIcon,
-    ShieldCheckIcon,
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
@@ -22,19 +21,19 @@ const solutions = [
     {
         name: 'Ders Kayıt',
         description: '',
-        href: '/dashboard/student/course-registration',
+        href: '/dashboard/student/registration',
         icon: CursorClickIcon,
     },
     {
         name: 'Ders Programı',
         description: "",
         href: '/dashboard/student/syllabus',
-        icon: ShieldCheckIcon
+        icon: CalendarIcon,
     },
     {
         name: 'Sınav Programı',
         description: "",
-        href: '/dashboard/student/exam-schedule',
+        href: '/dashboard/student/exam',
         icon: ViewGridIcon,
     },
     {
@@ -49,13 +48,13 @@ const resources = [
     {
         name: 'Not Bilgisi',
         description: '',
-        href: '/dashboard/student/note-info',
+        href: '/dashboard/student/notes',
         icon: BookmarkAltIcon,
     },
     {
         name: 'TransKript',
         description: '',
-        href: '/dashboard/student/transcript',
+        href: '/dashboard/student/notes/transcript',
         icon: CalendarIcon,
     },
 ]
@@ -74,14 +73,14 @@ export default function StudentComponent() {
                         <Popover.Button
                             className={classNames(
                                 open ? 'text-gray-900' : 'text-gray-500',
-                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-sis-lightblue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow'
                             )}
                         >
                             <span>Ders İşlemleri</span>
                             <ChevronDownIcon
                                 className={classNames(
                                     open ? 'text-gray-600' : 'text-gray-400',
-                                    'ml-2 h-5 w-5 group-hover:text-gray-500'
+                                    'ml-2 h-5 w-5 group-hover:text-sis-lightblue'
                                 )}
                                 aria-hidden="true"
                             />
@@ -107,7 +106,7 @@ export default function StudentComponent() {
                                                 href={item.href}
                                                 className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                                             >
-                                                <item.icon className="flex-shrink-0 h-6 w-6 text-indigo-600"
+                                                <item.icon className="flex-shrink-0 h-6 w-6 text-sis-yellow"
                                                            aria-hidden="true"/>
                                                 <div className="ml-4">
                                                     <p className="text-base font-medium text-gray-900">{item.name}</p>
@@ -129,14 +128,14 @@ export default function StudentComponent() {
                         <Popover.Button
                             className={classNames(
                                 open ? 'text-gray-900' : 'text-gray-500',
-                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                'group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-sis-lightblue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sis-yellow'
                             )}
                         >
                             <span>Not İşlemleri</span>
                             <ChevronDownIcon
                                 className={classNames(
                                     open ? 'text-gray-600' : 'text-gray-400',
-                                    'ml-2 h-5 w-5 group-hover:text-gray-500'
+                                    'ml-2 h-5 w-5 group-hover:text-sis-lightblue'
                                 )}
                                 aria-hidden="true"
                             />
@@ -162,7 +161,7 @@ export default function StudentComponent() {
                                                 href={item.href}
                                                 className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                                             >
-                                                <item.icon className="flex-shrink-0 h-6 w-6 text-indigo-600"
+                                                <item.icon className="flex-shrink-0 h-6 w-6 text-sis-yellow"
                                                            aria-hidden="true"/>
                                                 <div className="ml-4">
                                                     <p className="text-base font-medium text-gray-900">{item.name}</p>
@@ -178,7 +177,8 @@ export default function StudentComponent() {
                 )}
             </Popover>
 
-            <a href="/dashboard/student/roll-call" className="text-base font-medium text-gray-500 hover:text-gray-900">
+            <a href="/dashboard/student/roll-call-system"
+               className="text-base font-medium text-gray-500 hover:text-sis-lightblue">
                 Yoklama Sistemi
             </a>
 

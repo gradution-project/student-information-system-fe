@@ -1,4 +1,4 @@
-export default function CourseRegistration() {
+export default function Index() {
     return (
         <a>
             DERS KAYIT EKRANI
