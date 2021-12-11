@@ -1,7 +1,7 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
-import SISTitle from "../../public/components/page-titles";
+import SISTitle from "../../../public/components/page-titles";
 
-export default function OfficerLogin() {
+export default function TeacherLogin() {
     return (
         <div className="bg-sis-gray h-screen">
             <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -18,13 +18,12 @@ export default function OfficerLogin() {
                                 <div className="px-4 sm:px-0">
                                 </div>
                             </div>
-                            <form className="px-4 max-w-2xl mx-auto space-y-6" action="/officer" method="POST">
+                            <form className="px-4 max-w-2xl mx-auto space-y-6" action="/404" method="POST">
 
                                 <div className="shadow overflow-hidden sm:rounded-md">
                                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                        <h2 className="mt-8 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
-                                            PERSONEL GİRİŞİ
-                                        </h2>
+                                        <h2 className="mt-8 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">ÖĞRETMEN
+                                            GİRİŞİ</h2>
                                     </div>
                                     <div className="px-4 py-5 bg-white sm:p-6">
                                         <div className="grid grid-cols-1 gap-6">
@@ -32,7 +31,7 @@ export default function OfficerLogin() {
                                             <div className="sm:col-span-1">
                                                 <label htmlFor="first-name"
                                                        className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                    PERSONEL NUMARASI
+                                                    ÖĞRETMEN NUMARASI
                                                 </label>
                                                 <input
                                                     id="teacher-number"

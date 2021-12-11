@@ -1,5 +1,5 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
-import SISTitle from "../../public/components/page-titles";
+import SISTitle from "../../../public/components/page-titles";
 
 export default function StudentLogin() {
     return (
