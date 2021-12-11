@@ -1,14 +1,12 @@
 import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
-import StudentComponent from "./student-component";
-
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function StudentNavbar() {
+export default function TeacherNavbar() {
     return (
         <Popover className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -24,7 +22,7 @@ export default function StudentNavbar() {
                             />
                         </a>
                     </div>
-                    <StudentComponent/>
+                    // TODO: <TeacherComponent/>
                     <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
                         <Menu as="div" className="ml-3 relative">
                             <div>
