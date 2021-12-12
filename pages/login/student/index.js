@@ -1,7 +1,51 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
 import SISTitle from "../../../public/components/page-titles";
+import {Fragment, useState} from "react";
+import {useRouter} from "next/router";
+import {Dialog, Transition} from "@headlessui/react";
 
 export default function StudentLogin() {
+
+    const [studentNumber, setStudentNumber] = useState();
+    const [password, setPassword] = useState();
+
+    let [isOpen, setIsOpen] = useState(false);
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    const router = useRouter();
+
+    const changeStudentNumber = event => {
+        const studentNumber = event.target.value;
+        setStudentNumber(studentNumber);
+    }
+
+    const changePassword = event => {
+        const password = event.target.value;
+        setPassword(password);
+    }
+
+    const studentLogin = async (event) => {
+        event.preventDefault();
+
+        const res = await fetch("http://localhost:8585/login/student", {
+            body: JSON.stringify({studentId: studentNumber, password: password}),
+            headers: {'Content-Type': 'application/json'},
+            method: 'POST'
+        });
+        const data = await res.json();
+        if (data.result.loginSuccess) {
+            await router.push("/student");
+        }
+        openModal();
+    }
+
     return (
         <div className="bg-sis-gray h-screen">
             <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -18,7 +62,7 @@ export default function StudentLogin() {
                                 <div className="px-4 sm:px-0">
                                 </div>
                             </div>
-                            <form className="px-4 max-w-2xl mx-auto space-y-6" action="/student" method="POST">
+                            <form className="px-4 max-w-2xl mx-auto space-y-6" onSubmit={studentLogin}>
 
                                 <div className="shadow overflow-hidden sm:rounded-md">
                                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
@@ -34,6 +78,7 @@ export default function StudentLogin() {
                                                     ÖĞRENCİ NUMARASI
                                                 </label>
                                                 <input
+                                                    onChange={changeStudentNumber}
                                                     id="student-number"
                                                     name="student-number"
                                                     type="text"
@@ -52,6 +97,7 @@ export default function StudentLogin() {
                                                     ŞİFRE
                                                 </label>
                                                 <input
+                                                    onChange={changePassword}
                                                     id="password"
                                                     name="password"
                                                     type="password"
@@ -85,6 +131,62 @@ export default function StudentLogin() {
                                                 Şifrenizi mi unuttunuz?
                                             </a>
                                         </div>
+
+                                        <Transition appear show={isOpen} as={Fragment}>
+                                            <Dialog
+                                                as="div"
+                                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                                onClose={closeModal}
+                                            >
+                                                <div className="min-h-screen px-4 text-center">
+                                                    <Transition.Child
+                                                        as={Fragment}
+                                                        enter="ease-out duration-300"
+                                                        enterFrom="opacity-0"
+                                                        enterTo="opacity-100"
+                                                        leave="ease-in duration-200"
+                                                        leaveFrom="opacity-100"
+                                                        leaveTo="opacity-0"
+                                                    >
+                                                        <Dialog.Overlay className="fixed inset-0"/>
+                                                    </Transition.Child>
+
+                                                    {/* This element is to trick the browser into centering the modal contents. */}
+                                                    <span
+                                                        className="inline-block h-screen align-middle"
+                                                        aria-hidden="true"
+                                                    >
+              &#8203;
+            </span>
+                                                    <Transition.Child
+                                                        as={Fragment}
+                                                        enter="ease-out duration-300"
+                                                        enterFrom="opacity-0 scale-95"
+                                                        enterTo="opacity-100 scale-100"
+                                                        leave="ease-in duration-200"
+                                                        leaveFrom="opacity-100 scale-100"
+                                                        leaveTo="opacity-0 scale-95"
+                                                    >
+                                                        <div
+                                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                            <Dialog.Title
+                                                                as="h3"
+                                                                className="text-3xl mb-4 font-medium leading-6 text-sis-darkblue text-center font-phenomenaBold"
+                                                            >
+                                                                Öğrenci Numaranız veya Şifreniz Yanlış!
+                                                            </Dialog.Title>
+                                                            <div className="mt-2">
+                                                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                                    Öğrenci Numaranızı veya Şifrenizi kontrol ediniz.
+                                                                    Şifrenizi hatırlamıyorsanız şifremi unuttum
+                                                                    ekranından sıfırlayabilirsiniz.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </Transition.Child>
+                                                </div>
+                                            </Dialog>
+                                        </Transition>
                                     </div>
                                 </div>
                             </form>
