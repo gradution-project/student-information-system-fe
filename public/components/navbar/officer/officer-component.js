@@ -7,6 +7,7 @@ import {
     ChartBarIcon,
     CursorClickIcon,
     DocumentReportIcon,
+    IdentificationIcon,
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
@@ -16,20 +17,26 @@ const solutions = [
     {
         name: 'Fakülte İşlemleri',
         description: '',
-        href: '/student/lesson/department',
+        href: '/officer/faculty',
         icon: ChartBarIcon,
     },
     {
         name: 'Bölüm İşlemleri',
         description: '',
-        href: '/student/lesson/registration',
+        href: '/officer/department',
         icon: CursorClickIcon,
     },
     {
         name: 'Ders İşlemleri',
         description: "",
-        href: '/student/schedule/lesson',
+        href: '/officer/lesson',
         icon: CalendarIcon,
+    },
+    {
+        name: 'Personel İşlemleri',
+        description: "",
+        href: '/officer/lesson',
+        icon: IdentificationIcon,
     },
 ]
 
@@ -37,13 +44,13 @@ const resources = [
     {
         name: 'Öğretmen İşlemleri',
         description: '',
-        href: '/student/notes',
+        href: '/officer/teacher',
         icon: BriefcaseIcon,
     },
     {
         name: 'Öğrenci İşlemleri',
         description: '',
-        href: '/student/transcript',
+        href: '/officer/student',
         icon: DocumentReportIcon,
     },
     {
