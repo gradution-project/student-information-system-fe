@@ -1,6 +1,7 @@
 import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
+import TeacherComponent from "./teacher-component";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -22,7 +23,7 @@ export default function TeacherNavbar() {
                             />
                         </a>
                     </div>
-                    // TODO: <TeacherComponent/>
+                    <TeacherComponent/>
                     <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
                         <Menu as="div" className="ml-3 relative">
                             <div>
@@ -50,7 +51,7 @@ export default function TeacherNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                href="/dashboard/teacher/teacher-info"
+                                                href="/teacher/information"
                                                 className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                             >
                                                 Bilgilerim
