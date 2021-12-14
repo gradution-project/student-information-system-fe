@@ -1,11 +1,11 @@
 import SISTitle from "../../../public/components/page-titles";
-import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
+import OfficerNavbar from "../../../public/components/navbar/officer/officer-navbar";
 
 export default function MyInfo() {
     return (
         <>
             <SISTitle/>
-            <TeacherNavbar/>
+            <OfficerNavbar/>
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
@@ -21,7 +21,7 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="teacher-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRETMEN NO
+                                                PERSONEL NO
                                             </label>
                                             <input
                                                 type="text"
@@ -32,67 +32,6 @@ export default function MyInfo() {
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="registration-date"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                KAYIT TARİHİ
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="registration-date"
-                                                id="registration-date"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVAN
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="degree"
-                                                id="degree"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="role"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                GÖREV
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="role"
-                                                id="role"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-4">
-                                            <label htmlFor="field-of-study"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÇALIŞMA ALANI
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="field-of-study"
-                                                id="field-of-study"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
 
                                         <div className="sm:col-span-4">
                                             <label htmlFor="department"
@@ -122,7 +61,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 disabled
-                                                value="baris.altun@ogr.university.edu.tr"
+                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -137,7 +76,7 @@ export default function MyInfo() {
                                                 name="phone"
                                                 id="phone"
                                                 disabled
-                                                value="baris.altun@ogr.university.edu.tr"
+                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -190,7 +129,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value="Barış"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -205,7 +144,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value="Altun"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -221,7 +160,7 @@ export default function MyInfo() {
                                                 name="tc-no"
                                                 id="tc-no"
                                                 disabled
-                                                value="13853018290"
+                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -235,7 +174,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value="12.12.2000"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -251,7 +190,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue="baris.altun@gmail.com"
+                                                defaultValue=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -266,7 +205,7 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue="+901234567890"
+                                                defaultValue=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -281,7 +220,7 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue="Batman"
+                                                defaultValue=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>

@@ -18,7 +18,7 @@ export default function OfficerLogin() {
                                 <div className="px-4 sm:px-0">
                                 </div>
                             </div>
-                            <form className="px-4 max-w-2xl mx-auto space-y-6" action="/officer" method="POST">
+                            <form className="px-4 max-w-2xl mx-auto space-y-6">
 
                                 <div className="shadow overflow-hidden sm:rounded-md">
                                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
@@ -76,7 +76,7 @@ export default function OfficerLogin() {
                                                     className="h-5 w-5 text-sis-white group-hover:text-sis-white"
                                                     aria-hidden="true"/>
                                             </span>
-                                                <a className="font-phenomenaBold text-lg">Giriş Yap</a>
+                                                <a href="/officer" className="font-phenomenaBold text-lg">Giriş Yap</a>
                                             </button>
                                         </div>
 
