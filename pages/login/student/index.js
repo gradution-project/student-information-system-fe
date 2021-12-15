@@ -34,7 +34,7 @@ export default function StudentLogin() {
     const studentLogin = async (event) => {
         event.preventDefault();
 
-        const res = await fetch("http://localhost:8585/login/student", {
+        const res = await fetch(process.env.API_URL + "/login/student", {
             body: JSON.stringify({studentId: studentNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
