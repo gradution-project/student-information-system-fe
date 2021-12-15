@@ -46,7 +46,7 @@ export default function StudentLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://sis-be-master.herokuapp.com/login/student", {
+        const res = await fetch("https://sis-be.herokuapp.com/login/student", {
             body: JSON.stringify({studentId: studentNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
