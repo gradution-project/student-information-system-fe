@@ -50,7 +50,7 @@ export default function ForgotPassword() {
         openProcessingModal();
 
         event.preventDefault();
-        const res = await fetch("https://sis-be-master.herokuapp.com/login/teacher/forgot-password", {
+        const res = await fetch("https://sis-be.herokuapp.com/login/teacher/forgot-password", {
             body: JSON.stringify({teacherId: teacherNumber}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
