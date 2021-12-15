@@ -22,7 +22,9 @@ module.exports = {
                     blue: '#3AAAE2',
                     lightblue: '#B8EBFF',
                     gray: '#F9FAFB',
-                    white: '#FFFFFF'
+                    white: '#FFFFFF',
+                    success: '#39BE33',
+                    fail: '#DD3132'
                 },
             }
         }
