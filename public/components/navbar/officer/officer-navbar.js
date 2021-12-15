@@ -1,21 +1,21 @@
 import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
-import TeacherComponent from "./teacher-component";
+import OfficerComponent from "./officer-component";
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function TeacherNavbar() {
+export default function OfficerNavbar() {
     return (
         <Popover className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div
                     className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
                     <div className="flex justify-start lg:w-0 lg:flex-1">
-                        <a href="#">
-                            <span className="sr-only">Workflow</span>
+                        <a href="/officer">
                             <img
                                 className="h-8 w-auto sm:h-10"
                                 src="https://i.hizliresim.com/em7bd2l.png"
@@ -23,7 +23,7 @@ export default function TeacherNavbar() {
                             />
                         </a>
                     </div>
-                    <TeacherComponent/>
+                    <OfficerComponent/>
                     <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
                         <Menu as="div" className="ml-3 relative">
                             <div>
@@ -47,7 +47,7 @@ export default function TeacherNavbar() {
                                 leaveTo="transform opacity-0 scale-95"
                             >
                                 <Menu.Items
-                                    className="font-phenomenaRegular origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    className="font-phenomenaRegular origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-sis-yellow ring-opacity-5 focus:outline-none">
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
@@ -68,10 +68,8 @@ export default function TeacherNavbar() {
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a
-                                                href="/"
-                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
-                                            >
+                                            <a href="/"
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}>
                                                 Çıkış Yap
                                             </a>
                                         )}
