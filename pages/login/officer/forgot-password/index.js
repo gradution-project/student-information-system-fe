@@ -105,8 +105,8 @@ export default function ForgotPassword() {
                                                     name="officer-number"
                                                     type="text"
                                                     autoComplete="current-username"
-                                                    minLength="8"
-                                                    maxLength="8"
+                                                    minLength="5"
+                                                    maxLength="5"
                                                     required
                                                     pattern="[0-9.]+"
                                                     className="font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
