@@ -3,6 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from 'universal-cookie';
 
 export default function TeacherLogin() {
 
@@ -59,8 +60,13 @@ export default function TeacherLogin() {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
-            closeProcessingModal();
-            await router.push("/teacher");
+            const getData = await getRes.json();
+            if (getData.success) {
+                cookies.set('teacherName', getData.result.personalInfoResponse.name + ' ' + getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('teacherRole', getData.result.academicInfoResponse.role, {path: '/'});
+                closeProcessingModal();
+                await router.push("/teacher");
+            }
         }
         closeProcessingModal();
         openModal();
