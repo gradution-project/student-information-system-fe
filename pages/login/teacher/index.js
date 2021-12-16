@@ -46,7 +46,7 @@ export default function TeacherLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://sis-be.herokuapp.com/login/teacher", {
+        const res = await fetch("https://localhost:8585/login/teacher", {
             body: JSON.stringify({teacherId: teacherNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
