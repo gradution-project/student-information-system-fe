@@ -46,13 +46,19 @@ export default function TeacherLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://sis-be.herokuapp.com/login/teacher", {
+        const loginRes = await fetch("https://sis-be.herokuapp.com/login/teacher", {
             body: JSON.stringify({teacherId: teacherNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
-        const data = await res.json();
-        if (data.result.loginSuccess) {
+        const loginData = await loginRes.json();
+        if (loginData.result.loginSuccess) {
+            const cookies = new Cookies();
+            cookies.set('teacherNumber', teacherNumber, {path: '/'});
+            const getRes = await fetch("https://sis-be.herokuapp.com/teacher/" + cookies.get('teacherNumber'), {
+                headers: {'Content-Type': 'application/json'},
+                method: 'GET'
+            });
             closeProcessingModal();
             await router.push("/teacher");
         }

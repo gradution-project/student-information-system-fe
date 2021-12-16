@@ -61,7 +61,6 @@ export default function StudentLogin() {
                 method: 'GET'
             });
             const getData = await getRes.json();
-            console.log(getData);
             if (getData.success) {
                 cookies.set('studentName', getData.result.personalInfoResponse.name + ' ' + getData.result.personalInfoResponse.surname, {path: '/'});
                 closeProcessingModal();
