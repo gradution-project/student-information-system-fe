@@ -46,7 +46,7 @@ export default function OfficerLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://sis-be.herokuapp.com/login/officer", {
+        const res = await fetch("https://localhost:8585/login/officer", {
             body: JSON.stringify({officerId: officerNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
