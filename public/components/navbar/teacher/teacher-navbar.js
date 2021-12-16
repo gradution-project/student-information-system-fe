@@ -2,12 +2,16 @@ import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
 import TeacherComponent from "./teacher-component";
+import Cookies from 'universal-cookie';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function TeacherNavbar() {
+
+    const cookies = new Cookies();
+
     return (
         <Popover className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -53,8 +57,8 @@ export default function TeacherNavbar() {
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
                                             >
-
-                                                <p className="font-phenomenaLight text-center text-lg"></p>
+                                                {cookies.get('teacherName')}
+                                                <p className="font-phenomenaLight text-center text-lg">{cookies.get('teacherNumber')}</p>
                                             </a>
                                         )}
                                     </Menu.Item>

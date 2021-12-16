@@ -2,13 +2,16 @@ import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
 import StudentComponent from "./student-component";
-
+import Cookies from 'universal-cookie';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function StudentNavbar() {
+
+    const cookies = new Cookies();
+
     return (
         <Popover className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -46,27 +49,30 @@ export default function StudentNavbar() {
                                 leaveFrom="transform opacity-100 scale-100"
                                 leaveTo="transform opacity-0 scale-95"
                             >
-                                <Menu.Items className="font-phenomenaRegular origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-sis-yellow ring-opacity-5 focus:outline-none">
+                                <Menu.Items
+                                    className="font-phenomenaRegular origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-sis-yellow ring-opacity-5 focus:outline-none">
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
                                             >
-                                                BARIŞ ALTUN
-                                                <p className="font-phenomenaLight text-center text-lg">202111012001</p>
+                                                {cookies.get('studentName')}
+                                                <p className="font-phenomenaLight text-center text-lg">{cookies.get('studentNumber')}</p>
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/student/information" className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                            <a href="/student/information"
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
                                                 Bilgilerim
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/" className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                            <a href='/'
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}>
                                                 Çıkış Yap
                                             </a>
                                         )}
