@@ -1,37 +1,37 @@
 import SISTitle from "../../../public/components/page-titles";
 import OfficerNavbar from "../../../public/components/navbar/officer/officer-navbar";
 
-
 export default function Teacher() {
     return (
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" action="#" method="POST">
                             <div className="shadow overflow-hidden sm:rounded-md">
-                                <div className="px-4 py-4 bg-white sm:p-6">
-                                    <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                        <h3 className="mt-8 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
-                                            ÖĞRENCİ EKLEME
-                                        </h3>
-                                    </div>
+                                <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
+                                    <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
+                                        ÖĞRENCİ EKLEME
+                                    </h3>
+                                </div>
+                                <div className="bg-white sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-4">
                                             <label htmlFor="degree"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 ÜNVAN
                                             </label>
-                                            <input
-                                                type="text"
-                                                name="degree"
-                                                id="degree"
-                                                value=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                            <select
+                                                id="department"
+                                                name="department"
+                                                autoComplete="department-name"
+
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                <option>LİSANS</option>
+                                            </select>
                                         </div>
 
                                         <div className="sm:col-span-4">
@@ -43,7 +43,6 @@ export default function Teacher() {
                                                 id="department"
                                                 name="department"
                                                 autoComplete="department-name"
-
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>BİLGİSAYAR MÜHENDİSLİĞİ</option>
@@ -59,7 +58,6 @@ export default function Teacher() {
                                                 type="text"
                                                 name="class-level"
                                                 id="class-level"
-                                                disabled
                                                 value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -103,7 +101,6 @@ export default function Teacher() {
                                                 name="tc-no"
                                                 id="tc-no"
                                                 value=""
-                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -118,7 +115,6 @@ export default function Teacher() {
                                                 name="birthday"
                                                 id="birthday"
                                                 value=""
-                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -134,7 +130,6 @@ export default function Teacher() {
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue=""
-                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -150,7 +145,6 @@ export default function Teacher() {
                                                 id="phone-number"
                                                 maxLength="13"
                                                 defaultValue=""
-                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -166,7 +160,6 @@ export default function Teacher() {
                                                 id="home-address"
                                                 autoComplete="home-address"
                                                 defaultValue=""
-                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
