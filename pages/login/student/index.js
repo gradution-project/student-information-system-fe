@@ -3,6 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from 'universal-cookie';
 
 export default function StudentLogin() {
 
@@ -46,15 +47,25 @@ export default function StudentLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://sis-be.herokuapp.com/login/student", {
+        const loginRes = await fetch("https://sis-be.herokuapp.com/login/student", {
             body: JSON.stringify({studentId: studentNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
-        const data = await res.json();
-        if (data.result.loginSuccess) {
-            closeProcessingModal();
-            await router.push("/student");
+        const loginData = await loginRes.json();
+        if (loginData.result.loginSuccess) {
+            const cookies = new Cookies();
+            cookies.set('studentNumber', studentNumber, {path: '/'});
+            const getRes = await fetch("https://sis-be.herokuapp.com/student/" + cookies.get('studentNumber'), {
+                headers: {'Content-Type': 'application/json'},
+                method: 'GET'
+            });
+            const getData = await getRes.json();
+            if (getData.success) {
+                cookies.set('studentName', getData.result.personalInfoResponse.name + ' ' + getData.result.personalInfoResponse.surname, {path: '/'});
+                closeProcessingModal();
+                await router.push("/student");
+            }
         }
         closeProcessingModal();
         openModal();
