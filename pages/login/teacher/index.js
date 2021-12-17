@@ -3,6 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from 'universal-cookie';
 
 export default function TeacherLogin() {
 
@@ -46,15 +47,26 @@ export default function TeacherLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://sis-be.herokuapp.com/login/teacher", {
+        const loginRes = await fetch("http://localhost:8585/login/teacher", {
             body: JSON.stringify({teacherId: teacherNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
-        const data = await res.json();
-        if (data.result.loginSuccess) {
-            closeProcessingModal();
-            await router.push("/teacher");
+        const loginData = await loginRes.json();
+        if (loginData.result.loginSuccess) {
+            const cookies = new Cookies();
+            cookies.set('teacherNumber', teacherNumber, {path: '/'});
+            const getRes = await fetch("http://localhost:8585/teacher/" + cookies.get('teacherNumber'), {
+                headers: {'Content-Type': 'application/json'},
+                method: 'GET'
+            });
+            const getData = await getRes.json();
+            if (getData.success) {
+                cookies.set('teacherName', getData.result.personalInfoResponse.name + ' ' + getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('teacherRole', getData.result.academicInfoResponse.role, {path: '/'});
+                closeProcessingModal();
+                await router.push("/teacher");
+            }
         }
         closeProcessingModal();
         openModal();
