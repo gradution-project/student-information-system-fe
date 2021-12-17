@@ -47,7 +47,7 @@ export default function StudentLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://localhost:8585/login/student", {
+        const loginRes = await fetch("http://localhost:8585/login/student", {
             body: JSON.stringify({studentId: studentNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
@@ -56,7 +56,7 @@ export default function StudentLogin() {
         if (loginData.result.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('studentNumber', studentNumber, {path: '/'});
-            const getRes = await fetch("https://sis-be.herokuapp.com/student/" + cookies.get('studentNumber'), {
+            const getRes = await fetch("http://localhost:8585/student/" + cookies.get('studentNumber'), {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
