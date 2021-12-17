@@ -12,59 +12,59 @@ import {
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
 
-const solutions = [
+const university = [
 
     {
         name: 'Fakülte İşlemleri',
         description: '',
-        href: '/officer/faculty',
+        href: '/officer/operation/faculty',
         icon: ChartBarIcon,
     },
     {
         name: 'Bölüm İşlemleri',
         description: '',
-        href: '/officer/department',
+        href: '/officer/operation/department',
         icon: CursorClickIcon,
     },
     {
         name: 'Ders İşlemleri',
         description: "",
-        href: '/officer/lesson',
+        href: '/officer/operation/student/lesson',
         icon: CalendarIcon,
     },
     {
         name: 'Personel İşlemleri',
         description: "",
-        href: '/officer/lesson',
+        href: '/officer/operation/officer',
         icon: IdentificationIcon,
+    }
+]
+
+const teacher = [
+    {
+        name: 'Öğretmen İşlemleri',
+        description: '',
+        href: '/officer/operation/teacher',
+        icon: BriefcaseIcon,
+    }
+]
+
+const student = [
+    {
+        name: 'Öğrenci İşlemleri',
+        description: '',
+        href: '/officer/operation/student',
+        icon: DocumentReportIcon,
     },
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
-        href: '/student/transcript',
+        href: '/officer/operation/student/graduation',
         icon: BookmarkAltIcon,
-    },
+    }
 ]
 
-const resources = [
-    {
-        name: 'Öğretmen İşlemleri',
-        description: '',
-        href: '/officer/teacher',
-        icon: BriefcaseIcon,
-    },
-]
-
-const resources2 = [
-    {
-        name: 'Öğrenci İşlemleri',
-        description: '',
-        href: '/officer/student',
-        icon: DocumentReportIcon,
-    },
-]
-
-const resources1 = [
+const schedules = [
     {
         name: 'Ders Programı',
         description: '',
@@ -120,7 +120,7 @@ export default function OfficerComponent() {
                                 <div
                                     className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                     <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                                        {solutions.map((item) => (
+                                        {university.map((item) => (
                                             <a
                                                 key={item.name}
                                                 href={item.href}
@@ -175,7 +175,7 @@ export default function OfficerComponent() {
                                 <div
                                     className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                     <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                                        {resources.map((item) => (
+                                        {teacher.map((item) => (
                                             <a
                                                 key={item.name}
                                                 href={item.href}
@@ -230,7 +230,7 @@ export default function OfficerComponent() {
                                 <div
                                     className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                     <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                                        {resources2.map((item) => (
+                                        {student.map((item) => (
                                             <a
                                                 key={item.name}
                                                 href={item.href}
@@ -285,7 +285,7 @@ export default function OfficerComponent() {
                                 <div
                                     className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                     <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                                        {resources1.map((item) => (
+                                        {schedules.map((item) => (
                                             <a
                                                 key={item.name}
                                                 href={item.href}
