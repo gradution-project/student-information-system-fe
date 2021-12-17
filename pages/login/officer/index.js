@@ -46,12 +46,12 @@ export default function OfficerLogin() {
 
         event.preventDefault();
 
-        const res = await fetch("https://localhost:8585/login/officer", {
+        const loginRes = await fetch("http://localhost:8585/login/officer", {
             body: JSON.stringify({officerId: officerNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
-        const data = await res.json();
+        const data = await loginRes.json();
         if (data.result.loginSuccess) {
             closeProcessingModal();
             await router.push("/officer");
