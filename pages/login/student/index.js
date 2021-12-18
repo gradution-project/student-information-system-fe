@@ -62,7 +62,20 @@ export default function StudentLogin() {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('studentName', getData.result.personalInfoResponse.name + ' ' + getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('studentName', getData.result.personalInfoResponse.name, {path: '/'});
+                cookies.set('studentSurname', getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('studentFullName', cookies.get('studentName') + ' ' + cookies.get('studentSurname'), {path: '/'});
+                cookies.set('studentTcNo', getData.result.personalInfoResponse.tcNo, {path: '/'});
+                cookies.set('studentPersonalEmail', getData.result.personalInfoResponse.email, {path: '/'});
+                cookies.set('studentBirthday', getData.result.personalInfoResponse.birthday, {path: '/'});
+                cookies.set('studentPhoneNumber', getData.result.personalInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('studentAddress', getData.result.personalInfoResponse.address, {path: '/'});
+                cookies.set('studentAcademicEmail', getData.result.academicInfoResponse.email, {path: '/'});
+                cookies.set('studentStatus', getData.result.academicInfoResponse.status, {path: '/'});
+                cookies.set('studentDegree', getData.result.academicInfoResponse.degree, {path: '/'});
+                cookies.set('studentDepartmentId', getData.result.academicInfoResponse.departmentId, {path: '/'});
+                cookies.set('studentClassLevel', getData.result.academicInfoResponse.classLevel, {path: '/'});
+                cookies.set('studentRegistrationDate', getData.result.academicInfoResponse.registrationDate, {path: '/'});
                 closeProcessingModal();
                 await router.push("/student");
             }
