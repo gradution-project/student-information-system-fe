@@ -310,7 +310,7 @@ export default function MyInfo() {
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
-                                        KAYDET
+                                        GÜNCELLE
                                     </button>
                                 </div>
                             </div>
