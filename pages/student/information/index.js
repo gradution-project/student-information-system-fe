@@ -2,6 +2,7 @@ import StudentNavbar from "../../../public/components/navbar/student/student-nav
 import SISTitle from "../../../public/components/page-titles";
 
 export default function MyInfo() {
+
     return (
         <>
             <SISTitle/>
@@ -9,13 +10,13 @@ export default function MyInfo() {
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <div className="px-4 sm:px-0">
-                            <h3 className="py-8 font-phenomenaBold leading-6 text-sis-darkblue text-center text-3xl">
-                                AKADEMİK BİLGİLERİM
-                            </h3>
-                        </div>
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
+                                <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
+                                    <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
+                                        AKADEMİK BİLGİLERİM
+                                    </h3>
+                                </div>
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
@@ -27,7 +28,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value="202111012001"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -42,13 +43,13 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value="10.12.2021"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-3">
+                                        <div className="sm:col-span-5">
                                             <label htmlFor="faculty"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 FAKÜLTE
@@ -66,7 +67,7 @@ export default function MyInfo() {
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-3">
+                                        <div className="sm:col-span-4">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 BÖLÜM
@@ -94,7 +95,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 disabled
-                                                value="baris.altun@ogr.university.edu.tr"
+                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -118,7 +119,6 @@ export default function MyInfo() {
                                         </div>
 
                                     </div>
-
                                 </div>
                             </div>
                         </form>
@@ -135,16 +135,15 @@ export default function MyInfo() {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <div className="md:col-span-1 ">
-                            <div className="px-4 sm:px-0">
-                                <h3 className="py-8 font-phenomenaBold leading-6 text-sis-darkblue text-center text-3xl">
-                                    KİŞİSEL BİLGİLERİM
-                                </h3>
-                            </div>
-                        </div>
                         <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
-
                             <div className="shadow overflow-hidden sm:rounded-md">
+                                <div className="md:col-span-1 ">
+                                    <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
+                                        <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
+                                            KİŞİSEL BİLGİLERİM
+                                        </h3>
+                                    </div>
+                                </div>
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
 
@@ -157,7 +156,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value="Barış"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -172,7 +171,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value="Altun"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -188,7 +187,7 @@ export default function MyInfo() {
                                                 name="tc-no"
                                                 id="tc-no"
                                                 disabled
-                                                value="13853018290"
+                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -202,7 +201,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value="12.12.2000"
+                                                value=""
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -218,7 +217,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue="baris.altun@gmail.com"
+                                                defaultValue=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -233,7 +232,7 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue="+901234567890"
+                                                defaultValue=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -248,7 +247,7 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue="Batman"
+                                                defaultValue=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
