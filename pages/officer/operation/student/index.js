@@ -122,7 +122,7 @@ export default function StudentList({students}) {
                                                 </span>
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                <a href={'/officer/operation/teacher/detail/' + student.studentId}
+                                                <a href={'/officer/operation/student/detail' + student.studentId}
                                                    className='text-sis-yellow'>
                                                     DETAY
                                                 </a>
