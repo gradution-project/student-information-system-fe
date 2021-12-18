@@ -62,8 +62,21 @@ export default function TeacherLogin() {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('teacherName', getData.result.personalInfoResponse.name + ' ' + getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('teacherName', getData.result.personalInfoResponse.name, {path: '/'});
+                cookies.set('teacherSurname', getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('teacherFullName', cookies.get('teacherName') + ' ' + cookies.get('teacherSurname'), {path: '/'});
                 cookies.set('teacherRole', getData.result.academicInfoResponse.role, {path: '/'});
+                cookies.set('teacherDegree', getData.result.academicInfoResponse.degree, {path: '/'});
+                cookies.set('teacherDepartmentId', getData.result.academicInfoResponse.departmentId, {path: '/'});
+                cookies.set('teacherAcademicEmail', getData.result.academicInfoResponse.email, {path: '/'});
+                cookies.set('teacherFieldOfStudy', getData.result.academicInfoResponse.fieldOfStudy, {path: '/'});
+                cookies.set('teacherAcademicPhoneNumber', getData.result.academicInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('teacherRegistrationDate', getData.result.academicInfoResponse.registrationDate, {path: '/'});
+                cookies.set('teacherTcNo', getData.result.personalInfoResponse.tcNo, {path: '/'});
+                cookies.set('teacherPersonalEmail', getData.result.personalInfoResponse.email, {path: '/'});
+                cookies.set('teacherPersonalPhoneNumber', getData.result.personalInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('teacherBirthday', getData.result.personalInfoResponse.birthday, {path: '/'});
+                cookies.set('teacherAddress', getData.result.personalInfoResponse.address, {path: '/'});
                 closeProcessingModal();
                 await router.push("/teacher");
             }

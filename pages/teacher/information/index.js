@@ -1,7 +1,24 @@
 import SISTitle from "../../../public/components/page-titles";
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
+import Cookies from "universal-cookie";
 
-export default function MyInfo() {
+// export const getStaticProps = async () => {
+//     const teacherResponse = await fetch("http://localhost:8585/teacher/11012023", {
+//         headers: {'Content-Type': 'application/json'},
+//         method: 'GET'
+//     });
+//     const teacherData = await teacherResponse.json();
+//     if (teacherData.success) {
+//         return {
+//             props: {teacher: teacherData.result}
+//         }
+//     }
+// }
+
+export default function MyInfo({teacher}) {
+
+    const cookies = new Cookies();
+
     return (
         <>
             <SISTitle/>
@@ -9,14 +26,14 @@ export default function MyInfo() {
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <div className="px-4 sm:px-0">
-                            <h3 className="py-8 font-phenomenaBold leading-6 text-sis-darkblue text-center text-3xl">
-                                AKADEMİK BİLGİLERİM
-                            </h3>
-                        </div>
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                                    <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            AKADEMİK BİLGİLERİM
+                                        </h3>
+                                    </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
                                             <label htmlFor="teacher-number"
@@ -27,7 +44,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="teacher-number"
                                                 id="teacher-number"
-                                                value=""
+                                                value={cookies.get('teacherNumber')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -42,7 +59,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value=""
+                                                value={cookies.get('teacherRegistrationDate')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -57,7 +74,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="degree"
                                                 id="degree"
-                                                value=""
+                                                value={cookies.get('teacherDegree')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -66,19 +83,19 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="role"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                GÖREV
+                                                ROLÜ
                                             </label>
                                             <input
                                                 type="text"
                                                 name="role"
                                                 id="role"
-                                                value=""
+                                                value={cookies.get('teacherRole')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-4">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="field-of-study"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 ÇALIŞMA ALANI
@@ -87,17 +104,16 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="field-of-study"
                                                 id="field-of-study"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={cookies.get('teacherFieldOfStudy')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
 
-                                        <div className="sm:col-span-4">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM
+                                                BÖLÜM KODU
                                             </label>
                                             <select
                                                 id="department"
@@ -106,13 +122,11 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option>MAKİNE MÜHENDİSLİĞİ</option>
-                                                <option>YAZILIM MÜHENDİSLİĞİ</option>
+                                                <option>{cookies.get('teacherDepartmentId')}</option>
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-4">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="email-address"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 E-MAİL ADRESİ
@@ -122,12 +136,12 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 disabled
-                                                value="baris.altun@ogr.university.edu.tr"
+                                                value={cookies.get('teacherAcademicEmail')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-2">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="phone"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DAHİLİ TELEFON
@@ -137,7 +151,7 @@ export default function MyInfo() {
                                                 name="phone"
                                                 id="phone"
                                                 disabled
-                                                value="baris.altun@ogr.university.edu.tr"
+                                                value={cookies.get('teacherAcademicPhoneNumber')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -150,7 +164,7 @@ export default function MyInfo() {
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
-                                        KAYDET
+                                        GÜNCELLE
                                     </button>
                                 </div>
                             </div>
@@ -168,17 +182,15 @@ export default function MyInfo() {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <div className="md:col-span-1 ">
-                            <div className="px-4 sm:px-0">
-                                <h3 className="py-8 font-phenomenaBold leading-6 text-sis-darkblue text-center text-3xl">
-                                    KİŞİSEL BİLGİLERİM
-                                </h3>
-                            </div>
-                        </div>
                         <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
 
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            KİŞİSEL BİLGİLERİM
+                                        </h3>
+                                    </div>
                                     <div className="grid grid-cols-6 gap-6">
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -190,7 +202,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value="Barış"
+                                                value={cookies.get('teacherName')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -205,7 +217,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value="Altun"
+                                                value={cookies.get('teacherSurname')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -221,7 +233,7 @@ export default function MyInfo() {
                                                 name="tc-no"
                                                 id="tc-no"
                                                 disabled
-                                                value="13853018290"
+                                                value={cookies.get('teacherTcNo')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -235,9 +247,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value="12.12.2000"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={cookies.get('teacherBirthday')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -251,8 +262,8 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue="baris.altun@gmail.com"
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={cookies.get('teacherPersonalEmail')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -266,8 +277,8 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue="+901234567890"
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={cookies.get('teacherPersonalPhoneNumber')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -281,8 +292,8 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue="Batman"
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={cookies.get('teacherAddress')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
@@ -352,7 +363,7 @@ export default function MyInfo() {
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
-                                        KAYDET
+                                        GÜNCELLE
                                     </button>
                                 </div>
                             </div>
