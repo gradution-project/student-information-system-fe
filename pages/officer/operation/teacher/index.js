@@ -1,7 +1,6 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {useState} from "react";
 
 export const getStaticProps = async () => {
     const teacherResponse = await fetch("http://localhost:8585/teacher?status=ALL", {
@@ -17,13 +16,6 @@ export const getStaticProps = async () => {
 }
 
 export default function TeacherList({teachers}) {
-
-    const [teacherNumber, setTeacherNumber] = useState();
-
-    const changeTeacherNumber = event => {
-        const teacherNumber = event.target.value;
-        setTeacherNumber(teacherNumber);
-    }
 
     const router = useRouter();
 
