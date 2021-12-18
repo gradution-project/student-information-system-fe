@@ -57,7 +57,7 @@ export default function TeacherNavbar() {
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
-                                                {cookies.get('teacherName')}
+                                                {cookies.get('teacherFullName')}
                                                 <p className="font-phenomenaLight text-center text-lg">{cookies.get('teacherNumber')}</p>
                                             </a>
                                         )}
