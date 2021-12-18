@@ -55,17 +55,18 @@ export default function TeacherNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
+                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
-                                                {cookies.get('teacherName')}
+                                                {cookies.get('teacherFullName')}
                                                 <p className="font-phenomenaLight text-center text-lg">{cookies.get('teacherNumber')}</p>
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/officer/information"
-                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                            <a href="/teacher/information"
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}
+                                            >
                                                 Bilgilerim
                                             </a>
                                         )}
@@ -74,7 +75,7 @@ export default function TeacherNavbar() {
                                         {({active}) => (
                                             <a
                                                 href="/"
-                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
+                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Çıkış Yap
                                             </a>
