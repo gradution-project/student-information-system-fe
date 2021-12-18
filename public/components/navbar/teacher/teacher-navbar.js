@@ -65,7 +65,8 @@ export default function TeacherNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a href="/teacher/information"
-                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}
+                                            >
                                                 Bilgilerim
                                             </a>
                                         )}
