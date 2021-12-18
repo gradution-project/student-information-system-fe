@@ -2,7 +2,6 @@ import StudentNavbar from "../../../public/components/navbar/student/student-nav
 import SISTitle from "../../../public/components/page-titles";
 
 export default function MyInfo() {
-
     return (
         <>
             <SISTitle/>
@@ -18,6 +17,7 @@ export default function MyInfo() {
                                     </h3>
                                 </div>
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
                                             <label htmlFor="student-number"
@@ -25,11 +25,11 @@ export default function MyInfo() {
                                                 ÖĞRENCİ NO
                                             </label>
                                             <input
+
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
                                                 value=""
-                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -40,6 +40,7 @@ export default function MyInfo() {
                                                 KAYIT TARİHİ
                                             </label>
                                             <input
+
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
@@ -73,6 +74,7 @@ export default function MyInfo() {
                                                 BÖLÜM
                                             </label>
                                             <select
+
                                                 id="department"
                                                 name="department"
                                                 autoComplete="department-name"
@@ -91,6 +93,7 @@ export default function MyInfo() {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
+
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
@@ -106,6 +109,7 @@ export default function MyInfo() {
                                                 SINIF
                                             </label>
                                             <select
+
                                                 id="class"
                                                 name="class"
                                                 disabled
@@ -117,8 +121,8 @@ export default function MyInfo() {
                                                 <option>4. SINIF</option>
                                             </select>
                                         </div>
-
                                     </div>
+
                                 </div>
                             </div>
                         </form>
@@ -252,7 +256,6 @@ export default function MyInfo() {
                                             />
                                         </div>
                                     </div>
-
                                     <div className="py-5 mt-2">
                                         <label className="text-xl text-sis-darkblue font-phenomenaBold">
                                             PROFİL FOTOĞRAFI
