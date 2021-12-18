@@ -1,7 +1,11 @@
 import StudentNavbar from "../../../public/components/navbar/student/student-navbar";
 import SISTitle from "../../../public/components/page-titles";
+import Cookies from "universal-cookie";
 
 export default function MyInfo() {
+
+    const cookies = new Cookies();
+
     return (
         <>
             <SISTitle/>
@@ -9,15 +13,14 @@ export default function MyInfo() {
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6">
+                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
-                                <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
-                                    <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
-                                        AKADEMİK BİLGİLERİM
-                                    </h3>
-                                </div>
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-
+                                    <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            AKADEMİK BİLGİLERİM
+                                        </h3>
+                                    </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
                                             <label htmlFor="student-number"
@@ -25,11 +28,11 @@ export default function MyInfo() {
                                                 ÖĞRENCİ NO
                                             </label>
                                             <input
-
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value=""
+                                                value={cookies.get('studentNumber')}
+                                                disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -40,17 +43,16 @@ export default function MyInfo() {
                                                 KAYIT TARİHİ
                                             </label>
                                             <input
-
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value=""
+                                                value={cookies.get('studentRegistrationDate')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-5">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="faculty"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 FAKÜLTE
@@ -63,27 +65,22 @@ export default function MyInfo() {
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>MÜHENDİSLİK-MİMARLIK FAKÜLTESİ</option>
-                                                <option>FEN-EDEBİYAT FAKÜLTESİ</option>
-                                                <option>SAĞLIK BİLİMLERİ YÜKSEKOKULU</option>
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-4">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM
+                                                BÖLÜM KODU
                                             </label>
                                             <select
-
-                                                id="department"
-                                                name="department"
-                                                autoComplete="department-name"
+                                                id="department-id"
+                                                name="department-id"
+                                                autoComplete="department-id"
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option>MAKİNE MÜHENDİSLİĞİ</option>
-                                                <option>YAZILIM MÜHENDİSLİĞİ</option>
+                                                <option>{cookies.get('studentDepartmentId')}</option>
                                             </select>
                                         </div>
 
@@ -93,12 +90,11 @@ export default function MyInfo() {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
+                                                value={cookies.get('studentAcademicEmail')}
                                                 disabled
-                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -109,18 +105,15 @@ export default function MyInfo() {
                                                 SINIF
                                             </label>
                                             <select
-
                                                 id="class"
                                                 name="class"
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>1. SINIF</option>
-                                                <option>2. SINIF</option>
-                                                <option>3. SINIF</option>
-                                                <option>4. SINIF</option>
+                                                <option>{cookies.get('studentClassLevel')}</option>
                                             </select>
                                         </div>
+
                                     </div>
 
                                 </div>
@@ -141,16 +134,13 @@ export default function MyInfo() {
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
                             <div className="shadow overflow-hidden sm:rounded-md">
-                                <div className="md:col-span-1 ">
-                                    <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
-                                        <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
+                                <div className="px-4 py-5 bg-white sm:p-6">
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
                                             KİŞİSEL BİLGİLERİM
                                         </h3>
                                     </div>
-                                </div>
-                                <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
-
                                         <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="first-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
@@ -160,7 +150,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value=""
+                                                value={cookies.get('studentName')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -175,7 +165,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value=""
+                                                value={cookies.get('studentSurname')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -190,8 +180,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
+                                                value={cookies.get('studentTcNo')}
                                                 disabled
-                                                value=""
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -205,7 +195,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value=""
+                                                value={cookies.get('studentBirthday')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -221,8 +211,8 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentPersonalEmail')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -236,8 +226,8 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentPhoneNumber')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -251,11 +241,12 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentAddress')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
+
                                     <div className="py-5 mt-2">
                                         <label className="text-xl text-sis-darkblue font-phenomenaBold">
                                             PROFİL FOTOĞRAFI
