@@ -280,11 +280,11 @@ export default function SaveStudent() {
                                                 value={studentDegree}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Ünvan Seçiniz...</option>
-                                                <option value="ASSOCIATE">Asistan Öğrenci</option>
-                                                <option value="UNDERGRADUATE">Lisans Öğrencisi</option>
-                                                <option value="POSTGRADUATE">Yüksek lisans Öğrencisi</option>
-                                                <option value="DOCTORAL">Doktora Öğrencisi</option>
+                                                <option>Ünvanını Seçiniz...</option>
+                                                <option value="ASSOCIATE">Önlisans</option>
+                                                <option value="UNDERGRADUATE">Lisans</option>
+                                                <option value="POSTGRADUATE">Yüksek lisans</option>
+                                                <option value="DOCTORAL">Doktora</option>
                                             </select>
                                         </div>
 
@@ -390,7 +390,7 @@ export default function SaveStudent() {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğrenci Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
