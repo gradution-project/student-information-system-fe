@@ -9,13 +9,13 @@ export default function MyInfo() {
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <div className="px-4 sm:px-0">
-                            <h3 className="py-8 font-phenomenaBold leading-6 text-sis-darkblue text-center text-3xl">
-                                AKADEMİK BİLGİLERİM
-                            </h3>
-                        </div>
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" action="#" method="POST">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
+                                <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
+                                    <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
+                                        AKADEMİK BİLGİLERİM
+                                    </h3>
+                                </div>
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
@@ -107,19 +107,15 @@ export default function MyInfo() {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <div className="md:col-span-1 ">
-                            <div className="px-4 sm:px-0">
-                                <h3 className="py-8 font-phenomenaBold leading-6 text-sis-darkblue text-center text-3xl">
-                                    KİŞİSEL BİLGİLERİM
-                                </h3>
-                            </div>
-                        </div>
                         <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
-
                             <div className="shadow overflow-hidden sm:rounded-md">
-                                <div className="px-4 py-5 bg-white sm:p-6">
+                                <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
+                                    <h3 className="mt-4 font-phenomenaExtraBold text-center text-5xl text-sis-darkblue mb-6">
+                                        KİŞİSEL BİLGİLERİM
+                                    </h3>
+                                </div>
+                                <div className="bg-white sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
-
                                         <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="first-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">

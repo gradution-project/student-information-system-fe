@@ -1,33 +1,18 @@
-import SISTitle from "../../../public/components/page-titles";
-import OfficerNavbar from "../../../public/components/navbar/officer/officer-navbar";
+import SISTitle from "../../../../public/components/page-titles";
+import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 
 
-export default function Department() {
+export default function Faculty() {
     return (
         <div>
             <SISTitle/>
             <OfficerNavbar/>
             <form className="px-4 py-12 max-w-2xl mx-auto space-y-6">
                 <div className="py-2 px-4 shadow overflow-hidden sm:rounded-md">
-                    <div className="sm:col-span-4">
-                        <label htmlFor="department"
-                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                            FAKÜLTE
-                        </label>
-                        <select
-                            id="department"
-                            name="department"
-                            autoComplete="department-name"
-                            className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                        >
-                            <option>MÜHENDİSLİK-MİMARLIK FAKÜLTESİ</option>
-                        </select>
-                    </div>
-
-                    <div className="sm:col-span-6 py-8">
+                    <div className="sm:col-span-6">
                         <label htmlFor="teacher-number"
                                className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                            BÖLÜM İSMİ
+                            FAKÜLTE İSMİ
                         </label>
                         <input
                             type="text"

@@ -58,18 +58,19 @@ export default function OfficerNavbar() {
                                             </a>
                                         )}
                                     </Menu.Item>
-                                    <Menu.Item>
-                                        {({active}) => (
-                                            <a href="/officer/information"
-                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
-                                                Bilgilerim
-                                            </a>
-                                        )}
-                                    </Menu.Item>
+                                    {/*<Menu.Item>*/}
+                                    {/*    {({active}) => (*/}
+                                    {/*        <a href="/officer/information"*/}
+                                    {/*           className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>*/}
+                                    {/*            Bilgilerim*/}
+                                    {/*        </a>*/}
+                                    {/*    )}*/}
+                                    {/*</Menu.Item>*/}
                                     <Menu.Item>
                                         {({active}) => (
                                             <a href="/"
-                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : 'border-t border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
+                                            >
                                                 Çıkış Yap
                                             </a>
                                         )}
