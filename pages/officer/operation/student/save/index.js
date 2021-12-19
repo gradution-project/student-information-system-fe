@@ -5,7 +5,7 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 
 
-export default function SaveTeacher() {
+export default function SaveStudent() {
 
     const router = useRouter();
 

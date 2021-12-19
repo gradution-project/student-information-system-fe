@@ -15,7 +15,7 @@ export const getStaticProps = async () => {
     }
 }
 
-export default function TeacherList({students}) {
+export default function StudentList({students}) {
 
     const router = useRouter();
 
