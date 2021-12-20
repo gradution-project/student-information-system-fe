@@ -17,6 +17,7 @@ export const getStaticProps = async () => {
 
 export default function LessonList({lessons}) {
 
+
     const router = useRouter();
 
     const pushSavePage = async (event) => {
@@ -42,20 +43,22 @@ export default function LessonList({lessons}) {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6 ">
+                <div className="grid grid-cols-3 gap-2">
+                    <div className="float-left py-1">
+                        <button
+                            type="submit"
+                            className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
+                        >
+                            ARA
+                        </button>
+                    </div>
                     <input
+                        placeholder="Aranacak kelimeyi giriniz..."
                         type="text"
-                        name="first-name"
-                        id="first-name"
-                        required
+                        name="search"
+                        id="search"
                         className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                     />
-                    <button
-                        type="submit"
-                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                    >
-                        ARA
-                    </button>
                 </div>
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -76,6 +79,18 @@ export default function LessonList({lessons}) {
                                         >
                                             BÖLÜM KODU
                                         </th>
+                                        <th
+                                            scope="col"
+                                            className="select-none px-6 py-3 tracking-wider"
+                                        >
+                                            DERSİ ALAN HOCA
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="select-none px-6 py-3 tracking-wider"
+                                        >
+                                            DERS DURUMU
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
@@ -83,7 +98,7 @@ export default function LessonList({lessons}) {
                                         <tr key={lesson.lessonId}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
-                                                    <div className="ml-4">
+                                                    <div className="ml-0.5">
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name} </div>
                                                     </div>
@@ -94,7 +109,12 @@ export default function LessonList({lessons}) {
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentId}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-
+                                                <div
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherId}</div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.compulsoryOrElective}</div>
                                             </td>
                                         </tr>
                                     ))}
