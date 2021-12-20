@@ -21,7 +21,7 @@ const solutions = [
     {
         name: 'Derslerim',
         description: '',
-        href: '/student/lesson/registration',
+        href: '/teacher/lesson',
         icon: CursorClickIcon,
     },
     {
