@@ -11,18 +11,17 @@ import {
 import {ChevronDownIcon} from '@heroicons/react/solid'
 
 const solutions = [
-
+    {
+        name: 'Derslerim',
+        description: '',
+        href: '/teacher/lesson',
+        icon: CursorClickIcon,
+    },
     {
         name: 'Bölüm Dönem Dersleri',
         description: '',
         href: '/student/lesson/department',
         icon: ChartBarIcon,
-    },
-    {
-        name: 'Derslerim',
-        description: '',
-        href: '/student/lesson/registration',
-        icon: CursorClickIcon,
     },
     {
         name: 'Ders Programı',
