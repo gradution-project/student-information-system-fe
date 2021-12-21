@@ -101,7 +101,7 @@ export default function OfficerLogin() {
                                                     minLength="5"
                                                     maxLength="5"
                                                     required
-                                                    pattern="[0-9.]+"
+                                                    pattern="[0-9]+"
                                                     className="font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
                                                 />
                                             </div>
@@ -166,7 +166,6 @@ export default function OfficerLogin() {
                                                         <Dialog.Overlay className="fixed inset-0"/>
                                                     </Transition.Child>
 
-                                                    {/* This element is to trick the browser into centering the modal contents. */}
                                                     <span
                                                         className="inline-block h-screen align-middle"
                                                         aria-hidden="true"
@@ -224,7 +223,6 @@ export default function OfficerLogin() {
                                                         <Dialog.Overlay className="fixed inset-0"/>
                                                     </Transition.Child>
 
-                                                    {/* This element is to trick the browser into centering the modal contents. */}
                                                     <span
                                                         className="inline-block h-screen align-middle"
                                                         aria-hidden="true"

@@ -15,7 +15,8 @@ export const getStaticProps = async () => {
     }
 }
 
-export default function LessonList({lessons}) {
+export default function TeacherLessonList({lessons}) {
+
     const router = useRouter();
 
     const pushSavePage = async (event) => {
@@ -41,31 +42,43 @@ export default function LessonList({lessons}) {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
-                    <div className="float-left py-1">
-                        <button
-                            id="search"
-                            type="submit"
-                            className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                        >
-                            ARA
-                        </button>
-                    </div>
-                    <input
-                        placeholder="Aranacak kelimeyi giriniz..."
-                        type="text"
-                        name="textSearch"
-                        id="textSearch"
-                        className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                    />
-                </div>
+                {/*<form onSubmit={teacherLessons}>*/}
+                {/*    <div className="grid grid-cols-3 gap-2">*/}
+                {/*        <input*/}
+                {/*            onChange={changeTeacherNumber}*/}
+                {/*            placeholder="Öğretmen Numarası"*/}
+                {/*            type="text"*/}
+                {/*            id="teacher-number"*/}
+                {/*            required*/}
+                {/*            minLength="8"*/}
+                {/*            maxLength="8"*/}
+                {/*            pattern="[0-9]+"*/}
+                {/*            className="font-phenomenaRegular text-gray-700 mt-1 mb-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md placeholder-gray-400"*/}
+                {/*        />*/}
+                {/*        <div className="float-left py-1">*/}
+                {/*            <button*/}
+                {/*                id="search"*/}
+                {/*                type="submit"*/}
+                {/*                className="font-phenomenaBold float-left py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"*/}
+                {/*            >*/}
+                {/*                LİSTELE*/}
+                {/*            </button>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</form>*/}
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                <table id="table" className="bg-gray-50 min-w-full divide-y divide-gray-200">
+                                <table className="bg-gray-50 min-w-full divide-y divide-gray-200">
                                     <thead className="font-phenomenaBold text-xl text-gray-500 text-left">
                                     <tr>
+                                        <th
+                                            scope="col"
+                                            className="select-none px-6 py-3 tracking-wider"
+                                        >
+                                            ÖĞRETMEN KODU
+                                        </th>
                                         <th
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
@@ -82,34 +95,36 @@ export default function LessonList({lessons}) {
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            DERSİ ALAN HOCA
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="select-none px-6 py-3 tracking-wider"
-                                        >
                                             DERS DURUMU
                                         </th>
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
+                                    {
+                                    }
                                     {lessons.map((lesson) => (
                                         <tr key={lesson.lessonId}>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherId}</div>
+                                            </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="ml-0.5">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name} </div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name}</div>
+                                                        <div
+                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
+                                                        <div
+                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.semester}.
+                                                            Yarıyıl
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentId}</div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherId}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
@@ -122,8 +137,114 @@ export default function LessonList({lessons}) {
                             </div>
                         </div>
                     </div>
+                    {/*        <Transition appear show={isOpenFail} as={Fragment}>*/}
+                    {/*            <Dialog*/}
+                    {/*                as="div"*/}
+                    {/*                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"*/}
+                    {/*                onClose={closeFailModal}*/}
+                    {/*            >*/}
+                    {/*                <div className="min-h-screen px-4 text-center">*/}
+                    {/*                    <Transition.Child*/}
+                    {/*                        as={Fragment}*/}
+                    {/*                        enter="ease-out duration-300"*/}
+                    {/*                        enterFrom="opacity-0"*/}
+                    {/*                        enterTo="opacity-100"*/}
+                    {/*                        leave="ease-in duration-200"*/}
+                    {/*                        leaveFrom="opacity-100"*/}
+                    {/*                        leaveTo="opacity-0"*/}
+                    {/*                    >*/}
+                    {/*                        <Dialog.Overlay className="fixed inset-0"/>*/}
+                    {/*                    </Transition.Child>*/}
+
+                    {/*                    /!* This element is to trick the browser into centering the modal contents. *!/*/}
+                    {/*                    <span*/}
+                    {/*                        className="inline-block h-screen align-middle"*/}
+                    {/*                        aria-hidden="true"*/}
+                    {/*                    >*/}
+                    {/*  &#8203;*/}
+                    {/*</span>*/}
+                    {/*                    <Transition.Child*/}
+                    {/*                        as={Fragment}*/}
+                    {/*                        enter="ease-out duration-300"*/}
+                    {/*                        enterFrom="opacity-0 scale-95"*/}
+                    {/*                        enterTo="opacity-100 scale-100"*/}
+                    {/*                        leave="ease-in duration-200"*/}
+                    {/*                        leaveFrom="opacity-100 scale-100"*/}
+                    {/*                        leaveTo="opacity-0 scale-95"*/}
+                    {/*                    >*/}
+                    {/*                        <div*/}
+                    {/*                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">*/}
+                    {/*                            <Dialog.Title*/}
+                    {/*                                as="h3"*/}
+                    {/*                                className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"*/}
+                    {/*                            >*/}
+                    {/*                                <div className="border bg-sis-fail rounded-xl p-6">*/}
+                    {/*                                    Öğretmene Ait Ders Listesi Bulunamadı!*/}
+                    {/*                                </div>*/}
+                    {/*                            </Dialog.Title>*/}
+                    {/*                            <div className="mt-2">*/}
+                    {/*                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">*/}
+                    {/*                                    Öğretmen Numarasını girmiş olduğunuz Öğretemen'e ait ders listesine ulaşılamadı.*/}
+                    {/*                                    Öğretmen'e ders atayabilir veya başka bir Öğretmen'e ait dersleri listeyebilirsiniz.*/}
+                    {/*                                </p>*/}
+                    {/*                            </div>*/}
+                    {/*                        </div>*/}
+                    {/*                    </Transition.Child>*/}
+                    {/*                </div>*/}
+                    {/*            </Dialog>*/}
+                    {/*        </Transition>*/}
+
+                    {/*        <Transition appear show={isOpenProcessing} as={Fragment}>*/}
+                    {/*            <Dialog*/}
+                    {/*                as="div"*/}
+                    {/*                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"*/}
+                    {/*                onClose={closeProcessingModal}*/}
+                    {/*            >*/}
+                    {/*                <div className="min-h-screen px-4 text-center">*/}
+                    {/*                    <Transition.Child*/}
+                    {/*                        as={Fragment}*/}
+                    {/*                        enter="ease-out duration-300"*/}
+                    {/*                        enterFrom="opacity-0"*/}
+                    {/*                        enterTo="opacity-100"*/}
+                    {/*                        leave="ease-in duration-200"*/}
+                    {/*                        leaveFrom="opacity-100"*/}
+                    {/*                        leaveTo="opacity-0"*/}
+                    {/*                    >*/}
+                    {/*                        <Dialog.Overlay className="fixed inset-0"/>*/}
+                    {/*                    </Transition.Child>*/}
+
+                    {/*                    /!* This element is to trick the browser into centering the modal contents. *!/*/}
+                    {/*                    <span*/}
+                    {/*                        className="inline-block h-screen align-middle"*/}
+                    {/*                        aria-hidden="true"*/}
+                    {/*                    >*/}
+                    {/*  &#8203;*/}
+                    {/*</span>*/}
+                    {/*                    <Transition.Child*/}
+                    {/*                        as={Fragment}*/}
+                    {/*                        enter="ease-out duration-300"*/}
+                    {/*                        enterFrom="opacity-0 scale-95"*/}
+                    {/*                        enterTo="opacity-100 scale-100"*/}
+                    {/*                        leave="ease-in duration-200"*/}
+                    {/*                        leaveFrom="opacity-100 scale-100"*/}
+                    {/*                        leaveTo="opacity-0 scale-95"*/}
+                    {/*                    >*/}
+                    {/*                        <div*/}
+                    {/*                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">*/}
+                    {/*                            <Dialog.Title*/}
+                    {/*                                as="h3"*/}
+                    {/*                                className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"*/}
+                    {/*                            >*/}
+                    {/*                                Dersler Listeleniyor...*/}
+                    {/*                            </Dialog.Title>*/}
+                    {/*                        </div>*/}
+                    {/*                    </Transition.Child>*/}
+                    {/*                </div>*/}
+                    {/*            </Dialog>*/}
+                    {/*        </Transition>*/}
                 </div>
             </div>
         </div>
+
     )
 }

@@ -9,16 +9,16 @@ export default function SaveStudent() {
 
     const router = useRouter();
 
-    const [lessonId, setLessonId] = useState();
-    const changeLessonId = event => {
-        const lessonId = event.target.value;
-        setLessonId(lessonId);
+    const [lessonNumber, setLessonNumber] = useState();
+    const changeLessonNumber = event => {
+        const lessonNumber = event.target.value;
+        setLessonNumber(lessonNumber);
     }
 
-    const [teacherId, setTeacherId] = useState();
-    const changeTeacherId = event => {
-        const teacherId = event.target.value;
-        setTeacherId(teacherId);
+    const [teacherNumber, setTeacherNumber] = useState();
+    const changeTeacherNumber = event => {
+        const teacherNumber = event.target.value;
+        setTeacherNumber(teacherNumber);
     }
 
 
@@ -60,15 +60,13 @@ export default function SaveStudent() {
 
         const saveRes = await fetch("http://localhost:8585/lesson/teacher", {
             body: JSON.stringify({
-                lessonId: lessonId,
-                teacherId: teacherId
+                lessonId: lessonNumber,
+                teacherId: teacherNumber
             }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
         const saveData = await saveRes.json();
-        console.log(saveData);
-        console.log(saveData.success);
         if (saveData.success) {
             closeProcessingModal();
             openSuccessModal()
@@ -82,7 +80,7 @@ export default function SaveStudent() {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="mt-10 sm:mt-0">
+            <div className="sm:mt-5">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={lessonAssignment}>
@@ -95,35 +93,40 @@ export default function SaveStudent() {
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="first-name"
+                                            <label htmlFor="last-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DERS NO
+                                                ÖĞRETMEN NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeLessonId}
+                                                onChange={changeTeacherNumber}
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
+                                                name="teacher-number"
+                                                id="teacher-number"
+                                                minLength="8"
+                                                maxLength="8"
+                                                pattern="[0-9]+"
                                                 required
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="last-name"
+                                            <label htmlFor="first-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRETMEN NO
+                                                DERS NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherId}
+                                                onChange={changeLessonNumber}
                                                 type="text"
-                                                name="last-name"
-                                                id="last-name"
+                                                name="lesson-number"
+                                                id="lesson-number"
                                                 required
+                                                minLength="8"
+                                                maxLength="8"
+                                                pattern="[0-9]+"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
@@ -153,7 +156,6 @@ export default function SaveStudent() {
                                                 <Dialog.Overlay className="fixed inset-0"/>
                                             </Transition.Child>
 
-                                            {/* This element is to trick the browser into centering the modal contents. */}
                                             <span
                                                 className="inline-block h-screen align-middle"
                                                 aria-hidden="true"
@@ -182,7 +184,7 @@ export default function SaveStudent() {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Ders Atama İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra ders listeleme
+                                                            Mesaj penceresini kapattıktan sonra Öğretemen Ders Listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -210,7 +212,6 @@ export default function SaveStudent() {
                                                 <Dialog.Overlay className="fixed inset-0"/>
                                             </Transition.Child>
 
-                                            {/* This element is to trick the browser into centering the modal contents. */}
                                             <span
                                                 className="inline-block h-screen align-middle"
                                                 aria-hidden="true"
@@ -239,7 +240,9 @@ export default function SaveStudent() {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            Verilerinizi doğru girdiyseniz, daha önce girdiğiniz
+                                                            Öğretmen Numarasına atamak istediğiniz Ders atanmış veya
+                                                            sistemsel bir
                                                             hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
                                                         </p>
                                                     </div>
@@ -268,7 +271,6 @@ export default function SaveStudent() {
                                                 <Dialog.Overlay className="fixed inset-0"/>
                                             </Transition.Child>
 
-                                            {/* This element is to trick the browser into centering the modal contents. */}
                                             <span
                                                 className="inline-block h-screen align-middle"
                                                 aria-hidden="true"
@@ -290,7 +292,7 @@ export default function SaveStudent() {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Ders Atama İşlemi Gerçekleştiriiliyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -300,12 +302,6 @@ export default function SaveStudent() {
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </div>

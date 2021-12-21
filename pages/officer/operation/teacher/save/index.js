@@ -66,7 +66,6 @@ export default function SaveTeacher() {
     const [teacherDepartmentId, setTeacherDepartmentId] = useState();
     const changeTeacherDepartmentId = event => {
         const teacherDepartmentId = event.target.value;
-        console.log(teacherDepartmentId);
         setTeacherDepartmentId(teacherDepartmentId);
     }
 
@@ -142,8 +141,6 @@ export default function SaveTeacher() {
             method: 'POST'
         });
         const saveData = await saveRes.json();
-        console.log(saveData);
-        console.log(saveData.success);
         if (saveData.success) {
             closeProcessingModal();
             openSuccessModal()
@@ -211,7 +208,7 @@ export default function SaveTeacher() {
                                                 id="tc-no"
                                                 minLength="11"
                                                 maxLength="11"
-                                                pattern="[0-9.]+"
+                                                pattern="[0-9]+"
                                                 required
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -261,7 +258,7 @@ export default function SaveTeacher() {
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                pattern="[0-9.]+"
+                                                pattern="[0-9]+"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -352,7 +349,7 @@ export default function SaveTeacher() {
                                                 id="phone"
                                                 minLength="10"
                                                 maxLength="10"
-                                                pattern="[0-9.]+"
+                                                pattern="[0-9]+"
                                                 required
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -401,7 +398,6 @@ export default function SaveTeacher() {
                                                 <Dialog.Overlay className="fixed inset-0"/>
                                             </Transition.Child>
 
-                                            {/* This element is to trick the browser into centering the modal contents. */}
                                             <span
                                                 className="inline-block h-screen align-middle"
                                                 aria-hidden="true"
@@ -458,7 +454,6 @@ export default function SaveTeacher() {
                                                 <Dialog.Overlay className="fixed inset-0"/>
                                             </Transition.Child>
 
-                                            {/* This element is to trick the browser into centering the modal contents. */}
                                             <span
                                                 className="inline-block h-screen align-middle"
                                                 aria-hidden="true"
@@ -516,7 +511,6 @@ export default function SaveTeacher() {
                                                 <Dialog.Overlay className="fixed inset-0"/>
                                             </Transition.Child>
 
-                                            {/* This element is to trick the browser into centering the modal contents. */}
                                             <span
                                                 className="inline-block h-screen align-middle"
                                                 aria-hidden="true"
