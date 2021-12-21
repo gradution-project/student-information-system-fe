@@ -27,12 +27,6 @@ const university = [
         icon: CursorClickIcon,
     },
     {
-        name: 'Ders İşlemleri',
-        description: "",
-        href: '/officer/operation/student/lesson',
-        icon: CalendarIcon,
-    },
-    {
         name: 'Personel İşlemleri',
         description: "",
         href: '/officer/operation/officer',
@@ -46,7 +40,13 @@ const teacher = [
         description: '',
         href: '/officer/operation/teacher',
         icon: BriefcaseIcon,
-    }
+    },
+    {
+        name: 'Ders İşlemleri',
+        description: "",
+        href: '/officer/operation/teacher/lesson',
+        icon: CalendarIcon,
+    },
 ]
 
 const student = [
