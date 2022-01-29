@@ -3,6 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from "universal-cookie";
 
 export default function OfficerLogin() {
 
@@ -51,10 +52,33 @@ export default function OfficerLogin() {
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
-        const data = await loginRes.json();
-        if (data.result.loginSuccess) {
-            closeProcessingModal();
-            await router.push("/officer");
+        const loginData = await loginRes.json();
+        if (loginData.response.loginSuccess) {
+            const cookies = new Cookies();
+            cookies.set('officerNumber', officerNumber, {path: '/'});
+            const getRes = await fetch("http://localhost:8585/officer/" + cookies.get('officerNumber'), {
+                headers: {'Content-Type': 'application/json'},
+                method: 'GET'
+            });
+            const getData = await getRes.json();
+            if (getData.success) {
+                cookies.set('officerName', getData.response.personalInfoResponse.name, {path: '/'});
+                cookies.set('officerSurname', getData.response.personalInfoResponse.surname, {path: '/'});
+                cookies.set('officerFullName', cookies.get('officerName') + ' ' + cookies.get('officerSurname'), {path: '/'});
+                cookies.set('officerTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
+                cookies.set('officerPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
+                cookies.set('officerBirthday', getData.response.personalInfoResponse.birthday, {path: '/'});
+                cookies.set('officerPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('officerAddress', getData.response.personalInfoResponse.address, {path: '/'});
+                cookies.set('officerAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
+                cookies.set('officerStatus', getData.response.academicInfoResponse.status, {path: '/'});
+                cookies.set('officerDegree', getData.response.academicInfoResponse.degree, {path: '/'});
+                cookies.set('officerDepartmentId', getData.response.academicInfoResponse.departmentId, {path: '/'});
+                cookies.set('officerClassLevel', getData.response.academicInfoResponse.classLevel, {path: '/'});
+                cookies.set('officerRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
+                closeProcessingModal();
+                await router.push("/officer");
+            }
         }
         closeProcessingModal();
         openModal();

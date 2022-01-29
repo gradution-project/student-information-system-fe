@@ -2,6 +2,7 @@ import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
 import OfficerComponent from "./officer-component";
+import Cookies from "universal-cookie";
 
 
 function classNames(...classes) {
@@ -9,6 +10,9 @@ function classNames(...classes) {
 }
 
 export default function OfficerNavbar() {
+
+    const cookies = new Cookies();
+
     return (
         <Popover className="relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -53,19 +57,19 @@ export default function OfficerNavbar() {
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
                                             >
-
-                                                <p className="font-phenomenaLight text-center text-lg"></p>
+                                                {cookies.get('officerFullName')}
+                                                <p className="font-phenomenaLight text-center text-lg">{cookies.get('officerNumber')}</p>
                                             </a>
                                         )}
                                     </Menu.Item>
-                                    {/*<Menu.Item>*/}
-                                    {/*    {({active}) => (*/}
-                                    {/*        <a href="/officer/information"*/}
-                                    {/*           className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>*/}
-                                    {/*            Bilgilerim*/}
-                                    {/*        </a>*/}
-                                    {/*    )}*/}
-                                    {/*</Menu.Item>*/}
+                                    <Menu.Item>
+                                        {({active}) => (
+                                            <a href="/officer/information"
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                                Bilgilerim
+                                            </a>
+                                        )}
+                                    </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
                                             <a href="/"
