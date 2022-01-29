@@ -1,6 +1,7 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
+import Link from "next/link";
 
 export const getStaticProps = async () => {
     const studentResponse = await fetch("http://localhost:8585/student?status=ALL", {
@@ -10,7 +11,7 @@ export const getStaticProps = async () => {
     const studentsData = await studentResponse.json();
     if (studentsData.success) {
         return {
-            props: {students: studentsData.result}
+            props: {students: studentsData.response}
         }
     }
 }
@@ -45,7 +46,7 @@ export default function StudentList({students}) {
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                <table className="bg-gray-50 min-w-full divide-y divide-gray-200">
+                                <table className="bg-gray-50 min-w-full divide-y divide-gray-200" id="table">
                                     <thead className="font-phenomenaBold text-xl text-gray-500 text-left">
                                     <tr>
                                         <th
@@ -110,12 +111,12 @@ export default function StudentList({students}) {
                                                         {student.status}
                                                 </span>
                                             </td>
-                                            {/*<td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">*/}
-                                            {/*    <a href={'/officer/operation/student/detail/' + student.studentId}*/}
-                                            {/*       className='text-sis-yellow'>*/}
-                                            {/*        DETAY*/}
-                                            {/*    </a>*/}
-                                            {/*</td>*/}
+                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                <Link href={'/officer/operation/student/detail'}
+                                                      as={`/officer/operation/student/detail/${student.studentId}`}>
+                                                    <a className='text-sis-yellow'>DETAY</a>
+                                                </Link>
+                                            </td>
                                         </tr>
                                     ))}
                                     </tbody>
