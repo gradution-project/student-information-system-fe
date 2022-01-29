@@ -6,7 +6,6 @@ import {Dialog, Transition} from "@headlessui/react";
 
 
 export default function SaveStudent() {
-
     const router = useRouter();
 
     const [studentName, setStudentName] = useState();
@@ -100,6 +99,7 @@ export default function SaveStudent() {
     function openProcessingModal() {
         setIsOpenProcessing(true);
     }
+    const [officerNumber] = useState();
 
     const studentSave = async (event) => {
         openProcessingModal();
@@ -113,9 +113,12 @@ export default function SaveStudent() {
                     departmentId: studentDepartmentId,
                     classLevel: studentClassLevel,
                 },
+                operationInfoRequest: {
+                    userId: 0
+                },
                 personalInfoRequest: {
                     address: studentAddress,
-                    birthday: "2021-12-18T18:13:28.268Z",
+                    birthday: studentBirthday,
                     email: studentEmail,
                     name: studentName,
                     phoneNumber: studentPhoneNumber,
