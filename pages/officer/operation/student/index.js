@@ -24,7 +24,6 @@ export default function StudentList({students}) {
         event.preventDefault();
         await router.push('/officer/operation/student/save');
     }
-
     return (
         <div>
             <SISTitle/>

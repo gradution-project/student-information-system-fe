@@ -4,18 +4,22 @@ import {Fragment, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {useRouter} from "next/router";
 
-const detailsStudent = 'http://localhost:8585/student?status=ALL'
+const detailsStudent = 'http://localhost:8585/student?status=ALL';
 
-export async function getServerSideProps({data}) {
-    const {studentId} = data;
-    const response = await fetch(`${detailsStudent}/${studentId}`);
-    const student = await response.json();
-    return {
-        props: {
-            students: student.response
+export async function getStaticProps({response}) {
+    const {studentId} = response;
+    const studentResponse = await fetch(`${detailsStudent}/${studentId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const studentsData = await studentResponse.json();
+    if (studentsData.success) {
+        return {
+            props: {students: studentsData.response}
         }
     }
 }
+
 
 export default function DetailStudent({students}) {
     const {studentId, name, surname, classLevel, email, degree, departmentId} = students;
