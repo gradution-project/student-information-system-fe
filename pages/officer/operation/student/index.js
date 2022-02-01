@@ -111,7 +111,7 @@ export default function StudentList({students}) {
                                                 </span>
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                <Link href={'/officer/operation/student/detail'}
+                                                <Link href="/officer/operation/student/detail"
                                                       as={`/officer/operation/student/detail/${student.studentId}`}>
                                                     <a className='text-sis-yellow'>DETAY</a>
                                                 </Link>

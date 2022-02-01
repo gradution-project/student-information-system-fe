@@ -22,7 +22,7 @@ export async function getStaticProps({response}) {
 
 
 export default function DetailStudent({students}) {
-    const {studentId, name, surname, classLevel, email, degree, departmentId} = students;
+
     const router = useRouter();
     let [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
@@ -51,6 +51,7 @@ export default function DetailStudent({students}) {
         setIsOpenProcessing(false);
     }
 
+    const {studentId, name, surname, classLevel, email, degree, departmentId} = students;
     return (
         <div>
             <SISTitle/>
