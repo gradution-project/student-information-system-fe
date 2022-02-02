@@ -127,6 +127,9 @@ export default function SaveTeacher() {
                     phoneNumber: teacherAcademicPhoneNumber,
                     role: teacherRole
                 },
+                operationInfoRequest: {
+                    userId: 0
+                },
                 personalInfoRequest: {
                     address: teacherAddress,
                     birthday: "2021-12-18T18:13:28.268Z",
