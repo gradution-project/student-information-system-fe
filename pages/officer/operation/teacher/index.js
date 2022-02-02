@@ -10,7 +10,7 @@ export const getStaticProps = async () => {
     const teachersData = await teacherResponse.json();
     if (teachersData.success) {
         return {
-            props: {teachers: teachersData.result}
+            props: {teachers: teachersData.response}
         }
     }
 }
