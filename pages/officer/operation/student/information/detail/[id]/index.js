@@ -1,15 +1,104 @@
-import StudentNavbar from "../../../public/components/navbar/student/student-navbar";
-import SISTitle from "../../../public/components/page-titles";
-import Cookies from "universal-cookie";
+import SISTitle from "../../../../../../../public/components/page-titles";
+import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 
-export default function MyInfo() {
+export async function getServerSideProps({query}) {
+    const {id} = query;
+    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const studentResponse = await fetch("http://localhost:8585/student/" + id, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const departmentDatas = await departmentResponses.json();
+    const studentData = await studentResponse.json();
+    if (studentData.success && departmentDatas.success) {
+        console.log(departmentDatas.response)
+        console.log(studentData.response)
+        return {
+            props: {
+                departments: departmentDatas.response,
+                student: studentData.response
+            }
+        }
+    }
+}
 
-    const cookies = new Cookies();
+const studentDegrees = [
+    {
+        value: 'ASSOCIATE',
+        name: 'Önlisans'
+    },
+    {
+        value: 'UNDERGRADUATE',
+        name: 'Lisans'
+    },
+    {
+        value: 'POSTGRADUATE',
+        name: 'Yüksek Lisans'
+    },
+    {
+        value: 'DOCTORAL',
+        name: 'Doktora'
+    }
+]
+
+const studentClassLevels = [
+    {
+        enum: 'PREPARATORY',
+        name: 'Hazırlık Sınıfı',
+        value: 0
+    },
+    {
+        enum: 'FIRST',
+        name: '1. Sınıf',
+        value: 1
+    },
+    {
+        enum: 'SECOND',
+        name: '2. Sınıf',
+        value: 2
+    },
+    {
+        enum: 'THIRD',
+        name: '3. Sınıf',
+        value: 3
+    },
+    {
+        enum: 'FOURTH',
+        name: '4. Sınıf',
+        value: 4
+    },
+    {
+        enum: 'FIFTH',
+        name: '5. Sınıf',
+        value: 5
+    },
+    {
+        enum: 'SIXTH',
+        name: '6. Sınıf',
+        value: 6
+    }
+]
+
+export default function StudentDetail({departments, student}) {
+    const {academicInfoResponse} = student;
+    const {personalInfoResponse} = student;
+
+    const {departmentResponse, studentId, classLevel, degree, registrationDate, modifiedDate} = academicInfoResponse;
+    const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
+    const {facultyResponse, totalClassLevel, isTherePreparatoryClass} = departmentResponse;
+
+    const facultyId = facultyResponse.facultyId;
+    const facultyName = facultyResponse.name;
+    const departmentName = departmentResponse.name;
+
 
     return (
         <>
             <SISTitle/>
-            <StudentNavbar/>
+            <OfficerNavbar/>
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
@@ -18,26 +107,26 @@ export default function MyInfo() {
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            AKADEMİK BİLGİLERİM
+                                            AKADEMİK BİLGİLER
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
                                             <label htmlFor="student-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRENCİ NO
+                                                ÖĞRENCİ NUMARASI
                                             </label>
                                             <input
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value={cookies.get('studentNumber')}
+                                                defaultValue={studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-3">
+                                        <div className="sm:col-span-3 select-none">
                                             <label htmlFor="registration-date"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 KAYIT TARİHİ
@@ -46,7 +135,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={cookies.get('studentRegistrationDate')}
+                                                defaultValue={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -55,7 +144,7 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="faculty"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTE
+                                                FAKÜLTESİ
                                             </label>
                                             <select
                                                 id="faculty"
@@ -64,27 +153,98 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>MÜHENDİSLİK-MİMARLIK FAKÜLTESİ</option>
+                                                <option value={facultyId} selected>{facultyName}</option>
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM KODU
+                                                BÖLÜMÜ
                                             </label>
                                             <select
                                                 id="department-id"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('studentDepartmentId')}</option>
+
+                                                {departments.map((department) => (
+                                                    departmentName === department.name
+                                                        ?
+                                                        <option value={department.departmentId}
+                                                                selected>{department.name}</option>
+                                                        :
+                                                        <option
+                                                            value={department.departmentId}>{department.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-4">
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="department"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                DERECESİ
+                                            </label>
+                                            <select
+                                                id="degree"
+                                                name="degree"
+                                                autoComplete="degree"
+                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                {studentDegrees.map(studentDegree => (
+                                                    degree === studentDegree.name
+                                                        ?
+                                                        <option value={studentDegree.value}
+                                                                selected>{studentDegree.name}</option>
+                                                        :
+                                                        <option
+                                                            value={studentDegree.value}>{studentDegree.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="student-class"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                SINIF
+                                            </label>
+                                            <select
+                                                id="class"
+                                                name="class"
+                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl">
+
+                                                {/*{(*/}
+                                                {/*    isTherePreparatoryClass === true*/}
+                                                {/*        ?*/}
+                                                {/*        <option value="PREPARATORY">Hazırlık Sınıfı</option>*/}
+                                                {/*        : */}
+                                                {/*        null*/}
+                                                {/*)}*/}
+                                                {/*{studentClassLevels.map(studentClassLevel => (*/}
+                                                {/*        classLevel === studentClassLevel.name*/}
+                                                {/*            ?*/}
+                                                {/*            <option value={studentClassLevel.enum} selected>{studentClassLevel.name}</option>*/}
+                                                {/*            :*/}
+                                                {/*            studentClassLevel.value <= totalClassLevel*/}
+                                                {/*                ?*/}
+                                                {/*                <option value={studentClassLevel.enum}>{studentClassLevel.name}</option>*/}
+                                                {/*                : */}
+                                                {/*                null*/}
+                                                {/*))}*/}
+                                                {studentClassLevels.map(studentClassLevel => (
+                                                    classLevel === studentClassLevel.name
+                                                        ?
+                                                        <option value={studentClassLevel.enum}
+                                                                selected>{studentClassLevel.name}</option>
+                                                        :
+                                                        <option
+                                                            value={studentClassLevel.enum}>{studentClassLevel.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="email-address"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 E-MAİL ADRESİ
@@ -93,29 +253,32 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
-                                                value={cookies.get('studentAcademicEmail')}
+                                                value={email}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
-                                        <div className="sm:col-span-2">
-                                            <label htmlFor="student-class"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                SINIF
-                                            </label>
-                                            <select
-                                                id="class"
-                                                name="class"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>{cookies.get('studentClassLevel')}</option>
-                                            </select>
-                                        </div>
-
                                     </div>
-
+                                </div>
+                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                                    <button
+                                        type="submit"
+                                        className=" font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                    >
+                                        PASİFLEŞTİR
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                    >
+                                        GÜNCELLE
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className=" font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                    >
+                                        SİL
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -137,7 +300,7 @@ export default function MyInfo() {
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            KİŞİSEL BİLGİLERİM
+                                            KİŞİSEL BİLGİLER
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
@@ -148,9 +311,9 @@ export default function MyInfo() {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
-                                                value={cookies.get('studentName')}
+                                                name="name"
+                                                id="name"
+                                                defaultValue={name}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -163,9 +326,9 @@ export default function MyInfo() {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="last-name"
-                                                id="last-name"
-                                                value={cookies.get('studentSurname')}
+                                                name="surname"
+                                                id="surname"
+                                                defaultValue={surname}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -180,7 +343,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                value={cookies.get('studentTcNo')}
+                                                defaultValue={tcNo}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -195,9 +358,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value={cookies.get('studentBirthday')}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={birthday}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -211,7 +373,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue={cookies.get('studentPersonalEmail')}
+                                                defaultValue={email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -226,7 +388,7 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue={cookies.get('studentPhoneNumber')}
+                                                defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -241,69 +403,11 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={cookies.get('studentAddress')}
+                                                defaultValue={address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
-
-                                    <div className="py-5 mt-2">
-                                        <label className="text-xl text-sis-darkblue font-phenomenaBold">
-                                            PROFİL FOTOĞRAFI
-                                        </label>
-                                        <div className="mt-1 flex items-center">
-                      <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
-                        <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                          <path
-                              d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/>
-                        </svg>
-                      </span>
-                                            <button
-                                                type="button"
-                                                className="font-phenomenaBold ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-md text-sis-darkblue font-phenomenaRegular leading-4 text-gray-700 hover:bg-sis-yellow hover:text-sis-white"
-                                            >
-                                                Fotoğrafı Güncelle
-                                            </button>
-                                        </div>
-                                    </div>
-
-
-                                    <div>
-                                        <label className="text-xl text-sis-darkblue font-phenomenaBold">
-                                            Fotoğrafı Yükle
-                                        </label>
-                                        <div
-                                            className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                            <div className="space-y-1 text-center">
-                                                <svg
-                                                    className="mx-auto h-12 w-12 text-gray-400"
-                                                    stroke="currentColor"
-                                                    fill="none"
-                                                    viewBox="0 0 48 48"
-                                                    aria-hidden="true"
-                                                >
-                                                    <path
-                                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-                                                </svg>
-                                                <div className="flex text-sm text-gray-600">
-                                                    <label
-                                                        htmlFor="file-upload"
-                                                        className="relative cursor-pointer bg-white rounded-md font-phenomenaBold text-lg text-sis-yellow hover:text-sis-yellow"
-                                                    >
-                                                        <span>Dosyayı yükleyin</span>
-                                                        <input id="file-upload" name="file-upload" type="file" className="sr-only"/>
-                                                    </label>
-                                                    <p className="pl-1 text-lg font-phenomenaRegular">veya sürükleyip bırakın.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     <button
@@ -321,7 +425,6 @@ export default function MyInfo() {
 
             <div className="hidden sm:block" aria-hidden="true">
                 <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </>
