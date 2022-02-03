@@ -3,9 +3,11 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from "universal-cookie";
 
 
 export default function SaveTeacher() {
+    const cookies = new Cookies();
 
     const router = useRouter();
 
@@ -128,11 +130,11 @@ export default function SaveTeacher() {
                     role: teacherRole
                 },
                 operationInfoRequest: {
-                    userId: 0
+                    userId: cookies.get('officerNumber')
                 },
                 personalInfoRequest: {
                     address: teacherAddress,
-                    birthday: "2021-12-18T18:13:28.268Z",
+                    birthday: teacherBirthday,
                     email: teacherEmail,
                     name: teacherName,
                     phoneNumber: teacherPersonalPhoneNumber,
