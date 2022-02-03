@@ -53,7 +53,7 @@ export default function TeacherLogin() {
             method: 'POST'
         });
         const loginData = await loginRes.json();
-        if (loginData.result.loginSuccess) {
+        if (loginData.response.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('teacherNumber', teacherNumber, {path: '/'});
             const getRes = await fetch("http://localhost:8585/teacher/" + cookies.get('teacherNumber'), {
@@ -62,21 +62,21 @@ export default function TeacherLogin() {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('teacherName', getData.result.personalInfoResponse.name, {path: '/'});
-                cookies.set('teacherSurname', getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('teacherName', getData.response.personalInfoResponse.name, {path: '/'});
+                cookies.set('teacherSurname', getData.response.personalInfoResponse.surname, {path: '/'});
                 cookies.set('teacherFullName', cookies.get('teacherName') + ' ' + cookies.get('teacherSurname'), {path: '/'});
-                cookies.set('teacherRole', getData.result.academicInfoResponse.role, {path: '/'});
-                cookies.set('teacherDegree', getData.result.academicInfoResponse.degree, {path: '/'});
-                cookies.set('teacherDepartmentId', getData.result.academicInfoResponse.departmentId, {path: '/'});
-                cookies.set('teacherAcademicEmail', getData.result.academicInfoResponse.email, {path: '/'});
-                cookies.set('teacherFieldOfStudy', getData.result.academicInfoResponse.fieldOfStudy, {path: '/'});
-                cookies.set('teacherAcademicPhoneNumber', getData.result.academicInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('teacherRegistrationDate', getData.result.academicInfoResponse.registrationDate, {path: '/'});
-                cookies.set('teacherTcNo', getData.result.personalInfoResponse.tcNo, {path: '/'});
-                cookies.set('teacherPersonalEmail', getData.result.personalInfoResponse.email, {path: '/'});
-                cookies.set('teacherPersonalPhoneNumber', getData.result.personalInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('teacherBirthday', getData.result.personalInfoResponse.birthday, {path: '/'});
-                cookies.set('teacherAddress', getData.result.personalInfoResponse.address, {path: '/'});
+                cookies.set('teacherRole', getData.response.academicInfoResponse.role, {path: '/'});
+                cookies.set('teacherDegree', getData.response.academicInfoResponse.degree, {path: '/'});
+                cookies.set('teacherDepartmentId', getData.response.academicInfoResponse.departmentId, {path: '/'});
+                cookies.set('teacherAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
+                cookies.set('teacherFieldOfStudy', getData.response.academicInfoResponse.fieldOfStudy, {path: '/'});
+                cookies.set('teacherAcademicPhoneNumber', getData.response.academicInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('teacherRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
+                cookies.set('teacherTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
+                cookies.set('teacherPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
+                cookies.set('teacherPersonalPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('teacherBirthday', getData.response.personalInfoResponse.birthday, {path: '/'});
+                cookies.set('teacherAddress', getData.response.personalInfoResponse.address, {path: '/'});
                 closeProcessingModal();
                 await router.push("/teacher");
             }
