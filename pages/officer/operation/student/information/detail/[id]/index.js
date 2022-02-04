@@ -1,5 +1,6 @@
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
+import {useState} from "react";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
@@ -11,6 +12,7 @@ export async function getServerSideProps({query}) {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
+
     const departmentDatas = await departmentResponses.json();
     const studentData = await studentResponse.json();
     if (studentData.success && departmentDatas.success) {
@@ -94,6 +96,114 @@ export default function StudentDetail({departments, student}) {
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
 
+    const [studentsId, setStudentsId] = useState();
+    const changeStudentId = event => {
+        const studentsId = event.target.value;
+        setStudentsId(studentsId);
+    }
+
+    const [studentClassLevel, setStudentClassLevel] = useState();
+    const changeStudentClassLevel = event => {
+        const studentClassLevel = event.target.value;
+        setStudentClassLevel(studentClassLevel);
+    }
+
+    const [studentDegree, setStudentDegree] = useState();
+    const changeStudentDegree = event => {
+        const studentDegree = event.target.value;
+        setStudentDegree(studentDegree);
+    }
+
+    const [studentDepartmentId, setStudentDepartmentId] = useState();
+    const changeStudentDepartmentId = event => {
+        const studentDepartmentId = event.target.value;
+        setStudentDepartmentId(studentDepartmentId);
+    }
+
+    const studentGraduate = async (event) => {
+        event.preventDefault()
+        const graduateRes = await fetch(`http://localhost:8585/student/graduate`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PATCH',
+            body: JSON.stringify({
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                studentId: studentsId
+            }),
+        });
+        const graduateData = await graduateRes.json();
+        return graduateData;
+    }
+
+    const studentActivate = async (event) => {
+        event.preventDefault()
+        const activateRes = await fetch(`http://localhost:8585/student/activate`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PATCH',
+            body: JSON.stringify({
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                studentId: studentsId
+            }),
+        });
+        const activateData = await activateRes.json();
+        return activateData;
+    }
+
+    const studentPassivate = async (event) => {
+        event.preventDefault()
+        const passivateRes = await fetch(`http://localhost:8585/student/passivate`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PATCH',
+            body: JSON.stringify({
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                studentId: studentsId
+            }),
+        });
+        const passivateData = await passivateRes.json();
+        return passivateData;
+    }
+
+    const studentDelete = async (event) => {
+        event.preventDefault()
+        const deleteRes = await fetch(`http://localhost:8585/student/delete`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'DELETE',
+            body: JSON.stringify({
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                studentId: studentsId
+            }),
+        });
+        const deleteData = await deleteRes.json();
+        return deleteData;
+    }
+
+    const studentUpdate = async (event) => {
+        event.preventDefault()
+        const updateRes = await fetch(`http://localhost:8585/student/update/academic-info/${studentId}`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PUT',
+            body: JSON.stringify({
+                academicInfoRequest: {
+                    classLevel: studentClassLevel,
+                    degree: studentDegree,
+                    departmentId: studentDepartmentId
+                },
+                operationInfoRequest: {
+                    userId: 12004
+                }
+            }),
+        });
+        const updateData = await updateRes.json();
+        return updateData;
+    }
+
 
     return (
         <>
@@ -102,7 +212,7 @@ export default function StudentDetail({departments, student}) {
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -117,12 +227,12 @@ export default function StudentDetail({departments, student}) {
                                                 ÖĞRENCİ NUMARASI
                                             </label>
                                             <input
+                                                onChange={changeStudentId}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                defaultValue={studentId}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                Value={studentId}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -135,7 +245,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                defaultValue={registrationDate}
+                                                Value={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -163,6 +273,7 @@ export default function StudentDetail({departments, student}) {
                                                 BÖLÜMÜ
                                             </label>
                                             <select
+                                                onChange={changeStudentDepartmentId}
                                                 id="department-id"
                                                 name="department-id"
                                                 autoComplete="department-id"
@@ -187,6 +298,7 @@ export default function StudentDetail({departments, student}) {
                                                 DERECESİ
                                             </label>
                                             <select
+                                                onChange={changeStudentDegree}
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
@@ -210,6 +322,7 @@ export default function StudentDetail({departments, student}) {
                                                 SINIF
                                             </label>
                                             <select
+                                                onChange={changeStudentClassLevel}
                                                 id="class"
                                                 name="class"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl">
@@ -262,23 +375,41 @@ export default function StudentDetail({departments, student}) {
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     <button
+                                        onClick={studentGraduate}
                                         type="submit"
-                                        className=" font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                        className=" float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
-                                        PASİFLEŞTİR
+                                        MEZUN
                                     </button>
                                     <button
+                                        onClick={studentActivate}
+                                        type="submit"
+                                        className="float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                    >
+                                        KAYDI AÇ
+                                    </button>
+                                    <button
+                                        onClick={studentPassivate}
+                                        type="submit"
+                                        className="float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                    >
+                                        DONDUR
+                                    </button>
+                                    <button
+                                        onClick={studentDelete}
+                                        type="submit"
+                                        className=" float-left font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                    >
+                                        SİL
+                                    </button>
+                                    <button
+                                        onClick={studentUpdate}
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
                                         GÜNCELLE
                                     </button>
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                    >
-                                        SİL
-                                    </button>
+
                                 </div>
                             </div>
                         </form>
@@ -313,7 +444,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                defaultValue={name}
+                                                Value={name}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -328,7 +459,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
-                                                defaultValue={surname}
+                                                Value={surname}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -343,7 +474,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                defaultValue={tcNo}
+                                                Value={tcNo}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -358,8 +489,9 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                defaultValue={birthday}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                Value={birthday}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -373,8 +505,9 @@ export default function StudentDetail({departments, student}) {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue={email}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                Value={email}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -388,8 +521,9 @@ export default function StudentDetail({departments, student}) {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue={phoneNumber}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                Value={phoneNumber}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -403,19 +537,12 @@ export default function StudentDetail({departments, student}) {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                Value={address}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
-                                </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        GÜNCELLE
-                                    </button>
                                 </div>
                             </div>
                         </form>
