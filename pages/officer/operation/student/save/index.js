@@ -99,7 +99,6 @@ export default function SaveStudent() {
     function openProcessingModal() {
         setIsOpenProcessing(true);
     }
-    const [officerNumber] = useState();
 
     const studentSave = async (event) => {
         openProcessingModal();
@@ -114,7 +113,7 @@ export default function SaveStudent() {
                     classLevel: studentClassLevel,
                 },
                 operationInfoRequest: {
-                    userId: 0
+                    userId: 12004
                 },
                 personalInfoRequest: {
                     address: studentAddress,
