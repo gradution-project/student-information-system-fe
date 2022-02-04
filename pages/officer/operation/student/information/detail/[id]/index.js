@@ -1,6 +1,8 @@
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
-import {useState} from "react";
+import {Fragment, useState} from "react";
+import {useRouter} from "next/router";
+import {Dialog, Transition} from "@headlessui/react";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
@@ -88,7 +90,15 @@ export default function StudentDetail({departments, student}) {
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
 
-    const {departmentResponse, studentId, classLevel, degree, registrationDate, modifiedDate} = academicInfoResponse;
+    const {
+        departmentResponse,
+        studentId,
+        classLevel,
+        degree,
+        registrationDate,
+        modifiedDate,
+        status
+    } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
     const {facultyResponse, totalClassLevel, isTherePreparatoryClass} = departmentResponse;
 
@@ -96,16 +106,46 @@ export default function StudentDetail({departments, student}) {
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
 
-    const [studentsId, setStudentsId] = useState();
-    const changeStudentId = event => {
-        const studentsId = event.target.value;
-        setStudentsId(studentsId);
+    const [studentName, setStudentName] = useState();
+    const changeStudentName = event => {
+        const studentName = event.target.value;
+        setStudentName(studentName);
+    }
+
+    const [studentSurname, setStudentSurname] = useState();
+    const changeStudentSurname = event => {
+        const studentSurname = event.target.value;
+        setStudentSurname(studentSurname);
+    }
+
+    const [studentTcNo, setStudentTcNo] = useState();
+    const changeStudentTcNo = event => {
+        const studentTcNo = event.target.value;
+        setStudentTcNo(studentTcNo);
+    }
+
+    const [studentBirthday, setStudentBirthday] = useState();
+    const changeStudentBirthday = event => {
+        const studentBirthday = event.target.value;
+        setStudentBirthday(studentBirthday);
+    }
+
+    const [studentEmail, setStudentEmail] = useState();
+    const changeStudentEmail = event => {
+        const studentEmail = event.target.value;
+        setStudentEmail(studentEmail);
     }
 
     const [studentClassLevel, setStudentClassLevel] = useState();
     const changeStudentClassLevel = event => {
         const studentClassLevel = event.target.value;
         setStudentClassLevel(studentClassLevel);
+    }
+
+    const [studentAddress, setStudentAddress] = useState();
+    const changeStudentAddress = event => {
+        const studentAddress = event.target.value;
+        setStudentAddress(studentAddress);
     }
 
     const [studentDegree, setStudentDegree] = useState();
@@ -120,7 +160,209 @@ export default function StudentDetail({departments, student}) {
         setStudentDepartmentId(studentDepartmentId);
     }
 
+    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
+    const changeStudentPhoneNumber = event => {
+        const studentPhoneNumber = event.target.value;
+        setStudentPhoneNumber(studentPhoneNumber);
+    }
+
+    const routerActive = useRouter();
+    const routerPassive = useRouter();
+    const routerGraduate = useRouter();
+    const routerDelete = useRouter();
+    const routerAcademic = useRouter();
+    const routerPersonal = useRouter();
+
+    let [isOpenSuccessActive, setIsOpenSuccessActive] = useState(false);
+
+    function closeSuccessModalActive() {
+        setIsOpenSuccessActive(false);
+        routerActive.push("/officer/operation/student");
+    }
+
+    function openSuccessModalActive() {
+        setIsOpenSuccessActive(true);
+    }
+
+    let [isOpenFailActive, setIsOpenFailActive] = useState(false);
+
+    function closeFailModalActive() {
+        setIsOpenFailActive(false);
+    }
+
+    function openFailModalActive() {
+        setIsOpenFailActive(true);
+    }
+
+    let [isOpenProcessingActive, setIsOpenProcessingActive] = useState(false);
+
+    function closeProcessingModalActive() {
+        setIsOpenProcessingActive(false);
+    }
+
+    function openProcessingModalActive() {
+        setIsOpenProcessingActive(true);
+    }
+
+    let [isOpenSuccessGraduate, setIsOpenSuccessGraduate] = useState(false);
+
+    function closeSuccessModalGraduate() {
+        setIsOpenSuccessGraduate(false);
+        routerGraduate.push("/officer/operation/student");
+    }
+
+    function openSuccessModalGraduate() {
+        setIsOpenSuccessGraduate(true);
+    }
+
+    let [isOpenFailGraduate, setIsOpenFailGraduate] = useState(false);
+
+    function closeFailModalGraduate() {
+        setIsOpenFailGraduate(false);
+    }
+
+    function openFailModalGraduate() {
+        setIsOpenFailGraduate(true);
+    }
+
+    let [isOpenProcessingGraduate, setIsOpenProcessingGraduate] = useState(false);
+
+    function closeProcessingModalGraduate() {
+        setIsOpenProcessingGraduate(false);
+    }
+
+    function openProcessingModalGraduate() {
+        setIsOpenProcessingGraduate(true);
+    }
+
+    let [isOpenSuccessPassivate, setIsOpenSuccessPassivate] = useState(false);
+
+    function closeSuccessModalPassivate() {
+        setIsOpenSuccessPassivate(false);
+        routerPassive.push("/officer/operation/student");
+    }
+
+    function openSuccessModalPassivate() {
+        setIsOpenSuccessPassivate(true);
+    }
+
+    let [isOpenFailPassivate, setIsOpenFailPassivate] = useState(false);
+
+    function closeFailModalPassivate() {
+        setIsOpenFailPassivate(false);
+    }
+
+    function openFailModalPassivate() {
+        setIsOpenFailPassivate(true);
+    }
+
+    let [isOpenProcessingPassivate, setIsOpenProcessingPassivate] = useState(false);
+
+    function closeProcessingModalPassivate() {
+        setIsOpenProcessingPassivate(false);
+    }
+
+    function openProcessingModalPassivate() {
+        setIsOpenProcessingPassivate(true);
+    }
+
+    let [isOpenSuccessDelete, setIsOpenSuccessDelete] = useState(false);
+
+    function closeSuccessModalDelete() {
+        setIsOpenSuccessDelete(false);
+        routerDelete.push("/officer/operation/student");
+    }
+
+    function openSuccessModalDelete() {
+        setIsOpenSuccessDelete(true);
+    }
+
+    let [isOpenFailDelete, setIsOpenFailDelete] = useState(false);
+
+    function closeFailModalDelete() {
+        setIsOpenFailDelete(false);
+    }
+
+    function openFailModalDelete() {
+        setIsOpenFailDelete(true);
+    }
+
+    let [isOpenProcessingDelete, setIsOpenProcessingDelete] = useState(false);
+
+    function closeProcessingModalDelete() {
+        setIsOpenProcessingDelete(false);
+    }
+
+    function openProcessingModalDelete() {
+        setIsOpenProcessingDelete(true);
+    }
+
+    let [isOpenSuccessAcademic, setIsOpenSuccessAcademic] = useState(false);
+
+    function closeSuccessModalAcademic() {
+        setIsOpenSuccessAcademic(false);
+        routerAcademic.push("/officer/operation/student");
+    }
+
+    function openSuccessModalAcademic() {
+        setIsOpenSuccessAcademic(true);
+    }
+
+    let [isOpenFailAcademic, setIsOpenFailAcademic] = useState(false);
+
+    function closeFailModalAcademic() {
+        setIsOpenFailAcademic(false);
+    }
+
+    function openFailModalAcademic() {
+        setIsOpenFailAcademic(true);
+    }
+
+    let [isOpenProcessingAcademic, setIsOpenProcessingAcademic] = useState(false);
+
+    function closeProcessingModalAcademic() {
+        setIsOpenProcessingAcademic(false);
+    }
+
+    function openProcessingModalAcademic() {
+        setIsOpenProcessingAcademic(true);
+    }
+
+    let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
+
+    function closeSuccessModalPersonal() {
+        setIsOpenSuccessPersonal(false);
+        routerPersonal.push("/officer/operation/student");
+    }
+
+    function openSuccessModalPersonal() {
+        setIsOpenSuccessPersonal(true);
+    }
+
+    let [isOpenFailPersonal, setIsOpenFailPersonal] = useState(false);
+
+    function closeFailModalPersonal() {
+        setIsOpenFailPersonal(false);
+    }
+
+    function openFailModalPersonal() {
+        setIsOpenFailPersonal(true);
+    }
+
+    let [isOpenProcessingPersonal, setIsOpenProcessingPersonal] = useState(false);
+
+    function closeProcessingModalPersonal() {
+        setIsOpenProcessingPersonal(false);
+    }
+
+    function openProcessingModalPersonal() {
+        setIsOpenProcessingPersonal(true);
+    }
+
+
     const studentGraduate = async (event) => {
+        openProcessingModalGraduate();
+
         event.preventDefault()
         const graduateRes = await fetch(`http://localhost:8585/student/graduate`, {
             headers: {'Content-Type': 'application/json'},
@@ -129,14 +371,22 @@ export default function StudentDetail({departments, student}) {
                 operationInfoRequest: {
                     userId: 12004
                 },
-                studentId: studentsId
+                studentId: studentId
             }),
         });
         const graduateData = await graduateRes.json();
-        return graduateData;
+        if (graduateData.success) {
+            closeProcessingModalGraduate();
+            openSuccessModalGraduate()
+        } else {
+            closeProcessingModalGraduate();
+            openFailModalGraduate();
+        }
     }
 
     const studentActivate = async (event) => {
+        openProcessingModalActive();
+
         event.preventDefault()
         const activateRes = await fetch(`http://localhost:8585/student/activate`, {
             headers: {'Content-Type': 'application/json'},
@@ -145,14 +395,22 @@ export default function StudentDetail({departments, student}) {
                 operationInfoRequest: {
                     userId: 12004
                 },
-                studentId: studentsId
+                studentId: studentId
             }),
         });
         const activateData = await activateRes.json();
-        return activateData;
+        if (activateData.success) {
+            closeProcessingModalActive();
+            openSuccessModalActive()
+        } else {
+            closeProcessingModalActive();
+            openFailModalActive();
+        }
     }
 
     const studentPassivate = async (event) => {
+        openProcessingModalPassivate();
+
         event.preventDefault()
         const passivateRes = await fetch(`http://localhost:8585/student/passivate`, {
             headers: {'Content-Type': 'application/json'},
@@ -161,14 +419,22 @@ export default function StudentDetail({departments, student}) {
                 operationInfoRequest: {
                     userId: 12004
                 },
-                studentId: studentsId
+                studentId: studentId
             }),
         });
         const passivateData = await passivateRes.json();
-        return passivateData;
+        if (passivateData.success) {
+            closeProcessingModalPassivate();
+            openSuccessModalPassivate()
+        } else {
+            closeProcessingModalPassivate();
+            openFailModalPassivate();
+        }
     }
 
     const studentDelete = async (event) => {
+        openProcessingModalDelete();
+
         event.preventDefault()
         const deleteRes = await fetch(`http://localhost:8585/student/delete`, {
             headers: {'Content-Type': 'application/json'},
@@ -177,14 +443,22 @@ export default function StudentDetail({departments, student}) {
                 operationInfoRequest: {
                     userId: 12004
                 },
-                studentId: studentsId
+                studentId: studentId
             }),
         });
         const deleteData = await deleteRes.json();
-        return deleteData;
+        if (deleteData.success) {
+            closeProcessingModalDelete();
+            openSuccessModalDelete()
+        } else {
+            closeProcessingModalDelete();
+            openFailModalDelete();
+        }
     }
 
-    const studentUpdate = async (event) => {
+    const studentUpdateAcademic = async (event) => {
+        openProcessingModalAcademic();
+
         event.preventDefault()
         const updateRes = await fetch(`http://localhost:8585/student/update/academic-info/${studentId}`, {
             headers: {'Content-Type': 'application/json'},
@@ -200,11 +474,47 @@ export default function StudentDetail({departments, student}) {
                 }
             }),
         });
-        const updateData = await updateRes.json();
-        return updateData;
+        const updateAcademicData = await updateRes.json();
+        if (updateAcademicData.success) {
+            closeProcessingModalAcademic();
+            openSuccessModalAcademic()
+        } else {
+            closeProcessingModalAcademic();
+            openFailModalAcademic();
+        }
     }
 
+    const studentUpdatePersonal = async (event) => {
+        openProcessingModalPersonal();
 
+        event.preventDefault()
+        const updatePersonalRes = await fetch(`http://localhost:8585/student/update/personal-info/${studentId}`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PUT',
+            body: JSON.stringify({
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                personalInfoRequest: {
+                    address: studentAddress,
+                    birthday: studentBirthday,
+                    email: studentEmail,
+                    name: studentName,
+                    phoneNumber: studentPhoneNumber,
+                    surname: studentSurname,
+                    tcNo: studentTcNo
+                }
+            }),
+        });
+        const updatePersonalData = await updatePersonalRes.json();
+        if (updatePersonalData.success) {
+            closeProcessingModalPersonal();
+            openSuccessModalPersonal()
+        } else {
+            closeProcessingModalPersonal();
+            openFailModalPersonal();
+        }
+    }
     return (
         <>
             <SISTitle/>
@@ -215,10 +525,23 @@ export default function StudentDetail({departments, student}) {
                         <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                    <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
-                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            AKADEMİK BİLGİLER
-                                        </h3>
+                                    <div className="px-4 py-8 text-left bg-gray-50 rounded-xl ">
+                                        <a className="select-none font-phenomenaExtraBold text-left text-3xl text-sis-darkblue">
+                                            {name} {surname}
+                                        </a>
+                                        {(
+                                            status !== 'Aktif'
+                                                ?
+                                                <button
+                                                    onClick={studentActivate}
+                                                    type="submit"
+                                                    className="float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                                >
+                                                    KAYDI AKTİFLEŞTİR
+                                                </button>
+                                                :
+                                                null
+                                        )}
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
@@ -227,12 +550,12 @@ export default function StudentDetail({departments, student}) {
                                                 ÖĞRENCİ NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentId}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                Value={studentId}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={studentId}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -245,7 +568,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                Value={registrationDate}
+                                                value={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -374,43 +697,54 @@ export default function StudentDetail({departments, student}) {
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                                    {(
+                                        status !== 'Mezun'
+                                            ?
+                                            <button
+                                                onClick={studentGraduate}
+                                                type="submit"
+                                                className="float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-darkblue hover:bg-sis-blue"
+                                            >
+                                                MEZUN YAP
+                                            </button>
+                                            :
+                                            null
+                                    )}
                                     <button
-                                        onClick={studentGraduate}
-                                        type="submit"
-                                        className=" float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        MEZUN
-                                    </button>
-                                    <button
-                                        onClick={studentActivate}
-                                        type="submit"
-                                        className="float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                    >
-                                        KAYDI AÇ
-                                    </button>
-                                    <button
-                                        onClick={studentPassivate}
-                                        type="submit"
-                                        className="float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
-                                    >
-                                        DONDUR
-                                    </button>
-                                    <button
-                                        onClick={studentDelete}
-                                        type="submit"
-                                        className=" float-left font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                    >
-                                        SİL
-                                    </button>
-                                    <button
-                                        onClick={studentUpdate}
+                                        onClick={studentUpdateAcademic}
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
                                         GÜNCELLE
                                     </button>
-
+                                    {(
+                                        status !== 'Pasif'
+                                            ?
+                                            <button
+                                                onClick={studentPassivate}
+                                                type="submit"
+                                                className=" font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                            >
+                                                KAYDI DONDUR
+                                            </button>
+                                            :
+                                            null
+                                    )}
+                                    {(
+                                        status !== 'Silinmiş'
+                                            ?
+                                            <button
+                                                onClick={studentDelete}
+                                                type="submit"
+                                                className="font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                            >
+                                                SİL
+                                            </button>
+                                            :
+                                            null
+                                    )}
                                 </div>
+
                             </div>
                         </form>
                     </div>
@@ -426,7 +760,7 @@ export default function StudentDetail({departments, student}) {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="px-4 max-w-2xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -441,12 +775,12 @@ export default function StudentDetail({departments, student}) {
                                                 ADI
                                             </label>
                                             <input
+                                                onChange={changeStudentName}
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                Value={name}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={name}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -456,12 +790,12 @@ export default function StudentDetail({departments, student}) {
                                                 SOYADI
                                             </label>
                                             <input
+                                                onChange={changeStudentSurname}
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
-                                                Value={surname}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={surname}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -471,12 +805,12 @@ export default function StudentDetail({departments, student}) {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
+                                                onChange={changeStudentTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                Value={tcNo}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={tcNo}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -486,12 +820,12 @@ export default function StudentDetail({departments, student}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
+                                                onChange={changeStudentBirthday}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                Value={birthday}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={birthday}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -501,13 +835,13 @@ export default function StudentDetail({departments, student}) {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
+                                                onChange={changeStudentEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                Value={email}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={email}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -517,13 +851,13 @@ export default function StudentDetail({departments, student}) {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
+                                                onChange={changeStudentPhoneNumber}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                Value={phoneNumber}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={phoneNumber}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -533,17 +867,993 @@ export default function StudentDetail({departments, student}) {
                                                 EV ADRESİ
                                             </label>
                                             <input
+                                                onChange={changeStudentAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                Value={address}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                value={address}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
                                 </div>
+                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                                    <button
+                                        onClick={studentUpdatePersonal}
+                                        type="submit"
+                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                    >
+                                        GÜNCELLE
+                                    </button>
+                                </div>
+                                <Transition appear show={isOpenSuccessActive} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalActive}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            ekranına yönlendirileceksiniz.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailActive} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalActive}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingActive} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalActive}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenSuccessGraduate} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalGraduate}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Öğrenci Mezun İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Öğrenci Mezun İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            ekranına yönlendirileceksiniz.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailGraduate} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalGraduate}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Öğrenci Mezun İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingGraduate} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalGraduate}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenSuccessPassivate} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalPassivate}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Öğrenci Kayıt Dondurma İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Öğrenci Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            ekranına yönlendirileceksiniz.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailPassivate} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalPassivate}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Öğrenci Kayıt Dondurma İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingPassivate} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalPassivate}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenSuccessDelete} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalDelete}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Öğrenci Silme İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Öğrenci Silme İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            ekranına yönlendirileceksiniz.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailDelete} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalDelete}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Öğrenci Silme İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingDelete} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalDelete}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenSuccessAcademic} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalAcademic}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Öğrenci Akademik Bilgi Güncellene İşlemi başarıyla
+                                                            gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            ekranına yönlendirileceksiniz.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailAcademic} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalAcademic}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingAcademic} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalAcademic}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenSuccessPersonal} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalPersonal}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla
+                                                            gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            ekranına yönlendirileceksiniz.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailPersonal} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalPersonal}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingPersonal} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalPersonal}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
                             </div>
                         </form>
                     </div>
