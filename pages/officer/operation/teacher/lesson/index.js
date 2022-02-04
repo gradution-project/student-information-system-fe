@@ -3,7 +3,7 @@ import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 
 export const getStaticProps = async () => {
-    const lessonResponse = await fetch("http://localhost:8585/lesson/teacher", {
+    const lessonResponse = await fetch("http://localhost:8585/teacher/lesson", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
