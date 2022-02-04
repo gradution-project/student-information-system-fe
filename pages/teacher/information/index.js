@@ -2,20 +2,7 @@ import SISTitle from "../../../public/components/page-titles";
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 import Cookies from "universal-cookie";
 
-// export const getStaticProps = async () => {
-//     const teacherResponse = await fetch("http://localhost:8585/teacher/11012023", {
-//         headers: {'Content-Type': 'application/json'},
-//         method: 'GET'
-//     });
-//     const teacherData = await teacherResponse.json();
-//     if (teacherData.success) {
-//         return {
-//             props: {teacher: teacherData.result}
-//         }
-//     }
-// }
-
-export default function MyInfo({teacher}) {
+export default function MyInfo() {
 
     const cookies = new Cookies();
 

@@ -53,7 +53,7 @@ export default function TeacherLogin() {
             method: 'POST'
         });
         const loginData = await loginRes.json();
-        if (loginData.result.loginSuccess) {
+        if (loginData.response.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('teacherNumber', teacherNumber, {path: '/'});
             const getRes = await fetch("http://localhost:8585/teacher/" + cookies.get('teacherNumber'), {

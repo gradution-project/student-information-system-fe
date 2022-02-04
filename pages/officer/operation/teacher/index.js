@@ -2,7 +2,7 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 
-export const getStaticProps = async () => {
+export async function getServerSideProps() {
     const teacherResponse = await fetch("http://localhost:8585/teacher?status=ALL", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -10,7 +10,7 @@ export const getStaticProps = async () => {
     const teachersData = await teacherResponse.json();
     if (teachersData.success) {
         return {
-            props: {teachers: teachersData.result}
+            props: {teachers: teachersData.response}
         }
     }
 }
@@ -64,7 +64,7 @@ export default function TeacherList({teachers}) {
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            BÖLÜM KODU
+                                            BÖLÜM ADI
                                         </th>
                                         <th
                                             scope="col"
@@ -77,13 +77,14 @@ export default function TeacherList({teachers}) {
                                     <tbody className="bg-white divide-y divide-gray-200">
                                     {teachers.map((teacher) => (
                                         <tr key={teacher.teacherId}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-2 py-4 whitespace-nowrap">
+                                                {/*<td className="px-6 py-4 whitespace-nowrap">*/}
                                                 <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10">
-                                                        <img className="select-none h-10 w-10 rounded-full"
-                                                             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"
-                                                             alt=""/>
-                                                    </div>
+                                                    {/*<div className="flex-shrink-0 h-10 w-10">*/}
+                                                    {/*    <img className="select-none h-10 w-10 rounded-full"*/}
+                                                    {/*         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"*/}
+                                                    {/*         alt=""/>*/}
+                                                    {/*</div>*/}
                                                     <div className="ml-4">
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.name} {teacher.surname}</div>
@@ -98,13 +99,11 @@ export default function TeacherList({teachers}) {
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.degree}</div>
                                                 <div
-                                                    className="font-phenomenaRegular text-lg text-gray-500">{teacher.fieldOfStudy}</div>
-                                                <div
-                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{teacher.role}</div>
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.role}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentId}</div>
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
@@ -112,12 +111,12 @@ export default function TeacherList({teachers}) {
                                                         {teacher.status}
                                                 </span>
                                             </td>
-                                            {/*<td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">*/}
-                                            {/*    <a href={'/officer/operation/teacher/detail/' + teacher.teacherId}*/}
-                                            {/*       className='text-sis-yellow'>*/}
-                                            {/*        DETAY*/}
-                                            {/*    </a>*/}
-                                            {/*</td>*/}
+                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                <a href={'/officer/operation/teacher/information/detail/' + teacher.teacherId}
+                                                   className='text-sis-yellow'>
+                                                    DETAY
+                                                </a>
+                                            </td>
                                         </tr>
                                     ))}
                                     </tbody>
