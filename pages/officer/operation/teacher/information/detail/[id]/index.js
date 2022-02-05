@@ -454,7 +454,7 @@ export default function TeacherDetail({departments, teacher}) {
             <SISTitle/>
             <OfficerNavbar/>
             <div>
-                <div className="mt-5 md:mt-0 md:col-span-2">
+                <div className="px-28 py-5 mx-auto space-y-6">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {name} {surname}
@@ -691,7 +691,6 @@ export default function TeacherDetail({departments, teacher}) {
                                             null
                                     )}
                                 </div>
-
                             </div>
                         </form>
                     </div>
@@ -1203,12 +1202,12 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Silme İşlemi Başarılı!
+                                                            Öğretmen Kayıt Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Silme İşlemi başarıyla gerçekleşti.
+                                                            Öğretmen Kayıt Silme İşlemi başarıyla gerçekleşti.
                                                             Mesaj penceresini kapattıktan sonra öğretmen listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
@@ -1259,7 +1258,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Silme İşlemi Başarısız!
+                                                            Öğretmen Kayıt Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1477,7 +1476,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Öğretmen Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1639,7 +1638,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Öğretmen Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
