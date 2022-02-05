@@ -36,7 +36,7 @@ export default function TeacherLessonList({lessons}) {
             <div className="px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        ÖĞRETMEN DERS LİSTESİ
+                        DERS LİSTESİ
                     </a>
                     <button
                         type="submit"
@@ -144,7 +144,7 @@ export default function TeacherLessonList({lessons}) {
                                                 </span>
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                <a href={'/officer/operation/lesson/information/detail/' + lesson.lessonId}
+                                                <a href={'/officer/operation/teacher/lesson/information/detail/' + lesson.lessonId}
                                                    className='text-sis-yellow'>
                                                     DETAY
                                                 </a>
