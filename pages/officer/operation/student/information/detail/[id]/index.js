@@ -496,8 +496,8 @@ export default function StudentDetail({departments, student}) {
                                     ?
                                     null
                                     :
-                                <span
-                                    className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
+                                    <span
+                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
                                     {status}
                                 </span>
                         )}
@@ -516,8 +516,8 @@ export default function StudentDetail({departments, student}) {
                                     ?
                                     null
                                     :
-                                <span
-                                    className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
+                                    <span
+                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
                                     {status}
                                 </span>
                         )}
