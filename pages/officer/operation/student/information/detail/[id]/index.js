@@ -496,10 +496,9 @@ export default function StudentDetail({departments, student}) {
                                     ?
                                     null
                                     :
-                                    <span
-                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
-                                    {status}
-                                </span>
+                                    <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
+                                        {status}
+                                    </span>
                         )}
                         {(
                             status !== 'Aktif' && status !== 'Silinmiş'
@@ -516,10 +515,9 @@ export default function StudentDetail({departments, student}) {
                                     ?
                                     null
                                     :
-                                    <span
-                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
-                                    {status}
-                                </span>
+                                    <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
+                                        {status}
+                                    </span>
                         )}
                         {(
                             status !== 'Mezun' && status !== 'Silinmiş'
