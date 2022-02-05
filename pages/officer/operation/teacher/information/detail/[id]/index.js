@@ -149,17 +149,13 @@ export default function TeacherDetail({departments, teacher}) {
         setTeacherPhoneNumber(teacherPhoneNumber);
     }
 
-    const routerActive = useRouter();
-    const routerPassive = useRouter();
-    const routerDelete = useRouter();
-    const routerAcademic = useRouter();
-    const routerPersonal = useRouter();
+    const router = useRouter();
 
     let [isOpenSuccessActive, setIsOpenSuccessActive] = useState(false);
 
     function closeSuccessModalActive() {
         setIsOpenSuccessActive(false);
-        routerActive.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher");
     }
 
     function openSuccessModalActive() {
@@ -190,7 +186,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalPassivate() {
         setIsOpenSuccessPassivate(false);
-        routerPassive.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher");
     }
 
     function openSuccessModalPassivate() {
@@ -221,7 +217,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalDelete() {
         setIsOpenSuccessDelete(false);
-        routerDelete.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher");
     }
 
     function openSuccessModalDelete() {
@@ -252,7 +248,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalAcademic() {
         setIsOpenSuccessAcademic(false);
-        routerAcademic.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher");
     }
 
     function openSuccessModalAcademic() {
@@ -283,7 +279,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalPersonal() {
         setIsOpenSuccessPersonal(false);
-        routerPersonal.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher");
     }
 
     function openSuccessModalPersonal() {
@@ -474,14 +470,14 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="student-number"
+                                            <label htmlFor="teacher-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 ÖĞRETMEN NUMARASI
                                             </label>
                                             <input
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
+                                                name="teacherId"
+                                                id="teacherId"
                                                 value={teacherId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
@@ -954,7 +950,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğretmen Kayıt Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1115,7 +1111,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğretmen Kayıt Dondurma İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1276,7 +1272,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğretmen Kayıt Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1438,7 +1434,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğretmen Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1600,7 +1596,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğretmen Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
