@@ -18,8 +18,6 @@ export async function getServerSideProps({query}) {
     const departmentDatas = await departmentResponses.json();
     const studentData = await studentResponse.json();
     if (studentData.success && departmentDatas.success) {
-        console.log(departmentDatas.response)
-        console.log(studentData.response)
         return {
             props: {
                 departments: departmentDatas.response,
