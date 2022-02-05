@@ -19,11 +19,6 @@ export default function TeacherLessonList({lessons}) {
 
     const router = useRouter();
 
-    const pushAssigmentPage = async (event) => {
-        event.preventDefault();
-        await router.push('/officer/operation/teacher/lesson/lesson-assigment');
-    }
-
     const pushSavePage = async (event) => {
         event.preventDefault();
         await router.push('/officer/operation/teacher/lesson/save');
@@ -40,17 +35,10 @@ export default function TeacherLessonList({lessons}) {
                     </a>
                     <button
                         type="submit"
-                        onClick={pushAssigmentPage}
-                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                    >
-                        DERS ATAMA
-                    </button>
-                    <button
-                        type="submit"
                         onClick={pushSavePage}
                         className="font-phenomenaBold float-right mr-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
                     >
-                        DERS EKLE
+                        DERS ATAMA
                     </button>
                 </div>
 
