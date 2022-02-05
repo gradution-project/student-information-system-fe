@@ -1,72 +1,24 @@
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 import SISTitle from "../../../../../../public/components/page-titles";
+import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 
 
 export default function SaveStudent() {
 
     const router = useRouter();
 
-    const [studentName, setStudentName] = useState();
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
+    const [lessonNumber, setLessonNumber] = useState();
+    const changeLessonNumber = event => {
+        const lessonNumber = event.target.value;
+        setLessonNumber(lessonNumber);
     }
 
-    const [studentSurname, setStudentSurname] = useState();
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
-    }
-
-    const [studentTcNo, setStudentTcNo] = useState();
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
-    }
-
-    const [studentBirthday, setStudentBirthday] = useState();
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
-    }
-
-    const [studentEmail, setStudentEmail] = useState();
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
-    }
-
-    const [studentClassLevel, setStudentClassLevel] = useState();
-    const changeStudentClassLevel = event => {
-        const studentClassLevel = event.target.value;
-        setStudentClassLevel(studentClassLevel);
-    }
-
-    const [studentAddress, setStudentAddress] = useState();
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
-    }
-
-    const [studentDegree, setStudentDegree] = useState();
-    const changeStudentDegree = event => {
-        const studentDegree = event.target.value;
-        setStudentDegree(studentDegree);
-    }
-
-    const [studentDepartmentId, setStudentDepartmentId] = useState();
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
-    }
-
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
+    const [teacherNumber, setTeacherNumber] = useState();
+    const changeTeacherNumber = event => {
+        const teacherNumber = event.target.value;
+        setTeacherNumber(teacherNumber);
     }
 
 
@@ -101,27 +53,15 @@ export default function SaveStudent() {
         setIsOpenProcessing(true);
     }
 
-    const studentSave = async (event) => {
+    const lessonAssignment = async (event) => {
         openProcessingModal();
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/student/save", {
+        const saveRes = await fetch("http://localhost:8585/teacher/lesson/save", {
             body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId,
-                    classLevel: studentClassLevel,
-                },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: "2021-12-18T18:13:28.268Z",
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
-                }
+                lessonId: lessonNumber,
+                teacherId: teacherNumber
             }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
@@ -140,133 +80,53 @@ export default function SaveStudent() {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="mt-10 sm:mt-0">
+            <div className="sm:mt-5">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={lessonAssignment}>
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="bg-white sm:p-6">
                                     <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="mb-8 py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-4xl">
-                                            DERS EKLEME
+                                            DERS ATAMA
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="first-name"
+                                            <label htmlFor="last-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DERS ADI
+                                                ÖĞRETMEN NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeTeacherNumber}
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
+                                                name="teacher-number"
+                                                id="teacher-number"
+                                                minLength="8"
+                                                maxLength="8"
+                                                pattern="[0-9]+"
                                                 required
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="birthday"
+                                            <label htmlFor="first-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                KREDİSİ
+                                                DERS NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentBirthday}
+                                                onChange={changeLessonNumber}
                                                 type="text"
-                                                name="birthday"
-                                                id="birthday"
+                                                name="lesson-number"
+                                                id="lesson-number"
                                                 required
+                                                minLength="8"
+                                                maxLength="8"
+                                                pattern="[0-9]+"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                YARIYIL
-                                            </label>
-                                            <select
-                                                onChange={changeStudentDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                value={studentDegree}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Ünvanını Seçiniz...</option>
-                                                <option value="ASSOCIATE">Önlisans</option>
-                                                <option value="UNDERGRADUATE">Lisans</option>
-                                                <option value="POSTGRADUATE">Yüksek lisans</option>
-                                                <option value="DOCTORAL">Doktora</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="classLevel"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DERS DURUMU
-                                            </label>
-                                            <select
-                                                onChange={changeStudentClassLevel}
-                                                id="class-level"
-                                                name="class-level"
-                                                autoComplete="class-level"
-                                                value={studentClassLevel}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Sınıfı Seçiniz...</option>
-                                                <option value="PREPARATORY">Hazırlık</option>
-                                                <option value="FIRST">1. Sınıf</option>
-                                                <option value="SECOND">2. Sınıf</option>
-                                                <option value="THIRD">3. Sınıf</option>
-                                                <option value="FOURTH">4. Sınıf</option>
-                                                <option value="FIFTH">5. Sınıf</option>
-                                                <option value="SIXTH">6. Sınıf</option>
-                                                <option value="GRADUATE">Mezun</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-4">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                STATÜSÜ
-                                            </label>
-                                            <select
-                                                onChange={changeStudentDepartmentId}
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                value={studentDepartmentId}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
-                                            </select>
-                                        </div>
-                                        <div className="sm:col-span-4">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
-                                            </label>
-                                            <select
-                                                onChange={changeStudentDepartmentId}
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                value={studentDepartmentId}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
-                                            </select>
-                                        </div>
-
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
@@ -274,7 +134,7 @@ export default function SaveStudent() {
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
                                     >
-                                        KAYDET
+                                        DERSİ ATA
                                     </button>
                                 </div>
                                 <Transition appear show={isOpenSuccess} as={Fragment}>
@@ -318,13 +178,13 @@ export default function SaveStudent() {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Ders Ekleme İşlemi Başarılı!
+                                                            Ders Atama İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Ders Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra ders listeleme
+                                                            Ders Atama İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra Öğretemen Ders Listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -374,13 +234,15 @@ export default function SaveStudent() {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Ders Ekleme İşlemi Başarısız!
+                                                            Ders Atama İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            Verilerinizi doğru girdiyseniz, daha önce girdiğiniz
+                                                            Öğretmen Numarasına atamak istediğiniz Ders atanmış veya
+                                                            sistemsel bir
                                                             hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
                                                         </p>
                                                     </div>
@@ -430,7 +292,7 @@ export default function SaveStudent() {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Ders Atama İşlemi Gerçekleştiriiliyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -440,12 +302,6 @@ export default function SaveStudent() {
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </div>
