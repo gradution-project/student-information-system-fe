@@ -990,8 +990,8 @@ export default function StudentDetail({departments, student}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                            Verilerinizi doğru girdiyseniz öğrenci kaydı
+                                                            silinmiş veya mezun olmuş olabilir.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1151,8 +1151,8 @@ export default function StudentDetail({departments, student}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                            Verilerinizi doğru girdiyseniz öğrenci
+                                                            kaydı silinmiş olabilir.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1312,8 +1312,8 @@ export default function StudentDetail({departments, student}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                            Verilerinizi doğru girdiyseniz öğrenci kaydı
+                                                            silinmiş veya öğrenci mezun olmuş olabilir.
                                                         </p>
                                                     </div>
                                                 </div>
