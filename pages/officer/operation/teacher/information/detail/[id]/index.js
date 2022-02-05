@@ -83,6 +83,7 @@ export default function TeacherDetail({departments, teacher}) {
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
+    const phone = academicInfoResponse.phoneNumber;
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
@@ -148,6 +149,12 @@ export default function TeacherDetail({departments, teacher}) {
     const changeTeacherRole = event => {
         const teacherRole = event.target.value;
         setTeacherRole(teacherRole);
+    }
+
+    const [teacherPhone, setTeacherPhone] = useState();
+    const changeTeacherPhone = event => {
+        const teacherPhone = event.target.value;
+        setTeacherPhone(teacherPhone);
     }
 
     const router = useRouter();
@@ -392,7 +399,7 @@ export default function TeacherDetail({departments, teacher}) {
                     degree: teacherDegree,
                     departmentId: teacherDepartmentId,
                     fieldOfStudy: teacherFieldOfStudy,
-                    phoneNumber: teacherPhoneNumber,
+                    phoneNumber: teacherPhone,
                     role: teacherRole
                 },
                 operationInfoRequest: {
@@ -448,27 +455,60 @@ export default function TeacherDetail({departments, teacher}) {
             <OfficerNavbar/>
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
+                    <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                        <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                            {name} {surname}
+                        </a>
+                        {(
+                            status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={teacherDelete}
+                                    type="submit"
+                                    className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                >
+                                    KAYDI SİL
+                                </button>
+                                :
+                                null
+                        )}
+
+                        {(
+                            status !== 'Pasif' && status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={teacherPassivate}
+                                    type="submit"
+                                    className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                >
+                                    KAYDI DONDUR
+                                </button>
+                                :
+                                null
+                        )}
+
+                        {(
+                            status !== 'Aktif' && status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={teacherActivate}
+                                    type="submit"
+                                    className="float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                >
+                                    KAYDI AKTİFLEŞTİR
+                                </button>
+                                :
+                                null
+                        )}
+                    </div>
                     <div className="md:col-span-1">
-                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6">
+                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                    <div className="px-4 py-8 text-left bg-gray-50 rounded-xl ">
-                                        <a className="select-none font-phenomenaExtraBold text-left text-3xl text-sis-darkblue">
-                                            {name} {surname}
-                                        </a>
-                                        {(
-                                            status !== 'Aktif' && status !== 'Silinmiş'
-                                                ?
-                                                <button
-                                                    onClick={teacherActivate}
-                                                    type="submit"
-                                                    className="float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                                >
-                                                    KAYDI AKTİFLEŞTİR
-                                                </button>
-                                                :
-                                                null
-                                        )}
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            AKADEMİK BİLGİLER
+                                        </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
@@ -480,7 +520,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="teacherId"
                                                 id="teacherId"
-                                                value={teacherId}
+                                                defaultValue={teacherId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -495,7 +535,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={registrationDate}
+                                                defaultValue={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -513,7 +553,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option value={facultyId} selected>{facultyName}</option>
+                                                <option defaultValue={facultyId} selected>{facultyName}</option>
                                             </select>
                                         </div>
 
@@ -533,11 +573,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option value={department.departmentId}
+                                                        <option defaultValue={department.departmentId}
                                                                 selected>{department.name}</option>
                                                         :
                                                         <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                            defaultValue={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -557,11 +597,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 {teacherDegrees.map(degreeTeacher => (
                                                     degree === degreeTeacher.name
                                                         ?
-                                                        <option value={degreeTeacher.value}
+                                                        <option defaultValue={degreeTeacher.value}
                                                                 selected>{degreeTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={degreeTeacher.value}>{degreeTeacher.name}</option>
+                                                            defaultValue={degreeTeacher.value}>{degreeTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -581,11 +621,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 {teacherRoles.map(roleTeacher => (
                                                     role === roleTeacher.name
                                                         ?
-                                                        <option value={roleTeacher.value}
+                                                        <option defaultValue={roleTeacher.value}
                                                                 selected>{roleTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={roleTeacher.value}>{roleTeacher.name}</option>
+                                                            defaultValue={roleTeacher.value}>{roleTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -611,11 +651,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 DAHİLİ NUMARA
                                             </label>
                                             <input
-                                                onChange={changeTeacherPhoneNumber}
+                                                onChange={changeTeacherPhone}
                                                 type="text"
                                                 name="phoneNumber"
                                                 id="phoneNumber"
-                                                defaultValue={phoneNumber}
+                                                defaultValue={phone}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -629,7 +669,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
-                                                value={email}
+                                                defaultValue={email}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -637,35 +677,15 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        onClick={teacherUpdateAcademic}
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        GÜNCELLE
-                                    </button>
-                                    {(
-                                        status !== 'Pasif' && status !== 'Silinmiş'
-                                            ?
-                                            <button
-                                                onClick={teacherPassivate}
-                                                type="submit"
-                                                className=" font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
-                                            >
-                                                KAYDI DONDUR
-                                            </button>
-                                            :
-                                            null
-                                    )}
                                     {(
                                         status !== 'Silinmiş'
                                             ?
                                             <button
-                                                onClick={teacherDelete}
+                                                onClick={teacherUpdateAcademic}
                                                 type="submit"
-                                                className="font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
-                                                SİL
+                                                GÜNCELLE
                                             </button>
                                             :
                                             null
@@ -687,7 +707,7 @@ export default function TeacherDetail({departments, teacher}) {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6">
+                        <form className="px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -806,13 +826,19 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        onClick={teacherUpdatePersonal}
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        GÜNCELLE
-                                    </button>
+                                    {(
+                                        status !== 'Silinmiş'
+                                            ?
+                                            <button
+                                                onClick={teacherUpdatePersonal}
+                                                type="submit"
+                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                            >
+                                                GÜNCELLE
+                                            </button>
+                                            :
+                                            null
+                                    )}
                                 </div>
                                 <Transition appear show={isOpenSuccessActive} as={Fragment}>
                                     <Dialog
