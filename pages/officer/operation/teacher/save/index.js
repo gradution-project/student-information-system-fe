@@ -11,8 +11,6 @@ export default function SaveTeacher() {
 
     const router = useRouter();
 
-    const [officerNumber, setOfficerNumber] = useState();
-
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
         const officerId = cookies.get('officerNumber');
