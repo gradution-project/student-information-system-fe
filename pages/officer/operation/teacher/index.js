@@ -104,7 +104,7 @@ export default function TeacherList({teachers}) {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentId}</div>
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
