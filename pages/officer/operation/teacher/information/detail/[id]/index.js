@@ -75,7 +75,6 @@ export default function TeacherDetail({departments, teacher}) {
         fieldOfStudy,
         registrationDate,
         modifiedDate,
-        teacherPhone,
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
@@ -84,17 +83,6 @@ export default function TeacherDetail({departments, teacher}) {
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
-
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState();
-    const changeFieldOfStudy = event => {
-        const teacherFieldOfStudy = event.target.value;
-        setTeacherFieldOfStudy(teacherFieldOfStudy);
-    }
-    const [teacherRole, setTeacherRole] = useState();
-    const changeTeacherRole = event => {
-        const teacherRole = event.target.value;
-        setTeacherRole(teacherRole);
-    }
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
@@ -148,6 +136,18 @@ export default function TeacherDetail({departments, teacher}) {
     const changeTeacherPhoneNumber = event => {
         const teacherPhoneNumber = event.target.value;
         setTeacherPhoneNumber(teacherPhoneNumber);
+    }
+
+    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState();
+    const changeTeacherFieldOfStudy = event => {
+        const teacherFieldOfStudy = event.target.value;
+        setTeacherFieldOfStudy(teacherFieldOfStudy);
+    }
+
+    const [teacherRole, setTeacherRole] = useState();
+    const changeTeacherRole = event => {
+        const teacherRole = event.target.value;
+        setTeacherRole(teacherRole);
     }
 
     const router = useRouter();
@@ -596,7 +596,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 ÇALIŞMA ALANI
                                             </label>
                                             <input
-                                                onChange={changeFieldOfStudy}
+                                                onChange={changeTeacherFieldOfStudy}
                                                 type="text"
                                                 name="fieldOfStudy"
                                                 id="fieldOfStudy"

@@ -112,7 +112,7 @@ export default function TeacherList({teachers}) {
                                                 </span>
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                <a href={'/officer/operation/teacher/information/detail/[id]' + teacher.teacherId}
+                                                <a href={'/officer/operation/teacher/information/detail/' + teacher.teacherId}
                                                    className='text-sis-yellow'>
                                                     DETAY
                                                 </a>
