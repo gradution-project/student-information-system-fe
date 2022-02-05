@@ -5,68 +5,44 @@ import OfficerNavbar from "../../../../../../public/components/navbar/officer/of
 import SISTitle from "../../../../../../public/components/page-titles";
 
 
-export default function SaveStudent() {
+export default function SaveLesson() {
 
     const router = useRouter();
 
-    const [studentName, setStudentName] = useState();
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
+    const [lessonName, setLessonName] = useState();
+    const changeLessonName = event => {
+        const lessonName = event.target.value;
+        setLessonName(lessonName);
     }
 
-    const [studentSurname, setStudentSurname] = useState();
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
+    const [lessonCredit, setLessonCredit] = useState();
+    const changeLessonCredit = event => {
+        const lessonCredit = event.target.value;
+        setLessonCredit(lessonCredit);
     }
 
-    const [studentTcNo, setStudentTcNo] = useState();
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
+    const [lessonCorE, setLessonCorE] = useState();
+    const changelessonCorE = event => {
+        const lessonCorE = event.target.value;
+        setLessonCorE(lessonCorE);
     }
 
-    const [studentBirthday, setStudentBirthday] = useState();
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
+    const [lessonSemester, setLessonSemester] = useState();
+    const changeLessonSemester = event => {
+        const lessonSemester = event.target.value;
+        setLessonSemester(lessonSemester);
     }
 
-    const [studentEmail, setStudentEmail] = useState();
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
+    const [lessonDepartmentId, setLessonDepartmentId] = useState();
+    const changeLessonDepartmentId = event => {
+        const lessonDepartmentId = event.target.value;
+        setLessonDepartmentId(lessonDepartmentId);
     }
 
-    const [studentClassLevel, setStudentClassLevel] = useState();
-    const changeStudentClassLevel = event => {
-        const studentClassLevel = event.target.value;
-        setStudentClassLevel(studentClassLevel);
-    }
-
-    const [studentAddress, setStudentAddress] = useState();
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
-    }
-
-    const [studentDegree, setStudentDegree] = useState();
-    const changeStudentDegree = event => {
-        const studentDegree = event.target.value;
-        setStudentDegree(studentDegree);
-    }
-
-    const [studentDepartmentId, setStudentDepartmentId] = useState();
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
-    }
-
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
+    const [lessonStatus, setLessonStatus] = useState();
+    const changeLessonStatus = event => {
+        const lessonStatus = event.target.value;
+        setLessonStatus(lessonStatus);
     }
 
 
@@ -101,26 +77,24 @@ export default function SaveStudent() {
         setIsOpenProcessing(true);
     }
 
-    const studentSave = async (event) => {
+    const lessonSave = async (event) => {
         openProcessingModal();
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/student/save", {
+        const saveRes = await fetch("http://localhost:8585/lesson/save", {
             body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId,
-                    classLevel: studentClassLevel,
+
+                lessonInfoRequest: {
+                    compulsoryOrElective: lessonCorE,
+                    credit: lessonCredit,
+                    departmentId: lessonDepartmentId,
+                    name: lessonName,
+                    semester: lessonSemester,
+                    status: lessonStatus
                 },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: "2021-12-18T18:13:28.268Z",
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
+                operationInfoRequest: {
+                    userId: 12004
                 }
             }),
             headers: {'Content-Type': 'application/json'},
@@ -143,7 +117,7 @@ export default function SaveStudent() {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={lessonSave}>
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="bg-white sm:p-6">
                                     <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -153,15 +127,15 @@ export default function SaveStudent() {
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="first-name"
+                                            <label htmlFor="name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DERS ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeLessonName}
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
+                                                name="name"
+                                                id="name"
                                                 required
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -169,15 +143,15 @@ export default function SaveStudent() {
 
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="birthday"
+                                            <label htmlFor="credit"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 KREDİSİ
                                             </label>
                                             <input
-                                                onChange={changeStudentBirthday}
+                                                onChange={changeLessonCredit}
                                                 type="text"
-                                                name="birthday"
-                                                id="birthday"
+                                                name="credit"
+                                                id="credit"
                                                 required
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -185,67 +159,69 @@ export default function SaveStudent() {
 
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
+                                            <label htmlFor="semester"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 YARIYIL
                                             </label>
                                             <select
-                                                onChange={changeStudentDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                value={studentDegree}
+                                                onChange={changeLessonSemester}
+                                                id="semester"
+                                                name="semester"
+                                                autoComplete="semester"
+                                                value={lessonSemester}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Ünvanını Seçiniz...</option>
-                                                <option value="ASSOCIATE">Önlisans</option>
-                                                <option value="UNDERGRADUATE">Lisans</option>
-                                                <option value="POSTGRADUATE">Yüksek lisans</option>
-                                                <option value="DOCTORAL">Doktora</option>
+                                                <option>Yarıyıl Seçiniz...</option>
+                                                <option value="FIRST">1. Dönem</option>
+                                                <option value="SECOND">2. Dönem</option>
+                                                <option value="THIRD">3. Dönem</option>
+                                                <option value="FOURTH">4. Dönem</option>
+                                                <option value="FIFTH">5. Dönem</option>
+                                                <option value="SIXTH">6. Dönem</option>
+                                                <option value="SEVENTH">7. Dönem</option>
+                                                <option value="EIGHTH">8. Dönem</option>
+                                                <option value="NINTH">9. Dönem</option>
+                                                <option value="TENTH">10. Dönem</option>
+                                                <option value="ELEVENTH">11. Dönem</option>
+                                                <option value="TWELFTH">12. Dönem</option>
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="classLevel"
+                                            <label htmlFor="compulsory-or-elective"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DERS DURUMU
                                             </label>
                                             <select
-                                                onChange={changeStudentClassLevel}
-                                                id="class-level"
-                                                name="class-level"
-                                                autoComplete="class-level"
-                                                value={studentClassLevel}
+                                                onChange={changelessonCorE}
+                                                id="compulsory-or-elective"
+                                                name="compulsory-or-elective"
+                                                autoComplete="compulsory-or-elective"
+                                                value={lessonCorE}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Sınıfı Seçiniz...</option>
-                                                <option value="PREPARATORY">Hazırlık</option>
-                                                <option value="FIRST">1. Sınıf</option>
-                                                <option value="SECOND">2. Sınıf</option>
-                                                <option value="THIRD">3. Sınıf</option>
-                                                <option value="FOURTH">4. Sınıf</option>
-                                                <option value="FIFTH">5. Sınıf</option>
-                                                <option value="SIXTH">6. Sınıf</option>
-                                                <option value="GRADUATE">Mezun</option>
+                                                <option>Ders Durumunu Seçiniz...</option>
+                                                <option value="COMPULSORY">Zorunlu</option>
+                                                <option value="ELECTIVE">Seçmeli</option>
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-4">
-                                            <label htmlFor="department"
+                                            <label htmlFor="status"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 STATÜSÜ
                                             </label>
                                             <select
-                                                onChange={changeStudentDepartmentId}
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                value={studentDepartmentId}
+                                                onChange={changeLessonStatus}
+                                                id="status"
+                                                name="status"
+                                                autoComplete="status"
+                                                value={lessonStatus}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
+                                                <option>Statüyü Seçiniz...</option>
+                                                <option value="ACTIVE">Aktif</option>
+                                                <option value="PASSIVE">Pasif</option>
                                             </select>
                                         </div>
                                         <div className="sm:col-span-4">
@@ -254,11 +230,11 @@ export default function SaveStudent() {
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeStudentDepartmentId}
+                                                onChange={changeLessonDepartmentId}
                                                 id="department-id"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                value={studentDepartmentId}
+                                                value={lessonDepartmentId}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Bölüm Seçiniz...</option>
