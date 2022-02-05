@@ -872,7 +872,7 @@ export default function StudentDetail({departments, student}) {
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
-                                                onClick={studentUpdateAcademic}
+                                                onClick={studentUpdatePersonal}
                                                 type="submit"
                                                 className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
@@ -1196,7 +1196,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğrenci Mezun Yapma İsteğiniz İşleniyor...
+                                                        Öğrenci Mezun Etme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1406,12 +1406,12 @@ export default function StudentDetail({departments, student}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Silme İşlemi Başarılı!
+                                                            Öğrenci Kayıt Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Silme İşlemi başarıyla gerçekleşti.
+                                                            Öğrenci Kayıt Silme İşlemi başarıyla gerçekleşti.
                                                             Mesaj penceresini kapattıktan sonra öğrenci listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
@@ -1462,7 +1462,7 @@ export default function StudentDetail({departments, student}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Silme İşlemi Başarısız!
+                                                            Öğrenci Kayıt Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
