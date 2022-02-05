@@ -3,6 +3,7 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import {studentClassLevels, studentDegrees} from "../../../../../../../public/constants/student";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
@@ -27,63 +28,6 @@ export async function getServerSideProps({query}) {
     }
 }
 
-const studentDegrees = [
-    {
-        value: 'ASSOCIATE',
-        name: 'Önlisans'
-    },
-    {
-        value: 'UNDERGRADUATE',
-        name: 'Lisans'
-    },
-    {
-        value: 'POSTGRADUATE',
-        name: 'Yüksek Lisans'
-    },
-    {
-        value: 'DOCTORAL',
-        name: 'Doktora'
-    }
-]
-
-const studentClassLevels = [
-    {
-        enum: 'PREPARATORY',
-        name: 'Hazırlık Sınıfı',
-        value: 0
-    },
-    {
-        enum: 'FIRST',
-        name: '1. Sınıf',
-        value: 1
-    },
-    {
-        enum: 'SECOND',
-        name: '2. Sınıf',
-        value: 2
-    },
-    {
-        enum: 'THIRD',
-        name: '3. Sınıf',
-        value: 3
-    },
-    {
-        enum: 'FOURTH',
-        name: '4. Sınıf',
-        value: 4
-    },
-    {
-        enum: 'FIFTH',
-        name: '5. Sınıf',
-        value: 5
-    },
-    {
-        enum: 'SIXTH',
-        name: '6. Sınıf',
-        value: 6
-    }
-]
-
 export default function StudentDetail({departments, student}) {
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
@@ -94,7 +38,6 @@ export default function StudentDetail({departments, student}) {
         classLevel,
         degree,
         registrationDate,
-        modifiedDate,
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
@@ -103,6 +46,8 @@ export default function StudentDetail({departments, student}) {
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
+    const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
+    const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
     const [studentName, setStudentName] = useState();
     const changeStudentName = event => {
@@ -512,7 +457,7 @@ export default function StudentDetail({departments, student}) {
         <>
             <SISTitle/>
             <OfficerNavbar/>
-            <div>
+            <div className="px-28 py-5 mx-auto space-y-6">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
@@ -529,7 +474,12 @@ export default function StudentDetail({departments, student}) {
                                     KAYDI SİL
                                 </button>
                                 :
-                                null
+                                status === 'Silinmiş'
+                                    ?
+                                    <span
+                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">{status}</span>
+                                    :
+                                    null
                         )}
                         {(
                             status !== 'Pasif' && status !== 'Silinmiş'
@@ -537,25 +487,39 @@ export default function StudentDetail({departments, student}) {
                                 <button
                                     onClick={studentPassivate}
                                     type="submit"
-                                    className="block float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
                                     KAYDI DONDUR
                                 </button>
                                 :
-                                null
+                                status === 'Silinmiş'
+                                    ?
+                                    null
+                                    :
+                                <span
+                                    className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
+                                    {status}
+                                </span>
                         )}
                         {(
-                            status !== '' && status !== 'Silinmiş'
+                            status !== 'Aktif' && status !== 'Silinmiş'
                                 ?
                                 <button
                                     onClick={studentActivate}
                                     type="submit"
-                                    className="block float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
                                     KAYDI AKTİFLEŞTİR
                                 </button>
                                 :
-                                null
+                                status === 'Silinmiş'
+                                    ?
+                                    null
+                                    :
+                                <span
+                                    className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
+                                    {status}
+                                </span>
                         )}
                         {(
                             status !== 'Mezun' && status !== 'Silinmiş'
@@ -563,7 +527,7 @@ export default function StudentDetail({departments, student}) {
                                 <button
                                     onClick={studentGraduate}
                                     type="submit"
-                                    className="block float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                    className="block float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
                                 >
                                     MEZUNİYET İŞLEMİ BAŞLAT
                                 </button>
@@ -667,11 +631,11 @@ export default function StudentDetail({departments, student}) {
                                                 {studentDegrees.map(studentDegree => (
                                                     degree === studentDegree.name
                                                         ?
-                                                        <option value={studentDegree.value}
+                                                        <option value={studentDegree.enum}
                                                                 selected>{studentDegree.name}</option>
                                                         :
                                                         <option
-                                                            value={studentDegree.value}>{studentDegree.name}</option>
+                                                            value={studentDegree.enum}>{studentDegree.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -731,12 +695,24 @@ export default function StudentDetail({departments, student}) {
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
+
+                                        {(
+                                            academicInfoModifiedDate !== null
+                                                ?
+                                                <div className="sm:col-span-6">
+                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                        Son Düzenlenme Tarihi : {academicInfoModifiedDate}
+                                                    </a>
+                                                </div>
+                                                :
+                                                null
+                                        )}
                                     </div>
                                 </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    {(
-                                        status !== 'Silinmiş' && status !== 'Mezun'
-                                            ?
+                                {(
+                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                        ?
+                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
                                                 onClick={studentUpdateAcademic}
                                                 type="submit"
@@ -744,11 +720,10 @@ export default function StudentDetail({departments, student}) {
                                             >
                                                 GÜNCELLE
                                             </button>
-                                            :
-                                            null
-                                    )}
-                                </div>
-
+                                        </div>
+                                        :
+                                        null
+                                )}
                             </div>
                         </form>
                     </div>
@@ -880,12 +855,24 @@ export default function StudentDetail({departments, student}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
+
+                                        {(
+                                            personalInfoModifiedDate !== null
+                                                ?
+                                                <div className="sm:col-span-6">
+                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                        Son Düzenlenme Tarihi : {personalInfoModifiedDate}
+                                                    </a>
+                                                </div>
+                                                :
+                                                null
+                                        )}
                                     </div>
                                 </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    {(
-                                        status !== 'Silinmiş' && status !== 'Mezun'
-                                            ?
+                                {(
+                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                        ?
+                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
                                                 onClick={studentUpdateAcademic}
                                                 type="submit"
@@ -893,10 +880,10 @@ export default function StudentDetail({departments, student}) {
                                             >
                                                 GÜNCELLE
                                             </button>
-                                            :
-                                            null
-                                    )}
-                                </div>
+                                        </div>
+                                        :
+                                        null
+                                )}
                                 <Transition appear show={isOpenSuccessActive} as={Fragment}>
                                     <Dialog
                                         as="div"
