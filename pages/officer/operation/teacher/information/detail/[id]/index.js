@@ -588,7 +588,7 @@ export default function TeacherDetail({departments, teacher}) {
                                             </select>
                                         </div>
 
-                                        <div className="col-span-6">
+                                        <div className="col-span-3">
                                             <label htmlFor="fieldOfStudy"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 ÇALIŞMA ALANI
@@ -598,7 +598,22 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="fieldOfStudy"
                                                 id="fieldOfStudy"
-                                                value={fieldOfStudy}
+                                                defaultValue={fieldOfStudy}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
+                                        </div>
+
+                                        <div className="col-span-3">
+                                            <label htmlFor="phone-number"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                DAHİLİ NUMARA
+                                            </label>
+                                            <input
+                                                onChange={changeTeacherPhoneNumber}
+                                                type="text"
+                                                name="phoneNumber"
+                                                id="phoneNumber"
+                                                defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -689,7 +704,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                value={name}
+                                                defaultValue={name}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -704,7 +719,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
-                                                value={surname}
+                                                defaultValue={surname}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -719,7 +734,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                value={tcNo}
+                                                defaultValue={tcNo}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -734,7 +749,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value={birthday}
+                                                defaultValue={birthday}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -750,7 +765,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                value={email}
+                                                defaultValue={email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -766,7 +781,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                value={phoneNumber}
+                                                defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -782,7 +797,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                value={address}
+                                                defaultValue={address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
