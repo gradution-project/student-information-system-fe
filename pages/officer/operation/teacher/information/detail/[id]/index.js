@@ -75,6 +75,7 @@ export default function TeacherDetail({departments, teacher}) {
         fieldOfStudy,
         registrationDate,
         modifiedDate,
+        teacherPhone,
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
@@ -413,6 +414,7 @@ export default function TeacherDetail({departments, teacher}) {
         openProcessingModalPersonal();
 
         event.preventDefault()
+
         const updatePersonalRes = await fetch(`http://localhost:8585/teacher/update/personal-info/${teacherId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
