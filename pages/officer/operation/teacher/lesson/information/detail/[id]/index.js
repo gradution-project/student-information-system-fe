@@ -6,7 +6,7 @@ import OfficerNavbar from "../../../../../../../../public/components/navbar/offi
 
 export async function getServerSideProps({query}) {
     const {id} = query;
-    const departmentResponse = await fetch("http://localhost:8585/department?status=ACTIVE", {
+    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -15,7 +15,7 @@ export async function getServerSideProps({query}) {
         method: 'GET'
     });
 
-    const departmentDatas = await departmentResponse.json();
+    const departmentDatas = await departmentResponses.json();
     const lessonData = await lessonResponse.json();
     if (lessonData.success && departmentDatas.success) {
         console.log(departmentDatas.response)
@@ -104,7 +104,7 @@ const lessonStatusType = [
 
 export default function detailLesson(departments, lesson) {
 
-    const {lessonId, name, credit, semester, compulsoryOrElective, status, departmentResponse} = lesson;
+    const {departmentResponse, lessonId, name, credit, semester, compulsoryOrElective, status} = lesson;
     const departmentName = departmentResponse.name;
 
     const router = useRouter();
