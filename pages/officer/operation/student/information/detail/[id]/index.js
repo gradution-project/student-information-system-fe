@@ -166,18 +166,13 @@ export default function StudentDetail({departments, student}) {
         setStudentPhoneNumber(studentPhoneNumber);
     }
 
-    const routerActive = useRouter();
-    const routerPassive = useRouter();
-    const routerGraduate = useRouter();
-    const routerDelete = useRouter();
-    const routerAcademic = useRouter();
-    const routerPersonal = useRouter();
+    const router = useRouter();
 
     let [isOpenSuccessActive, setIsOpenSuccessActive] = useState(false);
 
     function closeSuccessModalActive() {
         setIsOpenSuccessActive(false);
-        routerActive.push("/officer/operation/student");
+        router.push("/officer/operation/student");
     }
 
     function openSuccessModalActive() {
@@ -208,7 +203,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalGraduate() {
         setIsOpenSuccessGraduate(false);
-        routerGraduate.push("/officer/operation/student");
+        router.push("/officer/operation/student");
     }
 
     function openSuccessModalGraduate() {
@@ -239,7 +234,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalPassivate() {
         setIsOpenSuccessPassivate(false);
-        routerPassive.push("/officer/operation/student");
+        router.push("/officer/operation/student");
     }
 
     function openSuccessModalPassivate() {
@@ -270,7 +265,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalDelete() {
         setIsOpenSuccessDelete(false);
-        routerDelete.push("/officer/operation/student");
+        router.push("/officer/operation/student");
     }
 
     function openSuccessModalDelete() {
@@ -301,7 +296,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalAcademic() {
         setIsOpenSuccessAcademic(false);
-        routerAcademic.push("/officer/operation/student");
+        router.push("/officer/operation/student");
     }
 
     function openSuccessModalAcademic() {
@@ -332,7 +327,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalPersonal() {
         setIsOpenSuccessPersonal(false);
-        routerPersonal.push("/officer/operation/student");
+        router.push("/officer/operation/student");
     }
 
     function openSuccessModalPersonal() {
@@ -551,8 +546,8 @@ export default function StudentDetail({departments, student}) {
                                             </label>
                                             <input
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
+                                                name="studentId"
+                                                id="studentId"
                                                 value={studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
@@ -1040,7 +1035,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğrenci Kayıt Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1201,7 +1196,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğrenci Mezun Yapma İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1362,7 +1357,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğrenci Kayıt Dondurma İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1523,7 +1518,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğrenci Kayıt Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1685,7 +1680,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğrenci Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1847,7 +1842,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Öğrenci Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
