@@ -516,27 +516,71 @@ export default function StudentDetail({departments, student}) {
             <OfficerNavbar/>
             <div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
+                    <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                        <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                            {name} {surname}
+                        </a>
+                        {(
+                            status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={studentDelete}
+                                    type="submit"
+                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                >
+                                    KAYDI SİL
+                                </button>
+                                :
+                                null
+                        )}
+                        {(
+                            status !== 'Pasif' && status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={studentPassivate}
+                                    type="submit"
+                                    className="block float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                >
+                                    KAYDI DONDUR
+                                </button>
+                                :
+                                null
+                        )}
+                        {(
+                            status !== '' && status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={studentActivate}
+                                    type="submit"
+                                    className="block float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                >
+                                    KAYDI AKTİFLEŞTİR
+                                </button>
+                                :
+                                null
+                        )}
+                        {(
+                            status !== 'Mezun' && status !== 'Silinmiş'
+                                ?
+                                <button
+                                    onClick={studentGraduate}
+                                    type="submit"
+                                    className="block float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                >
+                                    MEZUNİYET İŞLEMİ BAŞLAT
+                                </button>
+                                :
+                                null
+                        )}
+                    </div>
                     <div className="md:col-span-1">
-                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6">
+                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                    <div className="px-4 py-8 text-left bg-gray-50 rounded-xl ">
-                                        <a className="select-none font-phenomenaExtraBold text-left text-3xl text-sis-darkblue">
-                                            {name} {surname}
-                                        </a>
-                                        {(
-                                            status !== 'Aktif'
-                                                ?
-                                                <button
-                                                    onClick={studentActivate}
-                                                    type="submit"
-                                                    className="float-right font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                                >
-                                                    KAYDI AKTİFLEŞTİR
-                                                </button>
-                                                :
-                                                null
-                                        )}
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            AKADEMİK BİLGİLER
+                                        </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
@@ -693,47 +737,14 @@ export default function StudentDetail({departments, student}) {
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     {(
-                                        status !== 'Mezun'
+                                        status !== 'Silinmiş' && status !== 'Mezun'
                                             ?
                                             <button
-                                                onClick={studentGraduate}
+                                                onClick={studentUpdateAcademic}
                                                 type="submit"
-                                                className="float-left font-phenomenaBold mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-darkblue hover:bg-sis-blue"
+                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
-                                                MEZUN YAP
-                                            </button>
-                                            :
-                                            null
-                                    )}
-                                    <button
-                                        onClick={studentUpdateAcademic}
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        GÜNCELLE
-                                    </button>
-                                    {(
-                                        status !== 'Pasif'
-                                            ?
-                                            <button
-                                                onClick={studentPassivate}
-                                                type="submit"
-                                                className=" font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
-                                            >
-                                                KAYDI DONDUR
-                                            </button>
-                                            :
-                                            null
-                                    )}
-                                    {(
-                                        status !== 'Silinmiş'
-                                            ?
-                                            <button
-                                                onClick={studentDelete}
-                                                type="submit"
-                                                className="font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                            >
-                                                SİL
+                                                GÜNCELLE
                                             </button>
                                             :
                                             null
@@ -755,7 +766,7 @@ export default function StudentDetail({departments, student}) {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6">
+                        <form className="px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -874,13 +885,19 @@ export default function StudentDetail({departments, student}) {
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        onClick={studentUpdatePersonal}
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        GÜNCELLE
-                                    </button>
+                                    {(
+                                        status !== 'Silinmiş' && status !== 'Mezun'
+                                            ?
+                                            <button
+                                                onClick={studentUpdateAcademic}
+                                                type="submit"
+                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                            >
+                                                GÜNCELLE
+                                            </button>
+                                            :
+                                            null
+                                    )}
                                 </div>
                                 <Transition appear show={isOpenSuccessActive} as={Fragment}>
                                     <Dialog
@@ -1680,7 +1697,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğrenci Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Öğrenci Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1842,7 +1859,7 @@ export default function StudentDetail({departments, student}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğrenci Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Öğrenci Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
