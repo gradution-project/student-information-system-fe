@@ -116,8 +116,7 @@ export default function TeacherLessonList({lessons}) {
                                                         <div
                                                             className="font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
                                                         <div
-                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.semester}.
-                                                            Yarıyıl
+                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.semester}
                                                         </div>
                                                     </div>
                                                 </div>

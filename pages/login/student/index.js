@@ -73,7 +73,7 @@ export default function StudentLogin() {
                 cookies.set('studentAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
                 cookies.set('studentStatus', getData.response.academicInfoResponse.status, {path: '/'});
                 cookies.set('studentDegree', getData.response.academicInfoResponse.degree, {path: '/'});
-                cookies.set('studentDepartmentId', getData.response.academicInfoResponse.departmentId, {path: '/'});
+                cookies.set('studentDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
                 cookies.set('studentClassLevel', getData.response.academicInfoResponse.classLevel, {path: '/'});
                 cookies.set('studentRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
                 closeProcessingModal();

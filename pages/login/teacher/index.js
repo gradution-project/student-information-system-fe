@@ -67,7 +67,7 @@ export default function TeacherLogin() {
                 cookies.set('teacherFullName', cookies.get('teacherName') + ' ' + cookies.get('teacherSurname'), {path: '/'});
                 cookies.set('teacherRole', getData.response.academicInfoResponse.role, {path: '/'});
                 cookies.set('teacherDegree', getData.response.academicInfoResponse.degree, {path: '/'});
-                cookies.set('teacherDepartmentId', getData.response.academicInfoResponse.departmentId, {path: '/'});
+                cookies.set('teacherDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
                 cookies.set('teacherAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
                 cookies.set('teacherFieldOfStudy', getData.response.academicInfoResponse.fieldOfStudy, {path: '/'});
                 cookies.set('teacherAcademicPhoneNumber', getData.response.academicInfoResponse.phoneNumber, {path: '/'});
