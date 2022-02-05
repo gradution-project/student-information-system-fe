@@ -457,7 +457,7 @@ export default function TeacherDetail({departments, teacher}) {
                                             {name} {surname}
                                         </a>
                                         {(
-                                            status !== 'Aktif'
+                                            status !== 'Aktif' && status !== 'Silinmiş'
                                                 ?
                                                 <button
                                                     onClick={teacherActivate}
@@ -554,14 +554,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                 autoComplete="degree"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {teacherDegrees.map(teacherDegree => (
-                                                    degree === teacherDegree.name
+                                                {teacherDegrees.map(degreeTeacher => (
+                                                    degree === degreeTeacher.name
                                                         ?
-                                                        <option value={teacherDegree.value}
-                                                                selected>{teacherDegree.name}</option>
+                                                        <option value={degreeTeacher.value}
+                                                                selected>{degreeTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={teacherDegree.value}>{teacherDegree.name}</option>
+                                                            value={degreeTeacher.value}>{degreeTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -578,14 +578,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                 autoComplete="role"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {teacherRoles.map(teacherRole => (
-                                                    role === teacherRole.name
+                                                {teacherRoles.map(roleTeacher => (
+                                                    role === roleTeacher.name
                                                         ?
-                                                        <option value={teacherRole.value}
-                                                                selected>{teacherRole.name}</option>
+                                                        <option value={roleTeacher.value}
+                                                                selected>{roleTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={teacherRole.value}>{teacherRole.name}</option>
+                                                            value={roleTeacher.value}>{roleTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -645,7 +645,7 @@ export default function TeacherDetail({departments, teacher}) {
                                         GÜNCELLE
                                     </button>
                                     {(
-                                        status !== 'Pasif'
+                                        status !== 'Pasif' && status !== 'Silinmiş'
                                             ?
                                             <button
                                                 onClick={teacherPassivate}
