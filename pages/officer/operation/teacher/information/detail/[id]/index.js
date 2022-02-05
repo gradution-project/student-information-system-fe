@@ -842,13 +842,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarılı!
+                                                            Öğretmen Kayıt Aktifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            Öğretmen Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -898,14 +898,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarısız!
+                                                            Öğretmen Kayıt Aktifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                            Verilerinizi doğru girdiyseniz öğretmen kaydı
+                                                            silinmiş olabilir.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1003,13 +1003,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Dondurma İşlemi Başarılı!
+                                                            Öğretmen Kayıt Dondurma İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Dondurma İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            Öğretmen Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -1059,14 +1059,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Dondurma İşlemi Başarısız!
+                                                            Öğretmen Kayıt Dondurma İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                            Verilerinizi doğru girdiyseniz öğretmen kaydı
+                                                            silinmiş olabilir.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1164,13 +1164,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Silme İşlemi Başarılı!
+                                                            Öğretmen Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Silme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            Öğretmen Silme İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -1220,7 +1220,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Silme İşlemi Başarısız!
+                                                            Öğretmen Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1325,14 +1325,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarılı!
+                                                            Öğretmen Akademik Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Akademik Bilgi Güncellene İşlemi başarıyla
+                                                            Öğretmen Akademik Bilgi Güncellene İşlemi başarıyla
                                                             gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -1382,7 +1382,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarısız!
+                                                            Öğretmen Akademik Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1487,14 +1487,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarılı!
+                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla
+                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi başarıyla
                                                             gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -1544,7 +1544,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarısız!
+                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
