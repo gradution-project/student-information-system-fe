@@ -671,7 +671,7 @@ export default function StudentDetail({departments, student}) {
                                                     classLevel === classLevelStudent.name
                                                         ?
                                                         <option key={classLevelStudent.enum}
-                                                        >{ClassLevel.name}</option>
+                                                        >{classLevelStudent.name}</option>
                                                         :
                                                         <option
                                                             key={classLevelStudent.enum}>{classLevelStudent.name}</option>
