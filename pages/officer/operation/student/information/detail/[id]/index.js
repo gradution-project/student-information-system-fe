@@ -667,14 +667,14 @@ export default function StudentDetail({departments, student}) {
                                                 {/*                null*/}
                                                 {/*))}*/}
                                                 <option hidden>{classLevel}</option>
-                                                {studentClassLevels.map(ClassLevel => (
-                                                    classLevel === ClassLevel.name
+                                                {studentClassLevels.map(classLevelStudent => (
+                                                    classLevel === classLevelStudent.name
                                                         ?
-                                                        <option key={ClassLevel.enum}
+                                                        <option key={classLevelStudent.enum}
                                                         >{ClassLevel.name}</option>
                                                         :
                                                         <option
-                                                            key={ClassLevel.enum}>{ClassLevel.name}</option>
+                                                            key={classLevelStudent.enum}>{classLevelStudent.name}</option>
                                                 ))}
                                             </select>
                                         </div>
