@@ -41,7 +41,7 @@ export default function StudentDetail({departments, student}) {
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
-    const {facultyResponse, totalClassLevel, isTherePreparatoryClass} = departmentResponse;
+    const {facultyResponse} = departmentResponse;
 
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
@@ -81,8 +81,8 @@ export default function StudentDetail({departments, student}) {
 
     const [studentClassLevel, setStudentClassLevel] = useState();
     const changeStudentClassLevel = event => {
-        const studentClassLevel = event.target.value;
-        setStudentClassLevel(studentClassLevel);
+        const classLevelStudent = event.target.value;
+        setStudentClassLevel(classLevelStudent);
     }
 
     const [studentAddress, setStudentAddress] = useState();
@@ -93,8 +93,8 @@ export default function StudentDetail({departments, student}) {
 
     const [studentDegree, setStudentDegree] = useState();
     const changeStudentDegree = event => {
-        const studentDegree = event.target.value;
-        setStudentDegree(studentDegree);
+        const degreeStudent = event.target.value;
+        setStudentDegree(degreeStudent);
     }
 
     const [studentDepartmentId, setStudentDepartmentId] = useState();
@@ -396,7 +396,6 @@ export default function StudentDetail({departments, student}) {
 
     const studentUpdateAcademic = async (event) => {
         openProcessingModalAcademic();
-
         event.preventDefault()
         const updateRes = await fetch(`http://localhost:8585/student/update/academic-info/${studentId}`, {
             headers: {'Content-Type': 'application/json'},
@@ -552,7 +551,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="studentId"
                                                 id="studentId"
-                                                value={studentId}
+                                                defaultValue={studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -567,7 +566,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={registrationDate}
+                                                defaultValue={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -583,39 +582,38 @@ export default function StudentDetail({departments, student}) {
                                                 name="faculty"
                                                 autoComplete="faculty-name"
                                                 disabled
+                                                defaultValue={facultyName}
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option value={facultyId} selected>{facultyName}</option>
+                                                <option value={facultyId}>{facultyName}</option>
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="department"
+                                            <label htmlFor="departmentId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 BÖLÜMÜ
                                             </label>
                                             <select
                                                 onChange={changeStudentDepartmentId}
-                                                id="department-id"
+                                                id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-
+                                                <option hidden>{departmentName}</option>
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option value={department.departmentId}
-                                                                selected>{department.name}</option>
+                                                        <option key={department.departmentId}>{department.name}</option>
                                                         :
                                                         <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                            key={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
-
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="department"
+                                            <label htmlFor="degree"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DERECESİ
                                             </label>
@@ -626,14 +624,15 @@ export default function StudentDetail({departments, student}) {
                                                 autoComplete="degree"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {studentDegrees.map(studentDegree => (
-                                                    degree === studentDegree.name
+                                                <option hidden>{degree}</option>
+                                                {studentDegrees.map(degreeStudent => (
+                                                    degree === degreeStudent.name
                                                         ?
-                                                        <option value={studentDegree.enum}
-                                                                selected>{studentDegree.name}</option>
+                                                        <option key={degreeStudent.enum}
+                                                        >{degreeStudent.name}</option>
                                                         :
                                                         <option
-                                                            value={studentDegree.enum}>{studentDegree.name}</option>
+                                                            key={degreeStudent.enum}>{degreeStudent.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -645,8 +644,8 @@ export default function StudentDetail({departments, student}) {
                                             </label>
                                             <select
                                                 onChange={changeStudentClassLevel}
-                                                id="class"
-                                                name="class"
+                                                id="classLevel"
+                                                name="classLevel"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl">
 
                                                 {/*{(*/}
@@ -667,14 +666,15 @@ export default function StudentDetail({departments, student}) {
                                                 {/*                : */}
                                                 {/*                null*/}
                                                 {/*))}*/}
-                                                {studentClassLevels.map(studentClassLevel => (
-                                                    classLevel === studentClassLevel.name
+                                                <option hidden>{classLevel}</option>
+                                                {studentClassLevels.map(ClassLevel => (
+                                                    classLevel === ClassLevel.name
                                                         ?
-                                                        <option value={studentClassLevel.enum}
-                                                                selected>{studentClassLevel.name}</option>
+                                                        <option key={ClassLevel.enum}
+                                                        >{ClassLevel.name}</option>
                                                         :
                                                         <option
-                                                            value={studentClassLevel.enum}>{studentClassLevel.name}</option>
+                                                            key={ClassLevel.enum}>{ClassLevel.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -688,7 +688,7 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
-                                                value={email}
+                                                defaultValue={email}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
