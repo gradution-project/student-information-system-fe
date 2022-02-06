@@ -13,8 +13,6 @@ export default function SaveTeacher() {
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
-        const officerId = cookies.get('officerNumber');
-        setOfficerNumber(officerId);
         const teacherName = event.target.value;
         setTeacherName(teacherName);
     }

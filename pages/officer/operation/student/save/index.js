@@ -4,8 +4,89 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 
+export async function getServerSideProps() {
 
-export default function SaveStudent() {
+    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const studentResponse = await fetch("http://localhost:8585/student?status=ALL", {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const departmentDatas = await departmentResponses.json();
+    const studentData = await studentResponse.json();
+    if (studentData.success && departmentDatas.success) {
+        return {
+            props: {
+                department: departmentDatas.response,
+                student: studentData.response
+            }
+        }
+    }
+}
+
+const studentDegrees = [
+    {
+        value: 'ASSOCIATE',
+        name: 'Önlisans'
+    },
+    {
+        value: 'UNDERGRADUATE',
+        name: 'Lisans'
+    },
+    {
+        value: 'POSTGRADUATE',
+        name: 'Yüksek Lisans'
+    },
+    {
+        value: 'DOCTORAL',
+        name: 'Doktora'
+    }
+]
+
+const studentClassLevels = [
+    {
+        enum: 'PREPARATORY',
+        name: 'Hazırlık Sınıfı',
+        value: 0
+    },
+    {
+        enum: 'FIRST',
+        name: '1. Sınıf',
+        value: 1
+    },
+    {
+        enum: 'SECOND',
+        name: '2. Sınıf',
+        value: 2
+    },
+    {
+        enum: 'THIRD',
+        name: '3. Sınıf',
+        value: 3
+    },
+    {
+        enum: 'FOURTH',
+        name: '4. Sınıf',
+        value: 4
+    },
+    {
+        enum: 'FIFTH',
+        name: '5. Sınıf',
+        value: 5
+    },
+    {
+        enum: 'SIXTH',
+        name: '6. Sınıf',
+        value: 6
+    }
+]
+
+export default function SaveStudent(department, student) {
+    const name = department;
+    const {degree, classLevel} = student;
+
     const router = useRouter();
 
     const [studentName, setStudentName] = useState();
@@ -280,10 +361,15 @@ export default function SaveStudent() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
-                                                <option value="ASSOCIATE">Önlisans</option>
-                                                <option value="UNDERGRADUATE">Lisans</option>
-                                                <option value="POSTGRADUATE">Yüksek lisans</option>
-                                                <option value="DOCTORAL">Doktora</option>
+                                                {studentDegrees.map(studentDegree => (
+                                                    degree === studentDegree.name
+                                                        ?
+                                                        <option key={studentDegree.value}
+                                                        >{studentDegree.name}</option>
+                                                        :
+                                                        <option
+                                                            key={studentDegree.value}>{studentDegree.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -301,14 +387,15 @@ export default function SaveStudent() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
-                                                <option value="PREPARATORY">Hazırlık</option>
-                                                <option value="FIRST">1. Sınıf</option>
-                                                <option value="SECOND">2. Sınıf</option>
-                                                <option value="THIRD">3. Sınıf</option>
-                                                <option value="FOURTH">4. Sınıf</option>
-                                                <option value="FIFTH">5. Sınıf</option>
-                                                <option value="SIXTH">6. Sınıf</option>
-                                                <option value="GRADUATE">Mezun</option>
+                                                {studentClassLevels.map(studentClassLevel => (
+                                                    classLevel === studentClassLevel.name
+                                                        ?
+                                                        <option key={studentClassLevel.enum}
+                                                        >{studentClassLevel.name}</option>
+                                                        :
+                                                        <option
+                                                            key={studentClassLevel.enum}>{studentClassLevel.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -326,8 +413,15 @@ export default function SaveStudent() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
+                                                {department.map((departments) => (
+                                                    name === department.name
+                                                        ?
+                                                        <option key={departments.departmentId}
+                                                        >{departments.name}</option>
+                                                        :
+                                                        <option
+                                                            key={departments.departmentId}>{departments.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
