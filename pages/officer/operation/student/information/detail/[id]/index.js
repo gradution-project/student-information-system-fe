@@ -46,6 +46,7 @@ export default function StudentDetail({departments, student}) {
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
+    const departmentID = departmentResponse.departmentId;
     const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
     const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
@@ -601,14 +602,14 @@ export default function StudentDetail({departments, student}) {
                                                 autoComplete="department-id"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option hidden>{departmentName}</option>
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option key={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}
+                                                                selected>{department.name}</option>
                                                         :
                                                         <option
-                                                            key={department.departmentId}>{department.name}</option>
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -628,11 +629,11 @@ export default function StudentDetail({departments, student}) {
                                                 {studentDegrees.map(degreeStudent => (
                                                     degree === degreeStudent.name
                                                         ?
-                                                        <option key={degreeStudent.enum}
+                                                        <option value={degreeStudent.enum}
                                                         >{degreeStudent.name}</option>
                                                         :
                                                         <option
-                                                            key={degreeStudent.enum}>{degreeStudent.name}</option>
+                                                            value={degreeStudent.enum}>{degreeStudent.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -670,11 +671,11 @@ export default function StudentDetail({departments, student}) {
                                                 {studentClassLevels.map(classLevelStudent => (
                                                     classLevel === classLevelStudent.name
                                                         ?
-                                                        <option key={classLevelStudent.enum}
-                                                        >{classLevelStudent.name}</option>
+                                                        <option value={classLevelStudent.enum}
+                                                                selected>{classLevelStudent.name}</option>
                                                         :
                                                         <option
-                                                            key={classLevelStudent.enum}>{classLevelStudent.name}</option>
+                                                            value={classLevelStudent.enum}>{classLevelStudent.name}</option>
                                                 ))}
                                             </select>
                                         </div>
