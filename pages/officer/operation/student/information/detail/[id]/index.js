@@ -630,7 +630,7 @@ export default function StudentDetail({departments, student}) {
                                                     degree === degreeStudent.name
                                                         ?
                                                         <option value={degreeStudent.enum}
-                                                        >{degreeStudent.name}</option>
+                                                                selected>{degreeStudent.name}</option>
                                                         :
                                                         <option
                                                             value={degreeStudent.enum}>{degreeStudent.name}</option>
