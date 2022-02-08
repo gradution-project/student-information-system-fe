@@ -475,7 +475,12 @@ export default function TeacherDetail({departments, teacher}) {
                                     KAYDI SİL
                                 </button>
                                 :
-                                null
+                                status === 'Silinmiş'
+                                    ?
+                                    <span
+                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">{status}</span>
+                                    :
+                                    null
                         )}
 
                         {(
@@ -489,7 +494,14 @@ export default function TeacherDetail({departments, teacher}) {
                                     KAYDI DONDUR
                                 </button>
                                 :
-                                null
+                                status === 'Silinmiş'
+                                    ?
+                                    null
+                                    :
+                                    <span
+                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
+                                        {status}
+                                    </span>
                         )}
 
                         {(
@@ -503,7 +515,14 @@ export default function TeacherDetail({departments, teacher}) {
                                     KAYDI AKTİFLEŞTİR
                                 </button>
                                 :
-                                null
+                                status === 'Silinmiş'
+                                    ?
+                                    null
+                                    :
+                                    <span
+                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
+                                        {status}
+                                    </span>
                         )}
                     </div>
                     <div className="md:col-span-1">
