@@ -31,15 +31,19 @@ export async function getServerSideProps({query}) {
 
 const teacherDegrees = [
     {
-        value: 'RESEARCH_ASSOCİATE',
+        value: 'RESEARCH_ASSOCIATE',
         name: 'Araştırma Görevlisi'
     },
     {
-        value: 'TEACHİNG_ASSOCİATE',
+        value: 'TEACHING_ASSOCIATE',
         name: 'Öğretim Görevlisi'
     },
     {
-        value: 'ASSİSTANT_PROFESSOR',
+        value: 'ASSISTANT_PROFESSOR',
+        name: 'Doktora Öğretim Üyesi'
+    },
+    {
+        value: 'ASSOCIATE_PROFESSOR',
         name: 'Doçent'
     },
     {
@@ -74,7 +78,6 @@ export default function TeacherDetail({departments, teacher}) {
         role,
         fieldOfStudy,
         registrationDate,
-        modifiedDate,
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
@@ -84,6 +87,8 @@ export default function TeacherDetail({departments, teacher}) {
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
     const phone = academicInfoResponse.phoneNumber;
+    const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
+    const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
@@ -573,11 +578,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option defaultValue={department.departmentId}
+                                                        <option value={department.departmentId}
                                                                 selected>{department.name}</option>
                                                         :
                                                         <option
-                                                            defaultValue={department.departmentId}>{department.name}</option>
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -597,11 +602,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 {teacherDegrees.map(degreeTeacher => (
                                                     degree === degreeTeacher.name
                                                         ?
-                                                        <option defaultValue={degreeTeacher.value}
+                                                        <option value={degreeTeacher.value}
                                                                 selected>{degreeTeacher.name}</option>
                                                         :
                                                         <option
-                                                            defaultValue={degreeTeacher.value}>{degreeTeacher.name}</option>
+                                                            value={degreeTeacher.value}>{degreeTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -621,11 +626,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 {teacherRoles.map(roleTeacher => (
                                                     role === roleTeacher.name
                                                         ?
-                                                        <option defaultValue={roleTeacher.value}
+                                                        <option value={roleTeacher.value}
                                                                 selected>{roleTeacher.name}</option>
                                                         :
                                                         <option
-                                                            defaultValue={roleTeacher.value}>{roleTeacher.name}</option>
+                                                            value={roleTeacher.value}>{roleTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -674,12 +679,23 @@ export default function TeacherDetail({departments, teacher}) {
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
+                                        {(
+                                            academicInfoModifiedDate !== null
+                                                ?
+                                                <div className="sm:col-span-6">
+                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                        Son Düzenlenme Tarihi : {academicInfoModifiedDate}
+                                                    </a>
+                                                </div>
+                                                :
+                                                null
+                                        )}
                                     </div>
                                 </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    {(
-                                        status !== 'Silinmiş'
-                                            ?
+                                {(
+                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                        ?
+                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
                                                 onClick={teacherUpdateAcademic}
                                                 type="submit"
@@ -687,10 +703,10 @@ export default function TeacherDetail({departments, teacher}) {
                                             >
                                                 GÜNCELLE
                                             </button>
-                                            :
-                                            null
-                                    )}
-                                </div>
+                                        </div>
+                                        :
+                                        null
+                                )}
                             </div>
                         </form>
                     </div>
@@ -822,12 +838,23 @@ export default function TeacherDetail({departments, teacher}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
+                                        {(
+                                            personalInfoModifiedDate !== null
+                                                ?
+                                                <div className="sm:col-span-6">
+                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                        Son Düzenlenme Tarihi : {personalInfoModifiedDate}
+                                                    </a>
+                                                </div>
+                                                :
+                                                null
+                                        )}
                                     </div>
                                 </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    {(
-                                        status !== 'Silinmiş'
-                                            ?
+                                {(
+                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                        ?
+                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
                                                 onClick={teacherUpdatePersonal}
                                                 type="submit"
@@ -835,10 +862,10 @@ export default function TeacherDetail({departments, teacher}) {
                                             >
                                                 GÜNCELLE
                                             </button>
-                                            :
-                                            null
-                                    )}
-                                </div>
+                                        </div>
+                                        :
+                                        null
+                                )}
                                 <Transition appear show={isOpenSuccessActive} as={Fragment}>
                                     <Dialog
                                         as="div"

@@ -106,10 +106,29 @@ export default function TeacherList({teachers}) {
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-darkblue font-phenomenaBold text-lg text-sis-white ">
-                                                        {teacher.status}
-                                                </span>
+                                                {(
+                                                    teacher.status === 'Aktif'
+                                                        ?
+                                                        <span
+                                                            className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">
+                                                            {teacher.status}
+                                                        </span>
+                                                        :
+                                                        teacher.status === 'Pasif'
+                                                            ?
+                                                            <span
+                                                                className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">
+                                                                {teacher.status}
+                                                            </span>
+                                                            :
+                                                            teacher.status === 'Silinmiş'
+                                                                ?
+                                                                <span
+                                                                    className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">
+                                                                    {teacher.status}
+                                                                </span>
+                                                                : null
+                                                )}
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
                                                 <a href={'/officer/operation/teacher/information/detail/' + teacher.teacherId}
