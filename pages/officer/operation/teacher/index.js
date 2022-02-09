@@ -98,24 +98,23 @@ export default function TeacherList({teachers}) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {teacherDegrees.map(degreeTeacher => (
-                                                    teacher.degree === degreeTeacher.enum
+                                                {teacherDegrees.map((degreeTeacher) => (
+                                                    teacher.degree === degreeTeacher.value
                                                         ?
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{degreeTeacher.name}</div>
                                                         :
                                                         null
                                                 ))}
-                                                {teacherRoles.map(roleTeacher => (
-                                                    teacher.role === roleTeacher.enum
-                                                        ?
 
+                                                {teacherRoles.map((roleTeacher) => (
+                                                    teacher.role === roleTeacher.value
+                                                        ?
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{roleTeacher.name}</div>
                                                         :
                                                         null
                                                 ))}
-
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
