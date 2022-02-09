@@ -3,6 +3,7 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import {teacherDegrees, teacherRoles} from "../../../../../../../public/constants/teacher";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
@@ -29,43 +30,6 @@ export async function getServerSideProps({query}) {
     }
 }
 
-const teacherDegrees = [
-    {
-        value: 'RESEARCH_ASSOCIATE',
-        name: 'Araştırma Görevlisi'
-    },
-    {
-        value: 'TEACHING_ASSOCIATE',
-        name: 'Öğretim Görevlisi'
-    },
-    {
-        value: 'ASSISTANT_PROFESSOR',
-        name: 'Doktora Öğretim Üyesi'
-    },
-    {
-        value: 'ASSOCIATE_PROFESSOR',
-        name: 'Doçent'
-    },
-    {
-        value: 'PROFESSOR',
-        name: 'Profesör'
-    }
-]
-
-const teacherRoles = [
-    {
-        value: 'TEACHER',
-        name: 'Öğretmen'
-    },
-    {
-        value: 'ADVISOR',
-        name: 'Danışman Öğretmen'
-    },
-    {
-        value: 'HEAD_OF_DEPARTMENT',
-        name: 'Bölüm Başkanı'
-    }
-]
 
 export default function TeacherDetail({departments, teacher}) {
     const {academicInfoResponse} = teacher;
@@ -619,13 +583,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 {teacherDegrees.map(degreeTeacher => (
-                                                    degree === degreeTeacher.name
+                                                    degree === degreeTeacher.enum
                                                         ?
-                                                        <option value={degreeTeacher.value}
+                                                        <option value={degreeTeacher.enum}
                                                                 selected>{degreeTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={degreeTeacher.value}>{degreeTeacher.name}</option>
+                                                            value={degreeTeacher.enum}>{degreeTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -643,13 +607,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 {teacherRoles.map(roleTeacher => (
-                                                    role === roleTeacher.name
+                                                    role === roleTeacher.enum
                                                         ?
-                                                        <option value={roleTeacher.value}
+                                                        <option value={roleTeacher.enum}
                                                                 selected>{roleTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={roleTeacher.value}>{roleTeacher.name}</option>
+                                                            value={roleTeacher.enum}>{roleTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>

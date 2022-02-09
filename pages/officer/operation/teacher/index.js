@@ -1,6 +1,8 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
+import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher"
+
 
 export async function getServerSideProps() {
     const teacherResponse = await fetch("http://localhost:8585/teacher?status=ALL", {
@@ -96,10 +98,24 @@ export default function TeacherList({teachers}) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.degree}</div>
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.role}</div>
+                                                {teacherDegrees.map(degreeTeacher => (
+                                                    teacher.degree === degreeTeacher.enum
+                                                        ?
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{degreeTeacher.name}</div>
+                                                        :
+                                                        null
+                                                ))}
+                                                {teacherRoles.map(roleTeacher => (
+                                                    teacher.role === roleTeacher.enum
+                                                        ?
+
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{roleTeacher.name}</div>
+                                                        :
+                                                        null
+                                                ))}
+
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
