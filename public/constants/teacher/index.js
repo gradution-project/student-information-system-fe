@@ -1,37 +1,37 @@
 export const teacherDegrees = [
     {
-        value: 'RESEARCH_ASSOCIATE',
+        enum: 'RESEARCH_ASSOCIATE',
         name: 'Araştırma Görevlisi'
     },
     {
-        value: 'TEACHING_ASSOCIATE',
+        enum: 'TEACHING_ASSOCIATE',
         name: 'Öğretim Görevlisi'
     },
     {
-        value: 'ASSISTANT_PROFESSOR',
+        enum: 'ASSISTANT_PROFESSOR',
         name: 'Doktora Öğretim Üyesi'
     },
     {
-        value: 'ASSOCIATE_PROFESSOR',
+        enum: 'ASSOCIATE_PROFESSOR',
         name: 'Doçent'
     },
     {
-        value: 'PROFESSOR',
+        enum: 'PROFESSOR',
         name: 'Profesör'
     }
 ]
 
 export const teacherRoles = [
     {
-        value: 'TEACHER',
+        enum: 'TEACHER',
         name: 'Öğretmen'
     },
     {
-        value: 'ADVISOR',
+        enum: 'ADVISOR',
         name: 'Danışman Öğretmen'
     },
     {
-        value: 'HEAD_OF_DEPARTMENT',
+        enum: 'HEAD_OF_DEPARTMENT',
         name: 'Bölüm Başkanı'
     }
 ]

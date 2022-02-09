@@ -99,7 +99,7 @@ export default function TeacherList({teachers}) {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {teacherDegrees.map((degreeTeacher) => (
-                                                    teacher.degree === degreeTeacher.value
+                                                    teacher.degree === degreeTeacher.enum
                                                         ?
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{degreeTeacher.name}</div>
@@ -108,7 +108,7 @@ export default function TeacherList({teachers}) {
                                                 ))}
 
                                                 {teacherRoles.map((roleTeacher) => (
-                                                    teacher.role === roleTeacher.value
+                                                    teacher.role === roleTeacher.enum
                                                         ?
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{roleTeacher.name}</div>

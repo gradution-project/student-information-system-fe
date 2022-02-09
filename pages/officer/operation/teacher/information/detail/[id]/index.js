@@ -612,13 +612,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 {teacherRoles.map(roleTeacher => (
-                                                    role === roleTeacher.value
+                                                    role === roleTeacher.enum
                                                         ?
-                                                        <option value={roleTeacher.value}
+                                                        <option value={roleTeacher.enum}
                                                                 selected>{roleTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={roleTeacher.value}>{roleTeacher.name}</option>
+                                                            value={roleTeacher.enum}>{roleTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
