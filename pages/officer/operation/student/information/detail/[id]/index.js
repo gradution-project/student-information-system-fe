@@ -4,6 +4,7 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import {studentClassLevels, studentDegrees} from "../../../../../../../public/constants/student";
+import Cookies from "universal-cookie";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
@@ -29,6 +30,7 @@ export async function getServerSideProps({query}) {
 }
 
 export default function StudentDetail({departments, student}) {
+    const cookies = new Cookies();
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
 
@@ -46,69 +48,71 @@ export default function StudentDetail({departments, student}) {
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
-    const departmentID = departmentResponse.departmentId;
+    const departmentId = departmentResponse.departmentId;
     const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
     const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
-    const [studentName, setStudentName] = useState();
+    const [studentName, setStudentName] = useState(name);
     const changeStudentName = event => {
         const studentName = event.target.value;
         setStudentName(studentName);
     }
 
-    const [studentSurname, setStudentSurname] = useState();
+    const [studentSurname, setStudentSurname] = useState(surname);
     const changeStudentSurname = event => {
         const studentSurname = event.target.value;
         setStudentSurname(studentSurname);
     }
 
-    const [studentTcNo, setStudentTcNo] = useState();
+    const [studentTcNo, setStudentTcNo] = useState(tcNo);
     const changeStudentTcNo = event => {
         const studentTcNo = event.target.value;
         setStudentTcNo(studentTcNo);
     }
 
-    const [studentBirthday, setStudentBirthday] = useState();
+    const [studentBirthday, setStudentBirthday] = useState(birthday);
     const changeStudentBirthday = event => {
         const studentBirthday = event.target.value;
         setStudentBirthday(studentBirthday);
     }
 
-    const [studentEmail, setStudentEmail] = useState();
+    const [studentEmail, setStudentEmail] = useState(email);
     const changeStudentEmail = event => {
         const studentEmail = event.target.value;
         setStudentEmail(studentEmail);
     }
 
-    const [studentClassLevel, setStudentClassLevel] = useState();
+    const [studentClassLevel, setStudentClassLevel] = useState(classLevel);
     const changeStudentClassLevel = event => {
         const classLevelStudent = event.target.value;
         setStudentClassLevel(classLevelStudent);
     }
 
-    const [studentAddress, setStudentAddress] = useState();
+    const [studentAddress, setStudentAddress] = useState(address);
     const changeStudentAddress = event => {
         const studentAddress = event.target.value;
         setStudentAddress(studentAddress);
     }
 
-    const [studentDegree, setStudentDegree] = useState();
+    const [studentDegree, setStudentDegree] = useState(degree);
     const changeStudentDegree = event => {
         const degreeStudent = event.target.value;
         setStudentDegree(degreeStudent);
     }
 
-    const [studentDepartmentId, setStudentDepartmentId] = useState();
+    const [studentDepartmentId, setStudentDepartmentId] = useState(departmentId);
     const changeStudentDepartmentId = event => {
         const studentDepartmentId = event.target.value;
         setStudentDepartmentId(studentDepartmentId);
     }
 
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
+    const [studentPhoneNumber, setStudentPhoneNumber] = useState(phoneNumber);
     const changeStudentPhoneNumber = event => {
         const studentPhoneNumber = event.target.value;
         setStudentPhoneNumber(studentPhoneNumber);
     }
+
+    const [operationUserId, setOperationUserId] = useState(cookies.get("officerNumber"));
 
     const router = useRouter();
 
@@ -116,7 +120,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalActive() {
         setIsOpenSuccessActive(false);
-        router.push("/officer/operation/student");
+        router.reload();
     }
 
     function openSuccessModalActive() {
@@ -147,7 +151,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalGraduate() {
         setIsOpenSuccessGraduate(false);
-        router.push("/officer/operation/student");
+        router.push("/officer/operation/student").then(() => router.reload());
     }
 
     function openSuccessModalGraduate() {
@@ -178,7 +182,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalPassivate() {
         setIsOpenSuccessPassivate(false);
-        router.push("/officer/operation/student");
+        router.reload();
     }
 
     function openSuccessModalPassivate() {
@@ -209,7 +213,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalDelete() {
         setIsOpenSuccessDelete(false);
-        router.push("/officer/operation/student");
+        router.reload();
     }
 
     function openSuccessModalDelete() {
@@ -240,7 +244,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalAcademic() {
         setIsOpenSuccessAcademic(false);
-        router.push("/officer/operation/student");
+        router.reload();
     }
 
     function openSuccessModalAcademic() {
@@ -271,7 +275,7 @@ export default function StudentDetail({departments, student}) {
 
     function closeSuccessModalPersonal() {
         setIsOpenSuccessPersonal(false);
-        router.push("/officer/operation/student");
+        router.reload();
     }
 
     function openSuccessModalPersonal() {
@@ -308,7 +312,7 @@ export default function StudentDetail({departments, student}) {
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 studentId: studentId
             }),
@@ -332,7 +336,7 @@ export default function StudentDetail({departments, student}) {
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 studentId: studentId
             }),
@@ -356,7 +360,7 @@ export default function StudentDetail({departments, student}) {
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 studentId: studentId
             }),
@@ -380,7 +384,7 @@ export default function StudentDetail({departments, student}) {
             method: 'DELETE',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 studentId: studentId
             }),
@@ -408,7 +412,7 @@ export default function StudentDetail({departments, student}) {
                     departmentId: studentDepartmentId
                 },
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 }
             }),
         });
@@ -431,7 +435,7 @@ export default function StudentDetail({departments, student}) {
             method: 'PUT',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 personalInfoRequest: {
                     address: studentAddress,
@@ -627,7 +631,7 @@ export default function StudentDetail({departments, student}) {
                                             >
                                                 <option hidden>{degree}</option>
                                                 {studentDegrees.map(degreeStudent => (
-                                                    degree === degreeStudent.name
+                                                    degree === degreeStudent.enum
                                                         ?
                                                         <option value={degreeStudent.enum}
                                                                 selected>{degreeStudent.name}</option>
@@ -669,7 +673,7 @@ export default function StudentDetail({departments, student}) {
                                                 {/*))}*/}
                                                 <option hidden>{classLevel}</option>
                                                 {studentClassLevels.map(classLevelStudent => (
-                                                    classLevel === classLevelStudent.name
+                                                    classLevel === classLevelStudent.enum
                                                         ?
                                                         <option value={classLevelStudent.enum}
                                                                 selected>{classLevelStudent.name}</option>

@@ -1,6 +1,7 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
+import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
 
 export async function getServerSideProps() {
     const studentResponse = await fetch("http://localhost:8585/student?status=ALL", {
@@ -96,10 +97,23 @@ export default function StudentList({students}) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.degree}</div>
-                                                <div
-                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.classLevel}</div>
+                                                {studentDegrees.map((studentsDegree) => (
+                                                    student.degree === studentsDegree.enum
+                                                        ?
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{studentsDegree.name}</div>
+                                                        :
+                                                        null
+                                                ))}
+
+                                                {studentClassLevels.map((studentsClassLevel) => (
+                                                    student.classLevel === studentsClassLevel.enum
+                                                        ?
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{studentsClassLevel.name}</div>
+                                                        :
+                                                        null
+                                                ))}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
