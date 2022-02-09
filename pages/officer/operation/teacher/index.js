@@ -1,7 +1,7 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher"
+import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher";
 
 
 export async function getServerSideProps() {

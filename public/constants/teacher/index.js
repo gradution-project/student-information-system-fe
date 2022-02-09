@@ -1,4 +1,4 @@
-const teacherDegrees = [
+export const teacherDegrees = [
     {
         value: 'RESEARCH_ASSOCIATE',
         name: 'Araştırma Görevlisi'
@@ -21,7 +21,7 @@ const teacherDegrees = [
     }
 ]
 
-const teacherRoles = [
+export const teacherRoles = [
     {
         value: 'TEACHER',
         name: 'Öğretmen'
