@@ -2,7 +2,7 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 
-export const getStaticProps = async () => {
+export async function getServerSideProps() {
     const teacherResponse = await fetch("http://localhost:8585/teacher?status=ALL", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
