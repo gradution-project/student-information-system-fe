@@ -3,6 +3,7 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from "universal-cookie";
 
 export async function getServerSideProps() {
     const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
@@ -78,11 +79,15 @@ const studentClassLevels = [
 ]
 
 export default function SaveStudent({departments}) {
+    const cookies = new Cookies();
     const departmentName = departments.name;
-    let degree;
-    let classLevel;
+
+    const [degree] = useState();
+    const [classLevel] = useState();
 
     const router = useRouter();
+
+    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [studentName, setStudentName] = useState();
     const changeStudentName = event => {
@@ -189,7 +194,7 @@ export default function SaveStudent({departments}) {
                     classLevel: studentClassLevel,
                 },
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 personalInfoRequest: {
                     address: studentAddress,
@@ -357,7 +362,7 @@ export default function SaveStudent({departments}) {
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
                                                 {studentDegrees.map(studentDegree => (
-                                                    degree === studentDegree.name
+                                                    degree === studentDegree.enum
                                                         ?
                                                         <option value={studentDegree.value}
                                                         >{studentDegree.name}</option>
@@ -383,7 +388,7 @@ export default function SaveStudent({departments}) {
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
                                                 {studentClassLevels.map(studentClassLevel => (
-                                                    classLevel === studentClassLevel.name
+                                                    classLevel === studentClassLevel.enum
                                                         ?
                                                         <option value={studentClassLevel.enum}
                                                         >{studentClassLevel.name}</option>
