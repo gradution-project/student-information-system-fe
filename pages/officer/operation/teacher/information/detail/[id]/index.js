@@ -4,6 +4,7 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import {teacherDegrees, teacherRoles} from "../../../../../../../public/constants/teacher";
+import Cookies from "universal-cookie";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
@@ -32,6 +33,7 @@ export async function getServerSideProps({query}) {
 
 
 export default function TeacherDetail({departments, teacher}) {
+    const cookies = new Cookies();
     const {academicInfoResponse} = teacher;
     const {personalInfoResponse} = teacher;
 
@@ -47,6 +49,7 @@ export default function TeacherDetail({departments, teacher}) {
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
     const {facultyResponse, totalClassLevel, isTherePreparatoryClass} = departmentResponse;
 
+    const departmentId = departmentResponse.departmentId;
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
@@ -54,73 +57,75 @@ export default function TeacherDetail({departments, teacher}) {
     const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
     const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
-    const [teacherName, setTeacherName] = useState();
+    const [operationUserId] = useState(cookies.get('officerNumber'));
+
+    const [teacherName, setTeacherName] = useState(name);
     const changeTeacherName = event => {
         const teacherName = event.target.value;
         setTeacherName(teacherName);
     }
 
-    const [teacherSurname, setTeacherSurname] = useState();
+    const [teacherSurname, setTeacherSurname] = useState(surname);
     const changeTeacherSurname = event => {
         const teacherSurname = event.target.value;
         setTeacherSurname(teacherSurname);
     }
 
-    const [teacherTcNo, setTeacherTcNo] = useState();
+    const [teacherTcNo, setTeacherTcNo] = useState(tcNo);
     const changeTeacherTcNo = event => {
         const teacherTcNo = event.target.value;
         setTeacherTcNo(teacherTcNo);
     }
 
-    const [teacherBirthday, setTeacherBirthday] = useState();
+    const [teacherBirthday, setTeacherBirthday] = useState(birthday);
     const changeTeacherBirthday = event => {
         const teacherBirthday = event.target.value;
         setTeacherBirthday(teacherBirthday);
     }
 
-    const [teacherEmail, setTeacherEmail] = useState();
+    const [teacherEmail, setTeacherEmail] = useState(email);
     const changeTeacherEmail = event => {
         const teacherEmail = event.target.value;
         setTeacherEmail(teacherEmail);
     }
 
-    const [teacherAddress, setTeacherAddress] = useState();
+    const [teacherAddress, setTeacherAddress] = useState(address);
     const changeTeacherAddress = event => {
         const teacherAddress = event.target.value;
         setTeacherAddress(teacherAddress);
     }
 
-    const [teacherDegree, setTeacherDegree] = useState();
+    const [teacherDegree, setTeacherDegree] = useState(degree);
     const changeTeacherDegree = event => {
         const teacherDegree = event.target.value;
         setTeacherDegree(teacherDegree);
     }
 
-    const [teacherDepartmentId, setTeacherDepartmentId] = useState();
+    const [teacherDepartmentId, setTeacherDepartmentId] = useState(departmentId);
     const changeTeacherDepartmentId = event => {
         const teacherDepartmentId = event.target.value;
         setTeacherDepartmentId(teacherDepartmentId);
     }
 
-    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState();
+    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState(phoneNumber);
     const changeTeacherPhoneNumber = event => {
         const teacherPhoneNumber = event.target.value;
         setTeacherPhoneNumber(teacherPhoneNumber);
     }
 
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState();
+    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState(fieldOfStudy);
     const changeTeacherFieldOfStudy = event => {
         const teacherFieldOfStudy = event.target.value;
         setTeacherFieldOfStudy(teacherFieldOfStudy);
     }
 
-    const [teacherRole, setTeacherRole] = useState();
+    const [teacherRole, setTeacherRole] = useState(role);
     const changeTeacherRole = event => {
         const teacherRole = event.target.value;
         setTeacherRole(teacherRole);
     }
 
-    const [teacherPhone, setTeacherPhone] = useState();
+    const [teacherPhone, setTeacherPhone] = useState(phone);
     const changeTeacherPhone = event => {
         const teacherPhone = event.target.value;
         setTeacherPhone(teacherPhone);
@@ -132,7 +137,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalActive() {
         setIsOpenSuccessActive(false);
-        router.push("/officer/operation/teacher");
+        router.reload();
     }
 
     function openSuccessModalActive() {
@@ -163,7 +168,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalPassivate() {
         setIsOpenSuccessPassivate(false);
-        router.push("/officer/operation/teacher");
+        router.reload();
     }
 
     function openSuccessModalPassivate() {
@@ -194,7 +199,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalDelete() {
         setIsOpenSuccessDelete(false);
-        router.push("/officer/operation/teacher");
+        router.reload();
     }
 
     function openSuccessModalDelete() {
@@ -225,7 +230,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalAcademic() {
         setIsOpenSuccessAcademic(false);
-        router.push("/officer/operation/teacher");
+        router.reload();
     }
 
     function openSuccessModalAcademic() {
@@ -256,7 +261,7 @@ export default function TeacherDetail({departments, teacher}) {
 
     function closeSuccessModalPersonal() {
         setIsOpenSuccessPersonal(false);
-        router.push("/officer/operation/teacher");
+        router.reload();
     }
 
     function openSuccessModalPersonal() {
@@ -293,7 +298,7 @@ export default function TeacherDetail({departments, teacher}) {
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 teacherId: teacherId
             }),
@@ -317,7 +322,7 @@ export default function TeacherDetail({departments, teacher}) {
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 teacherId: teacherId
             }),
@@ -341,7 +346,7 @@ export default function TeacherDetail({departments, teacher}) {
             method: 'DELETE',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 teacherId: teacherId
             }),
@@ -372,7 +377,7 @@ export default function TeacherDetail({departments, teacher}) {
                     role: teacherRole
                 },
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 }
             }),
         });
@@ -396,7 +401,7 @@ export default function TeacherDetail({departments, teacher}) {
             method: 'PUT',
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 personalInfoRequest: {
                     address: teacherAddress,
@@ -607,13 +612,13 @@ export default function TeacherDetail({departments, teacher}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 {teacherRoles.map(roleTeacher => (
-                                                    role === roleTeacher.enum
+                                                    role === roleTeacher.value
                                                         ?
-                                                        <option value={roleTeacher.enum}
+                                                        <option value={roleTeacher.value}
                                                                 selected>{roleTeacher.name}</option>
                                                         :
                                                         <option
-                                                            value={roleTeacher.enum}>{roleTeacher.name}</option>
+                                                            value={roleTeacher.value}>{roleTeacher.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -896,8 +901,6 @@ export default function TeacherDetail({departments, teacher}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğretmen Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1057,8 +1060,6 @@ export default function TeacherDetail({departments, teacher}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğretmen Kayıt Dondurma İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1218,8 +1219,6 @@ export default function TeacherDetail({departments, teacher}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğretmen Kayıt Silme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1380,8 +1379,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğretmen Akademik Bilgi Güncellene İşlemi başarıyla
                                                             gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
+
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1542,8 +1540,6 @@ export default function TeacherDetail({departments, teacher}) {
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğretmen Kişisel Bilgi Güncelleme İşlemi başarıyla
                                                             gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
