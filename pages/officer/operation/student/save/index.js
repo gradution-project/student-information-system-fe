@@ -5,22 +5,16 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 
 export async function getServerSideProps() {
-
     const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const studentResponse = await fetch("http://localhost:8585/student?status=ALL", {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
     const departmentDatas = await departmentResponses.json();
-    const studentData = await studentResponse.json();
-    if (studentData.success && departmentDatas.success) {
+    if (departmentDatas.success) {
         return {
             props: {
-                department: departmentDatas.response,
-                student: studentData.response
+                departments: departmentDatas.response,
+
             }
         }
     }
@@ -83,9 +77,10 @@ const studentClassLevels = [
     }
 ]
 
-export default function SaveStudent(department, student) {
-    const name = department;
-    const {degree, classLevel} = student;
+export default function SaveStudent({departments}) {
+    const departmentName = departments.name;
+    let degree;
+    let classLevel;
 
     const router = useRouter();
 
@@ -364,11 +359,11 @@ export default function SaveStudent(department, student) {
                                                 {studentDegrees.map(studentDegree => (
                                                     degree === studentDegree.name
                                                         ?
-                                                        <option key={studentDegree.value}
+                                                        <option value={studentDegree.value}
                                                         >{studentDegree.name}</option>
                                                         :
                                                         <option
-                                                            key={studentDegree.value}>{studentDegree.name}</option>
+                                                            value={studentDegree.value}>{studentDegree.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -390,37 +385,36 @@ export default function SaveStudent(department, student) {
                                                 {studentClassLevels.map(studentClassLevel => (
                                                     classLevel === studentClassLevel.name
                                                         ?
-                                                        <option key={studentClassLevel.enum}
+                                                        <option value={studentClassLevel.enum}
                                                         >{studentClassLevel.name}</option>
                                                         :
                                                         <option
-                                                            key={studentClassLevel.enum}>{studentClassLevel.name}</option>
+                                                            value={studentClassLevel.enum}>{studentClassLevel.name}</option>
                                                 ))}
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-4">
-                                            <label htmlFor="department"
+                                            <label htmlFor="departmentId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 BÖLÜMÜ
                                             </label>
                                             <select
                                                 onChange={changeStudentDepartmentId}
-                                                id="department-id"
+                                                id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                value={studentDepartmentId}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Bölüm Seçiniz...</option>
-                                                {department.map((departments) => (
-                                                    name === department.name
+                                                <option>Bölümü Seçiniz...</option>
+                                                {departments.map((department) => (
+                                                    departmentName === department.name
                                                         ?
-                                                        <option key={departments.departmentId}
-                                                        >{departments.name}</option>
+                                                        <option value={department.departmentId}
+                                                        >{department.name}</option>
                                                         :
                                                         <option
-                                                            key={departments.departmentId}>{departments.name}</option>
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
