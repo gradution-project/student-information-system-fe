@@ -934,8 +934,6 @@ export default function StudentDetail({departments, student}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1256,8 +1254,7 @@ export default function StudentDetail({departments, student}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğrenci Kayıt Dondurma İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
+
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1417,8 +1414,6 @@ export default function StudentDetail({departments, student}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğrenci Kayıt Silme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1579,8 +1574,7 @@ export default function StudentDetail({departments, student}) {
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğrenci Akademik Bilgi Güncellene İşlemi başarıyla
                                                             gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
+
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1741,8 +1735,6 @@ export default function StudentDetail({departments, student}) {
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla
                                                             gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
                                                 </div>
