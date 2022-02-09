@@ -3,11 +3,65 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
 
+export async function getServerSideProps() {
+    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const departmentDatas = await departmentResponses.json();
+    if (departmentDatas.success) {
+        return {
+            props: {
+                departments: departmentDatas.response,
 
-export default function SaveTeacher() {
-    const cookies = new Cookies();
+            }
+        }
+    }
+}
+
+const teacherDegrees = [
+    {
+        value: 'RESEARCH_ASSOCIATE',
+        name: 'Araştırma Görevlisi'
+    },
+    {
+        value: 'TEACHING_ASSOCIATE',
+        name: 'Öğretim Görevlisi'
+    },
+    {
+        value: 'ASSISTANT_PROFESSOR',
+        name: 'Doktora Öğretim Üyesi'
+    },
+    {
+        value: 'ASSOCIATE_PROFESSOR',
+        name: 'Doçent'
+    },
+    {
+        value: 'PROFESSOR',
+        name: 'Profesör'
+    }
+]
+
+const teacherRoles = [
+    {
+        value: 'TEACHER',
+        name: 'Öğretmen'
+    },
+    {
+        value: 'ADVISOR',
+        name: 'Danışman Öğretmen'
+    },
+    {
+        value: 'HEAD_OF_DEPARTMENT',
+        name: 'Bölüm Başkanı'
+    }
+]
+
+export default function SaveTeacher({departments}) {
+    const departmentName = departments.name;
+    let degree;
+    let role;
 
     const router = useRouter();
 
@@ -297,10 +351,15 @@ export default function SaveTeacher() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvan Seçiniz...</option>
-                                                <option value="RESEARCH_ASSOCIATE">Araştırma Görevlisi</option>
-                                                <option value="TEACHING_ASSOCIATE">Öğretim Üyesi</option>
-                                                <option value="ASSISTANT_PROFESSOR">Doçent</option>
-                                                <option value="PROFESSOR">Profesör</option>
+                                                {teacherDegrees.map(teacherDegree => (
+                                                    degree === teacherDegree.name
+                                                        ?
+                                                        <option value={teacherDegree.value}
+                                                        >{teacherDegree.name}</option>
+                                                        :
+                                                        <option
+                                                            value={teacherDegree.value}>{teacherDegree.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -317,9 +376,15 @@ export default function SaveTeacher() {
                                                 className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Rol Seçiniz...</option>
-                                                <option value="TEACHER">Öğretmen</option>
-                                                <option value="ADVISOR">Danışman</option>
-                                                <option value="HEAD_OF_DEPARTMENT">Bölüm Başkanı</option>
+                                                {teacherRoles.map(teacherRole => (
+                                                    role === teacherRole.name
+                                                        ?
+                                                        <option value={teacherRole.value}
+                                                        >{teacherRole.name}</option>
+                                                        :
+                                                        <option
+                                                            value={teacherRole.value}>{teacherRole.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -337,8 +402,15 @@ export default function SaveTeacher() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
+                                                {departments.map((department) => (
+                                                    departmentName === department.name
+                                                        ?
+                                                        <option value={department.departmentId}
+                                                        >{department.name}</option>
+                                                        :
+                                                        <option
+                                                            value={department.departmentId}>{department.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
