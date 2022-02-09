@@ -3,6 +3,7 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from "universal-cookie";
 
 export async function getServerSideProps() {
     const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
@@ -59,11 +60,15 @@ const teacherRoles = [
 ]
 
 export default function SaveTeacher({departments}) {
+    const cookies = new Cookies();
+
     const departmentName = departments.name;
     let degree;
     let role;
 
     const router = useRouter();
+
+    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
@@ -184,7 +189,7 @@ export default function SaveTeacher({departments}) {
                     role: teacherRole
                 },
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 personalInfoRequest: {
                     address: teacherAddress,
@@ -352,7 +357,7 @@ export default function SaveTeacher({departments}) {
                                             >
                                                 <option>Ünvan Seçiniz...</option>
                                                 {teacherDegrees.map(teacherDegree => (
-                                                    degree === teacherDegree.name
+                                                    degree === teacherDegree.enum
                                                         ?
                                                         <option value={teacherDegree.value}
                                                         >{teacherDegree.name}</option>
@@ -377,7 +382,7 @@ export default function SaveTeacher({departments}) {
                                             >
                                                 <option>Rol Seçiniz...</option>
                                                 {teacherRoles.map(teacherRole => (
-                                                    role === teacherRole.name
+                                                    role === teacherRole.enum
                                                         ?
                                                         <option value={teacherRole.value}
                                                         >{teacherRole.name}</option>
