@@ -370,8 +370,8 @@ export default function SaveTeacher({departments}) {
                                             </label>
                                             <select
                                                 onChange={changeTeacherRole}
-                                                id="degree"
-                                                name="degree"
+                                                id="role"
+                                                name="role"
                                                 value={teacherRole}
                                                 className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
