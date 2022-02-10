@@ -64,7 +64,7 @@ export default function OfficerNavbar() {
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/officer/information"
+                                            <a href="/officer/information/detail"
                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
                                                 Bilgilerim
                                             </a>

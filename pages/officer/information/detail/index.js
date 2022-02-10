@@ -1,7 +1,9 @@
-import SISTitle from "../../../public/components/page-titles";
-import OfficerNavbar from "../../../public/components/navbar/officer/officer-navbar";
+import SISTitle from "../../../../public/components/page-titles";
+import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
+import Cookies from "universal-cookie";
 
 export default function MyInfo() {
+    const cookies = new Cookies();
     return (
         <>
             <SISTitle/>
@@ -27,27 +29,25 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="teacher-number"
                                                 id="teacher-number"
-                                                value=""
+                                                value={cookies.get('officerNumber')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
                                         <div className="sm:col-span-4">
-                                            <label htmlFor="department"
+                                            <label htmlFor="faculty"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM
+                                                FAKÜLTE ADI
                                             </label>
                                             <select
-                                                id="department"
-                                                name="department"
-                                                autoComplete="department-name"
+                                                id="faculty"
+                                                name="faculty"
+                                                autoComplete="faculty-name"
                                                 disabled
+                                                value={cookies.get('officerFacultyName')}
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option>MAKİNE MÜHENDİSLİĞİ</option>
-                                                <option>YAZILIM MÜHENDİSLİĞİ</option>
                                             </select>
                                         </div>
 
@@ -61,36 +61,28 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 disabled
-                                                value=""
+                                                value={cookies.get('officerAcademicEmail')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
                                         <div className="sm:col-span-2">
-                                            <label htmlFor="phone"
+                                            <label htmlFor="phoneNumber"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DAHİLİ TELEFON
                                             </label>
                                             <input
                                                 type="text"
-                                                name="phone"
-                                                id="phone"
+                                                name="phoneNumber"
+                                                id="phoneNumber"
                                                 disabled
-                                                value=""
+                                                value={cookies.get('officerAcademicPhoneNumber')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
                                     </div>
 
-                                </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        KAYDET
-                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -125,9 +117,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerName')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -140,9 +131,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerSurname')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -155,9 +145,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                disabled
-                                                value=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerTcNo')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -170,9 +159,8 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value=""
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerBirthday')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -186,8 +174,8 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerPersonalEmail')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -201,8 +189,8 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerPhoneNumber')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -216,8 +204,8 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue=""
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('officerAddress')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
