@@ -21,14 +21,14 @@ export default function MyInfo() {
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="teacher-number"
+                                            <label htmlFor="officer-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                PERSONEL NO
+                                                PERSONEL NUMARASI
                                             </label>
                                             <input
                                                 type="text"
-                                                name="teacher-number"
-                                                id="teacher-number"
+                                                name="officer-number"
+                                                id="officer-number"
                                                 value={cookies.get('officerNumber')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
@@ -36,7 +36,7 @@ export default function MyInfo() {
                                         </div>
 
                                         <div className="sm:col-span-4">
-                                            <label htmlFor="faculty"
+                                            <label htmlFor="faculty-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 FAKÜLTE ADI
                                             </label>
@@ -45,7 +45,7 @@ export default function MyInfo() {
                                                 name="faculty"
                                                 autoComplete="faculty-name"
                                                 disabled
-                                                value={cookies.get('officerFacultyName')}
+                                                value={cookies.get('facultyName')}
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                             </select>
