@@ -81,7 +81,7 @@ export default function SaveStudent({faculties}) {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/personal");
+        router.push("/officer/operation/personal").then(() => router.reload());
     }
 
     function openSuccessModal() {
