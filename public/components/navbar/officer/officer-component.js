@@ -31,7 +31,7 @@ const officer = [
     {
         name: 'Personel İşlemleri',
         description: '',
-        href: '/officer/operation/officer',
+        href: '/officer/operation/personal',
         icon: BriefcaseIcon,
     }
 ]
