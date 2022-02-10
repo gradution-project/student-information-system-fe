@@ -45,9 +45,9 @@ export default function MyInfo() {
                                                 name="faculty"
                                                 autoComplete="faculty-name"
                                                 disabled
-                                                value={cookies.get('facultyName')}
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
+                                                <option>{cookies.get('officerFaculty')}</option>
                                             </select>
                                         </div>
 
