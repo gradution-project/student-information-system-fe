@@ -629,7 +629,6 @@ export default function StudentDetail({departments, student}) {
                                                 autoComplete="degree"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option hidden>{degree}</option>
                                                 {studentDegrees.map(degreeStudent => (
                                                     degree === degreeStudent.enum
                                                         ?
@@ -671,7 +670,6 @@ export default function StudentDetail({departments, student}) {
                                                 {/*                : */}
                                                 {/*                null*/}
                                                 {/*))}*/}
-                                                <option hidden>{classLevel}</option>
                                                 {studentClassLevels.map(classLevelStudent => (
                                                     classLevel === classLevelStudent.enum
                                                         ?
