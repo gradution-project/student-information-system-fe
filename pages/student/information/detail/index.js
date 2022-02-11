@@ -246,7 +246,7 @@ export default function MyInfo() {
             <div className="mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="px-4 max-w-2xl mx-auto space-y-6" method="POST">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
