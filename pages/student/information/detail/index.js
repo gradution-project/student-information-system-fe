@@ -25,7 +25,7 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="student-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRENCİ NO
+                                                ÖĞRENCİ NUMARASI
                                             </label>
                                             <input
                                                 type="text"
@@ -64,7 +64,7 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>MÜHENDİSLİK-MİMARLIK FAKÜLTESİ</option>
+                                                <option>{cookies.get('studentFaculty')}</option>
                                             </select>
                                         </div>
 
