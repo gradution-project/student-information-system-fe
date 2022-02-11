@@ -1,10 +1,124 @@
 import Cookies from "universal-cookie";
 import SISTitle from "../../../../public/components/page-titles";
 import StudentNavbar from "../../../../public/components/navbar/student/student-navbar";
+import {Fragment, useState} from "react";
+import {Dialog, Transition} from "@headlessui/react";
+import {useRouter} from "next/router";
 
 export default function MyInfo() {
 
     const cookies = new Cookies();
+
+    const router = new useRouter();
+
+    const [studentId] = useState(cookies.get('studentNumber'));
+
+    const [studentName, setStudentName] = useState(cookies.get('studentName'));
+    const changeStudentName = event => {
+        const studentName = event.target.value;
+        setStudentName(studentName);
+    }
+
+    const [studentSurname, setStudentSurname] = useState(cookies.get('studentSurname'));
+    const changeStudentSurname = event => {
+        const studentSurname = event.target.value;
+        setStudentSurname(studentSurname);
+    }
+
+    const [studentTcNo, setStudentTcNo] = useState(cookies.get('studentTcNo'));
+    const changeStudentTcNo = event => {
+        const studentTcNo = event.target.value;
+        setStudentTcNo(studentTcNo);
+    }
+
+    const [studentBirthday, setStudentBirthday] = useState(cookies.get('studentBirthday'));
+    const changeStudentBirthday = event => {
+        const studentBirthday = event.target.value;
+        setStudentBirthday(studentBirthday);
+    }
+
+    const [studentEmail, setStudentEmail] = useState(cookies.get('studentPersonalEmail'));
+    const changeStudentEmail = event => {
+        const studentEmail = event.target.value;
+        setStudentEmail(studentEmail);
+    }
+
+    const [studentAddress, setStudentAddress] = useState(cookies.get('studentAddress'));
+    const changeStudentAddress = event => {
+        const studentAddress = event.target.value;
+        setStudentAddress(studentAddress);
+    }
+
+    const [studentPhoneNumber, setStudentPhoneNumber] = useState(cookies.get('studentPhoneNumber'));
+    const changeStudentPhoneNumber = event => {
+        const studentPhoneNumber = event.target.value;
+        setStudentPhoneNumber(studentPhoneNumber);
+    }
+
+
+    let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
+
+    function closeSuccessModalPersonal() {
+        setIsOpenSuccessPersonal(false);
+        router.reload();
+    }
+
+    function openSuccessModalPersonal() {
+        setIsOpenSuccessPersonal(true);
+    }
+
+    let [isOpenFailPersonal, setIsOpenFailPersonal] = useState(false);
+
+    function closeFailModalPersonal() {
+        setIsOpenFailPersonal(false);
+    }
+
+    function openFailModalPersonal() {
+        setIsOpenFailPersonal(true);
+    }
+
+    let [isOpenProcessingPersonal, setIsOpenProcessingPersonal] = useState(false);
+
+    function closeProcessingModalPersonal() {
+        setIsOpenProcessingPersonal(false);
+    }
+
+    function openProcessingModalPersonal() {
+        setIsOpenProcessingPersonal(true);
+    }
+
+
+    const studentUpdatePersonal = async (event) => {
+        openProcessingModalPersonal();
+
+        event.preventDefault()
+        const updatePersonalRes = await fetch(`http://localhost:8585/student/update/personal-info/${studentId}`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PUT',
+            body: JSON.stringify({
+                operationInfoRequest: {
+                    userId: studentId
+                },
+                personalInfoRequest: {
+                    address: studentAddress,
+                    birthday: studentBirthday,
+                    email: studentEmail,
+                    name: studentName,
+                    phoneNumber: studentPhoneNumber,
+                    surname: studentSurname,
+                    tcNo: studentTcNo
+                }
+            }),
+        });
+        const updatePersonalData = await updatePersonalRes.json();
+        if (updatePersonalData.success) {
+            closeProcessingModalPersonal();
+            openSuccessModalPersonal()
+        } else {
+            closeProcessingModalPersonal();
+            openFailModalPersonal();
+        }
+    }
 
     return (
         <>
@@ -25,7 +139,7 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="student-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRENCİ NO
+                                                ÖĞRENCİ NUMARASI
                                             </label>
                                             <input
                                                 type="text"
@@ -64,14 +178,14 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>MÜHENDİSLİK-MİMARLIK FAKÜLTESİ</option>
+                                                <option>{cookies.get('studentFaculty')}</option>
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM KODU
+                                                BÖLÜM ADI
                                             </label>
                                             <select
                                                 id="department-id"
@@ -80,7 +194,7 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('studentDepartmentId')}</option>
+                                                <option>{cookies.get('studentDepartment')}</option>
                                             </select>
                                         </div>
 
@@ -147,12 +261,12 @@ export default function MyInfo() {
                                                 ADI
                                             </label>
                                             <input
+                                                onChange={changeStudentName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value={cookies.get('studentName')}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentName')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -162,12 +276,12 @@ export default function MyInfo() {
                                                 SOYADI
                                             </label>
                                             <input
+                                                onChange={changeStudentSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value={cookies.get('studentSurname')}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentSurname')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -177,12 +291,12 @@ export default function MyInfo() {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
+                                                onChange={changeStudentTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                value={cookies.get('studentTcNo')}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentTcNo')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -192,12 +306,12 @@ export default function MyInfo() {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
+                                                onChange={changeStudentBirthday}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value={cookies.get('studentBirthday')}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={cookies.get('studentBirthday')}
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -207,6 +321,7 @@ export default function MyInfo() {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
+                                                onChange={changeStudentEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
@@ -222,6 +337,7 @@ export default function MyInfo() {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
+                                                onChange={changeStudentPhoneNumber}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
@@ -237,6 +353,7 @@ export default function MyInfo() {
                                                 EV ADRESİ
                                             </label>
                                             <input
+                                                onChange={changeStudentAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -247,7 +364,7 @@ export default function MyInfo() {
                                         </div>
                                     </div>
 
-                                    <div className="py-5 mt-2">
+                                    {/*              <div className="py-5 mt-2">
                                         <label className="text-xl text-sis-darkblue font-phenomenaBold">
                                             PROFİL FOTOĞRAFI
                                         </label>
@@ -303,29 +420,189 @@ export default function MyInfo() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
+                                    </div>*/}
 
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     <button
+                                        onClick={studentUpdatePersonal}
                                         type="submit"
                                         className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
                                         GÜNCELLE
                                     </button>
                                 </div>
+
+                                <Transition appear show={isOpenSuccessPersonal} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeSuccessModalPersonal}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                            Kişisel Bilgi Güncelleme İşlemi Başarılı!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Kişisel Bilgi Güncelleme İşlemi başarıyla
+                                                            gerçekleşti.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+                                <Transition appear show={isOpenFailPersonal} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeFailModalPersonal}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
+                                                    >
+                                                        <div className="border bg-sis-fail rounded-xl p-6">
+                                                            Kişisel Bilgi Güncelleme İşlemi Başarısız!
+                                                        </div>
+                                                    </Dialog.Title>
+                                                    <div className="mt-2">
+                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
+                                                            Lütfen girdiğiniz verileri kontrol ediniz.
+                                                            Verilerinizi doğru girdiyseniz sistemsel bir
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
+
+                                <Transition appear show={isOpenProcessingPersonal} as={Fragment}>
+                                    <Dialog
+                                        as="div"
+                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
+                                        onClose={closeProcessingModalPersonal}
+                                    >
+                                        <div className="min-h-screen px-4 text-center">
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0"
+                                                enterTo="opacity-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Dialog.Overlay className="fixed inset-0"/>
+                                            </Transition.Child>
+
+                                            <span
+                                                className="inline-block h-screen align-middle"
+                                                aria-hidden="true"
+                                            >
+              &#8203;
+            </span>
+                                            <Transition.Child
+                                                as={Fragment}
+                                                enter="ease-out duration-300"
+                                                enterFrom="opacity-0 scale-95"
+                                                enterTo="opacity-100 scale-100"
+                                                leave="ease-in duration-200"
+                                                leaveFrom="opacity-100 scale-100"
+                                                leaveTo="opacity-0 scale-95"
+                                            >
+                                                <div
+                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
+                                                    >
+                                                        Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                    </Dialog.Title>
+                                                </div>
+                                            </Transition.Child>
+                                        </div>
+                                    </Dialog>
+                                </Transition>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
             <div className="hidden sm:block" aria-hidden="true">
                 <div className="py-5">
                     <div className="border-t border-gray-200"/>
                 </div>
             </div>
+
         </>
     )
 }
