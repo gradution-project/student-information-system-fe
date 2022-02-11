@@ -4,6 +4,7 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
+import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
 
 export async function getServerSideProps() {
     const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
@@ -20,44 +21,6 @@ export async function getServerSideProps() {
         }
     }
 }
-
-const teacherDegrees = [
-    {
-        value: 'RESEARCH_ASSOCIATE',
-        name: 'Araştırma Görevlisi'
-    },
-    {
-        value: 'TEACHING_ASSOCIATE',
-        name: 'Öğretim Görevlisi'
-    },
-    {
-        value: 'ASSISTANT_PROFESSOR',
-        name: 'Doktora Öğretim Üyesi'
-    },
-    {
-        value: 'ASSOCIATE_PROFESSOR',
-        name: 'Doçent'
-    },
-    {
-        value: 'PROFESSOR',
-        name: 'Profesör'
-    }
-]
-
-const teacherRoles = [
-    {
-        value: 'TEACHER',
-        name: 'Öğretmen'
-    },
-    {
-        value: 'ADVISOR',
-        name: 'Danışman Öğretmen'
-    },
-    {
-        value: 'HEAD_OF_DEPARTMENT',
-        name: 'Bölüm Başkanı'
-    }
-]
 
 export default function SaveTeacher({departments}) {
     const cookies = new Cookies();
@@ -147,7 +110,7 @@ export default function SaveTeacher({departments}) {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -359,11 +322,11 @@ export default function SaveTeacher({departments}) {
                                                 {teacherDegrees.map(teacherDegree => (
                                                     degree === teacherDegree.enum
                                                         ?
-                                                        <option value={teacherDegree.value}
+                                                        <option value={teacherDegree.enum}
                                                         >{teacherDegree.name}</option>
                                                         :
                                                         <option
-                                                            value={teacherDegree.value}>{teacherDegree.name}</option>
+                                                            value={teacherDegree.enum}>{teacherDegree.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -384,11 +347,11 @@ export default function SaveTeacher({departments}) {
                                                 {teacherRoles.map(teacherRole => (
                                                     role === teacherRole.enum
                                                         ?
-                                                        <option value={teacherRole.value}
+                                                        <option value={teacherRole.enum}
                                                         >{teacherRole.name}</option>
                                                         :
                                                         <option
-                                                            value={teacherRole.value}>{teacherRole.name}</option>
+                                                            value={teacherRole.enum}>{teacherRole.name}</option>
                                                 ))}
                                             </select>
                                         </div>

@@ -4,6 +4,7 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
+import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
 
 export async function getServerSideProps() {
     const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
@@ -20,63 +21,6 @@ export async function getServerSideProps() {
         }
     }
 }
-
-const studentDegrees = [
-    {
-        value: 'ASSOCIATE',
-        name: 'Önlisans'
-    },
-    {
-        value: 'UNDERGRADUATE',
-        name: 'Lisans'
-    },
-    {
-        value: 'POSTGRADUATE',
-        name: 'Yüksek Lisans'
-    },
-    {
-        value: 'DOCTORAL',
-        name: 'Doktora'
-    }
-]
-
-const studentClassLevels = [
-    {
-        enum: 'PREPARATORY',
-        name: 'Hazırlık Sınıfı',
-        value: 0
-    },
-    {
-        enum: 'FIRST',
-        name: '1. Sınıf',
-        value: 1
-    },
-    {
-        enum: 'SECOND',
-        name: '2. Sınıf',
-        value: 2
-    },
-    {
-        enum: 'THIRD',
-        name: '3. Sınıf',
-        value: 3
-    },
-    {
-        enum: 'FOURTH',
-        name: '4. Sınıf',
-        value: 4
-    },
-    {
-        enum: 'FIFTH',
-        name: '5. Sınıf',
-        value: 5
-    },
-    {
-        enum: 'SIXTH',
-        name: '6. Sınıf',
-        value: 6
-    }
-]
 
 export default function SaveStudent({departments}) {
     const cookies = new Cookies();
@@ -154,7 +98,7 @@ export default function SaveStudent({departments}) {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/student");
+        router.push("/officer/operation/student").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -364,11 +308,11 @@ export default function SaveStudent({departments}) {
                                                 {studentDegrees.map(studentDegree => (
                                                     degree === studentDegree.enum
                                                         ?
-                                                        <option value={studentDegree.value}
+                                                        <option value={studentDegree.enum}
                                                         >{studentDegree.name}</option>
                                                         :
                                                         <option
-                                                            value={studentDegree.value}>{studentDegree.name}</option>
+                                                            value={studentDegree.enum}>{studentDegree.name}</option>
                                                 ))}
                                             </select>
                                         </div>
