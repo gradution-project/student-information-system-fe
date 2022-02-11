@@ -63,8 +63,8 @@ export default function SaveTeacher({departments}) {
     const cookies = new Cookies();
 
     const departmentName = departments.name;
-    let degree;
-    let role;
+    const [degree] = useState();
+    const [role] = useState();
 
     const router = useRouter();
 
