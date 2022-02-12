@@ -2,7 +2,7 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 
-export const getStaticProps = async () => {
+export async function getServerSideProps() {
     const teacherResponse = await fetch("http://localhost:8585/teacher?status=ALL", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -10,7 +10,7 @@ export const getStaticProps = async () => {
     const teachersData = await teacherResponse.json();
     if (teachersData.success) {
         return {
-            props: {teachers: teachersData.result}
+            props: {teachers: teachersData.response}
         }
     }
 }
@@ -104,7 +104,7 @@ export default function TeacherList({teachers}) {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentId}</div>
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span

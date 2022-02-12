@@ -53,7 +53,7 @@ export default function StudentLogin() {
             method: 'POST'
         });
         const loginData = await loginRes.json();
-        if (loginData.result.loginSuccess) {
+        if (loginData.response.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('studentNumber', studentNumber, {path: '/'});
             const getRes = await fetch("http://localhost:8585/student/" + cookies.get('studentNumber'), {
@@ -62,20 +62,21 @@ export default function StudentLogin() {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('studentName', getData.result.personalInfoResponse.name, {path: '/'});
-                cookies.set('studentSurname', getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('studentName', getData.response.personalInfoResponse.name, {path: '/'});
+                cookies.set('studentSurname', getData.response.personalInfoResponse.surname, {path: '/'});
                 cookies.set('studentFullName', cookies.get('studentName') + ' ' + cookies.get('studentSurname'), {path: '/'});
-                cookies.set('studentTcNo', getData.result.personalInfoResponse.tcNo, {path: '/'});
-                cookies.set('studentPersonalEmail', getData.result.personalInfoResponse.email, {path: '/'});
-                cookies.set('studentBirthday', getData.result.personalInfoResponse.birthday, {path: '/'});
-                cookies.set('studentPhoneNumber', getData.result.personalInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('studentAddress', getData.result.personalInfoResponse.address, {path: '/'});
-                cookies.set('studentAcademicEmail', getData.result.academicInfoResponse.email, {path: '/'});
-                cookies.set('studentStatus', getData.result.academicInfoResponse.status, {path: '/'});
-                cookies.set('studentDegree', getData.result.academicInfoResponse.degree, {path: '/'});
-                cookies.set('studentDepartmentId', getData.result.academicInfoResponse.departmentId, {path: '/'});
-                cookies.set('studentClassLevel', getData.result.academicInfoResponse.classLevel, {path: '/'});
-                cookies.set('studentRegistrationDate', getData.result.academicInfoResponse.registrationDate, {path: '/'});
+                cookies.set('studentTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
+                cookies.set('studentPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
+                cookies.set('studentBirthday', getData.response.personalInfoResponse.birthday, {path: '/'});
+                cookies.set('studentPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('studentAddress', getData.response.personalInfoResponse.address, {path: '/'});
+                cookies.set('studentAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
+                cookies.set('studentStatus', getData.response.academicInfoResponse.status, {path: '/'});
+                cookies.set('studentDegree', getData.response.academicInfoResponse.degree, {path: '/'});
+                cookies.set('studentFaculty', getData.response.academicInfoResponse.departmentResponse.facultyResponse.name, {path: '/'});
+                cookies.set('studentDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
+                cookies.set('studentClassLevel', getData.response.academicInfoResponse.classLevel, {path: '/'});
+                cookies.set('studentRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
                 closeProcessingModal();
                 await router.push("/student");
             }

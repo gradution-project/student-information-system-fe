@@ -60,8 +60,13 @@ export default function SaveStudent() {
 
         const saveRes = await fetch("http://localhost:8585/lesson/teacher", {
             body: JSON.stringify({
-                lessonId: lessonNumber,
-                teacherId: teacherNumber
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                teacherLessonInfoRequest: {
+                    lessonId: lessonNumber,
+                    teacherId: teacherNumber
+                }
             }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
