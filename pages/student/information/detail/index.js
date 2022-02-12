@@ -1,55 +1,58 @@
-import Cookies from "universal-cookie";
 import SISTitle from "../../../../public/components/page-titles";
 import StudentNavbar from "../../../../public/components/navbar/student/student-navbar";
 import {Fragment, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {useRouter} from "next/router";
+import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
 
-export default function MyInfo() {
+export async function getServerSideProps(context) {
+    const studentId = context.req.cookies['studentNumber']
+    const studentResponse = await fetch("http://localhost:8585/student/" + studentId, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const studentData = await studentResponse.json();
+    console.log(studentData);
+    if (studentData.success) {
+        return {
+            props: {
+                student: studentData.response
+            }
+        }
+    }
+}
 
-    const cookies = new Cookies();
+export default function MyInfo({student}) {
+
+    const {academicInfoResponse} = student;
+    const {personalInfoResponse} = student;
+
+    const {
+        departmentResponse,
+        studentId,
+        classLevel,
+        degree,
+        registrationDate,
+        status
+    } = academicInfoResponse;
+    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {facultyResponse} = departmentResponse;
 
     const router = new useRouter();
 
-    const [studentId] = useState(cookies.get('studentNumber'));
-
-    const [studentName, setStudentName] = useState(cookies.get('studentName'));
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
-    }
-
-    const [studentSurname, setStudentSurname] = useState(cookies.get('studentSurname'));
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
-    }
-
-    const [studentTcNo, setStudentTcNo] = useState(cookies.get('studentTcNo'));
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
-    }
-
-    const [studentBirthday, setStudentBirthday] = useState(cookies.get('studentBirthday'));
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
-    }
-
-    const [studentEmail, setStudentEmail] = useState(cookies.get('studentPersonalEmail'));
+    const [studentEmail, setStudentEmail] = useState(personalInfoResponse.email);
     const changeStudentEmail = event => {
         const studentEmail = event.target.value;
         setStudentEmail(studentEmail);
     }
 
-    const [studentAddress, setStudentAddress] = useState(cookies.get('studentAddress'));
+    const [studentAddress, setStudentAddress] = useState(address);
     const changeStudentAddress = event => {
         const studentAddress = event.target.value;
         setStudentAddress(studentAddress);
     }
 
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState(cookies.get('studentPhoneNumber'));
+    const [studentPhoneNumber, setStudentPhoneNumber] = useState(phoneNumber);
     const changeStudentPhoneNumber = event => {
         const studentPhoneNumber = event.target.value;
         setStudentPhoneNumber(studentPhoneNumber);
@@ -101,12 +104,12 @@ export default function MyInfo() {
                 },
                 personalInfoRequest: {
                     address: studentAddress,
-                    birthday: studentBirthday,
+                    birthday: birthday,
                     email: studentEmail,
-                    name: studentName,
+                    name: name,
                     phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
+                    surname: surname,
+                    tcNo: tcNo
                 }
             }),
         });
@@ -125,12 +128,12 @@ export default function MyInfo() {
             <SISTitle/>
             <StudentNavbar/>
             <div>
-                <div className="mt-5 md:mt-0 md:col-span-2">
+                <div className="select-none mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                    <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
                                             AKADEMİK BİLGİLERİM
                                         </h3>
@@ -145,7 +148,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value={cookies.get('studentNumber')}
+                                                value={studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -160,7 +163,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={cookies.get('studentRegistrationDate')}
+                                                value={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -169,7 +172,7 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="faculty"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTE
+                                                FAKÜLTESİ
                                             </label>
                                             <select
                                                 id="faculty"
@@ -178,14 +181,14 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('studentFaculty')}</option>
+                                                <option>{facultyResponse.name}</option>
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM ADI
+                                                BÖLÜMÜ
                                             </label>
                                             <select
                                                 id="department-id"
@@ -194,26 +197,32 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('studentDepartment')}</option>
+                                                <option>{departmentResponse.name}</option>
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-4">
-                                            <label htmlFor="email-address"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                E-MAİL ADRESİ
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="degree" className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                DERECESİ
                                             </label>
-                                            <input
-                                                type="text"
-                                                name="email-address"
-                                                id="email-address"
-                                                value={cookies.get('studentAcademicEmail')}
+                                            <select
+                                                id="degree"
+                                                name="degree"
+                                                autoComplete="degree"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                {studentDegrees.map(sDegree => (
+                                                    degree === sDegree.enum
+                                                        ?
+                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
+                                                        :
+                                                        null
+                                                ))}
+                                            </select>
                                         </div>
 
-                                        <div className="sm:col-span-2">
+                                        <div className="sm:col-span-3">
                                             <label htmlFor="student-class"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 SINIF
@@ -222,10 +231,31 @@ export default function MyInfo() {
                                                 id="class"
                                                 name="class"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('studentClassLevel')}</option>
+                                                {studentClassLevels.map(sClassLevel => (
+                                                    classLevel === sClassLevel.enum
+                                                        ?
+                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                        :
+                                                        null
+                                                ))}
                                             </select>
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="email-address"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                E-MAİL ADRESİ
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="email-address"
+                                                id="email-address"
+                                                value={academicInfoResponse.email}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
                                         </div>
 
                                     </div>
@@ -243,10 +273,10 @@ export default function MyInfo() {
                 </div>
             </div>
 
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mb-10 mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" method="POST">
+                        <form className="px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -261,12 +291,12 @@ export default function MyInfo() {
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                defaultValue={cookies.get('studentName')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={name}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -276,12 +306,12 @@ export default function MyInfo() {
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeStudentSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                defaultValue={cookies.get('studentSurname')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={surname}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -291,12 +321,12 @@ export default function MyInfo() {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                defaultValue={cookies.get('studentTcNo')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={tcNo}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -306,12 +336,15 @@ export default function MyInfo() {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeStudentBirthday}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                defaultValue={cookies.get('studentBirthday')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                required
+                                                minLength="10"
+                                                maxLength="10"
+                                                defaultValue={birthday}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -326,7 +359,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue={cookies.get('studentPersonalEmail')}
+                                                defaultValue={personalInfoResponse.email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -337,12 +370,29 @@ export default function MyInfo() {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeStudentPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
-                                                maxLength="13"
-                                                defaultValue={cookies.get('studentPhoneNumber')}
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
+                                                defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -358,7 +408,7 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={cookies.get('studentAddress')}
+                                                defaultValue={address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -421,7 +471,17 @@ export default function MyInfo() {
                                             </div>
                                         </div>
                                     </div>*/}
-
+                                    {(
+                                        personalInfoResponse.modifiedDate !== null
+                                            ?
+                                            <div className="mt-6 sm:col-span-6">
+                                                <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                    Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
+                                                </a>
+                                            </div>
+                                            :
+                                            null
+                                    )}
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     <button
