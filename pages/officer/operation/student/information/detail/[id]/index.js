@@ -3,7 +3,7 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import {studentClassLevels, studentDegrees} from "../../../../../../../public/constants/student";
+import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../../../../public/constants/student";
 import Cookies from "universal-cookie";
 
 export async function getServerSideProps({query}) {
@@ -16,7 +16,6 @@ export async function getServerSideProps({query}) {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-
     const departmentDatas = await departmentResponses.json();
     const studentData = await studentResponse.json();
     if (studentData.success && departmentDatas.success) {
@@ -461,14 +460,21 @@ export default function StudentDetail({departments, student}) {
         <>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className="select-none px-28 py-5 mx-auto space-y-6">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {name} {surname}
                         </a>
+                        {studentStatuses.map((studentStatus) => (
+                            status === studentStatus.enum
+                                ?
+                                studentStatus.component
+                                :
+                                null
+                        ))}
                         {(
-                            status !== 'Silinmiş'
+                            status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={studentDelete}
@@ -478,15 +484,10 @@ export default function StudentDetail({departments, student}) {
                                     KAYDI SİL
                                 </button>
                                 :
-                                status === 'Silinmiş'
-                                    ?
-                                    <span
-                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">{status}</span>
-                                    :
-                                    null
+                                null
                         )}
                         {(
-                            status !== 'Pasif' && status !== 'Silinmiş'
+                            status !== 'PASSIVE' && status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={studentPassivate}
@@ -496,16 +497,10 @@ export default function StudentDetail({departments, student}) {
                                     KAYDI DONDUR
                                 </button>
                                 :
-                                status === 'Silinmiş'
-                                    ?
-                                    null
-                                    :
-                                    <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
-                                        {status}
-                                    </span>
+                                null
                         )}
                         {(
-                            status !== 'Aktif' && status !== 'Silinmiş'
+                            status !== 'ACTIVE' && status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={studentActivate}
@@ -515,16 +510,10 @@ export default function StudentDetail({departments, student}) {
                                     KAYDI AKTİFLEŞTİR
                                 </button>
                                 :
-                                status === 'Silinmiş'
-                                    ?
-                                    null
-                                    :
-                                    <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
-                                        {status}
-                                    </span>
+                                null
                         )}
                         {(
-                            status !== 'Mezun' && status !== 'Silinmiş'
+                            status !== 'GRADUATED' && status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={studentGraduate}
@@ -618,8 +607,7 @@ export default function StudentDetail({departments, student}) {
                                             </select>
                                         </div>
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            <label htmlFor="degree" className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DERECESİ
                                             </label>
                                             <select
@@ -629,14 +617,12 @@ export default function StudentDetail({departments, student}) {
                                                 autoComplete="degree"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {studentDegrees.map(degreeStudent => (
-                                                    degree === degreeStudent.enum
+                                                {studentDegrees.map(sDegree => (
+                                                    degree === sDegree.enum
                                                         ?
-                                                        <option value={degreeStudent.enum}
-                                                                selected>{degreeStudent.name}</option>
+                                                        <option value={sDegree.enum} selected>{sDegree.tr}</option>
                                                         :
-                                                        <option
-                                                            value={degreeStudent.enum}>{degreeStudent.name}</option>
+                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -670,14 +656,12 @@ export default function StudentDetail({departments, student}) {
                                                 {/*                : */}
                                                 {/*                null*/}
                                                 {/*))}*/}
-                                                {studentClassLevels.map(classLevelStudent => (
-                                                    classLevel === classLevelStudent.enum
+                                                {studentClassLevels.map(sClassLevel => (
+                                                    classLevel === sClassLevel.enum
                                                         ?
-                                                        <option value={classLevelStudent.enum}
-                                                                selected>{classLevelStudent.name}</option>
+                                                        <option value={sClassLevel.enum} selected>{sClassLevel.tr}</option>
                                                         :
-                                                        <option
-                                                            value={classLevelStudent.enum}>{classLevelStudent.name}</option>
+                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -711,7 +695,7 @@ export default function StudentDetail({departments, student}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                    status !== 'DELETED' && status !== 'GRADUTED'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
@@ -737,7 +721,7 @@ export default function StudentDetail({departments, student}) {
                 </div>
             </div>
 
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 max-w-3xl mx-auto space-y-6">
@@ -789,6 +773,10 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
+                                                minLength="11"
+                                                maxLength="11"
+                                                pattern="[0-9]+"
+                                                required
                                                 defaultValue={tcNo}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -800,10 +788,26 @@ export default function StudentDetail({departments, student}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeStudentBirthday}
+                                                onChange={(e) => {
+                                                    let birthdayLength = e.target.value.length;
+                                                    if (birthdayLength > 1 && birthdayLength < 3) {
+                                                        if (e.target.value <= 31) {
+                                                            e.target.value =  e.target.value + ".";
+                                                        } else {
+                                                            e.target.value = "";
+                                                        }
+                                                    }
+                                                    if (birthdayLength > 4 && birthdayLength < 7) {
+                                                        e.target.value =  e.target.value + ".";
+                                                    }
+                                                    changeStudentBirthday(e)
+                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
+                                                required
+                                                minLength="10"
+                                                maxLength="10"
                                                 defaultValue={birthday}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -831,11 +835,28 @@ export default function StudentDetail({departments, student}) {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value =  e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value =  e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value =  e.target.value + " ";
+                                                    }
+                                                    changeStudentPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
-                                                maxLength="13"
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
                                                 defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -871,7 +892,7 @@ export default function StudentDetail({departments, student}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                    status !== 'DELETED' && status !== 'GRADUATED'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
