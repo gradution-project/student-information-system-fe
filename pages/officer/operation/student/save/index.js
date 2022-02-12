@@ -167,7 +167,7 @@ export default function SaveStudent({departments}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
@@ -233,11 +233,26 @@ export default function SaveStudent({departments}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeStudentBirthday}
+                                                onChange={(e) => {
+                                                    let birthdayLength = e.target.value.length;
+                                                    if (birthdayLength > 1 && birthdayLength < 3) {
+                                                        if (e.target.value <= 31) {
+                                                            e.target.value =  e.target.value + ".";
+                                                        } else {
+                                                            e.target.value = "";
+                                                        }
+                                                    }
+                                                    if (birthdayLength > 4 && birthdayLength < 7) {
+                                                        e.target.value =  e.target.value + ".";
+                                                    }
+                                                    changeStudentBirthday(e)
+                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
+                                                minLength="10"
+                                                maxLength="10"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -264,14 +279,28 @@ export default function SaveStudent({departments}) {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value =  e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value =  e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value =  e.target.value + " ";
+                                                    }
+                                                    changeStudentPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
                                                 required
-                                                minLength="10"
-                                                maxLength="10"
-                                                pattern="[0-9]+"
+                                                minLength="19"
+                                                maxLength="19"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -305,14 +334,12 @@ export default function SaveStudent({departments}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
-                                                {studentDegrees.map(studentDegree => (
-                                                    degree === studentDegree.enum
+                                                {studentDegrees.map(sDegree => (
+                                                    degree === sDegree.enum
                                                         ?
-                                                        <option value={studentDegree.enum}
-                                                        >{studentDegree.name}</option>
+                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
                                                         :
-                                                        <option
-                                                            value={studentDegree.enum}>{studentDegree.name}</option>
+                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -331,14 +358,12 @@ export default function SaveStudent({departments}) {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
-                                                {studentClassLevels.map(studentClassLevel => (
-                                                    classLevel === studentClassLevel.enum
+                                                {studentClassLevels.map(sClassLevel => (
+                                                    classLevel === sClassLevel.enum
                                                         ?
-                                                        <option value={studentClassLevel.enum}
-                                                        >{studentClassLevel.name}</option>
+                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                         :
-                                                        <option
-                                                            value={studentClassLevel.enum}>{studentClassLevel.name}</option>
+                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -359,11 +384,9 @@ export default function SaveStudent({departments}) {
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option value={department.departmentId}
-                                                        >{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                         :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
