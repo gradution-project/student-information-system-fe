@@ -72,9 +72,7 @@ export default function OfficerLogin() {
                 cookies.set('officerAddress', getData.response.personalInfoResponse.address, {path: '/'});
                 cookies.set('officerAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
                 cookies.set('officerStatus', getData.response.academicInfoResponse.status, {path: '/'});
-                cookies.set('officerDegree', getData.response.academicInfoResponse.degree, {path: '/'});
-                cookies.set('officerDepartmentId', getData.response.academicInfoResponse.departmentId, {path: '/'});
-                cookies.set('officerClassLevel', getData.response.academicInfoResponse.classLevel, {path: '/'});
+                cookies.set('officerFacultyNumber', getData.response.academicInfoResponse.facultyResponse.facultyId, {path: '/'});
                 cookies.set('officerRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
                 closeProcessingModal();
                 await router.push("/officer");
