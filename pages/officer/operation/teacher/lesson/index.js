@@ -2,8 +2,8 @@ import {useRouter} from "next/router";
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 
-export const getStaticProps = async () => {
-    const lessonResponse = await fetch("http://localhost:8585/lesson/teacher", {
+export async function getServerSideProps() {
+    const lessonResponse = await fetch("http://localhost:8585/lesson?status=ALL", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -31,12 +31,12 @@ export default function TeacherLessonList({lessons}) {
             <div className="px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        ÖĞRETMEN DERS LİSTESİ
+                        DERS LİSTESİ
                     </a>
                     <button
                         type="submit"
                         onClick={pushSavePage}
-                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
+                        className="font-phenomenaBold float-right mr-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
                     >
                         DERS ATAMA
                     </button>
@@ -77,25 +77,25 @@ export default function TeacherLessonList({lessons}) {
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            ÖĞRETMEN KODU
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="select-none px-6 py-3 tracking-wider"
-                                        >
                                             DERSİN ADI
                                         </th>
                                         <th
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            BÖLÜM KODU
+                                            BÖLÜM ADI
                                         </th>
                                         <th
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
                                             DERS DURUMU
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="select-none px-6 py-3 tracking-wider"
+                                        >
+                                            STATÜSÜ
                                         </th>
                                     </tr>
                                     </thead>
@@ -105,10 +105,6 @@ export default function TeacherLessonList({lessons}) {
                                     {lessons.map((lesson) => (
                                         <tr key={lesson.lessonId}>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherId}</div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="ml-0.5">
                                                         <div
@@ -116,19 +112,24 @@ export default function TeacherLessonList({lessons}) {
                                                         <div
                                                             className="font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
                                                         <div
-                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.semester}.
-                                                            Yarıyıl
+                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.semester}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentId}</div>
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.compulsoryOrElective}</div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span
+                                                    className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-darkblue font-phenomenaBold text-lg text-sis-white ">
+                                                        {lesson.status}
+                                                </span>
                                             </td>
                                         </tr>
                                     ))}
