@@ -41,15 +41,13 @@ export default function StudentDetail({departments, student}) {
         registrationDate,
         status
     } = academicInfoResponse;
-    const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
+    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
     const {facultyResponse} = departmentResponse;
 
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
     const departmentId = departmentResponse.departmentId;
-    const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
-    const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
     const [studentName, setStudentName] = useState(name);
     const changeStudentName = event => {
@@ -75,7 +73,7 @@ export default function StudentDetail({departments, student}) {
         setStudentBirthday(studentBirthday);
     }
 
-    const [studentEmail, setStudentEmail] = useState(email);
+    const [studentEmail, setStudentEmail] = useState(personalInfoResponse.email);
     const changeStudentEmail = event => {
         const studentEmail = event.target.value;
         setStudentEmail(studentEmail);
@@ -675,18 +673,18 @@ export default function StudentDetail({departments, student}) {
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
-                                                defaultValue={email}
+                                                defaultValue={academicInfoResponse.email}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
                                         {(
-                                            academicInfoModifiedDate !== null
+                                            academicInfoResponse.modifiedDate !== null
                                                 ?
                                                 <div className="sm:col-span-6">
                                                     <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {academicInfoModifiedDate}
+                                                        Son Düzenlenme Tarihi : {academicInfoResponse.modifiedDate}
                                                     </a>
                                                 </div>
                                                 :
@@ -824,7 +822,7 @@ export default function StudentDetail({departments, student}) {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue={email}
+                                                defaultValue={personalInfoResponse.email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -879,11 +877,11 @@ export default function StudentDetail({departments, student}) {
                                         </div>
 
                                         {(
-                                            personalInfoModifiedDate !== null
+                                            personalInfoResponse.modifiedDate !== null
                                                 ?
                                                 <div className="sm:col-span-6">
                                                     <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {personalInfoModifiedDate}
+                                                        Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
                                                     </a>
                                                 </div>
                                                 :
