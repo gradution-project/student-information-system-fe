@@ -305,7 +305,7 @@ export default function MyInfo({teacher}) {
                 </div>
             </div>
 
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
