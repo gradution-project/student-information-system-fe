@@ -1,7 +1,7 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
+import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../public/constants/student";
 
 export async function getServerSideProps() {
     const studentResponse = await fetch("http://localhost:8585/student?status=ALL", {
@@ -29,9 +29,9 @@ export default function StudentList({students}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className="select-none px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                    <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ÖĞRENCİ LİSTESİ
                     </a>
                     <button
@@ -42,6 +42,9 @@ export default function StudentList({students}) {
                         ÖĞRENCİ EKLE
                     </button>
                 </div>
+                {(
+                    students != null
+                        ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -77,81 +80,61 @@ export default function StudentList({students}) {
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
                                             {students.map((student) => (
-                                                student !== null
-                                                    ?
-                                                    <tr key={student.studentId}>
-                                                        <td className="px-2 py-4 whitespace-nowrap">
-                                                            {/*<td className="px-6 py-4 whitespace-nowrap">*/}
-                                                            <div className="flex items-center">
-                                                                {/*<div className="flex-shrink-0 h-10 w-10">*/}
-                                                                {/*    <img className="select-none h-10 w-10 rounded-full"*/}
-                                                                {/*         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"*/}
-                                                                {/*         alt=""/>*/}
-                                                                {/*</div>*/}
-                                                                <div className="ml-4">
-                                                                    <div
-                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{student.name} {student.surname}</div>
-                                                                    <div
-                                                                        className="font-phenomenaRegular text-lg text-gray-500">{student.studentId}</div>
-                                                                    <div
-                                                                        className="font-phenomenaExtraLight text-lg text-gray-600">{student.email}</div>
-                                                                </div>
+                                                <tr key={student.studentId}>
+                                                    <td className="px-2 py-4 whitespace-nowrap">
+                                                        {/*<td className="px-6 py-4 whitespace-nowrap">*/}
+                                                        <div className="flex items-center">
+                                                            {/*<div className="flex-shrink-0 h-10 w-10">*/}
+                                                            {/*    <img className="h-10 w-10 rounded-full"*/}
+                                                            {/*         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"*/}
+                                                            {/*         alt=""/>*/}
+                                                            {/*</div>*/}
+                                                            <div className="ml-4">
+                                                                <div className="font-phenomenaBold text-xl text-sis-darkblue">{student.name} {student.surname}</div>
+                                                                <div className="font-phenomenaRegular text-lg text-gray-500">{student.studentId}</div>
+                                                                <div className="font-phenomenaExtraLight text-lg text-gray-600">{student.email}</div>
                                                             </div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            {studentDegrees.map((studentsDegree) => (
-                                                                student.degree === studentsDegree.enum
-                                                                    ?
-                                                                    <div
-                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{studentsDegree.name}</div>
-                                                                    :
-                                                                    null
-                                                            ))}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {studentDegrees.map((sDegree) => (
+                                                            student.degree === sDegree.enum
+                                                                ?
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{sDegree.tr}</div>
+                                                                :
+                                                                null
+                                                        ))}
 
-                                                            {studentClassLevels.map((studentsClassLevel) => (
-                                                                student.classLevel === studentsClassLevel.enum
-                                                                    ?
-                                                                    <div
-                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{studentsClassLevel.name}</div>
-                                                                    :
-                                                                    null
-                                                            ))}
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            <div
-                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{student.departmentResponse.name}</div>
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            {(
-                                                                student.status === 'Aktif'
-                                                                    ?
-                                                                    <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">
-                                                            {student.status}
-                                                        </span>
-                                                                    :
-                                                                    student.status === 'Pasif'
-                                                                        ?
-                                                                        <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">
-                                                                {student.status}
-                                                            </span>
-                                                                        :
-                                                                        student.status === 'Silinmiş'
-                                                                            ?
-                                                                            <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">
-                                                                    {student.status}
-                                                                </span>
-                                                                            : null
-                                                            )}
-                                                        </td>
-                                                        <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                            <a href={'/officer/operation/student/information/detail/' + student.studentId}
-                                                               className='text-sis-yellow'>
-                                                                DETAY
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    :
-                                                    null
+                                                        {studentClassLevels.map((sClassLevel) => (
+                                                            student.classLevel === sClassLevel.enum
+                                                                ?
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{sClassLevel.tr}</div>
+                                                                :
+                                                                null
+                                                        ))}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{student.departmentResponse.name}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {studentStatuses.map((sStatus) => (
+                                                            student.status === sStatus.enum
+                                                                ?
+                                                                sStatus.miniComponent
+                                                                :
+                                                                null
+                                                        ))}
+                                                    </td>
+                                                    <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                        <a href={'/officer/operation/student/information/detail/' + student.studentId}
+                                                           className='text-sis-yellow'>
+                                                            DETAY
+                                                        </a>
+                                                    </td>
+                                                </tr>
                                             ))}
                                             </tbody>
                                         </table>
@@ -159,6 +142,9 @@ export default function StudentList({students}) {
                                 </div>
                             </div>
                         </div>
+                        :
+                        null
+                )}
             </div>
         </div>
     )
