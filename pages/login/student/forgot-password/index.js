@@ -59,7 +59,7 @@ export default function ForgotPassword() {
         if (!data.success) {
             closeProcessingModal();
             openFailModal();
-        } else if (data.result.forgotPasswordSuccess) {
+        } else if (data.response.forgotPasswordSuccess) {
             closeProcessingModal();
             openSuccessModal();
         } else {
