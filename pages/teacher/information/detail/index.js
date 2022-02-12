@@ -4,53 +4,57 @@ import Cookies from "universal-cookie";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher";
 
+export async function getServerSideProps(context) {
+    const teacherId = context.req.cookies['teacherNumber']
+    const teacherResponse = await fetch("http://localhost:8585/teacher/" + teacherId, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const teacherData = await teacherResponse.json();
+    console.log(teacherData);
+    if (teacherData.success) {
+        return {
+            props: {
+                teacher: teacherData.response
+            }
+        }
+    }
+}
 
-export default function MyInfo() {
+export default function MyInfo({teacher}) {
+    const {academicInfoResponse} = teacher;
+    const {personalInfoResponse} = teacher;
+
+    const {
+        departmentResponse,
+        teacherId,
+        degree,
+        role,
+        registrationDate,
+        fieldOfStudy
+    } = academicInfoResponse;
+    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {facultyResponse} = departmentResponse;
 
     const cookies = new Cookies();
 
     const router = new useRouter();
 
-    const [teacherId] = useState(cookies.get('teacherNumber'));
-
-    const [teacherName, setTeacherName] = useState(cookies.get('teacherName'));
-    const changeTeacherName = event => {
-        const teacherName = event.target.value;
-        setTeacherName(teacherName);
-    }
-
-    const [teacherSurname, setTeacherSurname] = useState(cookies.get('teacherSurname'));
-    const changeTeacherSurname = event => {
-        const teacherSurname = event.target.value;
-        setTeacherSurname(teacherSurname);
-    }
-
-    const [teacherTcNo, setTeacherTcNo] = useState(cookies.get('teacherTcNo'));
-    const changeTeacherTcNo = event => {
-        const teacherTcNo = event.target.value;
-        setTeacherTcNo(teacherTcNo);
-    }
-
-    const [teacherBirthday, setTeacherBirthday] = useState(cookies.get('teacherBirthday'));
-    const changeTeacherBirthday = event => {
-        const teacherBirthday = event.target.value;
-        setTeacherBirthday(teacherBirthday);
-    }
-
-    const [teacherEmail, setTeacherEmail] = useState(cookies.get('teacherPersonalEmail'));
+    const [teacherEmail, setTeacherEmail] = useState(personalInfoResponse.email);
     const changeTeacherEmail = event => {
         const teacherEmail = event.target.value;
         setTeacherEmail(teacherEmail);
     }
 
-    const [teacherAddress, setTeacherAddress] = useState(cookies.get('teacherAddress'));
+    const [teacherAddress, setTeacherAddress] = useState(address);
     const changeTeacherAddress = event => {
         const teacherAddress = event.target.value;
         setTeacherAddress(teacherAddress);
     }
 
-    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState(cookies.get('teacherPersonalPhoneNumber'));
+    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState(personalInfoResponse.phoneNumber);
     const changeTeacherPhoneNumber = event => {
         const teacherPhoneNumber = event.target.value;
         setTeacherPhoneNumber(teacherPhoneNumber);
@@ -101,12 +105,12 @@ export default function MyInfo() {
                 },
                 personalInfoRequest: {
                     address: teacherAddress,
-                    birthday: teacherBirthday,
+                    birthday: birthday,
                     email: teacherEmail,
-                    name: teacherName,
+                    name: name,
                     phoneNumber: teacherPhoneNumber,
-                    surname: teacherSurname,
-                    tcNo: teacherTcNo
+                    surname: surname,
+                    tcNo: tcNo
                 }
             }),
         });
@@ -125,7 +129,7 @@ export default function MyInfo() {
             <SISTitle/>
             <TeacherNavbar/>
             <div>
-                <div className="mt-5 md:mt-0 md:col-span-2">
+                <div className="select-none mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
                         <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
@@ -145,7 +149,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="teacher-number"
                                                 id="teacher-number"
-                                                value={cookies.get('teacherNumber')}
+                                                value={teacherId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -160,7 +164,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={cookies.get('teacherRegistrationDate')}
+                                                value={registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -169,31 +173,45 @@ export default function MyInfo() {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="degree"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVAN
+                                                ÜNVANI
                                             </label>
-                                            <input
-                                                type="text"
-                                                name="degree"
+                                            <select
                                                 id="degree"
-                                                value={cookies.get('teacherDegree')}
+                                                name="degree"
+                                                autoComplete="degree"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                {teacherDegrees.map(tDegree => (
+                                                    degree === tDegree.enum
+                                                        ?
+                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
+                                                        :
+                                                        null
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="role"
+                                            <label htmlFor="degree"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 ROLÜ
                                             </label>
-                                            <input
-                                                type="text"
-                                                name="role"
-                                                id="role"
-                                                value={cookies.get('teacherRole')}
+                                            <select
+                                                id="degree"
+                                                name="degree"
+                                                autoComplete="degree"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                {teacherRoles.map(tRole => (
+                                                    role === tRole.enum
+                                                        ?
+                                                        <option value={tRole.enum}>{tRole.tr}</option>
+                                                        :
+                                                        null
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
@@ -205,7 +223,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="field-of-study"
                                                 id="field-of-study"
-                                                value={cookies.get('teacherFieldOfStudy')}
+                                                value={fieldOfStudy}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -223,7 +241,7 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('teacherFaculty')}</option>
+                                                <option>{facultyResponse.name}</option>
                                             </select>
                                         </div>
 
@@ -239,7 +257,7 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>{cookies.get('teacherDepartment')}</option>
+                                                <option>{departmentResponse.name}</option>
                                             </select>
                                         </div>
 
@@ -253,7 +271,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 disabled
-                                                value={cookies.get('teacherAcademicEmail')}
+                                                value={academicInfoResponse.email}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -268,7 +286,7 @@ export default function MyInfo() {
                                                 name="phone"
                                                 id="phone"
                                                 disabled
-                                                value={cookies.get('teacherAcademicPhoneNumber')}
+                                                value={academicInfoResponse.phoneNumber}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -307,12 +325,12 @@ export default function MyInfo() {
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                defaultValue={cookies.get('teacherName')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={name}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -322,12 +340,12 @@ export default function MyInfo() {
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                defaultValue={cookies.get('teacherSurname')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={surname}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -337,12 +355,12 @@ export default function MyInfo() {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                defaultValue={cookies.get('teacherTcNo')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={tcNo}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -352,12 +370,15 @@ export default function MyInfo() {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherBirthday}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                defaultValue={cookies.get('teacherBirthday')}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                required
+                                                minLength="10"
+                                                maxLength="10"
+                                                defaultValue={birthday}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -372,7 +393,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue={cookies.get('teacherPersonalEmail')}
+                                                defaultValue={personalInfoResponse.email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -383,12 +404,29 @@ export default function MyInfo() {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeTeacherPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
-                                                maxLength="13"
-                                                defaultValue={cookies.get('teacherPersonalPhoneNumber')}
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
+                                                defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -404,7 +442,7 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={cookies.get('teacherAddress')}
+                                                defaultValue={address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -470,6 +508,18 @@ export default function MyInfo() {
                                     </div>
 
 */}
+
+                                    {(
+                                        personalInfoResponse.modifiedDate !== null
+                                            ?
+                                            <div className="mt-6 sm:col-span-6">
+                                                <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                    Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
+                                                </a>
+                                            </div>
+                                            :
+                                            null
+                                    )}
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     <button
