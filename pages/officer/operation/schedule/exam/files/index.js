@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function StudentList({examScheduleFiles}) {
+export default function ExamScheduleFileList({examScheduleFiles}) {
 
     const router = useRouter();
 
