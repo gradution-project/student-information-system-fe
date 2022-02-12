@@ -43,9 +43,6 @@ export default function TeacherList({teachers}) {
                         ÖĞRETMEN EKLE
                     </button>
                 </div>
-                {teachers.map((teacher) => (
-                    teacher !== null
-                        ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -80,89 +77,92 @@ export default function TeacherList({teachers}) {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            <tr key={teacher.teacherId}>
-                                                <td className="px-2 py-4 whitespace-nowrap">
-                                                    {/*<td className="px-6 py-4 whitespace-nowrap">*/}
-                                                    <div className="flex items-center">
-                                                        {/*<div className="flex-shrink-0 h-10 w-10">*/}
-                                                        {/*    <img className="select-none h-10 w-10 rounded-full"*/}
-                                                        {/*         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"*/}
-                                                        {/*         alt=""/>*/}
-                                                        {/*</div>*/}
-                                                        <div className="ml-4">
-                                                            <div
-                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.name} {teacher.surname}</div>
-                                                            <div
-                                                                className="font-phenomenaRegular text-lg text-gray-500">{teacher.teacherId}</div>
-                                                            <div
-                                                                className="font-phenomenaExtraLight text-lg text-gray-600">{teacher.email}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    {teacherDegrees.map((degreeTeacher) => (
-                                                        teacher.degree === degreeTeacher.enum
-                                                            ?
-                                                            <div
-                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{degreeTeacher.name}</div>
-                                                            :
-                                                            null
-                                                    ))}
+                                            {teachers.map((teacher) => (
+                                                teacher !== null
+                                                    ?
+                                                    <tr key={teacher.teacherId}>
+                                                        <td className="px-2 py-4 whitespace-nowrap">
+                                                            {/*<td className="px-6 py-4 whitespace-nowrap">*/}
+                                                            <div className="flex items-center">
+                                                                {/*<div className="flex-shrink-0 h-10 w-10">*/}
+                                                                {/*    <img className="select-none h-10 w-10 rounded-full"*/}
+                                                                {/*         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"*/}
+                                                                {/*         alt=""/>*/}
+                                                                {/*</div>*/}
+                                                                <div className="ml-4">
+                                                                    <div
+                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.name} {teacher.surname}</div>
+                                                                    <div
+                                                                        className="font-phenomenaRegular text-lg text-gray-500">{teacher.teacherId}</div>
+                                                                    <div
+                                                                        className="font-phenomenaExtraLight text-lg text-gray-600">{teacher.email}</div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            {teacherDegrees.map((degreeTeacher) => (
+                                                                teacher.degree === degreeTeacher.enum
+                                                                    ?
+                                                                    <div
+                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{degreeTeacher.name}</div>
+                                                                    :
+                                                                    null
+                                                            ))}
 
-                                                    {teacherRoles.map((roleTeacher) => (
-                                                        teacher.role === roleTeacher.enum
-                                                            ?
+                                                            {teacherRoles.map((roleTeacher) => (
+                                                                teacher.role === roleTeacher.enum
+                                                                    ?
+                                                                    <div
+                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{roleTeacher.name}</div>
+                                                                    :
+                                                                    null
+                                                            ))}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
                                                             <div
-                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{roleTeacher.name}</div>
-                                                            :
-                                                            null
-                                                    ))}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    {(
-                                                        teacher.status === 'Aktif'
-                                                            ?
-                                                            <span
-                                                                className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">
-                                                            {teacher.status}
-                                                        </span>
-                                                            :
-                                                            teacher.status === 'Pasif'
-                                                                ?
-                                                                <span
-                                                                    className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">
-                                                                {teacher.status}
-                                                            </span>
-                                                                :
-                                                                teacher.status === 'Silinmiş'
+                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            {(
+                                                                teacher.status === 'Aktif'
                                                                     ?
                                                                     <span
-                                                                        className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">
+                                                                        className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">
+                                                            {teacher.status}
+                                                        </span>
+                                                                    :
+                                                                    teacher.status === 'Pasif'
+                                                                        ?
+                                                                        <span
+                                                                            className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">
+                                                                {teacher.status}
+                                                            </span>
+                                                                        :
+                                                                        teacher.status === 'Silinmiş'
+                                                                            ?
+                                                                            <span
+                                                                                className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">
                                                                     {teacher.status}
                                                                 </span>
-                                                                    : null
-                                                    )}
-                                                </td>
-                                                <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                    <a href={'/officer/operation/teacher/information/detail/' + teacher.teacherId}
-                                                       className='text-sis-yellow'>
-                                                        DETAY
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                                                            : null
+                                                            )}
+                                                        </td>
+                                                        <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                            <a href={'/officer/operation/teacher/information/detail/' + teacher.teacherId}
+                                                               className='text-sis-yellow'>
+                                                                DETAY
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    :
+                                                    null
+                                            ))}
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                ))}
             </div>
         </div>
     )
