@@ -3,7 +3,7 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import {teacherDegrees, teacherRoles} from "../../../../../../../public/constants/teacher";
+import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../../../../public/constants/teacher";
 import Cookies from "universal-cookie";
 
 export async function getServerSideProps({query}) {
@@ -54,8 +54,6 @@ export default function TeacherDetail({departments, teacher}) {
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
     const phone = academicInfoResponse.phoneNumber;
-    const academicInfoModifiedDate = academicInfoResponse.modifiedDate;
-    const personalInfoModifiedDate = personalInfoResponse.modifiedDate;
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
 
@@ -428,32 +426,34 @@ export default function TeacherDetail({departments, teacher}) {
             <SISTitle/>
             <OfficerNavbar/>
             <div>
-                <div className="px-28 py-5 mx-auto space-y-6">
+                <div className="select-none px-28 py-5 mx-auto space-y-6">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {name} {surname}
                         </a>
+                        {teacherStatuses.map((teacherStatus) => (
+                            status === teacherStatus.enum
+                                ?
+                                teacherStatus.component
+                                :
+                                null
+                        ))}
                         {(
-                            status !== 'Silinmiş'
+                            status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={teacherDelete}
                                     type="submit"
-                                    className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
+                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
                                 >
                                     KAYDI SİL
                                 </button>
                                 :
-                                status === 'Silinmiş'
-                                    ?
-                                    <span
-                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">{status}</span>
-                                    :
-                                    null
+                                null
                         )}
 
                         {(
-                            status !== 'Pasif' && status !== 'Silinmiş'
+                            status !== 'PASSIVE' && status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={teacherPassivate}
@@ -463,18 +463,11 @@ export default function TeacherDetail({departments, teacher}) {
                                     KAYDI DONDUR
                                 </button>
                                 :
-                                status === 'Silinmiş'
-                                    ?
-                                    null
-                                    :
-                                    <span
-                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">
-                                        {status}
-                                    </span>
+                                null
                         )}
 
                         {(
-                            status !== 'Aktif' && status !== 'Silinmiş'
+                            status !== 'ACTIVE' && status !== 'DELETED'
                                 ?
                                 <button
                                     onClick={teacherActivate}
@@ -484,14 +477,7 @@ export default function TeacherDetail({departments, teacher}) {
                                     KAYDI AKTİFLEŞTİR
                                 </button>
                                 :
-                                status === 'Silinmiş'
-                                    ?
-                                    null
-                                    :
-                                    <span
-                                        className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">
-                                        {status}
-                                    </span>
+                                null
                         )}
                     </div>
                     <div className="md:col-span-1">
@@ -587,14 +573,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                 autoComplete="degree"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {teacherDegrees.map(degreeTeacher => (
-                                                    degree === degreeTeacher.enum
+                                                {teacherDegrees.map(tDegree => (
+                                                    degree === tDegree.enum
                                                         ?
-                                                        <option value={degreeTeacher.enum}
-                                                                selected>{degreeTeacher.name}</option>
+                                                        <option value={tDegree.enum}
+                                                                selected>{tDegree.tr}</option>
                                                         :
                                                         <option
-                                                            value={degreeTeacher.enum}>{degreeTeacher.name}</option>
+                                                            value={tDegree.enum}>{tDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -611,14 +597,14 @@ export default function TeacherDetail({departments, teacher}) {
                                                 autoComplete="role"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {teacherRoles.map(roleTeacher => (
-                                                    role === roleTeacher.enum
+                                                {teacherRoles.map(tRole => (
+                                                    role === tRole.enum
                                                         ?
-                                                        <option value={roleTeacher.enum}
-                                                                selected>{roleTeacher.name}</option>
+                                                        <option value={tRole.enum}
+                                                                selected>{tRole.tr}</option>
                                                         :
                                                         <option
-                                                            value={roleTeacher.enum}>{roleTeacher.name}</option>
+                                                            value={tRole.enum}>{tRole.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -644,7 +630,22 @@ export default function TeacherDetail({departments, teacher}) {
                                                 DAHİLİ NUMARA
                                             </label>
                                             <input
-                                                onChange={changeTeacherPhone}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeTeacherPhone(e)
+                                                }}
                                                 type="text"
                                                 name="phoneNumber"
                                                 id="phoneNumber"
@@ -662,17 +663,17 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
-                                                defaultValue={email}
+                                                defaultValue={academicInfoResponse.email}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                         {(
-                                            academicInfoModifiedDate !== null
+                                            academicInfoResponse.modifiedDate !== null
                                                 ?
                                                 <div className="sm:col-span-6">
                                                     <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {academicInfoModifiedDate}
+                                                        Son Düzenlenme Tarihi : {academicInfoResponse.modifiedDate}
                                                     </a>
                                                 </div>
                                                 :
@@ -681,7 +682,7 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                    status !== 'DELETED'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
@@ -707,7 +708,7 @@ export default function TeacherDetail({departments, teacher}) {
                 </div>
             </div>
 
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 max-w-3xl mx-auto space-y-6">
@@ -759,6 +760,10 @@ export default function TeacherDetail({departments, teacher}) {
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
+                                                minLength="11"
+                                                maxLength="11"
+                                                pattern="[0-9]+"
+                                                required
                                                 defaultValue={tcNo}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -770,10 +775,26 @@ export default function TeacherDetail({departments, teacher}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherBirthday}
+                                                onChange={(e) => {
+                                                    let birthdayLength = e.target.value.length;
+                                                    if (birthdayLength > 1 && birthdayLength < 3) {
+                                                        if (e.target.value <= 31) {
+                                                            e.target.value = e.target.value + ".";
+                                                        } else {
+                                                            e.target.value = "";
+                                                        }
+                                                    }
+                                                    if (birthdayLength > 4 && birthdayLength < 7) {
+                                                        e.target.value = e.target.value + ".";
+                                                    }
+                                                    changeTeacherBirthday(e)
+                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
+                                                required
+                                                minLength="10"
+                                                maxLength="10"
                                                 defaultValue={birthday}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -790,7 +811,7 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue={email}
+                                                defaultValue={personalInfoResponse.email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -801,11 +822,28 @@ export default function TeacherDetail({departments, teacher}) {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeTeacherPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
-                                                maxLength="13"
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
                                                 defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -827,11 +865,11 @@ export default function TeacherDetail({departments, teacher}) {
                                             />
                                         </div>
                                         {(
-                                            personalInfoModifiedDate !== null
+                                            personalInfoResponse.modifiedDate !== null
                                                 ?
                                                 <div className="sm:col-span-6">
                                                     <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {personalInfoModifiedDate}
+                                                        Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
                                                     </a>
                                                 </div>
                                                 :
@@ -840,7 +878,7 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'Silinmiş' && status !== 'Mezun'
+                                    status !== 'DELETED'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
