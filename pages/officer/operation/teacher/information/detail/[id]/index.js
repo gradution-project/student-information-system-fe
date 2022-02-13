@@ -566,7 +566,7 @@ export default function TeacherDetail({departments, teacher}) {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DERECESİ
+                                                ÜNVANI
                                             </label>
                                             <select
                                                 onChange={changeTeacherDegree}
