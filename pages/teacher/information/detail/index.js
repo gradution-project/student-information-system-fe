@@ -13,7 +13,6 @@ export async function getServerSideProps(context) {
         method: 'GET'
     });
     const teacherData = await teacherResponse.json();
-    console.log(teacherData);
     if (teacherData.success) {
         return {
             props: {

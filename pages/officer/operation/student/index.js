@@ -110,7 +110,7 @@ export default function StudentList({students}) {
                                                             student.classLevel === sClassLevel.enum
                                                                 ?
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{sClassLevel.tr}</div>
+                                                                    className="font-phenomenaRegular text-xl text-sis-darkblue">{sClassLevel.tr}</div>
                                                                 :
                                                                 null
                                                         ))}

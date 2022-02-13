@@ -591,8 +591,11 @@ export default function StudentDetail({departments, student}) {
                                                 id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
@@ -604,8 +607,10 @@ export default function StudentDetail({departments, student}) {
                                                 ))}
                                             </select>
                                         </div>
+
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="degree" className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            <label htmlFor="degree"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DERECESİ
                                             </label>
                                             <select
@@ -613,8 +618,11 @@ export default function StudentDetail({departments, student}) {
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
                                                 {studentDegrees.map(sDegree => (
                                                     degree === sDegree.enum
                                                         ?
@@ -634,8 +642,11 @@ export default function StudentDetail({departments, student}) {
                                                 onChange={changeStudentClassLevel}
                                                 id="classLevel"
                                                 name="classLevel"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl">
-
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
                                                 {/*{(*/}
                                                 {/*    isTherePreparatoryClass === true*/}
                                                 {/*        ?*/}
@@ -692,8 +703,9 @@ export default function StudentDetail({departments, student}) {
                                         )}
                                     </div>
                                 </div>
+
                                 {(
-                                    status !== 'DELETED' && status !== 'GRADUTED'
+                                    status !== 'DELETED' && status !== 'GRADUTED' && status !== 'PASSIVE'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
@@ -742,8 +754,11 @@ export default function StudentDetail({departments, student}) {
                                                 name="name"
                                                 id="name"
                                                 defaultValue={name}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -757,8 +772,11 @@ export default function StudentDetail({departments, student}) {
                                                 name="surname"
                                                 id="surname"
                                                 defaultValue={surname}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -776,8 +794,11 @@ export default function StudentDetail({departments, student}) {
                                                 pattern="[0-9]+"
                                                 required
                                                 defaultValue={tcNo}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -807,8 +828,11 @@ export default function StudentDetail({departments, student}) {
                                                 minLength="10"
                                                 maxLength="10"
                                                 defaultValue={birthday}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -823,8 +847,11 @@ export default function StudentDetail({departments, student}) {
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -856,8 +883,11 @@ export default function StudentDetail({departments, student}) {
                                                 minLength="19"
                                                 maxLength="19"
                                                 defaultValue={phoneNumber}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6">
@@ -872,8 +902,11 @@ export default function StudentDetail({departments, student}) {
                                                 id="home-address"
                                                 autoComplete="home-address"
                                                 defaultValue={address}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         {(
@@ -890,7 +923,7 @@ export default function StudentDetail({departments, student}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'DELETED' && status !== 'GRADUATED'
+                                    status !== 'DELETED' && status !== 'GRADUATED' && status !== 'PASSIVE'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button

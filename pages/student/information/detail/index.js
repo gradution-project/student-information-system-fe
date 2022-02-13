@@ -12,7 +12,6 @@ export async function getServerSideProps(context) {
         method: 'GET'
     });
     const studentData = await studentResponse.json();
-    console.log(studentData);
     if (studentData.success) {
         return {
             props: {
@@ -657,6 +656,7 @@ export default function MyInfo({student}) {
                     </div>
                 </div>
             </div>
+
         </>
     )
 }
