@@ -592,7 +592,8 @@ export default function StudentDetail({departments, student}) {
                                                 name="department-id"
                                                 autoComplete="department-id"
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"}
                                             >
                                                 {departments.map((department) => (
@@ -617,7 +618,8 @@ export default function StudentDetail({departments, student}) {
                                                 name="degree"
                                                 autoComplete="degree"
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"}
                                             >
                                                 {studentDegrees.map(sDegree => (
@@ -640,10 +642,11 @@ export default function StudentDetail({departments, student}) {
                                                 id="classLevel"
                                                 name="classLevel"
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"}
-
-                                            > {/*{(*/}
+                                            >
+                                                {/*{(*/}
                                                 {/*    isTherePreparatoryClass === true*/}
                                                 {/*        ?*/}
                                                 {/*        <option value="PREPARATORY">Hazırlık Sınıfı</option>*/}
@@ -750,7 +753,8 @@ export default function StudentDetail({departments, student}) {
                                                 id="name"
                                                 defaultValue={name}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>
@@ -767,7 +771,8 @@ export default function StudentDetail({departments, student}) {
                                                 id="surname"
                                                 defaultValue={surname}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>
@@ -788,7 +793,8 @@ export default function StudentDetail({departments, student}) {
                                                 required
                                                 defaultValue={tcNo}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>
@@ -821,7 +827,8 @@ export default function StudentDetail({departments, student}) {
                                                 maxLength="10"
                                                 defaultValue={birthday}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>
@@ -839,7 +846,8 @@ export default function StudentDetail({departments, student}) {
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>
@@ -874,7 +882,8 @@ export default function StudentDetail({departments, student}) {
                                                 maxLength="19"
                                                 defaultValue={phoneNumber}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>
@@ -892,7 +901,8 @@ export default function StudentDetail({departments, student}) {
                                                 autoComplete="home-address"
                                                 defaultValue={address}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE" ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"}
                                             />
                                         </div>

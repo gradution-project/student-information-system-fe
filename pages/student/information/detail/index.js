@@ -657,6 +657,7 @@ export default function MyInfo({student}) {
                     </div>
                 </div>
             </div>
+
         </>
     )
 }
