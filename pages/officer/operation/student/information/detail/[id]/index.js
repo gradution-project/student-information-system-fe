@@ -607,6 +607,7 @@ export default function StudentDetail({departments, student}) {
                                                 ))}
                                             </select>
                                         </div>
+
                                         <div className="sm:col-span-3">
                                             <label htmlFor="degree"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
@@ -702,6 +703,7 @@ export default function StudentDetail({departments, student}) {
                                         )}
                                     </div>
                                 </div>
+
                                 {(
                                     status !== 'DELETED' && status !== 'GRADUTED' && status !== 'PASSIVE'
                                         ?
