@@ -72,6 +72,7 @@ export default function TeacherLogin() {
                 cookies.set('teacherFieldOfStudy', getData.response.academicInfoResponse.fieldOfStudy, {path: '/'});
                 cookies.set('teacherAcademicPhoneNumber', getData.response.academicInfoResponse.phoneNumber, {path: '/'});
                 cookies.set('teacherRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
+                cookies.set('teacherFaculty', getData.response.academicInfoResponse.departmentResponse.facultyResponse.name, {path: '/'});
                 cookies.set('teacherTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
                 cookies.set('teacherPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
                 cookies.set('teacherPersonalPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
