@@ -546,9 +546,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 id="department-id"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
@@ -571,8 +573,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
                                                 {teacherDegrees.map(tDegree => (
                                                     degree === tDegree.enum
                                                         ?
@@ -595,8 +600,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 id="role"
                                                 name="role"
                                                 autoComplete="role"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
                                                 {teacherRoles.map(tRole => (
                                                     role === tRole.enum
                                                         ?
@@ -620,8 +628,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="fieldOfStudy"
                                                 id="fieldOfStudy"
                                                 defaultValue={fieldOfStudy}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-3">
@@ -650,8 +661,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="phoneNumber"
                                                 id="phoneNumber"
                                                 defaultValue={phone}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="sm:col-span-3">
@@ -682,7 +696,7 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'DELETED'
+                                    status !== "DELETED" && status !== "PASSIVE"
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
@@ -731,8 +745,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="name"
                                                 id="name"
                                                 defaultValue={name}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -746,8 +763,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 name="surname"
                                                 id="surname"
                                                 defaultValue={surname}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -765,8 +785,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 pattern="[0-9]+"
                                                 required
                                                 defaultValue={tcNo}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -796,8 +819,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 minLength="10"
                                                 maxLength="10"
                                                 defaultValue={birthday}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -812,8 +838,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                        ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                        : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -845,8 +874,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 minLength="19"
                                                 maxLength="19"
                                                 defaultValue={phoneNumber}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
 
                                         <div className="col-span-6">
@@ -861,8 +893,11 @@ export default function TeacherDetail({departments, teacher}) {
                                                 id="home-address"
                                                 autoComplete="home-address"
                                                 defaultValue={address}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
+                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
+                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
                                         </div>
                                         {(
                                             personalInfoResponse.modifiedDate !== null
@@ -878,7 +913,7 @@ export default function TeacherDetail({departments, teacher}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'DELETED'
+                                    status !== "DELETED" && status !== "PASSIVE"
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
