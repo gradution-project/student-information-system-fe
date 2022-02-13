@@ -131,10 +131,10 @@ export default function MyInfo({teacher}) {
             <div>
                 <div className="select-none mt-5 md:mt-0 md:col-span-2">
                     <div className="md:col-span-1">
-                        <form className="mt-10 px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
+                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                    <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
                                             AKADEMİK BİLGİLERİM
                                         </h3>
@@ -168,6 +168,38 @@ export default function MyInfo({teacher}) {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="faculty"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                FAKÜLTE ADI
+                                            </label>
+                                            <select
+                                                id="faculty"
+                                                name="faculty"
+                                                autoComplete="faculty-name"
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                <option>{facultyResponse.name}</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="department"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                BÖLÜM ADI
+                                            </label>
+                                            <select
+                                                id="department"
+                                                name="department"
+                                                autoComplete="department-name"
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                <option>{departmentResponse.name}</option>
+                                            </select>
                                         </div>
 
                                         <div className="sm:col-span-3">
@@ -230,35 +262,18 @@ export default function MyInfo({teacher}) {
                                         </div>
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="faculty"
+                                            <label htmlFor="phone"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTE ADI
+                                                DAHİLİ TELEFON
                                             </label>
-                                            <select
-                                                id="faculty"
-                                                name="faculty"
-                                                autoComplete="faculty-name"
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                id="phone"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>{facultyResponse.name}</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM ADI
-                                            </label>
-                                            <select
-                                                id="department"
-                                                name="department"
-                                                autoComplete="department-name"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>{departmentResponse.name}</option>
-                                            </select>
+                                                value={academicInfoResponse.phoneNumber}
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
                                         </div>
 
                                         <div className="sm:col-span-3">
@@ -272,21 +287,6 @@ export default function MyInfo({teacher}) {
                                                 id="email-address"
                                                 disabled
                                                 value={academicInfoResponse.email}
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="phone"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DAHİLİ TELEFON
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="phone"
-                                                id="phone"
-                                                disabled
-                                                value={academicInfoResponse.phoneNumber}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -308,8 +308,7 @@ export default function MyInfo({teacher}) {
             <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-2xl mx-auto space-y-6" action="#" method="POST">
-
+                        <form className="px-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -699,7 +698,6 @@ export default function MyInfo({teacher}) {
 
             <div className="hidden sm:block" aria-hidden="true">
                 <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </>
