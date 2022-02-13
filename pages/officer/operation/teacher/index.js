@@ -101,15 +101,6 @@ export default function TeacherList({teachers}) {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {teacherDegrees.map((tDegree) => (
-                                                            teacher.degree === tDegree.enum
-                                                                ?
-                                                                <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{tDegree.tr}</div>
-                                                                :
-                                                                null
-                                                        ))}
-
                                                         {teacherRoles.map((tRole) => (
                                                             teacher.role === tRole.enum
                                                                 ?
@@ -118,6 +109,15 @@ export default function TeacherList({teachers}) {
                                                                 :
                                                                 null
                                                         ))}
+                                                        {teacherDegrees.map((tDegree) => (
+                                                            teacher.degree === tDegree.enum
+                                                                ?
+                                                                <div
+                                                                    className="font-phenomenaRegular text-xl text-sis-darkblue">{tDegree.tr}</div>
+                                                                :
+                                                                null
+                                                        ))}
+                                                        <div className="font-phenomenaLight text-lg text-gray-500">{teacher.fieldOfStudy}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
