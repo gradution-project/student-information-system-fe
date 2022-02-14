@@ -16,7 +16,7 @@ export async function getServerSideProps() {
     }
 }
 
-export default function StudentList({officers}) {
+export default function OfficerList({officers}) {
 
     const router = useRouter();
 

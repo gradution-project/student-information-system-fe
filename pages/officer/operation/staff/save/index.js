@@ -21,7 +21,7 @@ export async function getServerSideProps() {
     }
 }
 
-export default function SaveStudent({faculties}) {
+export default function SaveOfficer({faculties}) {
     const cookies = new Cookies();
     const facultyName = faculties.name;
 
