@@ -29,7 +29,7 @@ export default function OfficerList({officers}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className="select-none px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         PERSONEL LİSTESİ
@@ -62,7 +62,7 @@ export default function OfficerList({officers}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    BULUNDUĞU FAKÜLTE
+                                                    FAKÜLTE ADI
                                                 </th>
                                                 <th
                                                     scope="col"
