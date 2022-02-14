@@ -55,7 +55,7 @@ export default function OfficerNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
+                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
                                                 {cookies.get('officerFullName')}
                                                 <p className="font-phenomenaLight text-center text-lg">{cookies.get('officerNumber')}</p>
@@ -65,14 +65,15 @@ export default function OfficerNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a href="/officer/information/detail"
-                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}
+                                            >
                                                 Bilgilerim
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/"
+                                            <a href='/'
                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Çıkış Yap
