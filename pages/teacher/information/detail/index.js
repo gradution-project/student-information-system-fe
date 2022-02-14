@@ -7,8 +7,9 @@ import {Dialog, Transition} from "@headlessui/react";
 import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher";
 
 export async function getServerSideProps(context) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const teacherId = context.req.cookies['teacherNumber']
-    const teacherResponse = await fetch("http://localhost:8585/teacher/" + teacherId, {
+    const teacherResponse = await fetch(`${SIS_API_URL}/teacher/` + teacherId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -16,13 +17,14 @@ export async function getServerSideProps(context) {
     if (teacherData.success) {
         return {
             props: {
-                teacher: teacherData.response
+                teacher: teacherData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function MyInfo({teacher}) {
+export default function MyInfo({teacher, SIS_API_URL}) {
     const {academicInfoResponse} = teacher;
     const {personalInfoResponse} = teacher;
 
@@ -95,7 +97,7 @@ export default function MyInfo({teacher}) {
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`http://localhost:8585/teacher/update/personal-info/${teacherId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/teacher/update/personal-info/${teacherId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
