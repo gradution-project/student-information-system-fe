@@ -1,6 +1,7 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
+import {officerStatuses} from "../../../../public/constants";
 
 export async function getServerSideProps() {
     const officerResponse = await fetch("http://localhost:8585/officer?status=ALL", {
@@ -97,29 +98,13 @@ export default function StudentList({officers}) {
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{officer.facultyResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {(
-                                                            officer.status === 'Aktif'
+                                                        {officerStatuses.map((oStatus) => (
+                                                            officer.status === oStatus.enum
                                                                 ?
-                                                                <span
-                                                                    className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">
-                                                            {officer.status}
-                                                        </span>
+                                                                oStatus.miniComponent
                                                                 :
-                                                                officer.status === 'Pasif'
-                                                                    ?
-                                                                    <span
-                                                                        className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">
-                                                                {officer.status}
-                                                            </span>
-                                                                    :
-                                                                    officer.status === 'Silinmiş'
-                                                                        ?
-                                                                        <span
-                                                                            className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">
-                                                                    {officer.status}
-                                                                </span>
-                                                                        : null
-                                                        )}
+                                                                null
+                                                        ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
                                                         <a href={'/officer/operation/staff/information/detail/' + officer.officerId}
