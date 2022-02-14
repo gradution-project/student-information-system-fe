@@ -3,14 +3,17 @@ import Cookies from 'universal-cookie';
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 
 export const getStaticProps = async () => {
-    const lessonResponse = await fetch("http://localhost:8585/teacher/lesson", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const lessonResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
     const lessonData = await lessonResponse.json();
     if (lessonData.success) {
         return {
-            props: {lessons: lessonData.response}
+            props: {
+                lessons: lessonData.response
+            }
         }
     }
 }
