@@ -3,7 +3,7 @@ import Cookies from 'universal-cookie';
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 
 export const getStaticProps = async () => {
-    const lessonResponse = await fetch("http://localhost:8585/lesson/teacher/", {
+    const lessonResponse = await fetch("http://localhost:8585/teacher/lesson", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
