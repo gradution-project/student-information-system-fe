@@ -134,35 +134,35 @@ export default function FacultyDetail({faculty}) {
         setIsOpenProcessingDelete(true);
     }
 
-    let [isOpenSuccessAcademic, setIsOpenSuccessAcademic] = useState(false);
+    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
-    function closeSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(false);
+    function closeSuccessModal() {
+        setIsOpenSuccess(false);
         router.reload();
     }
 
-    function openSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(true);
+    function openSuccessModal() {
+        setIsOpenSuccess(true);
     }
 
-    let [isOpenFailAcademic, setIsOpenFailAcademic] = useState(false);
+    let [isOpenFail, setIsOpenFail] = useState(false);
 
-    function closeFailModalAcademic() {
-        setIsOpenFailAcademic(false);
+    function closeFailModal() {
+        setIsOpenFail(false);
     }
 
-    function openFailModalAcademic() {
-        setIsOpenFailAcademic(true);
+    function openFailModal() {
+        setIsOpenFail(true);
     }
 
-    let [isOpenProcessingAcademic, setIsOpenProcessingAcademic] = useState(false);
+    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
 
-    function closeProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(false);
+    function closeProcessingModal() {
+        setIsOpenProcessing(false);
     }
 
-    function openProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(true);
+    function openProcessingModal() {
+        setIsOpenProcessing(true);
     }
 
     const facultyActivate = async (event) => {
@@ -874,11 +874,11 @@ export default function FacultyDetail({faculty}) {
                                     </Dialog>
                                 </Transition>
 
-                                <Transition appear show={isOpenSuccessAcademic} as={Fragment}>
+                                <Transition appear show={isOpenSuccess} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalAcademic}
+                                        onClose={closeSuccessModal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -930,11 +930,11 @@ export default function FacultyDetail({faculty}) {
                                         </div>
                                     </Dialog>
                                 </Transition>
-                                <Transition appear show={isOpenFailAcademic} as={Fragment}>
+                                <Transition appear show={isOpenFail} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalAcademic}
+                                        onClose={closeFailModal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -987,11 +987,11 @@ export default function FacultyDetail({faculty}) {
                                     </Dialog>
                                 </Transition>
 
-                                <Transition appear show={isOpenProcessingAcademic} as={Fragment}>
+                                <Transition appear show={isOpenProcessing} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalAcademic}
+                                        onClose={closeProcessingModal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
