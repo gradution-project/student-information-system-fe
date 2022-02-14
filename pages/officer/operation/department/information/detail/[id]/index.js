@@ -315,7 +315,7 @@ export default function DepartmentSave({faculties, department}) {
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
                                 >
-                                    KAYDI SİL
+                                    BÖLÜMÜ SİL
                                 </button>
                                 :
                                 null
@@ -328,7 +328,7 @@ export default function DepartmentSave({faculties, department}) {
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
-                                    KAYDI DONDUR
+                                    BÖLÜM KAYDINI DONDUR
                                 </button>
                                 :
                                 null
@@ -341,7 +341,7 @@ export default function DepartmentSave({faculties, department}) {
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    KAYDI AKTİFLEŞTİR
+                                    BÖLÜM KAYDINI AKTİFLEŞTİR
                                 </button>
                                 :
                                 null
