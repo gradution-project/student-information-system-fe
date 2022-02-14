@@ -62,6 +62,12 @@ export default function FacultyList({faculties}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    FAKÜLTE KODU
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     STATÜSÜ
                                                 </th>
                                             </tr>
@@ -74,8 +80,14 @@ export default function FacultyList({faculties}) {
                                                             <div className="ml-4">
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{faculty.name}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-2 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-gray-500">{faculty.facultyId}</div>
+                                                                    className="font-phenomenaRegular text-lg text-sis-darkblue">{faculty.facultyId}</div>
                                                             </div>
                                                         </div>
                                                     </td>

@@ -81,18 +81,18 @@ export default function Faculty() {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <form className="px-4 py-12 max-w-2xl mx-auto space-y-6" onSubmit={facultySave}>
+            <form className="select-none px-4 py-12 max-w-2xl mx-auto space-y-6" onSubmit={facultySave}>
                 <div className="py-2 px-4 shadow overflow-hidden sm:rounded-md">
                     <div className="sm:col-span-6">
-                        <label htmlFor="teacher-number"
+                        <label htmlFor="faculty-name"
                                className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                             FAKÜLTE İSMİ
                         </label>
                         <input
                             onChange={changeFacultyName}
                             type="text"
-                            name="teacher-number"
-                            id="teacher-number"
+                            name="faculty-name"
+                            id="faculty-name"
                             className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                         />
                     </div>
