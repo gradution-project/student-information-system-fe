@@ -288,7 +288,7 @@ export default function FacultyDetail({faculty}) {
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
                                 >
-                                    SİL
+                                    FAKÜLTEYİ SİL
                                 </button>
                                 :
                                 null
@@ -302,7 +302,7 @@ export default function FacultyDetail({faculty}) {
                                     type="submit"
                                     className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
-                                    DONDUR
+                                    FAKÜLTEYİ PASİFLEŞTİR
                                 </button>
                                 :
                                 null
@@ -316,7 +316,7 @@ export default function FacultyDetail({faculty}) {
                                     type="submit"
                                     className="float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    AKTİFLEŞTİR
+                                    FAKÜLTEYİ AKTİFLEŞTİR
                                 </button>
                                 :
                                 null
