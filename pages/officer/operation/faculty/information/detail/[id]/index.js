@@ -255,11 +255,11 @@ export default function FacultyDetail({faculty}) {
         });
         const updateData = await updateRes.json();
         if (updateData.success) {
-            closeProcessingModalAcademic();
-            openSuccessModalAcademic()
+            closeProcessingModal();
+            openSuccessModal()
         } else {
-            closeProcessingModalAcademic();
-            openFailModalAcademic();
+            closeProcessingModal();
+            openFailModal();
         }
     }
 
