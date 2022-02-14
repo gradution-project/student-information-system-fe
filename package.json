@@ -1,4 +1,6 @@
 {
+  "name": "student-information-system-fe",
+  "version": "v1.0.0",
   "private": true,
   "scripts": {
     "dev:local": "env-cmd -f .env.sis.local next dev",
