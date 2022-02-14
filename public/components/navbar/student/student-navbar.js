@@ -13,7 +13,7 @@ export default function StudentNavbar() {
     const cookies = new Cookies();
 
     return (
-        <Popover className="relative bg-white">
+        <Popover className="select-none relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div
                     className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
@@ -63,7 +63,7 @@ export default function StudentNavbar() {
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/student/information"
+                                            <a href="/student/information/detail"
                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Bilgilerim

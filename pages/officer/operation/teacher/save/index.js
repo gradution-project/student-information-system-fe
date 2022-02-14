@@ -3,11 +3,35 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from "universal-cookie";
+import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
 
+export async function getServerSideProps() {
+    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const departmentDatas = await departmentResponses.json();
+    if (departmentDatas.success) {
+        return {
+            props: {
+                departments: departmentDatas.response,
 
-export default function SaveTeacher() {
+            }
+        }
+    }
+}
+
+export default function SaveTeacher({departments}) {
+    const cookies = new Cookies();
+
+    const departmentName = departments.name;
+    const [degree] = useState();
+    const [role] = useState();
 
     const router = useRouter();
+
+    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
@@ -86,7 +110,7 @@ export default function SaveTeacher() {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/teacher");
+        router.push("/officer/operation/teacher").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -127,9 +151,12 @@ export default function SaveTeacher() {
                     phoneNumber: teacherAcademicPhoneNumber,
                     role: teacherRole
                 },
+                operationInfoRequest: {
+                    userId: operationUserId
+                },
                 personalInfoRequest: {
                     address: teacherAddress,
-                    birthday: "2021-12-18T18:13:28.268Z",
+                    birthday: teacherBirthday,
                     email: teacherEmail,
                     name: teacherName,
                     phoneNumber: teacherPersonalPhoneNumber,
@@ -154,7 +181,7 @@ export default function SaveTeacher() {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={teacherSave}>
@@ -220,11 +247,26 @@ export default function SaveTeacher() {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherBirthday}
+                                                onChange={(e) => {
+                                                    let birthdayLength = e.target.value.length;
+                                                    if (birthdayLength > 1 && birthdayLength < 3) {
+                                                        if (e.target.value <= 31) {
+                                                            e.target.value = e.target.value + ".";
+                                                        } else {
+                                                            e.target.value = "";
+                                                        }
+                                                    }
+                                                    if (birthdayLength > 4 && birthdayLength < 7) {
+                                                        e.target.value = e.target.value + ".";
+                                                    }
+                                                    changeTeacherBirthday(e)
+                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
+                                                minLength="10"
+                                                maxLength="10"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -251,14 +293,28 @@ export default function SaveTeacher() {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherPersonalPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeTeacherPersonalPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
                                                 required
-                                                minLength="10"
-                                                maxLength="10"
-                                                pattern="[0-9]+"
+                                                minLength="19"
+                                                maxLength="19"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -292,10 +348,13 @@ export default function SaveTeacher() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvan Seçiniz...</option>
-                                                <option value="RESEARCH_ASSOCIATE">Araştırma Görevlisi</option>
-                                                <option value="TEACHING_ASSOCIATE">Öğretim Üyesi</option>
-                                                <option value="ASSISTANT_PROFESSOR">Doçent</option>
-                                                <option value="PROFESSOR">Profesör</option>
+                                                {teacherDegrees.map(tDegree => (
+                                                    degree === tDegree.enum
+                                                        ?
+                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
+                                                        :
+                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -306,15 +365,20 @@ export default function SaveTeacher() {
                                             </label>
                                             <select
                                                 onChange={changeTeacherRole}
-                                                id="degree"
-                                                name="degree"
+                                                id="role"
+                                                name="role"
                                                 value={teacherRole}
                                                 className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Rol Seçiniz...</option>
-                                                <option value="TEACHER">Öğretmen</option>
-                                                <option value="ADVISOR">Danışman</option>
-                                                <option value="HEAD_OF_DEPARTMENT">Bölüm Başkanı</option>
+                                                {teacherRoles.map(tRole => (
+                                                    role === tRole.enum
+                                                        ?
+                                                        <option value={tRole.enum}>{tRole.tr}</option>
+                                                        :
+                                                        <option
+                                                            value={tRole.enum}>{tRole.tr}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -332,8 +396,15 @@ export default function SaveTeacher() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
+                                                {departments.map((department) => (
+                                                    departmentName === department.name
+                                                        ?
+                                                        <option
+                                                            value={department.departmentId}>{department.name}</option>
+                                                        :
+                                                        <option
+                                                            value={department.departmentId}>{department.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -343,14 +414,28 @@ export default function SaveTeacher() {
                                                 DAHİLİ TELEFON
                                             </label>
                                             <input
-                                                onChange={changeTeacherAcademicPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeTeacherAcademicPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone"
                                                 id="phone"
-                                                minLength="10"
-                                                maxLength="10"
-                                                pattern="[0-9]+"
                                                 required
+                                                minLength="19"
+                                                maxLength="19"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
