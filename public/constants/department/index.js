@@ -24,3 +24,14 @@ export const departmentStatuses = [
             className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Silinmiş</span>
     }
 ]
+
+export const departmentPreparatoryClass = [
+    {
+        boolean: '0',
+        tr: 'yok'
+    },
+    {
+        boolean: '1',
+        tr: 'var'
+    }
+]
