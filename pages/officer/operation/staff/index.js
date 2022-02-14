@@ -1,7 +1,7 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {officerStatuses} from "../../../../public/constants";
+import {officerStatuses} from "../../../../public/constants/officer";
 
 export async function getServerSideProps() {
     const officerResponse = await fetch("http://localhost:8585/officer?status=ALL", {

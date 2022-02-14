@@ -4,7 +4,7 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
-import {officerStatuses} from "../../../../../../../public/constants";
+import {officerStatuses} from "../../../../../../../public/constants/officer";
 
 export async function getServerSideProps({query}) {
     const {id} = query;
