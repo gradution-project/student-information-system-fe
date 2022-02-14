@@ -77,11 +77,17 @@ export default function SaveStudent({faculties}) {
         setOfficerFacultyId(officerFacultyId);
     }
 
+    const [officerPhone, setOfficerPhone] = useState();
+    const changeOfficerPhone = event => {
+        const officerPhone = event.target.value;
+        setOfficerPhone(officerPhone);
+    }
+
     let [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/personal").then(() => router.reload());
+        router.push("/officer/operation/staff").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -118,7 +124,7 @@ export default function SaveStudent({faculties}) {
 
                 academicInfoRequest: {
                     facultyId: officerFacultyId,
-                    phoneNumber: officerPhoneNumber
+                    phoneNumber: officerPhone
                 },
                 operationInfoRequest: {
                     userId: operationUserId
@@ -248,14 +254,25 @@ export default function SaveStudent({faculties}) {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeOfficerPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeOfficerPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
-                                                required
-                                                minLength="10"
-                                                maxLength="10"
-                                                pattern="[0-9]+"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -306,14 +323,25 @@ export default function SaveStudent({faculties}) {
                                                 DAHİLİ NUMARA
                                             </label>
                                             <input
-                                                onChange={changeOfficerPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeOfficerPhone(e)
+                                                }}
                                                 type="text"
                                                 name="phoneNumber"
                                                 id="phoneNumber"
-                                                required
-                                                minLength="10"
-                                                maxLength="10"
-                                                pattern="[0-9]+"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
