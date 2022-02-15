@@ -3,11 +3,35 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
+import Cookies from "universal-cookie";
+import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
 
+export async function getServerSideProps() {
+    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const departmentDatas = await departmentResponses.json();
+    if (departmentDatas.success) {
+        return {
+            props: {
+                departments: departmentDatas.response,
 
-export default function SaveStudent() {
+            }
+        }
+    }
+}
+
+export default function SaveStudent({departments}) {
+    const cookies = new Cookies();
+    const departmentName = departments.name;
+
+    const [degree] = useState();
+    const [classLevel] = useState();
 
     const router = useRouter();
+
+    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [studentName, setStudentName] = useState();
     const changeStudentName = event => {
@@ -74,7 +98,7 @@ export default function SaveStudent() {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/student");
+        router.push("/officer/operation/student").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -113,9 +137,12 @@ export default function SaveStudent() {
                     departmentId: studentDepartmentId,
                     classLevel: studentClassLevel,
                 },
+                operationInfoRequest: {
+                    userId: operationUserId
+                },
                 personalInfoRequest: {
                     address: studentAddress,
-                    birthday: "2021-12-18T18:13:28.268Z",
+                    birthday: studentBirthday,
                     email: studentEmail,
                     name: studentName,
                     phoneNumber: studentPhoneNumber,
@@ -140,7 +167,7 @@ export default function SaveStudent() {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="mt-10 sm:mt-0">
+            <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
@@ -206,11 +233,26 @@ export default function SaveStudent() {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeStudentBirthday}
+                                                onChange={(e) => {
+                                                    let birthdayLength = e.target.value.length;
+                                                    if (birthdayLength > 1 && birthdayLength < 3) {
+                                                        if (e.target.value <= 31) {
+                                                            e.target.value =  e.target.value + ".";
+                                                        } else {
+                                                            e.target.value = "";
+                                                        }
+                                                    }
+                                                    if (birthdayLength > 4 && birthdayLength < 7) {
+                                                        e.target.value =  e.target.value + ".";
+                                                    }
+                                                    changeStudentBirthday(e)
+                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
+                                                minLength="10"
+                                                maxLength="10"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -237,14 +279,28 @@ export default function SaveStudent() {
                                                 TELEFON NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentPhoneNumber}
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value =  e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value =  e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value =  e.target.value + " ";
+                                                    }
+                                                    changeStudentPhoneNumber(e)
+                                                }}
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
                                                 required
-                                                minLength="10"
-                                                maxLength="10"
-                                                pattern="[0-9]+"
+                                                minLength="19"
+                                                maxLength="19"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -278,10 +334,13 @@ export default function SaveStudent() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
-                                                <option value="ASSOCIATE">Önlisans</option>
-                                                <option value="UNDERGRADUATE">Lisans</option>
-                                                <option value="POSTGRADUATE">Yüksek lisans</option>
-                                                <option value="DOCTORAL">Doktora</option>
+                                                {studentDegrees.map(sDegree => (
+                                                    degree === sDegree.enum
+                                                        ?
+                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
+                                                        :
+                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
+                                                ))}
                                             </select>
                                         </div>
 
@@ -299,33 +358,36 @@ export default function SaveStudent() {
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
-                                                <option value="PREPARATORY">Hazırlık</option>
-                                                <option value="FIRST">1. Sınıf</option>
-                                                <option value="SECOND">2. Sınıf</option>
-                                                <option value="THIRD">3. Sınıf</option>
-                                                <option value="FOURTH">4. Sınıf</option>
-                                                <option value="FIFTH">5. Sınıf</option>
-                                                <option value="SIXTH">6. Sınıf</option>
-                                                <option value="GRADUATE">Mezun</option>
+                                                {studentClassLevels.map(sClassLevel => (
+                                                    classLevel === sClassLevel.enum
+                                                        ?
+                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                        :
+                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                ))}
                                             </select>
                                         </div>
 
                                         <div className="sm:col-span-4">
-                                            <label htmlFor="department"
+                                            <label htmlFor="departmentId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 BÖLÜMÜ
                                             </label>
                                             <select
                                                 onChange={changeStudentDepartmentId}
-                                                id="department-id"
+                                                id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                value={studentDepartmentId}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Bölüm Seçiniz...</option>
-                                                <option value="11012">BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option value="11011">ELEKTRİK ELEKTRONİK MÜHENDİSLİĞİ</option>
+                                                <option>Bölümü Seçiniz...</option>
+                                                {departments.map((department) => (
+                                                    departmentName === department.name
+                                                        ?
+                                                        <option value={department.departmentId}>{department.name}</option>
+                                                        :
+                                                        <option value={department.departmentId}>{department.name}</option>
+                                                ))}
                                             </select>
                                         </div>
 

@@ -1,7 +1,9 @@
 import SISTitle from "../../../public/components/page-titles";
 import OfficerNavbar from "../../../public/components/navbar/officer/officer-navbar";
+import Cookies from "universal-cookie";
 
 export default function MyInfo() {
+    const cookies = new Cookies();
     return (
         <>
             <SISTitle/>
@@ -27,7 +29,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="teacher-number"
                                                 id="teacher-number"
-                                                value=""
+                                                value={cookies.get('officerNumber')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -45,9 +47,7 @@ export default function MyInfo() {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>BİLGİSAYAR MÜHENDİSLİĞİ</option>
-                                                <option>MAKİNE MÜHENDİSLİĞİ</option>
-                                                <option>YAZILIM MÜHENDİSLİĞİ</option>
+                                                <option>{cookies.get('officerDepartmentId')}</option>
                                             </select>
                                         </div>
 
@@ -61,7 +61,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 disabled
-                                                value=""
+                                                value={cookies.get('officerAcademicEmail')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -76,7 +76,7 @@ export default function MyInfo() {
                                                 name="phone"
                                                 id="phone"
                                                 disabled
-                                                value=""
+                                                value={cookies.get('officerPhoneNumber')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -125,7 +125,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value=""
+                                                value={cookies.get('officerName')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -140,7 +140,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                value=""
+                                                value={cookies.get('officerSurname')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -156,7 +156,7 @@ export default function MyInfo() {
                                                 name="tc-no"
                                                 id="tc-no"
                                                 disabled
-                                                value=""
+                                                value={cookies.get('officerTcNo')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -170,7 +170,7 @@ export default function MyInfo() {
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
-                                                value=""
+                                                value={cookies.get('officerBirthday')}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -186,7 +186,7 @@ export default function MyInfo() {
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                defaultValue=""
+                                                defaultValue={cookies.get('officerPersonalEmail')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -201,7 +201,7 @@ export default function MyInfo() {
                                                 name="phone-number"
                                                 id="phone-number"
                                                 maxLength="13"
-                                                defaultValue=""
+                                                defaultValue={cookies.get('officerPhoneNumber')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -216,7 +216,7 @@ export default function MyInfo() {
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue=""
+                                                defaultValue={cookies.get('officerAddress')}
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
