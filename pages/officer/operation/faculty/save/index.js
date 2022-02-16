@@ -87,7 +87,7 @@ export default function Faculty() {
                         <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                             <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
                                 <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                    FAKÜLTE BİLGİLER
+                                    FAKÜLTE EKLE
                                 </h3>
                             </div>
                             <div className="grid grid-cols-6 gap-6">
