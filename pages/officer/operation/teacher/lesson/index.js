@@ -33,7 +33,7 @@ export default function TeacherLessonList({lessons}) {
             <div className="px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        DERS LİSTESİ
+                        ATANAN DERS LİSTESİ
                     </a>
                     <button
                         type="submit"

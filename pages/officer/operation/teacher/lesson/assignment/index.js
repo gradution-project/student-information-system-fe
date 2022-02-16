@@ -3,11 +3,17 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
+import Cookies from "universal-cookie";
 
 
 export default function LessonAssignment() {
 
     const router = useRouter();
+
+    const cookies = new Cookies();
+
+    const [operationUserId] = useState(cookies.get("officerNumber"));
+
 
     const [lessonNumber, setLessonNumber] = useState();
     const changeLessonNumber = event => {
@@ -26,7 +32,7 @@ export default function LessonAssignment() {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/teacher/lesson");
+        router.push("/officer/operation/teacher/lesson").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -60,8 +66,13 @@ export default function LessonAssignment() {
 
         const saveRes = await fetch("http://localhost:8585/teacher/lesson/save", {
             body: JSON.stringify({
-                lessonId: lessonNumber,
-                teacherId: teacherNumber
+                operationInfoRequest: {
+                    userId: operationUserId
+                },
+                teacherLessonInfoRequest: {
+                    lessonId: lessonNumber,
+                    teacherId: teacherNumber
+                }
             }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
