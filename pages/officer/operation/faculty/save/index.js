@@ -7,6 +7,7 @@ import {useRouter} from "next/router";
 
 
 export default function Faculty() {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const cookies = new Cookies();
 
     const router = useRouter();
@@ -55,7 +56,7 @@ export default function Faculty() {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/faculty/save", {
+        const saveRes = await fetch(`${SIS_API_URL}/faculty/save`, {
             body: JSON.stringify({
                 facultyInfoRequest: {
                     name: facultyName
@@ -164,7 +165,7 @@ export default function Faculty() {
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Öğrenci Ekleme İşlemi başarıyla gerçekleşti.
+                                                    Fakülte Ekleme İşlemi başarıyla gerçekleşti.
                                                     Mesaj penceresini kapattıktan sonra fakülte listeleme
                                                     ekranına yönlendirileceksiniz.
                                                 </p>

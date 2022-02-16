@@ -7,8 +7,9 @@ import Cookies from "universal-cookie";
 import {facultyStatuses} from "../../../../../../../public/constants/faculty";
 
 export async function getServerSideProps({query}) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const facultyResponse = await fetch("http://localhost:8585/faculty/" + id, {
+    const facultyResponse = await fetch(`${SIS_API_URL}/faculty/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -17,14 +18,15 @@ export async function getServerSideProps({query}) {
     if (facultyData.success) {
         return {
             props: {
-                faculty: facultyData.response
+                faculty: facultyData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
 
-export default function FacultyDetail({faculty}) {
+export default function FacultyDetail({faculty, SIS_API_URL}) {
     const cookies = new Cookies();
 
 
@@ -169,7 +171,7 @@ export default function FacultyDetail({faculty}) {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`http://localhost:8585/faculty/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/faculty/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -193,7 +195,7 @@ export default function FacultyDetail({faculty}) {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`http://localhost:8585/faculty/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/faculty/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -217,7 +219,7 @@ export default function FacultyDetail({faculty}) {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`http://localhost:8585/faculty/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/faculty/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
@@ -241,7 +243,7 @@ export default function FacultyDetail({faculty}) {
         openProcessingModal();
 
         event.preventDefault()
-        const updateRes = await fetch(`http://localhost:8585/faculty/update/${facultyId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/faculty/update/${facultyId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
