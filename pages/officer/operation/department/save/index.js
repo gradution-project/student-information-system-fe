@@ -4,6 +4,7 @@ import Cookies from "universal-cookie";
 import {useRouter} from "next/router";
 import {Fragment, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
+import {departmentPreparatoryClass} from "../../../../../public/constants/department";
 
 export async function getServerSideProps() {
     const facultyResponses = await fetch("http://localhost:8585/faculty?status=ACTIVE", {
@@ -25,6 +26,8 @@ export default function DepartmentSave({faculties}) {
     const cookies = new Cookies();
 
     const facultyName = faculties.name;
+
+    const [preparatoriesClass] = useState();
 
     const router = useRouter();
 
@@ -183,21 +186,30 @@ export default function DepartmentSave({faculties}) {
                                     />
                                 </div>
 
-                                <div className="col-span-6 sm:col-span-3">
-                                    <label htmlFor="preparatoryClass"
+                                <div className="sm:col-span-3">
+                                    <label htmlFor="isTherePreparatoryLevel"
                                            className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                         HAZIRLIK SINIFI
                                     </label>
-                                    <input
+                                    <select
                                         onChange={changePreparatoryClass}
-                                        type="text"
-                                        name="preparatoryClass"
-                                        id="preparatoryClass"
-                                        autoComplete="preparatoryClass"
+                                        id="isTherePreparatoryLevel"
+                                        name="isTherePreparatoryLevel"
+                                        autoComplete="isTherePreparatoryLevel"
                                         className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                    />
+                                    >
+                                        <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
+                                        {departmentPreparatoryClass.map(preparatoryClass => (
+                                            preparatoriesClass === preparatoryClass.boolean
+                                                ?
+                                                <option value={preparatoryClass.boolean}
+                                                        selected>{preparatoryClass.tr}</option>
+                                                :
+                                                <option
+                                                    value={preparatoryClass.boolean}>{preparatoryClass.tr}</option>
+                                        ))}
+                                    </select>
                                 </div>
-
 
                             </div>
                         </div>
