@@ -65,7 +65,7 @@ export default function TeacherLessonList({lessons}) {
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
                                     {lessons.map((lesson) => (
-                                        lesson.teacherId == cookies.get('teacherNumber')
+                                       lesson.teacherId == cookies.get('teacherNumber')
                                             ?
                                             <tr key={lesson.lessonId}>
                                                 <td className="px-10 py-4 whitespace-nowrap">
@@ -100,15 +100,9 @@ export default function TeacherLessonList({lessons}) {
                                                     <div
                                                         className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
                                                 </td>
-                                                <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                    <a
-                                                        className='text-sis-fail'>
-                                                        SİL
-                                                    </a>
-                                                </td>
                                             </tr>
-                                            : <tr>
-                                            </tr>
+                                           :
+                                           null
                                     ))}
                                     </tbody>
                                 </table>
