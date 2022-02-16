@@ -5,7 +5,8 @@ import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../public/
 
 
 export async function getServerSideProps() {
-    const teacherResponse = await fetch("http://localhost:8585/teacher?status=ALL", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
