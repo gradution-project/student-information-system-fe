@@ -4,7 +4,15 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 
-export default function ForgotPassword() {
+export async function getServerSideProps() {
+    return {
+        props: {
+            SIS_API_URL: process.env.SIS_API_URL
+        }
+    }
+}
+
+export default function StudentForgotPassword({SIS_API_URL}) {
 
     const router = useRouter();
 
@@ -50,7 +58,7 @@ export default function ForgotPassword() {
         openProcessingModal();
 
         event.preventDefault();
-        const res = await fetch("http://localhost:8585/login/student/forgot-password", {
+        const res = await fetch(`${SIS_API_URL}/login/student/forgot-password`, {
             body: JSON.stringify({studentId: studentNumber}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'

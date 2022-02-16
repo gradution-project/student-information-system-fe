@@ -7,12 +7,13 @@ import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../.
 import Cookies from "universal-cookie";
 
 export async function getServerSideProps({query}) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const studentResponse = await fetch("http://localhost:8585/student/" + id, {
+    const studentResponse = await fetch(`${SIS_API_URL}/student/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -22,13 +23,14 @@ export async function getServerSideProps({query}) {
         return {
             props: {
                 departments: departmentDatas.response,
-                student: studentData.response
+                student: studentData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function StudentDetail({departments, student}) {
+export default function StudentDetail({departments, student, SIS_API_URL}) {
     const cookies = new Cookies();
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
@@ -304,7 +306,7 @@ export default function StudentDetail({departments, student}) {
         openProcessingModalGraduate();
 
         event.preventDefault()
-        const graduateRes = await fetch(`http://localhost:8585/student/graduate`, {
+        const graduateRes = await fetch(`${SIS_API_URL}/student/graduate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -328,7 +330,7 @@ export default function StudentDetail({departments, student}) {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`http://localhost:8585/student/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/student/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -352,7 +354,7 @@ export default function StudentDetail({departments, student}) {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`http://localhost:8585/student/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/student/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -376,7 +378,7 @@ export default function StudentDetail({departments, student}) {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`http://localhost:8585/student/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/student/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
@@ -399,7 +401,7 @@ export default function StudentDetail({departments, student}) {
     const studentUpdateAcademic = async (event) => {
         openProcessingModalAcademic();
         event.preventDefault()
-        const updateRes = await fetch(`http://localhost:8585/student/update/academic-info/${studentId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/student/update/academic-info/${studentId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
@@ -427,7 +429,7 @@ export default function StudentDetail({departments, student}) {
         openProcessingModalPersonal();
 
         event.preventDefault()
-        const updatePersonalRes = await fetch(`http://localhost:8585/student/update/personal-info/${studentId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/student/update/personal-info/${studentId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({

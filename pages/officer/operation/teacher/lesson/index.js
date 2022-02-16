@@ -3,7 +3,8 @@ import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 
 export async function getServerSideProps() {
-    const lessonResponse = await fetch("http://localhost:8585/lesson?status=ALL", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const lessonResponse = await fetch(`${SIS_API_URL}/lesson?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
