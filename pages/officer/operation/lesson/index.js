@@ -42,31 +42,6 @@ export default function TeacherLessonList({lessons}) {
                         DERS EKLE
                     </button>
                 </div>
-
-                {/*<form onSubmit={teacherLessons}>*/}
-                {/*    <div className="grid grid-cols-3 gap-2">*/}
-                {/*        <input*/}
-                {/*            onChange={changeTeacherNumber}*/}
-                {/*            placeholder="Öğretmen Numarası"*/}
-                {/*            type="text"*/}
-                {/*            id="teacher-number"*/}
-                {/*            required*/}
-                {/*            minLength="8"*/}
-                {/*            maxLength="8"*/}
-                {/*            pattern="[0-9]+"*/}
-                {/*            className="font-phenomenaRegular text-gray-700 mt-1 mb-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md placeholder-gray-400"*/}
-                {/*        />*/}
-                {/*        <div className="float-left py-1">*/}
-                {/*            <button*/}
-                {/*                id="search"*/}
-                {/*                type="submit"*/}
-                {/*                className="font-phenomenaBold float-left py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"*/}
-                {/*            >*/}
-                {/*                LİSTELE*/}
-                {/*            </button>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</form>*/}
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

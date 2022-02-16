@@ -29,69 +29,9 @@ export async function getServerSideProps({query}) {
     }
 }
 
-const lessonSemesters = [
-    {
-        value: 'FIRST',
-        name: '1. Dönem'
-    },
-    {
-        value: 'SECOND',
-        name: '2. Dönem'
-    },
-    {
-        value: 'THIRD',
-        name: '3. Dönem'
-    },
-    {
-        value: 'FOURTH',
-        name: '4. Dönem'
-    },
-    {
-        value: 'FIFTH',
-        name: '5. Dönem'
-    },
-    {
-        value: 'SIXTH',
-        name: '6. Dönem'
-    },
-    {
-        value: 'SEVENTH',
-        name: '7. Dönem'
-    },
-    {
-        value: 'EIGHTH',
-        name: '8. Dönem'
-    },
-    {
-        value: 'NINTH',
-        name: '9. Dönem'
-    },
-    {
-        value: 'TENTH',
-        name: '10. Dönem'
-    },
-    {
-        value: 'ELEVENTH',
-        name: '11. Dönem'
-    },
-    {
-        value: 'TWELFTH',
-        name: '12. Dönem'
-    },
-]
 
-const lessonCompulsory = [
-    {
-        value: 'COMPULSORY',
-        name: 'Zorunlu'
-    },
-    {
-        value: 'ELECTIVE',
-        name: 'Seçmeli'
-    }
-]
 
-export default function detailLesson({departments, lesson}) {
+export default function DetailLesson({departments, lesson}) {
 
     const {departmentResponse, lessonId, name, credit, semester, compulsoryOrElective, status} = lesson;
     const departmentName = departmentResponse.name;
