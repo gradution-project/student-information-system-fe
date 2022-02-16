@@ -91,7 +91,7 @@ export default function Faculty() {
                                 </h3>
                             </div>
                             <div className="grid grid-cols-6 gap-6">
-                                <div className="col-span-6 sm:col-span-3">
+                                <div className="col-span-6 sm:col-span-6">
                                     <label htmlFor="faculty-name"
                                            className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                         FAKÜLTE ADI
