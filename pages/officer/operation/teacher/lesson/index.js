@@ -109,6 +109,8 @@ export default function TeacherLessonList({lessons}) {
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+                                                <div
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
 
                                                 {lessonSemesters.map((lSemester) => (
                                                     lesson.lessonResponse.semester === lSemester.enum
@@ -119,7 +121,6 @@ export default function TeacherLessonList({lessons}) {
                                                         null
                                                 ))}
                                             </td>
-
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {lessonCompulsory.map((lCompulsory) => (
                                                     lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
