@@ -1,8 +1,12 @@
 {
+  "name": "student-information-system-fe",
+  "version": "v1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev:local": "env-cmd -f .env.sis.local next dev",
+    "build:local": "env-cmd -f .env.sis.local next build",
+    "dev": "env-cmd -f .env.sis.live next dev",
+    "build": "env-cmd -f .env.sis.live next build",
     "start": "next start"
   },
   "dependencies": {
@@ -16,9 +20,10 @@
   "devDependencies": {
     "@heroicons/react": "^1.0.5",
     "@tailwindcss/forms": "^0.3.4",
+    "@types/node": "^17.0.17",
     "@types/react": "^17.0.37",
     "autoprefixer": "^10.4.0",
-    "axios": "^0.24.0",
+    "env-cmd": "^10.1.0",
     "postcss": "^8.4.4",
     "tailwindcss": "^2.2.19",
     "typescript": "^4.5.2",
