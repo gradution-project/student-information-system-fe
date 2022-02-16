@@ -238,7 +238,7 @@ export default function FacultyDetail({faculty}) {
     }
 
     const facultyUpdate = async (event) => {
-        openProcessingModalAcademic();
+        openProcessingModal();
 
         event.preventDefault()
         const updateRes = await fetch(`http://localhost:8585/faculty/update/${facultyId}`, {
