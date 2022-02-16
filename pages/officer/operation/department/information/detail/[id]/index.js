@@ -7,12 +7,13 @@ import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 
 export async function getServerSideProps({query}) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const facultyResponses = await fetch("http://localhost:8585/faculty?status=ACTIVE", {
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const departmentResponse = await fetch("http://localhost:8585/department/" + id, {
+    const departmentResponse = await fetch(`${SIS_API_URL}/department/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -23,20 +24,20 @@ export async function getServerSideProps({query}) {
         return {
             props: {
                 faculties: facultyDatas.response,
-                department: departmentData.response
+                department: departmentData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
 
-export default function DepartmentSave({faculties, department}) {
+export default function DepartmentSave({faculties, department, SIS_API_URL}) {
     const cookies = new Cookies();
 
-    const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass, facultyResponse} = department;
-
+    const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass} = department;
+    const {facultyResponse} = department;
     const facultyName = facultyResponse.name;
-    const facultiesId = facultyResponse.facultyId;
 
     const router = useRouter();
 
@@ -194,7 +195,7 @@ export default function DepartmentSave({faculties, department}) {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`http://localhost:8585/department/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/department/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -218,7 +219,7 @@ export default function DepartmentSave({faculties, department}) {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`http://localhost:8585/department/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/department/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -242,7 +243,7 @@ export default function DepartmentSave({faculties, department}) {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`http://localhost:8585/department/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/department/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
@@ -266,7 +267,7 @@ export default function DepartmentSave({faculties, department}) {
         openProcessingModal();
 
         event.preventDefault()
-        const updateRes = await fetch(`http://localhost:8585/department/update/${departmentId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/department/update/${departmentId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
@@ -387,18 +388,17 @@ export default function DepartmentSave({faculties, department}) {
                                                 className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }> >
+                                                }>
                                                 {faculties.map((faculty) => (
                                                     facultyName === faculty.name
                                                         ?
-                                                        <option value={faculty.facultyId}
-                                                                selected>{faculty.name}</option>
+                                                        <option value={faculty.facultyId} selected>{faculty.name}</option>
                                                         :
                                                         <option value={faculty.facultyId}>{faculty.name}</option>
+
                                                 ))}
                                             </select>
                                         </div>
-
                                         <div className="sm:col-span-3">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
@@ -451,13 +451,11 @@ export default function DepartmentSave({faculties, department}) {
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departmentPreparatoryClass.map(preparatoryClass => (
-                                                    isTherePreparatoryClass === preparatoryClass.boolean
+                                                    isTherePreparatoryClass === preparatoryClass.enum
                                                         ?
-                                                        <option value={preparatoryClass.boolean}
-                                                                selected>{preparatoryClass.tr}</option>
+                                                        <option value={preparatoryClass.enum} selected>{preparatoryClass.tr}</option>
                                                         :
-                                                        <option
-                                                            value={preparatoryClass.boolean}>{preparatoryClass.tr}</option>
+                                                        <option value={preparatoryClass.enum}>{preparatoryClass.tr}</option>
                                                 ))}
                                             </select>
                                         </div>

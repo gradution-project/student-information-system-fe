@@ -4,7 +4,8 @@ import {useRouter} from "next/router";
 import {departmentStatuses} from "../../../../public/constants/department";
 
 export async function getServerSideProps() {
-    const departmentResponse = await fetch("http://localhost:8585/department?status=ALL", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const departmentResponse = await fetch(`${SIS_API_URL}/department?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
