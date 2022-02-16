@@ -7,7 +7,6 @@ import {
     ChartBarIcon,
     CursorClickIcon,
     DocumentReportIcon,
-    IdentificationIcon,
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
@@ -27,10 +26,10 @@ const university = [
         icon: CursorClickIcon,
     },
     {
-        name: 'Personel İşlemleri',
+        name: 'Ders İşlemleri',
         description: "",
-        href: '/officer/operation/officer',
-        icon: IdentificationIcon,
+        href: '/officer/operation/lesson',
+        icon: CalendarIcon,
     }
 ]
 
@@ -42,7 +41,7 @@ const teacher = [
         icon: BriefcaseIcon,
     },
     {
-        name: 'Ders İşlemleri',
+        name: 'Ders Atama İşlemleri',
         description: "",
         href: '/officer/operation/teacher/lesson',
         icon: CalendarIcon,

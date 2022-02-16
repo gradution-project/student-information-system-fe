@@ -91,18 +91,7 @@ const lessonCompulsory = [
     }
 ]
 
-const lessonStatusType = [
-    {
-        value: 'ACTIVE',
-        name: 'Aktif'
-    },
-    {
-        value: 'PASSIVE',
-        name: 'Pasif'
-    }
-]
-
-export default function detailLesson(departments, lesson) {
+export default function detailLesson({departments, lesson}) {
 
     const {departmentResponse, lessonId, name, credit, semester, compulsoryOrElective, status} = lesson;
     const departmentName = departmentResponse.name;
