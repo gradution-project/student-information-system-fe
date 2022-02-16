@@ -5,7 +5,15 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from 'universal-cookie';
 
-export default function StudentLogin() {
+export async function getServerSideProps() {
+    return {
+        props: {
+            SIS_API_URL: process.env.SIS_API_URL
+        }
+    }
+}
+
+export default function StudentLogin({SIS_API_URL}) {
 
     const [studentNumber, setStudentNumber] = useState();
     const [password, setPassword] = useState();
@@ -47,7 +55,7 @@ export default function StudentLogin() {
 
         event.preventDefault();
 
-        const loginRes = await fetch("http://localhost:8585/login/student", {
+        const loginRes = await fetch(`${SIS_API_URL}/login/student`, {
             body: JSON.stringify({studentId: studentNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
@@ -56,7 +64,7 @@ export default function StudentLogin() {
         if (loginData.response.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('studentNumber', studentNumber, {path: '/'});
-            const getRes = await fetch("http://localhost:8585/student/" + cookies.get('studentNumber'), {
+            const getRes = await fetch(`${SIS_API_URL}/student/` + cookies.get('studentNumber'), {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });

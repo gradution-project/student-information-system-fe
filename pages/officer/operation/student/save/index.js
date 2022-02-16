@@ -7,7 +7,8 @@ import Cookies from "universal-cookie";
 import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
 
 export async function getServerSideProps() {
-    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -16,13 +17,13 @@ export async function getServerSideProps() {
         return {
             props: {
                 departments: departmentDatas.response,
-
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function SaveStudent({departments}) {
+export default function SaveStudent({departments, SIS_API_URL}) {
     const cookies = new Cookies();
     const departmentName = departments.name;
 
@@ -130,7 +131,7 @@ export default function SaveStudent({departments}) {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/student/save", {
+        const saveRes = await fetch(`${SIS_API_URL}/student/save`, {
             body: JSON.stringify({
                 academicInfoRequest: {
                     degree: studentDegree,

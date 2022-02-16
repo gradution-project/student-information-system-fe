@@ -7,12 +7,13 @@ import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../../../.
 import Cookies from "universal-cookie";
 
 export async function getServerSideProps({query}) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const teacherResponse = await fetch("http://localhost:8585/teacher/" + id, {
+    const teacherResponse = await fetch(`${SIS_API_URL}/teacher/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -30,7 +31,7 @@ export async function getServerSideProps({query}) {
 }
 
 
-export default function TeacherDetail({departments, teacher}) {
+export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
     const cookies = new Cookies();
     const {academicInfoResponse} = teacher;
     const {personalInfoResponse} = teacher;
@@ -289,7 +290,7 @@ export default function TeacherDetail({departments, teacher}) {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`http://localhost:8585/teacher/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/teacher/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -313,7 +314,7 @@ export default function TeacherDetail({departments, teacher}) {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`http://localhost:8585/teacher/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/teacher/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -337,7 +338,7 @@ export default function TeacherDetail({departments, teacher}) {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`http://localhost:8585/teacher/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/teacher/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
@@ -361,7 +362,7 @@ export default function TeacherDetail({departments, teacher}) {
         openProcessingModalAcademic();
 
         event.preventDefault()
-        const updateRes = await fetch(`http://localhost:8585/teacher/update/academic-info/${teacherId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/teacher/update/academic-info/${teacherId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
@@ -392,7 +393,7 @@ export default function TeacherDetail({departments, teacher}) {
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`http://localhost:8585/teacher/update/personal-info/${teacherId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/teacher/update/personal-info/${teacherId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({

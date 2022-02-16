@@ -6,8 +6,9 @@ import {useRouter} from "next/router";
 import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
 
 export async function getServerSideProps(context) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const studentId = context.req.cookies['studentNumber']
-    const studentResponse = await fetch("http://localhost:8585/student/" + studentId, {
+    const studentResponse = await fetch(`${SIS_API_URL}/student/` + studentId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -15,13 +16,14 @@ export async function getServerSideProps(context) {
     if (studentData.success) {
         return {
             props: {
-                student: studentData.response
+                student: studentData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function MyInfo({student}) {
+export default function MyInfo({student, SIS_API_URL}) {
 
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
@@ -94,7 +96,7 @@ export default function MyInfo({student}) {
         openProcessingModalPersonal();
 
         event.preventDefault()
-        const updatePersonalRes = await fetch(`http://localhost:8585/student/update/personal-info/${studentId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/student/update/personal-info/${studentId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
