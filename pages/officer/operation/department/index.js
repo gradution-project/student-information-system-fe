@@ -62,6 +62,12 @@ export default function FacultyList({departments}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    BÖLÜM KODU
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     FAKÜLTE ADI
                                                 </th>
                                                 <th
@@ -80,8 +86,14 @@ export default function FacultyList({departments}) {
                                                             <div className="ml-4">
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{department.name}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-2 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-gray-500">{department.departmentId}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{department.departmentId}</div>
                                                             </div>
                                                         </div>
                                                     </td>
