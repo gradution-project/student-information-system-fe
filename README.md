@@ -4,19 +4,28 @@
 ```
 yarn install
 ```
-or
+
+For Execution
+------------------
+
+### LOCAL API
 ```
-npm install
+yarn build:local
+```
+```
+yarn dev:local
 ```
 
-### For Execution
+### LIVE API
+```
+yarn build
+```
 ```
 yarn dev
 ```
-or
-```
-npm run dev
-```
 
-Local URL : http://localhost:3000/
+Local URL : http://localhost:8586/
+------------------
+
+Live URL : https://sis-fe.herokuapp.com/
 ------------------

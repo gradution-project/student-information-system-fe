@@ -7,7 +7,7 @@ import Cookies from "universal-cookie";
 import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
 
 export async function getServerSideProps() {
-    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -22,7 +22,7 @@ export async function getServerSideProps() {
     }
 }
 
-export default function SaveTeacher({departments}) {
+export default function SaveTeacher({departments, SIS_API_URL}) {
     const cookies = new Cookies();
 
     const departmentName = departments.name;
@@ -142,7 +142,7 @@ export default function SaveTeacher({departments}) {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/teacher/save", {
+        const saveRes = await fetch(`${SIS_API_URL}/teacher/save`, {
             body: JSON.stringify({
                 academicInfoRequest: {
                     degree: teacherDegree,

@@ -5,7 +5,15 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
 
-export default function OfficerLogin() {
+export async function getServerSideProps() {
+    return {
+        props: {
+            SIS_API_URL: process.env.SIS_API_URL
+        }
+    }
+}
+
+export default function OfficerLogin({SIS_API_URL}) {
 
     const [officerNumber, setOfficerNumber] = useState();
     const [password, setPassword] = useState();
@@ -47,7 +55,7 @@ export default function OfficerLogin() {
 
         event.preventDefault();
 
-        const loginRes = await fetch("http://localhost:8585/login/officer", {
+        const loginRes = await fetch(`${SIS_API_URL}/login/officer`, {
             body: JSON.stringify({officerId: officerNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
@@ -56,7 +64,7 @@ export default function OfficerLogin() {
         if (loginData.response.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('officerNumber', officerNumber, {path: '/'});
-            const getRes = await fetch("http://localhost:8585/officer/" + cookies.get('officerNumber'), {
+            const getRes = await fetch(`${SIS_API_URL}/officer/` + cookies.get('officerNumber'), {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
