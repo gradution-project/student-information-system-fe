@@ -475,7 +475,6 @@ export default function DepartmentSave({faculties, department}) {
                                         )}
                                     </div>
                                 </div>
-
                                 {(
                                     status !== 'DELETED' && status !== 'PASSIVE'
                                         ?
