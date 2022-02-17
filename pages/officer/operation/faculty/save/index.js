@@ -4,10 +4,17 @@ import {Fragment, useState} from "react";
 import Cookies from "universal-cookie";
 import {Dialog, Transition} from "@headlessui/react";
 import {useRouter} from "next/router";
-
-
-export default function Faculty() {
+export async function getServerSideProps() {
     const SIS_API_URL = process.env.SIS_API_URL;
+        return {
+            props: {
+                SIS_API_URL: SIS_API_URL
+        }
+    }
+}
+
+export default function FacultySave({SIS_API_URL}) {
+
     const cookies = new Cookies();
 
     const router = useRouter();
@@ -52,6 +59,7 @@ export default function Faculty() {
     }
 
     const facultySave = async (event) => {
+
         openProcessingModal();
 
         event.preventDefault();
