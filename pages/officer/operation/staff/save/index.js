@@ -6,7 +6,8 @@ import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
 
 export async function getServerSideProps() {
-    const facultyResponses = await fetch("http://localhost:8585/faculty?status=ACTIVE", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -15,13 +16,13 @@ export async function getServerSideProps() {
         return {
             props: {
                 faculties: facultyDatas.response,
-
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function SaveOfficer({faculties}) {
+export default function SaveOfficer({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
     const facultyName = faculties.name;
 
@@ -119,7 +120,7 @@ export default function SaveOfficer({faculties}) {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/officer/save", {
+        const saveRes = await fetch(`${SIS_API_URL}/officer/save`, {
             body: JSON.stringify({
 
                 academicInfoRequest: {
@@ -273,6 +274,9 @@ export default function SaveOfficer({faculties}) {
                                                 type="text"
                                                 name="phone-number"
                                                 id="phone-number"
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -342,6 +346,9 @@ export default function SaveOfficer({faculties}) {
                                                 type="text"
                                                 name="phoneNumber"
                                                 id="phoneNumber"
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
