@@ -7,7 +7,8 @@ import {Dialog, Transition} from "@headlessui/react";
 import {departmentPreparatoryClass} from "../../../../../public/constants/department";
 
 export async function getServerSideProps() {
-    const facultyResponses = await fetch("http://localhost:8585/faculty?status=ACTIVE", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -16,13 +17,13 @@ export async function getServerSideProps() {
         return {
             props: {
                 faculties: facultyDatas.response,
-
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function DepartmentSave({faculties}) {
+export default function DepartmentSave({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
 
     const facultyName = faculties.name;
@@ -93,7 +94,7 @@ export default function DepartmentSave({faculties}) {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/department/save", {
+        const saveRes = await fetch(`${SIS_API_URL}/department/save`, {
             body: JSON.stringify({
                 departmentInfoRequest: {
                     facultyId: facultiesName,
@@ -200,13 +201,13 @@ export default function DepartmentSave({faculties}) {
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
                                         {departmentPreparatoryClass.map(preparatoryClass => (
-                                            preparatoriesClass === preparatoryClass.boolean
+                                            preparatoriesClass === preparatoryClass.enum
                                                 ?
-                                                <option value={preparatoryClass.boolean}
+                                                <option value={preparatoryClass.enum}
                                                         selected>{preparatoryClass.tr}</option>
                                                 :
                                                 <option
-                                                    value={preparatoryClass.boolean}>{preparatoryClass.tr}</option>
+                                                    value={preparatoryClass.enum}>{preparatoryClass.tr}</option>
                                         ))}
                                     </select>
                                 </div>
