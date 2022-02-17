@@ -5,8 +5,9 @@ import {Dialog, Transition} from "@headlessui/react";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 
 export async function getServerSideProps(context) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const officerId = context.req.cookies['officerNumber']
-    const officerResponse = await fetch("http://localhost:8585/officer/" + officerId, {
+    const officerResponse = await fetch(`${SIS_API_URL}/officer/` + officerId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -14,13 +15,14 @@ export async function getServerSideProps(context) {
     if (officerData.success) {
         return {
             props: {
-                officer: officerData.response
+                officer: officerData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function MyInfo({officer}) {
+export default function MyInfo({officer, SIS_API_URL}) {
     const {academicInfoResponse} = officer;
     const {personalInfoResponse} = officer;
 
@@ -30,8 +32,6 @@ export default function MyInfo({officer}) {
         registrationDate,
     } = academicInfoResponse;
     const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
-
-    const facultyName = facultyResponse.name;
 
     const router = new useRouter();
 
@@ -89,7 +89,7 @@ export default function MyInfo({officer}) {
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`http://localhost:8585/officer/update/personal-info/${officerId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
