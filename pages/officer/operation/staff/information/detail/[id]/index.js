@@ -7,12 +7,13 @@ import Cookies from "universal-cookie";
 import {officerStatuses} from "../../../../../../../public/constants/officer";
 
 export async function getServerSideProps({query}) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const facultyResponses = await fetch("http://localhost:8585/faculty?status=ACTIVE", {
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const officerResponse = await fetch("http://localhost:8585/officer/" + id, {
+    const officerResponse = await fetch(`${SIS_API_URL}/officer/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -23,14 +24,15 @@ export async function getServerSideProps({query}) {
         return {
             props: {
                 faculties: facultyDatas.response,
-                officer: officerData.response
+                officer: officerData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
 
-export default function OfficerDetail({faculties, officer}) {
+export default function OfficerDetail({faculties, officer, SIS_API_URL}) {
     const cookies = new Cookies();
     const {academicInfoResponse} = officer;
     const {personalInfoResponse} = officer;
@@ -38,7 +40,6 @@ export default function OfficerDetail({faculties, officer}) {
     const {
         facultyResponse,
         officerId,
-        role,
         registrationDate,
         status
     } = academicInfoResponse;
@@ -267,7 +268,7 @@ export default function OfficerDetail({faculties, officer}) {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`http://localhost:8585/officer/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/officer/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -291,7 +292,7 @@ export default function OfficerDetail({faculties, officer}) {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`http://localhost:8585/officer/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/officer/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
@@ -315,7 +316,7 @@ export default function OfficerDetail({faculties, officer}) {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`http://localhost:8585/officer/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/officer/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
@@ -339,7 +340,7 @@ export default function OfficerDetail({faculties, officer}) {
         openProcessingModalAcademic();
 
         event.preventDefault()
-        const updateRes = await fetch(`http://localhost:8585/officer/update/academic-info/${officerId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/officer/update/academic-info/${officerId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
@@ -367,7 +368,7 @@ export default function OfficerDetail({faculties, officer}) {
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`http://localhost:8585/officer/update/personal-info/${officerId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
