@@ -453,9 +453,9 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
                                                 {departmentPreparatoryClass.map(preparatoryClass => (
                                                     isTherePreparatoryClass === preparatoryClass.boolean
                                                         ?
-                                                        <option value={preparatoryClass.boolean} selected>{preparatoryClass.tr}</option>
+                                                        <option value={preparatoryClass.value} selected>{preparatoryClass.tr}</option>
                                                         :
-                                                        <option value={preparatoryClass.boolean}>{preparatoryClass.tr}</option>
+                                                        <option value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
