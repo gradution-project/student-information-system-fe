@@ -35,9 +35,10 @@ export async function getServerSideProps({query}) {
 export default function DepartmentSave({faculties, department, SIS_API_URL}) {
     const cookies = new Cookies();
 
-    const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass} = department;
-    const {facultyResponse} = department;
+    const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass, facultyResponse} = department;
     const facultyName = facultyResponse.name;
+    const facultyId = facultyResponse.facultyId;
+
 
     const router = useRouter();
 
@@ -49,7 +50,7 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
         setDepartmentName(departmentName);
     }
 
-    const [facultiesName, setFacultiesName] = useState(facultyName);
+    const [facultiesName, setFacultiesName] = useState(facultyId);
     const changeFacultiesName = event => {
         const facultiesName = event.target.value;
         setFacultiesName(facultiesName);
@@ -383,7 +384,6 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
                                                 id="faculty"
                                                 name="faculty"
                                                 autoComplete="faculty-name"
-                                                defaultValue={facultyName}
                                                 disabled={status === "DELETED" || status === "PASSIVE"}
                                                 className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
@@ -451,11 +451,11 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departmentPreparatoryClass.map(preparatoryClass => (
-                                                    isTherePreparatoryClass === preparatoryClass.enum
+                                                    isTherePreparatoryClass === preparatoryClass.boolean
                                                         ?
-                                                        <option value={preparatoryClass.enum} selected>{preparatoryClass.tr}</option>
+                                                        <option value={preparatoryClass.boolean} selected>{preparatoryClass.tr}</option>
                                                         :
-                                                        <option value={preparatoryClass.enum}>{preparatoryClass.tr}</option>
+                                                        <option value={preparatoryClass.boolean}>{preparatoryClass.tr}</option>
                                                 ))}
                                             </select>
                                         </div>

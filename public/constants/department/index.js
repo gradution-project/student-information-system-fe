@@ -27,11 +27,11 @@ export const departmentStatuses = [
 
 export const departmentPreparatoryClass = [
     {
-        enum: 0,
+        boolean: 0,
         tr: 'Hazırlık Sınıfı Yok'
     },
     {
-        enum: 1,
+        boolean: 1,
         tr: 'Hazırlık Sınıfı Var'
     }
 ]

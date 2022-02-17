@@ -201,13 +201,13 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
                                         {departmentPreparatoryClass.map(preparatoryClass => (
-                                            preparatoriesClass === preparatoryClass.enum
+                                            preparatoriesClass === preparatoryClass.boolean
                                                 ?
-                                                <option value={preparatoryClass.enum}
+                                                <option value={preparatoryClass.boolean}
                                                         selected>{preparatoryClass.tr}</option>
                                                 :
                                                 <option
-                                                    value={preparatoryClass.enum}>{preparatoryClass.tr}</option>
+                                                    value={preparatoryClass.boolean}>{preparatoryClass.tr}</option>
                                         ))}
                                     </select>
                                 </div>
