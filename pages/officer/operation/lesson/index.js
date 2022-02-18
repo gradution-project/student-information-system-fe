@@ -126,7 +126,7 @@ export default function TeacherLessonList({lessons}) {
                                                 </span>
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                <a href={'/officer/operation/teacher/lesson/information/detail/' + lesson.lessonId}
+                                                <a href={'/officer/operation/lesson/information/detail/' + lesson.lessonId}
                                                    className='text-sis-yellow'>
                                                     DETAY
                                                 </a>

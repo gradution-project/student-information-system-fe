@@ -17,7 +17,7 @@ export async function getServerSideProps() {
         return {
             props: {
                 departments: departmentDatas.response,
-
+                SIS_API_URL: SIS_API_URL
             }
         }
     }

@@ -186,12 +186,7 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                             >
                                                 <option>Ders Yarıyılı Seçiniz...</option>
                                                 {lessonSemesters.map(lSemester => (
-                                                    semester === lSemester.enum
-                                                        ?
                                                         <option value={lSemester.enum}>{lSemester.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={lSemester.enum}>{lSemester.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -208,13 +203,8 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                                     className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 >
                                                     <option>Ders Durumunu Seçiniz...</option>
-                                                    {lessonCompulsory.map(lCompulsory => (
-                                                        compulsoryOrElective === lCompulsory.enum
-                                                            ?
-                                                            <option value={lCompulsory.enum}>{lCompulsory.tr}</option>
-                                                            :
-                                                            <option
-                                                                value={lCompulsory.enum}>{lCompulsory.tr}</option>
+                                                    {lessonCompulsory.map((lCompulsory) => (
+                                                        <option value={lCompulsory.enum}>{lCompulsory.tr}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -233,13 +223,7 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                    departmentName === department.name
-                                                        ?
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
-                                                        :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -299,7 +283,7 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Ekleme İşlemi başarıyla gerçekleşti.
+                                                            Ders Ekleme İşlemi başarıyla gerçekleşti.
                                                             Mesaj penceresini kapattıktan sonra ders listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
