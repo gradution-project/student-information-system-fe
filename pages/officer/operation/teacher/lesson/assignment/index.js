@@ -98,7 +98,7 @@ export default function LessonAssignment({SIS_API_URL}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="sm:mt-5">
+            <div className="select-none sm:mt-5">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={lessonAssignment}>

@@ -3,6 +3,7 @@ import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../public/constants/lesson";
 
+
 export async function getServerSideProps() {
     const SIS_API_URL = process.env.SIS_API_URL;
     const lessonResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
@@ -12,7 +13,9 @@ export async function getServerSideProps() {
     const lessonsData = await lessonResponse.json();
     if (lessonsData.success) {
         return {
-            props: {lessons: lessonsData.response}
+            props: {
+                lessons: lessonsData.response,
+            }
         }
     }
 }
@@ -31,7 +34,7 @@ export default function TeacherLessonList({lessons}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className=" select-none px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ATANAN DERS LİSTESİ
@@ -87,10 +90,8 @@ export default function TeacherLessonList({lessons}) {
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                    {
-                                    }
                                     {lessons.map((lesson) => (
-                                        <tr key={lesson.lessonId}>
+                                        <tr key={lesson.lessonResponse.lessonId}>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="ml-0.5">
