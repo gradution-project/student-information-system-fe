@@ -24,7 +24,13 @@ const university = [
         description: '',
         href: '/officer/operation/department',
         icon: CursorClickIcon,
-    }
+    },
+    {
+        name: 'Ders İşlemleri',
+        description: "",
+        href: '/officer/operation/lesson',
+        icon: CalendarIcon,
+    },
 ]
 
 const officer = [
@@ -44,7 +50,7 @@ const teacher = [
         icon: BriefcaseIcon,
     },
     {
-        name: 'Ders İşlemleri',
+        name: 'Ders Atama İşlemleri',
         description: "",
         href: '/officer/operation/teacher/lesson',
         icon: CalendarIcon,

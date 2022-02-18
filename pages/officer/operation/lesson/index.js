@@ -1,6 +1,7 @@
 import {useRouter} from "next/router";
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
+import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../public/constants/lesson";
 
 
 export async function getServerSideProps() {
@@ -87,9 +88,14 @@ export default function TeacherLessonList({lessons}) {
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name}</div>
                                                         <div
                                                             className="font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
-                                                        <div
-                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.semester}
-                                                        </div>
+                                                        {lessonSemesters.map((lSemester) => (
+                                                            lesson.semester === lSemester.enum
+                                                                ?
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                :
+                                                                null
+                                                        ))}
                                                     </div>
                                                 </div>
                                             </td>
@@ -98,13 +104,24 @@ export default function TeacherLessonList({lessons}) {
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.compulsoryOrElective}</div>
+                                                {lessonCompulsory.map((lCompulsory) => (
+                                                    lesson.compulsoryOrElective === lCompulsory.enum
+                                                        ?
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
+                                                        :
+                                                        null
+                                                ))}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-darkblue font-phenomenaBold text-lg text-sis-white ">
-                                                        {lesson.status}
+                                                 <span>
+                                                         {lessonStatuses.map((lStatus) => (
+                                                             lesson.status === lStatus.enum
+                                                                 ?
+                                                                 lStatus.miniComponent
+                                                                 :
+                                                                 null
+                                                         ))}
                                                 </span>
                                             </td>
                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
