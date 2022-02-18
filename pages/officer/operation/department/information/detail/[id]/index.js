@@ -329,7 +329,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
-                                    BÖLÜM KAYDINI DONDUR
+                                    BÖLÜMÜ PASİFLEŞTİR
                                 </button>
                                 :
                                 null
@@ -342,7 +342,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    BÖLÜM KAYDINI AKTİFLEŞTİR
+                                    BÖLÜMÜ AKTİFLEŞTİR
                                 </button>
                                 :
                                 null
@@ -529,12 +529,12 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Bölüm Kayıt Aktifleştirme İşlemi Başarılı!
+                                                            Bölüm Aktifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Bölüm Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Bölüm Aktifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -583,7 +583,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Bölüm Kayıt Aktifleştirme İşlemi Başarısız!
+                                                            Bölüm Aktifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -639,7 +639,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Bölüm Kayıt Aktifleştirme İsteğiniz İşleniyor...
+                                                        Bölüm Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -688,12 +688,12 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Bölüm Kayıt Dondurma İşlemi Başarılı!
+                                                            Bölüm Pasifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Bölüm Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Bölüm Pasifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -742,7 +742,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Bölüm Kayıt Dondurma İşlemi Başarısız!
+                                                            Bölüm Pasifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -798,7 +798,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Bölüm Kayıt Dondurma İsteğiniz İşleniyor...
+                                                        Bölüm Pasifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -847,12 +847,12 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Bölüm Kayıt Silme İşlemi Başarılı!
+                                                            Bölüm Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Bölüm Kayıt Silme İşlemi başarıyla gerçekleşti.
+                                                            Bölüm Silme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -901,7 +901,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Bölüm Kayıt Silme İşlemi Başarısız!
+                                                            Bölüm Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -957,7 +957,7 @@ export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Bölüm Kayıt Silme İsteğiniz İşleniyor...
+                                                        Bölüm Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
