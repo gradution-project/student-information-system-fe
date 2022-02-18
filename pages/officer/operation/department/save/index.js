@@ -135,15 +135,15 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                             <div className="grid grid-cols-6 gap-6">
 
                                 <div className="sm:col-span-3">
-                                    <label htmlFor="faculty"
+                                    <label htmlFor="facultyId"
                                            className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                         FAKÜLTE ADI
                                     </label>
                                     <select
                                         onChange={changeFacultyId}
-                                        id="faculty"
-                                        name="faculty"
-                                        autoComplete="faculty-name"
+                                        id="facultyId"
+                                        name="facultyId"
+                                        autoComplete="facultyId"
                                         className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                     >
                                         <option>Fakülte Seçiniz...</option>
