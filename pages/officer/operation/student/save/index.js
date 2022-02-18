@@ -25,10 +25,6 @@ export async function getServerSideProps() {
 
 export default function SaveStudent({departments, SIS_API_URL}) {
     const cookies = new Cookies();
-    const departmentName = departments.name;
-
-    const [degree] = useState();
-    const [classLevel] = useState();
 
     const router = useRouter();
 
@@ -336,10 +332,6 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
                                                 {studentDegrees.map(sDegree => (
-                                                    degree === sDegree.enum
-                                                        ?
-                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
-                                                        :
                                                         <option value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
@@ -360,10 +352,6 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
                                                 {studentClassLevels.map(sClassLevel => (
-                                                    classLevel === sClassLevel.enum
-                                                        ?
-                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
-                                                        :
                                                         <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
                                             </select>
@@ -383,10 +371,6 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                             >
                                                 <option>Bölümü Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                    departmentName === department.name
-                                                        ?
-                                                        <option value={department.departmentId}>{department.name}</option>
-                                                        :
                                                         <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>

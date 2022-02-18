@@ -26,10 +26,6 @@ export async function getServerSideProps() {
 export default function DepartmentSave({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
 
-    const facultyName = faculties.name;
-
-    const [preparatoriesClass] = useState();
-
     const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
@@ -148,10 +144,6 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Fakülte Seçiniz...</option>
                                         {faculties.map((faculty) => (
-                                            facultyName === faculty.name
-                                                ?
-                                                <option value={faculty.facultyId}>{faculty.name}</option>
-                                                :
                                                 <option value={faculty.facultyId}>{faculty.name}</option>
                                         ))}
                                     </select>
@@ -201,13 +193,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
                                         {departmentPreparatoryClass.map(preparatoryClass => (
-                                            preparatoriesClass === preparatoryClass.value
-                                                ?
-                                                <option value={preparatoryClass.value}
-                                                        selected>{preparatoryClass.tr}</option>
-                                                :
-                                                <option
-                                                    value={preparatoryClass.value}>{preparatoryClass.tr}</option>
+                                                <option value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                         ))}
                                     </select>
                                 </div>

@@ -7,6 +7,7 @@ import Cookies from "universal-cookie";
 import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
 
 export async function getServerSideProps() {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -16,7 +17,7 @@ export async function getServerSideProps() {
         return {
             props: {
                 departments: departmentDatas.response,
-
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
@@ -24,10 +25,6 @@ export async function getServerSideProps() {
 
 export default function SaveTeacher({departments, SIS_API_URL}) {
     const cookies = new Cookies();
-
-    const departmentName = departments.name;
-    const [degree] = useState();
-    const [role] = useState();
 
     const router = useRouter();
 
@@ -349,10 +346,6 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Ünvan Seçiniz...</option>
                                                 {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                        :
                                                         <option value={tDegree.enum}>{tDegree.tr}</option>
                                                 ))}
                                             </select>
@@ -372,12 +365,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Rol Seçiniz...</option>
                                                 {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
                                                         <option value={tRole.enum}>{tRole.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tRole.enum}>{tRole.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -397,13 +385,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                    departmentName === department.name
-                                                        ?
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
-                                                        :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>

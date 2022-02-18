@@ -24,7 +24,6 @@ export async function getServerSideProps() {
 
 export default function SaveOfficer({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
-    const facultyName = faculties.name;
 
     const router = useRouter();
 
@@ -310,13 +309,7 @@ export default function SaveOfficer({faculties, SIS_API_URL}) {
                                             >
                                                 <option>Fakülte Seçiniz...</option>
                                                 {faculties.map((faculty) => (
-                                                    facultyName === faculty.name
-                                                        ?
-                                                        <option value={faculty.facultyId}
-                                                        >{faculty.name}</option>
-                                                        :
-                                                        <option
-                                                            value={faculty.facultyId}>{faculty.name}</option>
+                                                        <option value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
                                         </div>
