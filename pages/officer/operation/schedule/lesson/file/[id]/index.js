@@ -5,8 +5,9 @@ import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 
 export async function getServerSideProps({query}) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const lessonScheduleFileResponse = await fetch("http://localhost:8585/lesson-schedule-file/department/" + id, {
+    const lessonScheduleFileResponse = await fetch(`${SIS_API_URL}/lesson-schedule-file/department/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -14,13 +15,14 @@ export async function getServerSideProps({query}) {
     if (lessonScheduleFileData.success) {
         return {
             props: {
-                lessonScheduleFile: lessonScheduleFileData.response
+                lessonScheduleFile: lessonScheduleFileData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function LessonScheduleFileSave({lessonScheduleFile}) {
+export default function LessonScheduleFileSave({lessonScheduleFile, SIS_API_URL}) {
 
     const router = useRouter();
 
@@ -60,7 +62,7 @@ export default function LessonScheduleFileSave({lessonScheduleFile}) {
 
         event.preventDefault();
 
-        const deleteRes = await fetch("http://localhost:8585/lesson-schedule-file/delete/department/" + lessonScheduleFile.departmentResponse.departmentId, {
+        const deleteRes = await fetch(`${SIS_API_URL}/lesson-schedule-file/delete/department/` + lessonScheduleFile.departmentResponse.departmentId, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE'
         });
