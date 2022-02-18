@@ -7,6 +7,7 @@ import Cookies from "universal-cookie";
 import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
 
 export async function getServerSideProps() {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'

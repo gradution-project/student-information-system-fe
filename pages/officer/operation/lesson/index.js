@@ -5,7 +5,8 @@ import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../pub
 
 
 export async function getServerSideProps() {
-    const lessonResponse = await fetch("http://localhost:8585/lesson?status=ALL", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const lessonResponse = await fetch(`${SIS_API_URL}/lesson?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -30,7 +31,7 @@ export default function TeacherLessonList({lessons}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className="select-none px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         DERS LİSTESİ
