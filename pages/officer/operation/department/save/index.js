@@ -40,10 +40,10 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
         setDepartmentName(departmentName);
     }
 
-    const [facultiesName, setFacultiesName] = useState();
-    const changeFacultiesName = event => {
-        const facultiesName = event.target.value;
-        setFacultiesName(facultiesName);
+    const [facultyId, setFacultyId] = useState();
+    const changeFacultyId = event => {
+        const facultyId = event.target.value;
+        setFacultyId(facultyId);
     }
 
     const [totalClassLevel, setTotalClassLevel] = useState();
@@ -97,7 +97,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
         const saveRes = await fetch(`${SIS_API_URL}/department/save`, {
             body: JSON.stringify({
                 departmentInfoRequest: {
-                    facultyId: facultiesName,
+                    facultyId: facultyId,
                     isTherePreparatoryClass: preparatoryClass,
                     name: departmentName,
                     totalClassLevel: totalClassLevel
@@ -140,7 +140,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                         FAKÜLTE ADI
                                     </label>
                                     <select
-                                        onChange={changeFacultiesName}
+                                        onChange={changeFacultyId}
                                         id="faculty"
                                         name="faculty"
                                         autoComplete="faculty-name"

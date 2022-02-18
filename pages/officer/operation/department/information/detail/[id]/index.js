@@ -32,12 +32,11 @@ export async function getServerSideProps({query}) {
 }
 
 
-export default function DepartmentSave({faculties, department, SIS_API_URL}) {
+export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
     const cookies = new Cookies();
 
     const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass, facultyResponse} = department;
     const facultyName = facultyResponse.name;
-    const facultyId = facultyResponse.facultyId;
 
 
     const router = useRouter();
@@ -50,10 +49,10 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
         setDepartmentName(departmentName);
     }
 
-    const [facultiesName, setFacultiesName] = useState(facultyId);
-    const changeFacultiesName = event => {
-        const facultiesName = event.target.value;
-        setFacultiesName(facultiesName);
+    const [facultyId, setFacultyId] = useState(facultyResponse.facultyId);
+    const changeFacultyId = event => {
+        const facultyId = event.target.value;
+        setFacultyId(facultyId);
     }
 
     const [totalClassLevels, setTotalClassLevel] = useState(totalClassLevel);
@@ -273,7 +272,7 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
             method: 'PUT',
             body: JSON.stringify({
                 departmentInfoRequest: {
-                    facultyId: facultiesName,
+                    facultyId: facultyId,
                     isTherePreparatoryClass: preparatoryClass,
                     name: departmentName,
                     totalClassLevel: totalClassLevels
@@ -375,15 +374,15 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
                                         </div>
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="faculty"
+                                            <label htmlFor="facultyId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 FAKÜLTE ADI
                                             </label>
                                             <select
-                                                onChange={changeFacultiesName}
-                                                id="faculty"
-                                                name="faculty"
-                                                autoComplete="faculty-name"
+                                                onChange={changeFacultyId}
+                                                id="facultyId"
+                                                name="facultyId"
+                                                autoComplete="facultyId"
                                                 disabled={status === "DELETED" || status === "PASSIVE"}
                                                 className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
@@ -451,7 +450,7 @@ export default function DepartmentSave({faculties, department, SIS_API_URL}) {
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departmentPreparatoryClass.map(preparatoryClass => (
-                                                    isTherePreparatoryClass === preparatoryClass.boolean
+                                                    isTherePreparatoryClass === preparatoryClass.value
                                                         ?
                                                         <option value={preparatoryClass.value} selected>{preparatoryClass.tr}</option>
                                                         :

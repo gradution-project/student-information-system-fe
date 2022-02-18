@@ -17,7 +17,7 @@ export async function getServerSideProps() {
     }
 }
 
-export default function FacultyList({departments}) {
+export default function DepartmentList({departments}) {
 
     const router = useRouter();
 

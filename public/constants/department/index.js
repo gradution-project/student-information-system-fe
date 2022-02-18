@@ -27,12 +27,10 @@ export const departmentStatuses = [
 
 export const departmentPreparatoryClass = [
     {
-        boolean: false,
         value: 0,
         tr: 'Hazırlık Sınıfı Yok'
     },
     {
-        boolean: true,
         value: 1,
         tr: 'Hazırlık Sınıfı Var'
     }
