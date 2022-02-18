@@ -3,8 +3,9 @@ import OfficerNavbar from "../../../../../../public/components/navbar/officer/of
 import {useRouter} from "next/router";
 
 export async function getServerSideProps(context) {
+    const SIS_API_URL = process.env.SIS_API_URL;
     const facultyId = context.req.cookies['officerFacultyNumber']
-    const examScheduleFilesResponse = await fetch("http://localhost:8585/exam-schedule-file/faculty/" + facultyId, {
+    const examScheduleFilesResponse = await fetch(`${SIS_API_URL}/exam-schedule-file/faculty/` + facultyId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -42,8 +43,7 @@ export default function ExamScheduleFileList({examScheduleFiles}) {
                         SINAV PROGRAMI YÜKLE
                     </button>
                 </div>
-                {examScheduleFiles.map((examScheduleFile) => (
-                    examScheduleFile !== null
+                {(examScheduleFiles.length > 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -72,38 +72,43 @@ export default function ExamScheduleFileList({examScheduleFiles}) {
                                                 </th>
                                             </tr>
                                             </thead>
-                                            <tbody className="bg-white divide-y divide-gray-200">
-                                            <tr key={examScheduleFile.fileId}>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{examScheduleFile.departmentResponse.name}</div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaLight text-xl text-sis-darkblue">{examScheduleFile.fileName}</div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                            {examScheduleFiles.map((examScheduleFile) => (
+                                                examScheduleFile !== null
+                                                    ?
+                                                    <tbody className="bg-white divide-y divide-gray-200">
+                                                    <tr key={examScheduleFile.fileId}>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div
+                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{examScheduleFile.departmentResponse.name}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div
+                                                                className="font-phenomenaLight text-xl text-sis-darkblue">{examScheduleFile.fileName}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
                                                 <span
                                                     className="select-none px-4 inline-flex leading-8 rounded-full bg-sis-success font-phenomenaLight text-lg text-sis-white ">
                                                         {examScheduleFile.createdDate}
                                                 </span>
-                                                </td>
-                                                <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                    <a href={'/officer/operation/schedule/exam/file/' + examScheduleFile.departmentResponse.departmentId}
-                                                       className='text-sis-yellow'>
-                                                        DETAY
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
+                                                        </td>
+                                                        <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                            <a href={'/officer/operation/schedule/exam/file/' + examScheduleFile.departmentResponse.departmentId}
+                                                               className='text-sis-yellow'>
+                                                                DETAY
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                    :
+                                                    null
+                                            ))}
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                ))}
+                        : null
+                )}
             </div>
         </div>
     )

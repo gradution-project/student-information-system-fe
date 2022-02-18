@@ -6,7 +6,8 @@ import Cookies from "universal-cookie";
 import {useRouter} from "next/router";
 
 export async function getServerSideProps() {
-    const departmentResponses = await fetch("http://localhost:8585/department?status=ACTIVE", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -14,13 +15,14 @@ export async function getServerSideProps() {
     if (departmentDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response
+                departments: departmentDatas.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function ExamScheduleFileSave({departments}) {
+export default function ExamScheduleFileSave({departments, SIS_API_URL}) {
 
     const cookies = new Cookies();
 
@@ -29,8 +31,6 @@ export default function ExamScheduleFileSave({departments}) {
     const [operationUserId, setOperationUserId] = useState(cookies.get("officerNumber"));
 
     const [facultyId, setFacultyId] = useState(cookies.get("officerFacultyNumber"));
-
-    const [apiUrl, setApiUrl] = useState("http://localhost:8585");
 
     const [departmentId, setDepartmentId] = useState();
     const changeDepartmentId = event => {
@@ -54,7 +54,7 @@ export default function ExamScheduleFileSave({departments}) {
                 formData.append('document', event.target.files[key]);
             }
         }
-        formData.append('apiUrl', apiUrl);
+        formData.append('apiUrl', SIS_API_URL);
         formData.append('facultyId', facultyId);
         formData.append('departmentId', departmentId);
         formData.append('operationUserId', operationUserId);
@@ -98,7 +98,7 @@ export default function ExamScheduleFileSave({departments}) {
         event.preventDefault();
 
         if (facultyId !== null && departmentId !== null) {
-            const saveRes = await fetch("http://localhost:8585/exam-schedule-file/save", {
+            const saveRes = await fetch(`${SIS_API_URL}/exam-schedule-file/save`, {
                 body: examScheduleFileRequest,
                 method: 'POST'
             });
