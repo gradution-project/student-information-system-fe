@@ -22,7 +22,7 @@ export async function getServerSideProps({query}) {
     }
 }
 
-export default function LessonScheduleFileSave({lessonScheduleFile, SIS_API_URL}) {
+export default function LessonScheduleFileDetail({lessonScheduleFile, SIS_API_URL}) {
 
     const router = useRouter();
 
