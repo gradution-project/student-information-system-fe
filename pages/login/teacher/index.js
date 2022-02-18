@@ -5,7 +5,15 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from 'universal-cookie';
 
-export default function TeacherLogin() {
+export async function getServerSideProps() {
+    return {
+        props: {
+            SIS_API_URL: process.env.SIS_API_URL
+        }
+    }
+}
+
+export default function TeacherLogin({SIS_API_URL}) {
 
     const [teacherNumber, setTeacherNumber] = useState();
     const [password, setPassword] = useState();
@@ -47,36 +55,37 @@ export default function TeacherLogin() {
 
         event.preventDefault();
 
-        const loginRes = await fetch("http://localhost:8585/login/teacher", {
+        const loginRes = await fetch(`${SIS_API_URL}/login/teacher`, {
             body: JSON.stringify({teacherId: teacherNumber, password: password}),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
         const loginData = await loginRes.json();
-        if (loginData.result.loginSuccess) {
+        if (loginData.response.loginSuccess) {
             const cookies = new Cookies();
             cookies.set('teacherNumber', teacherNumber, {path: '/'});
-            const getRes = await fetch("http://localhost:8585/teacher/" + cookies.get('teacherNumber'), {
+            const getRes = await fetch(`${SIS_API_URL}/teacher/` + cookies.get('teacherNumber'), {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('teacherName', getData.result.personalInfoResponse.name, {path: '/'});
-                cookies.set('teacherSurname', getData.result.personalInfoResponse.surname, {path: '/'});
+                cookies.set('teacherName', getData.response.personalInfoResponse.name, {path: '/'});
+                cookies.set('teacherSurname', getData.response.personalInfoResponse.surname, {path: '/'});
                 cookies.set('teacherFullName', cookies.get('teacherName') + ' ' + cookies.get('teacherSurname'), {path: '/'});
-                cookies.set('teacherRole', getData.result.academicInfoResponse.role, {path: '/'});
-                cookies.set('teacherDegree', getData.result.academicInfoResponse.degree, {path: '/'});
-                cookies.set('teacherDepartmentId', getData.result.academicInfoResponse.departmentId, {path: '/'});
-                cookies.set('teacherAcademicEmail', getData.result.academicInfoResponse.email, {path: '/'});
-                cookies.set('teacherFieldOfStudy', getData.result.academicInfoResponse.fieldOfStudy, {path: '/'});
-                cookies.set('teacherAcademicPhoneNumber', getData.result.academicInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('teacherRegistrationDate', getData.result.academicInfoResponse.registrationDate, {path: '/'});
-                cookies.set('teacherTcNo', getData.result.personalInfoResponse.tcNo, {path: '/'});
-                cookies.set('teacherPersonalEmail', getData.result.personalInfoResponse.email, {path: '/'});
-                cookies.set('teacherPersonalPhoneNumber', getData.result.personalInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('teacherBirthday', getData.result.personalInfoResponse.birthday, {path: '/'});
-                cookies.set('teacherAddress', getData.result.personalInfoResponse.address, {path: '/'});
+                cookies.set('teacherRole', getData.response.academicInfoResponse.role, {path: '/'});
+                cookies.set('teacherDegree', getData.response.academicInfoResponse.degree, {path: '/'});
+                cookies.set('teacherDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
+                cookies.set('teacherAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
+                cookies.set('teacherFieldOfStudy', getData.response.academicInfoResponse.fieldOfStudy, {path: '/'});
+                cookies.set('teacherAcademicPhoneNumber', getData.response.academicInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('teacherRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
+                cookies.set('teacherFaculty', getData.response.academicInfoResponse.departmentResponse.facultyResponse.name, {path: '/'});
+                cookies.set('teacherTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
+                cookies.set('teacherPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
+                cookies.set('teacherPersonalPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
+                cookies.set('teacherBirthday', getData.response.personalInfoResponse.birthday, {path: '/'});
+                cookies.set('teacherAddress', getData.response.personalInfoResponse.address, {path: '/'});
                 closeProcessingModal();
                 await router.push("/teacher");
             }

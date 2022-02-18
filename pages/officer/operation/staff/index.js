@@ -1,30 +1,29 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../public/constants/teacher";
-
+import {officerStatuses} from "../../../../public/constants/officer";
 
 export async function getServerSideProps() {
     const SIS_API_URL = process.env.SIS_API_URL;
-    const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ALL`, {
+    const officerResponse = await fetch(`${SIS_API_URL}/officer?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const teachersData = await teacherResponse.json();
-    if (teachersData.success) {
+    const officersData = await officerResponse.json();
+    if (officersData.success) {
         return {
-            props: {teachers: teachersData.response}
+            props: {officers: officersData.response}
         }
     }
 }
 
-export default function TeacherList({teachers}) {
+export default function OfficerList({officers}) {
 
     const router = useRouter();
 
     const pushSavePage = async (event) => {
         event.preventDefault();
-        await router.push('/officer/operation/teacher/save');
+        await router.push('/officer/operation/staff/save');
     }
 
     return (
@@ -34,18 +33,18 @@ export default function TeacherList({teachers}) {
             <div className="select-none px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        ÖĞRETMEN LİSTESİ
+                        PERSONEL LİSTESİ
                     </a>
                     <button
                         type="submit"
                         onClick={pushSavePage}
                         className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
                     >
-                        ÖĞRETMEN EKLE
+                        PERSONEL EKLE
                     </button>
                 </div>
                 {(
-                    teachers !== null
+                    officers !== null
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -64,13 +63,7 @@ export default function TeacherList({teachers}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    AKADEMİK BİLGİLER
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="select-none px-6 py-3 tracking-wider"
-                                                >
-                                                    BÖLÜM ADI
+                                                    FAKÜLTE ADI
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -81,8 +74,8 @@ export default function TeacherList({teachers}) {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {teachers.map((teacher) => (
-                                                <tr key={teacher.teacherId}>
+                                            {officers.map((officer) => (
+                                                <tr key={officer.officerId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         {/*<td className="px-6 py-4 whitespace-nowrap">*/}
                                                         <div className="flex items-center">
@@ -93,48 +86,29 @@ export default function TeacherList({teachers}) {
                                                             {/*</div>*/}
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.name} {teacher.surname}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{officer.name} {officer.surname}</div>
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-gray-500">{teacher.teacherId}</div>
+                                                                    className="font-phenomenaRegular text-lg text-gray-500">{officer.officerId}</div>
                                                                 <div
-                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{teacher.email}</div>
+                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{officer.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {teacherRoles.map((tRole) => (
-                                                            teacher.role === tRole.enum
-                                                                ?
-                                                                <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{tRole.tr}</div>
-                                                                :
-                                                                null
-                                                        ))}
-                                                        {teacherDegrees.map((tDegree) => (
-                                                            teacher.degree === tDegree.enum
-                                                                ?
-                                                                <div
-                                                                    className="font-phenomenaRegular text-xl text-sis-darkblue">{tDegree.tr}</div>
-                                                                :
-                                                                null
-                                                        ))}
-                                                        <div className="font-phenomenaLight text-lg text-gray-500">{teacher.fieldOfStudy}</div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{officer.facultyResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {teacherStatuses.map((tStatus) => (
-                                                            teacher.status === tStatus.enum
+                                                        {officerStatuses.map((oStatus) => (
+                                                            officer.status === oStatus.enum
                                                                 ?
-                                                                tStatus.miniComponent
+                                                                oStatus.miniComponent
                                                                 :
                                                                 null
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/officer/operation/teacher/information/detail/' + teacher.teacherId}
+                                                        <a href={'/officer/operation/staff/information/detail/' + officer.officerId}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>

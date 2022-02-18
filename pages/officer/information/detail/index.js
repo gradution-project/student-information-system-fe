@@ -1,210 +1,253 @@
-import SISTitle from "../../../../../public/components/page-titles";
-import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
+import SISTitle from "../../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
-import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
+import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 
-export async function getServerSideProps() {
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
+export async function getServerSideProps(context) {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const officerId = context.req.cookies['officerNumber']
+    const officerResponse = await fetch(`${SIS_API_URL}/officer/` + officerId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const officerData = await officerResponse.json();
+    if (officerData.success) {
         return {
             props: {
-                departments: departmentDatas.response,
-
+                officer: officerData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function SaveTeacher({departments, SIS_API_URL}) {
-    const cookies = new Cookies();
+export default function MyInfo({officer, SIS_API_URL}) {
+    const {academicInfoResponse} = officer;
+    const {personalInfoResponse} = officer;
 
-    const departmentName = departments.name;
-    const [degree] = useState();
-    const [role] = useState();
+    const {
+        facultyResponse,
+        officerId,
+        registrationDate,
+    } = academicInfoResponse;
+    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
 
-    const router = useRouter();
+    const router = new useRouter();
 
-    const [operationUserId] = useState(cookies.get('officerNumber'));
-
-    const [teacherName, setTeacherName] = useState();
-    const changeTeacherName = event => {
-        const teacherName = event.target.value;
-        setTeacherName(teacherName);
+    const [officerEmail, setOfficerEmail] = useState(personalInfoResponse.email);
+    const changeOfficerEmail = event => {
+        const officerEmail = event.target.value;
+        setOfficerEmail(officerEmail);
     }
 
-    const [teacherSurname, setTeacherSurname] = useState();
-    const changeTeacherSurname = event => {
-        const teacherSurname = event.target.value;
-        setTeacherSurname(teacherSurname);
-    }
-
-    const [teacherTcNo, setTeacherTcNo] = useState();
-    const changeTeacherTcNo = event => {
-        const teacherTcNo = event.target.value;
-        setTeacherTcNo(teacherTcNo);
-    }
-
-    const [teacherBirthday, setTeacherBirthday] = useState();
-    const changeTeacherBirthday = event => {
-        const teacherBirthday = event.target.value;
-        setTeacherBirthday(teacherBirthday);
-    }
-
-    const [teacherEmail, setTeacherEmail] = useState();
-    const changeTeacherEmail = event => {
-        const teacherEmail = event.target.value;
-        setTeacherEmail(teacherEmail);
-    }
-
-    const [teacherPersonalPhoneNumber, setTeacherPersonalPhoneNumber] = useState();
-    const changeTeacherPersonalPhoneNumber = event => {
-        const teacherPersonalPhoneNumber = event.target.value;
-        setTeacherPersonalPhoneNumber(teacherPersonalPhoneNumber);
-    }
-
-    const [teacherAddress, setTeacherAddress] = useState();
-    const changeTeacherAddress = event => {
-        const teacherAddress = event.target.value;
-        setTeacherAddress(teacherAddress);
-    }
-
-    const [teacherDegree, setTeacherDegree] = useState();
-    const changeTeacherDegree = event => {
-        const teacherDegree = event.target.value;
-        setTeacherDegree(teacherDegree);
-    }
-
-    const [teacherRole, setTeacherRole] = useState();
-    const changeTeacherRole = event => {
-        const teacherRole = event.target.value;
-        setTeacherRole(teacherRole);
-    }
-
-    const [teacherDepartmentId, setTeacherDepartmentId] = useState();
-    const changeTeacherDepartmentId = event => {
-        const teacherDepartmentId = event.target.value;
-        setTeacherDepartmentId(teacherDepartmentId);
-    }
-
-    const [teacherAcademicPhoneNumber, setTeacherAcademicPhoneNumber] = useState();
-    const changeTeacherAcademicPhoneNumber = event => {
-        const teacherAcademicPhoneNumber = event.target.value;
-        setTeacherAcademicPhoneNumber(teacherAcademicPhoneNumber);
-    }
-
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState();
-    const changeTeacherFieldOfStudy = event => {
-        const teacherFieldOfStudy = event.target.value;
-        setTeacherFieldOfStudy(teacherFieldOfStudy);
+    const [officerAddress, setOfficerAddress] = useState(address);
+    const changeOfficerAddress = event => {
+        const officerAddress = event.target.value;
+        setOfficerAddress(officerAddress);
     }
 
 
-    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
+    const [officerPhoneNumber, setOfficerPhoneNumber] = useState(personalInfoResponse.phoneNumber);
+    const changeOfficerPhoneNumber = event => {
+        const officerPhoneNumber = event.target.value;
+        setOfficerPhoneNumber(officerPhoneNumber);
+    }
+    let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
 
-    function closeSuccessModal() {
-        setIsOpenSuccess(false);
-        router.push("/officer/operation/teacher").then(() => router.reload());
+    function closeSuccessModalPersonal() {
+        setIsOpenSuccessPersonal(false);
+        router.reload();
     }
 
-    function openSuccessModal() {
-        setIsOpenSuccess(true);
+    function openSuccessModalPersonal() {
+        setIsOpenSuccessPersonal(true);
     }
 
-    let [isOpenFail, setIsOpenFail] = useState(false);
+    let [isOpenFailPersonal, setIsOpenFailPersonal] = useState(false);
 
-    function closeFailModal() {
-        setIsOpenFail(false);
+    function closeFailModalPersonal() {
+        setIsOpenFailPersonal(false);
     }
 
-    function openFailModal() {
-        setIsOpenFail(true);
+    function openFailModalPersonal() {
+        setIsOpenFailPersonal(true);
     }
 
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
+    let [isOpenProcessingPersonal, setIsOpenProcessingPersonal] = useState(false);
 
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
+    function closeProcessingModalPersonal() {
+        setIsOpenProcessingPersonal(false);
     }
 
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
+    function openProcessingModalPersonal() {
+        setIsOpenProcessingPersonal(true);
     }
 
-    const teacherSave = async (event) => {
-        openProcessingModal();
+    const officerUpdatePersonal = async (event) => {
+        openProcessingModalPersonal();
 
-        event.preventDefault();
+        event.preventDefault()
 
-        const saveRes = await fetch(`${SIS_API_URL}/teacher/save`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
+            headers: {'Content-Type': 'application/json'},
+            method: 'PUT',
             body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: teacherDegree,
-                    departmentId: teacherDepartmentId,
-                    fieldOfStudy: teacherFieldOfStudy,
-                    phoneNumber: teacherAcademicPhoneNumber,
-                    role: teacherRole
-                },
                 operationInfoRequest: {
-                    userId: operationUserId
+                    userId: officerId
                 },
                 personalInfoRequest: {
-                    address: teacherAddress,
-                    birthday: teacherBirthday,
-                    email: teacherEmail,
-                    name: teacherName,
-                    phoneNumber: teacherPersonalPhoneNumber,
-                    surname: teacherSurname,
-                    tcNo: teacherTcNo
+                    address: officerAddress,
+                    birthday: birthday,
+                    email: officerEmail,
+                    name: name,
+                    phoneNumber: officerPhoneNumber,
+                    surname: surname,
+                    tcNo: tcNo
                 }
             }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
         });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
-            closeProcessingModal();
-            openSuccessModal()
+        const updatePersonalData = await updatePersonalRes.json();
+        if (updatePersonalData.success) {
+            closeProcessingModalPersonal();
+            openSuccessModalPersonal()
         } else {
-            closeProcessingModal();
-            openFailModal();
+            closeProcessingModalPersonal();
+            openFailModalPersonal();
         }
     }
 
     return (
-        <div>
+        <>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
-                    <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={teacherSave}>
-                            <div className="shadow overflow-hidden sm:rounded-md">
-                                <div className="bg-white sm:p-6">
-                                    <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
-                                        <h3 className="mb-8 py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-4xl">
-                                            ÖĞRETMEN EKLEME
+            <div>
+                <div className="select-none mt-5 md:mt-0 md:col-span-2">
+                    <div className="md:col-span-1">
+                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
+                            <div className="shadow sm:rounded-md sm:overflow-hidden">
+                                <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            AKADEMİK BİLGİLERİM
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="teacher-number"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                PERSONEL NUMARASI
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="teacher-number"
+                                                id="teacher-number"
+                                                value={officerId}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="registration-date"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                KAYIT TARİHİ
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="registration-date"
+                                                id="registration-date"
+                                                value={registrationDate}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="faculty"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                FAKÜLTE ADI
+                                            </label>
+                                            <select
+                                                id="faculty"
+                                                name="faculty"
+                                                autoComplete="faculty-name"
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                <option>{facultyResponse.name}</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="phone"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                DAHİLİ TELEFON
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                id="phone"
+                                                disabled
+                                                value={academicInfoResponse.phoneNumber}
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="email-address"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                E-MAİL ADRESİ
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="email-address"
+                                                id="email-address"
+                                                disabled
+                                                value={academicInfoResponse.email}
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div className="hidden sm:block" aria-hidden="true">
+                <div className="py-5">
+                    <div className="border-t border-gray-200"/>
+                </div>
+            </div>
+
+            <div className="select-none mt-10 sm:mt-0">
+                <div className="mt-5 md:mt-0 md:col-span-2">
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <form className="px-4 max-w-3xl mx-auto space-y-6">
+                            <div className="shadow overflow-hidden sm:rounded-md">
+                                <div className="px-4 py-5 bg-white sm:p-6">
+                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                            KİŞİSEL BİLGİLERİM
+                                        </h3>
+                                    </div>
+                                    <div className="grid grid-cols-6 gap-6">
+
                                         <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="first-name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                required
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={name}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -214,12 +257,12 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                required
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={surname}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -229,15 +272,12 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                minLength="11"
-                                                maxLength="11"
-                                                pattern="[0-9]+"
-                                                required
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={tcNo}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -247,27 +287,15 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={(e) => {
-                                                    let birthdayLength = e.target.value.length;
-                                                    if (birthdayLength > 1 && birthdayLength < 3) {
-                                                        if (e.target.value <= 31) {
-                                                            e.target.value = e.target.value + ".";
-                                                        } else {
-                                                            e.target.value = "";
-                                                        }
-                                                    }
-                                                    if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value = e.target.value + ".";
-                                                    }
-                                                    changeTeacherBirthday(e)
-                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                defaultValue={birthday}
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -277,12 +305,12 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherEmail}
-                                                type="email"
+                                                onChange={changeOfficerEmail}
+                                                type="text"
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
-                                                required
+                                                defaultValue={personalInfoResponse.email}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -307,7 +335,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherPersonalPhoneNumber(e)
+                                                    changeOfficerPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -315,6 +343,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
+                                                defaultValue={phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -325,150 +354,106 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherAddress}
+                                                onChange={changeOfficerAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
-                                                required
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVANI
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                value={teacherDegree}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Ünvan Seçiniz...</option>
-                                                {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                        :
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="role"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ROLÜ
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherRole}
-                                                id="role"
-                                                name="role"
-                                                value={teacherRole}
-                                                className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Rol Seçiniz...</option>
-                                                {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
-                                                        <option value={tRole.enum}>{tRole.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tRole.enum}>{tRole.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-4">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherDepartmentId}
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                value={teacherDepartmentId}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Bölüm Seçiniz...</option>
-                                                {departments.map((department) => (
-                                                    departmentName === department.name
-                                                        ?
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
-                                                        :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-2">
-                                            <label htmlFor="phone"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DAHİLİ TELEFON
-                                            </label>
-                                            <input
-                                                onChange={(e) => {
-                                                    let pNumberLength = e.target.value.length;
-                                                    if (pNumberLength <= 1) {
-                                                        e.target.value = "+90 (" + e.target.value;
-                                                    }
-                                                    if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value = e.target.value + ") ";
-                                                    }
-                                                    if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value = e.target.value + " ";
-                                                    }
-                                                    if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value = e.target.value + " ";
-                                                    }
-                                                    changeTeacherAcademicPhoneNumber(e)
-                                                }}
-                                                type="text"
-                                                name="phone"
-                                                id="phone"
-                                                required
-                                                minLength="19"
-                                                maxLength="19"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-6">
-                                            <label htmlFor="field-of-study"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÇALIŞMA ALANI
-                                            </label>
-                                            <input
-                                                onChange={changeTeacherFieldOfStudy}
-                                                type="text"
-                                                name="field-of-study"
-                                                id="field-of-study"
-                                                required
+                                                autoComplete="home-address"
+                                                defaultValue={address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
+
+                                    {/*
+                                  <div className="py-5 mt-2">
+                                        <label className="text-xl text-sis-darkblue font-phenomenaBold">
+                                            PROFİL FOTOĞRAFI
+                                        </label>
+                                        <div className="mt-1 flex items-center">
+                      <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
+                        <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                          <path
+                              d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                      </span>
+                                            <button
+                                                type="button"
+                                                className="font-phenomenaBold ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-md text-sis-darkblue font-phenomenaRegular leading-4 text-gray-700 hover:bg-sis-yellow hover:text-sis-white"
+                                            >
+                                                Fotoğrafı Güncelle
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <label className="text-xl text-sis-darkblue font-phenomenaBold">
+                                            Fotoğrafı Yükle
+                                        </label>
+                                        <div
+                                            className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div className="space-y-1 text-center">
+                                                <svg
+                                                    className="mx-auto h-12 w-12 text-gray-400"
+                                                    stroke="currentColor"
+                                                    fill="none"
+                                                    viewBox="0 0 48 48"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path
+                                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                        strokeWidth={2}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg>
+                                                <div className="flex text-sm text-gray-600">
+                                                    <label
+                                                        htmlFor="file-upload"
+                                                        className="relative cursor-pointer bg-white rounded-md font-phenomenaBold text-lg text-sis-yellow hover:text-sis-yellow"
+                                                    >
+                                                        <span>Dosyayı yükleyin</span>
+                                                        <input id="file-upload" name="file-upload" type="file"
+                                                               className="sr-only"/>
+                                                    </label>
+                                                    <p className="pl-1 text-lg font-phenomenaRegular">veya sürükleyip
+                                                        bırakın.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+*/}
+
+                                    {(
+                                        personalInfoResponse.modifiedDate !== null
+                                            ?
+                                            <div className="mt-6 sm:col-span-6">
+                                                <a className="font-phenomenaRegular text-sis-blue text-xl">
+                                                    Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
+                                                </a>
+                                            </div>
+                                            :
+                                            null
+                                    )}
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                     <button
+                                        onClick={officerUpdatePersonal}
                                         type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
+                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                     >
-                                        KAYDET
+                                        GÜNCELLE
                                     </button>
                                 </div>
-                                <Transition appear show={isOpenSuccess} as={Fragment}>
+
+
+                                <Transition appear show={isOpenSuccessPersonal} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModal}
+                                        onClose={closeSuccessModalPersonal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -505,14 +490,13 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Ekleme İşlemi Başarılı!
+                                                            Kişisel Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
+                                                            Kişisel Bilgi Güncelleme İşlemi başarıyla
+                                                            gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -520,11 +504,11 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                         </div>
                                     </Dialog>
                                 </Transition>
-                                <Transition appear show={isOpenFail} as={Fragment}>
+                                <Transition appear show={isOpenFailPersonal} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModal}
+                                        onClose={closeFailModalPersonal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -561,7 +545,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Ekleme İşlemi Başarısız!
+                                                            Kişisel Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -577,11 +561,11 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                     </Dialog>
                                 </Transition>
 
-                                <Transition appear show={isOpenProcessing} as={Fragment}>
+                                <Transition appear show={isOpenProcessingPersonal} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModal}
+                                        onClose={closeProcessingModalPersonal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -617,7 +601,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        İsteğiniz İşleniyor...
+                                                        Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -632,9 +616,8 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
 
             <div className="hidden sm:block" aria-hidden="true">
                 <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

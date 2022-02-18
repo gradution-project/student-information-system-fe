@@ -4,113 +4,91 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
-import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
 
 export async function getServerSideProps() {
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const facultyDatas = await facultyResponses.json();
+    if (facultyDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response,
-
+                faculties: facultyDatas.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function SaveTeacher({departments, SIS_API_URL}) {
+export default function SaveOfficer({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
-
-    const departmentName = departments.name;
-    const [degree] = useState();
-    const [role] = useState();
+    const facultyName = faculties.name;
 
     const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
 
-    const [teacherName, setTeacherName] = useState();
-    const changeTeacherName = event => {
-        const teacherName = event.target.value;
-        setTeacherName(teacherName);
+    const [officerName, setOfficerName] = useState();
+    const changeOfficerName = event => {
+        const officerName = event.target.value;
+        setOfficerName(officerName);
     }
 
-    const [teacherSurname, setTeacherSurname] = useState();
-    const changeTeacherSurname = event => {
-        const teacherSurname = event.target.value;
-        setTeacherSurname(teacherSurname);
+    const [officerSurname, setOfficerSurname] = useState();
+    const changeOfficerSurname = event => {
+        const officerSurname = event.target.value;
+        setOfficerSurname(officerSurname);
     }
 
-    const [teacherTcNo, setTeacherTcNo] = useState();
-    const changeTeacherTcNo = event => {
-        const teacherTcNo = event.target.value;
-        setTeacherTcNo(teacherTcNo);
+    const [officerTcNo, setOfficerTcNo] = useState();
+    const changeOfficerTcNo = event => {
+        const officerTcNo = event.target.value;
+        setOfficerTcNo(officerTcNo);
     }
 
-    const [teacherBirthday, setTeacherBirthday] = useState();
-    const changeTeacherBirthday = event => {
-        const teacherBirthday = event.target.value;
-        setTeacherBirthday(teacherBirthday);
+    const [officerBirthday, setOfficerBirthday] = useState();
+    const changeOfficerBirthday = event => {
+        const officerBirthday = event.target.value;
+        setOfficerBirthday(officerBirthday);
     }
 
-    const [teacherEmail, setTeacherEmail] = useState();
-    const changeTeacherEmail = event => {
-        const teacherEmail = event.target.value;
-        setTeacherEmail(teacherEmail);
+    const [officerEmail, setOfficerEmail] = useState();
+    const changeOfficerEmail = event => {
+        const officerEmail = event.target.value;
+        setOfficerEmail(officerEmail);
     }
 
-    const [teacherPersonalPhoneNumber, setTeacherPersonalPhoneNumber] = useState();
-    const changeTeacherPersonalPhoneNumber = event => {
-        const teacherPersonalPhoneNumber = event.target.value;
-        setTeacherPersonalPhoneNumber(teacherPersonalPhoneNumber);
+    const [officerAddress, setOfficerAddress] = useState();
+    const changeOfficerAddress = event => {
+        const officerAddress = event.target.value;
+        setOfficerAddress(officerAddress);
     }
 
-    const [teacherAddress, setTeacherAddress] = useState();
-    const changeTeacherAddress = event => {
-        const teacherAddress = event.target.value;
-        setTeacherAddress(teacherAddress);
+    const [officerPhoneNumber, setOfficerPhoneNumber] = useState();
+    const changeOfficerPhoneNumber = event => {
+        const officerPhoneNumber = event.target.value;
+        setOfficerPhoneNumber(officerPhoneNumber);
     }
 
-    const [teacherDegree, setTeacherDegree] = useState();
-    const changeTeacherDegree = event => {
-        const teacherDegree = event.target.value;
-        setTeacherDegree(teacherDegree);
+    const [officerFacultyId, setOfficerFacultyId] = useState();
+    const changeOfficerFacultyId = event => {
+        const officerFacultyId = event.target.value;
+        setOfficerFacultyId(officerFacultyId);
     }
 
-    const [teacherRole, setTeacherRole] = useState();
-    const changeTeacherRole = event => {
-        const teacherRole = event.target.value;
-        setTeacherRole(teacherRole);
+    const [officerPhone, setOfficerPhone] = useState();
+    const changeOfficerPhone = event => {
+        const officerPhone = event.target.value;
+        setOfficerPhone(officerPhone);
     }
-
-    const [teacherDepartmentId, setTeacherDepartmentId] = useState();
-    const changeTeacherDepartmentId = event => {
-        const teacherDepartmentId = event.target.value;
-        setTeacherDepartmentId(teacherDepartmentId);
-    }
-
-    const [teacherAcademicPhoneNumber, setTeacherAcademicPhoneNumber] = useState();
-    const changeTeacherAcademicPhoneNumber = event => {
-        const teacherAcademicPhoneNumber = event.target.value;
-        setTeacherAcademicPhoneNumber(teacherAcademicPhoneNumber);
-    }
-
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState();
-    const changeTeacherFieldOfStudy = event => {
-        const teacherFieldOfStudy = event.target.value;
-        setTeacherFieldOfStudy(teacherFieldOfStudy);
-    }
-
 
     let [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/teacher").then(() => router.reload());
+        router.push("/officer/operation/staff").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -137,31 +115,30 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
         setIsOpenProcessing(true);
     }
 
-    const teacherSave = async (event) => {
+    const officerSave = async (event) => {
         openProcessingModal();
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/teacher/save`, {
+        const saveRes = await fetch(`${SIS_API_URL}/officer/save`, {
             body: JSON.stringify({
+
                 academicInfoRequest: {
-                    degree: teacherDegree,
-                    departmentId: teacherDepartmentId,
-                    fieldOfStudy: teacherFieldOfStudy,
-                    phoneNumber: teacherAcademicPhoneNumber,
-                    role: teacherRole
+                    facultyId: officerFacultyId,
+                    phoneNumber: officerPhone
                 },
                 operationInfoRequest: {
                     userId: operationUserId
                 },
                 personalInfoRequest: {
-                    address: teacherAddress,
-                    birthday: teacherBirthday,
-                    email: teacherEmail,
-                    name: teacherName,
-                    phoneNumber: teacherPersonalPhoneNumber,
-                    surname: teacherSurname,
-                    tcNo: teacherTcNo
+                    address: officerAddress,
+                    birthday: officerBirthday,
+                    email: officerEmail,
+                    name: officerName,
+                    phoneNumber: officerPhoneNumber,
+                    surname: officerSurname,
+                    tcNo: officerTcNo
+
                 }
             }),
             headers: {'Content-Type': 'application/json'},
@@ -184,12 +161,12 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
             <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={teacherSave}>
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={officerSave}>
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="bg-white sm:p-6">
                                     <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="mb-8 py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-4xl">
-                                            ÖĞRETMEN EKLEME
+                                            PERSONEL EKLEME
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
@@ -199,7 +176,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherName}
+                                                onChange={changeOfficerName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -214,7 +191,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherSurname}
+                                                onChange={changeOfficerSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -229,7 +206,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherTcNo}
+                                                onChange={changeOfficerTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -247,26 +224,11 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={(e) => {
-                                                    let birthdayLength = e.target.value.length;
-                                                    if (birthdayLength > 1 && birthdayLength < 3) {
-                                                        if (e.target.value <= 31) {
-                                                            e.target.value = e.target.value + ".";
-                                                        } else {
-                                                            e.target.value = "";
-                                                        }
-                                                    }
-                                                    if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value = e.target.value + ".";
-                                                    }
-                                                    changeTeacherBirthday(e)
-                                                }}
+                                                onChange={changeOfficerBirthday}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
-                                                minLength="10"
-                                                maxLength="10"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -277,7 +239,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherEmail}
+                                                onChange={changeOfficerEmail}
                                                 type="email"
                                                 name="email-address"
                                                 id="email-address"
@@ -307,7 +269,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherPersonalPhoneNumber(e)
+                                                    changeOfficerPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -325,7 +287,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherAddress}
+                                                onChange={changeOfficerAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -334,84 +296,35 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVANI
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                value={teacherDegree}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Ünvan Seçiniz...</option>
-                                                {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                        :
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="role"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ROLÜ
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherRole}
-                                                id="role"
-                                                name="role"
-                                                value={teacherRole}
-                                                className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Rol Seçiniz...</option>
-                                                {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
-                                                        <option value={tRole.enum}>{tRole.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tRole.enum}>{tRole.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
                                         <div className="sm:col-span-4">
-                                            <label htmlFor="department"
+                                            <label htmlFor="facultyId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
+                                                FAKÜLTE
                                             </label>
                                             <select
-                                                onChange={changeTeacherDepartmentId}
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                value={teacherDepartmentId}
+                                                onChange={changeOfficerFacultyId}
+                                                id="facultyId"
+                                                name="faculty-id"
+                                                autoComplete="faculty-id"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Bölüm Seçiniz...</option>
-                                                {departments.map((department) => (
-                                                    departmentName === department.name
+                                                <option>Fakülte Seçiniz...</option>
+                                                {faculties.map((faculty) => (
+                                                    facultyName === faculty.name
                                                         ?
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={faculty.facultyId}
+                                                        >{faculty.name}</option>
                                                         :
                                                         <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                            value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-2">
-                                            <label htmlFor="phone"
+                                        <div className="col-span-6 sm:col-span-3">
+                                            <label htmlFor="phoneNumber"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DAHİLİ TELEFON
+                                                DAHİLİ NUMARA
                                             </label>
                                             <input
                                                 onChange={(e) => {
@@ -428,11 +341,11 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherAcademicPhoneNumber(e)
+                                                    changeOfficerPhone(e)
                                                 }}
                                                 type="text"
-                                                name="phone"
-                                                id="phone"
+                                                name="phoneNumber"
+                                                id="phoneNumber"
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
@@ -440,20 +353,6 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-6">
-                                            <label htmlFor="field-of-study"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÇALIŞMA ALANI
-                                            </label>
-                                            <input
-                                                onChange={changeTeacherFieldOfStudy}
-                                                type="text"
-                                                name="field-of-study"
-                                                id="field-of-study"
-                                                required
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
@@ -505,13 +404,13 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Ekleme İşlemi Başarılı!
+                                                            Personel Ekleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
+                                                            Personel Ekleme İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra personel listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -561,7 +460,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Ekleme İşlemi Başarısız!
+                                                            Personel Ekleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">

@@ -4,8 +4,15 @@ import {Dialog, Transition} from "@headlessui/react";
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 
+export async function getServerSideProps() {
+    return {
+        props: {
+            SIS_API_URL: process.env.SIS_API_URL
+        }
+    }
+}
 
-export default function SaveStudent() {
+export default function SaveStudent({SIS_API_URL}) {
 
     const router = useRouter();
 
@@ -58,10 +65,15 @@ export default function SaveStudent() {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/lesson/teacher", {
+        const saveRes = await fetch(`${SIS_API_URL}/lesson/teacher`, {
             body: JSON.stringify({
-                lessonId: lessonNumber,
-                teacherId: teacherNumber
+                operationInfoRequest: {
+                    userId: 12004
+                },
+                teacherLessonInfoRequest: {
+                    lessonId: lessonNumber,
+                    teacherId: teacherNumber
+                }
             }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
