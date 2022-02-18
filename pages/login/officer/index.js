@@ -73,17 +73,6 @@ export default function OfficerLogin({SIS_API_URL}) {
                 cookies.set('officerName', getData.response.personalInfoResponse.name, {path: '/'});
                 cookies.set('officerSurname', getData.response.personalInfoResponse.surname, {path: '/'});
                 cookies.set('officerFullName', cookies.get('officerName') + ' ' + cookies.get('officerSurname'), {path: '/'});
-                cookies.set('officerTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
-                cookies.set('officerPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
-                cookies.set('officerBirthday', getData.response.personalInfoResponse.birthday, {path: '/'});
-                cookies.set('officerPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('officerAddress', getData.response.personalInfoResponse.address, {path: '/'});
-                cookies.set('officerAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
-                cookies.set('officerStatus', getData.response.academicInfoResponse.status, {path: '/'});
-                cookies.set('officerDegree', getData.response.academicInfoResponse.degree, {path: '/'});
-                cookies.set('officerDepartmentId', getData.response.academicInfoResponse.departmentId, {path: '/'});
-                cookies.set('officerClassLevel', getData.response.academicInfoResponse.classLevel, {path: '/'});
-                cookies.set('officerRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
                 closeProcessingModal();
                 await router.push("/officer");
             }
