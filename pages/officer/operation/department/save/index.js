@@ -144,7 +144,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Fakülte Seçiniz...</option>
                                         {faculties.map((faculty) => (
-                                                <option value={faculty.facultyId}>{faculty.name}</option>
+                                                <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -193,7 +193,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
                                         {departmentPreparatoryClass.map(preparatoryClass => (
-                                                <option value={preparatoryClass.value}>{preparatoryClass.tr}</option>
+                                                <option key={preparatoryClass.value} value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                         ))}
                                     </select>
                                 </div>

@@ -346,7 +346,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Ünvan Seçiniz...</option>
                                                 {teacherDegrees.map(tDegree => (
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
+                                                        <option key={tDegree.enum} value={tDegree.enum}>{tDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -365,7 +365,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Rol Seçiniz...</option>
                                                 {teacherRoles.map(tRole => (
-                                                        <option value={tRole.enum}>{tRole.tr}</option>
+                                                        <option key={tRole.enum} value={tRole.enum}>{tRole.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -385,7 +385,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option value={department.departmentId}>{department.name}</option>
+                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
