@@ -74,18 +74,9 @@ export default function TeacherLogin({SIS_API_URL}) {
                 cookies.set('teacherSurname', getData.response.personalInfoResponse.surname, {path: '/'});
                 cookies.set('teacherFullName', cookies.get('teacherName') + ' ' + cookies.get('teacherSurname'), {path: '/'});
                 cookies.set('teacherRole', getData.response.academicInfoResponse.role, {path: '/'});
-                cookies.set('teacherDegree', getData.response.academicInfoResponse.degree, {path: '/'});
-                cookies.set('teacherDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
                 cookies.set('teacherAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
-                cookies.set('teacherFieldOfStudy', getData.response.academicInfoResponse.fieldOfStudy, {path: '/'});
-                cookies.set('teacherAcademicPhoneNumber', getData.response.academicInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('teacherRegistrationDate', getData.response.academicInfoResponse.registrationDate, {path: '/'});
-                cookies.set('teacherFaculty', getData.response.academicInfoResponse.departmentResponse.facultyResponse.name, {path: '/'});
-                cookies.set('teacherTcNo', getData.response.personalInfoResponse.tcNo, {path: '/'});
-                cookies.set('teacherPersonalEmail', getData.response.personalInfoResponse.email, {path: '/'});
-                cookies.set('teacherPersonalPhoneNumber', getData.response.personalInfoResponse.phoneNumber, {path: '/'});
-                cookies.set('teacherBirthday', getData.response.personalInfoResponse.birthday, {path: '/'});
-                cookies.set('teacherAddress', getData.response.personalInfoResponse.address, {path: '/'});
+                cookies.set('teacherFacultyNumber', getData.response.academicInfoResponse.departmentResponse.facultyResponse.facultyId, {path: '/'});
+                cookies.set('teacherDepartmentNumber', getData.response.academicInfoResponse.departmentResponse.departmentId, {path: '/'});
                 closeProcessingModal();
                 await router.push("/teacher");
             }
