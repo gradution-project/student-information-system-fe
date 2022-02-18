@@ -24,7 +24,8 @@ export async function getServerSideProps({query}) {
         return {
             props: {
                 departments: departmentDatas.response,
-                teacher: teacherData.response
+                teacher: teacherData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
