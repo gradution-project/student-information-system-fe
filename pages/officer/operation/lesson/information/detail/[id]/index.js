@@ -3,7 +3,6 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../../../../public/constants/teacher";
 import Cookies from "universal-cookie";
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../../../public/constants/lesson";
 

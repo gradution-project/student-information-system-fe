@@ -24,7 +24,8 @@ export async function getServerSideProps({query}) {
         return {
             props: {
                 departments: departmentDatas.response,
-                teacher: teacherData.response
+                teacher: teacherData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
@@ -46,7 +47,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
-    const {facultyResponse, totalClassLevel, isTherePreparatoryClass} = departmentResponse;
+    const {facultyResponse} = departmentResponse;
 
     const departmentId = departmentResponse.departmentId;
     const facultyId = facultyResponse.facultyId;
