@@ -1,24 +1,30 @@
+import Cookies from "universal-cookie";
+import {useRouter} from "next/router";
+import {Fragment, useState} from "react";
+import {Dialog, Transition} from "@headlessui/react";
+import {departmentPreparatoryClass, departmentStatuses} from "../../../../../../../public/constants/department";
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
-import {Fragment, useState} from "react";
-import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
-import {facultyStatuses} from "../../../../../../../public/constants/faculty";
 
 export async function getServerSideProps({query}) {
     const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const facultyResponse = await fetch(`${SIS_API_URL}/faculty/` + id, {
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const departmentResponse = await fetch(`${SIS_API_URL}/department/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
 
-    const facultyData = await facultyResponse.json();
-    if (facultyData.success) {
+    const facultyDatas = await facultyResponses.json();
+    const departmentData = await departmentResponse.json();
+    if (departmentData.success && facultyDatas.success) {
         return {
             props: {
-                faculty: facultyData.response,
+                faculties: facultyDatas.response,
+                department: departmentData.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
@@ -26,22 +32,40 @@ export async function getServerSideProps({query}) {
 }
 
 
-export default function FacultyDetail({faculty, SIS_API_URL}) {
+export default function DepartmentDetail({faculties, department, SIS_API_URL}) {
     const cookies = new Cookies();
 
+    const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass, facultyResponse} = department;
+    const facultyName = facultyResponse.name;
 
-    const {name, facultyId, status} = faculty;
 
+    const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
 
-    const [facultyName, setFacultyName] = useState(name);
-    const changeFacultyName = event => {
-        const facultyName = event.target.value;
-        setFacultyName(facultyName);
+    const [departmentName, setDepartmentName] = useState(name);
+    const changeDepartmentName = event => {
+        const departmentName = event.target.value;
+        setDepartmentName(departmentName);
     }
 
-    const router = useRouter();
+    const [facultyId, setFacultyId] = useState(facultyResponse.facultyId);
+    const changeFacultyId = event => {
+        const facultyId = event.target.value;
+        setFacultyId(facultyId);
+    }
+
+    const [totalClassLevels, setTotalClassLevel] = useState(totalClassLevel);
+    const changeTotalClassLevel = event => {
+        const totalClassLevels = event.target.value;
+        setTotalClassLevel(totalClassLevels);
+    }
+
+    const [preparatoryClass, setPreparatoryClass] = useState(isTherePreparatoryClass);
+    const changePreparatoryClass = event => {
+        const preparatoryClass = event.target.value;
+        setPreparatoryClass(preparatoryClass);
+    }
 
     let [isOpenSuccessActive, setIsOpenSuccessActive] = useState(false);
 
@@ -167,18 +191,18 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
         setIsOpenProcessing(true);
     }
 
-    const facultyActivate = async (event) => {
+    const departmentActivate = async (event) => {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/faculty/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/department/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                facultyId: facultyId
+                departmentId: departmentId
             }),
         });
         const activateData = await activateRes.json();
@@ -191,18 +215,18 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
         }
     }
 
-    const facultyPassivate = async (event) => {
+    const departmentPassivate = async (event) => {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/faculty/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/department/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                facultyId: facultyId
+                departmentId: departmentId
             }),
         });
         const passivateData = await passivateRes.json();
@@ -215,18 +239,18 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
         }
     }
 
-    const facultyDelete = async (event) => {
+    const departmentDelete = async (event) => {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/faculty/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/department/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                facultyId: facultyId
+                departmentId: departmentId
             }),
         });
         const deleteData = await deleteRes.json();
@@ -239,16 +263,19 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
         }
     }
 
-    const facultyUpdate = async (event) => {
+    const departmentUpdate = async (event) => {
         openProcessingModal();
 
         event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/faculty/update/${facultyId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/department/update/${departmentId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
-                facultyInfoRequest: {
-                    name: facultyName
+                departmentInfoRequest: {
+                    facultyId: facultyId,
+                    isTherePreparatoryClass: preparatoryClass,
+                    name: departmentName,
+                    totalClassLevel: totalClassLevels
                 },
                 operationInfoRequest: {
                     userId: operationUserId
@@ -264,21 +291,20 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
             openFailModal();
         }
     }
-
     return (
-        <>
+        <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div>
-                <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="select-none px-28 py-5 mx-auto space-y-6">
+                <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {name}
                         </a>
-                        {facultyStatuses.map((facultyStatus) => (
-                            status === facultyStatus.enum
+                        {departmentStatuses.map((departmentStatus) => (
+                            status === departmentStatus.enum
                                 ?
-                                facultyStatus.component
+                                departmentStatus.component
                                 :
                                 null
                         ))}
@@ -286,83 +312,102 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                             status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={facultyDelete}
+                                    onClick={departmentDelete}
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
                                 >
-                                    FAKÜLTEYİ SİL
+                                    BÖLÜMÜ SİL
                                 </button>
                                 :
                                 null
                         )}
-
                         {(
                             status !== 'PASSIVE' && status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={facultyPassivate}
+                                    onClick={departmentPassivate}
                                     type="submit"
-                                    className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
+                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
-                                    FAKÜLTEYİ PASİFLEŞTİR
+                                    BÖLÜMÜ PASİFLEŞTİR
                                 </button>
                                 :
                                 null
                         )}
-
                         {(
                             status !== 'ACTIVE' && status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={facultyActivate}
+                                    onClick={departmentActivate}
                                     type="submit"
-                                    className="float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    FAKÜLTEYİ AKTİFLEŞTİR
+                                    BÖLÜMÜ AKTİFLEŞTİR
                                 </button>
                                 :
                                 null
                         )}
                     </div>
-                </div>
-            </div>
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
-                    <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-3xl mx-auto space-y-6">
-                            <div className="shadow overflow-hidden sm:rounded-md">
-                                <div className="px-4 py-5 bg-white sm:p-6">
+                    <div className="select-none md:col-span-1">
+                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
+                            <div className="shadow sm:rounded-md sm:overflow-hidden">
+                                <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            FAKÜLTE BİLGİLERİ
+                                            BÖLÜM BİLGİLERİ
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="faculty-number"
+                                            <label htmlFor="department-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTE NUMARASI
+                                                BÖLÜM NUMARASI
                                             </label>
                                             <input
                                                 type="text"
-                                                name="facultyId"
-                                                id="facultyId"
-                                                defaultValue={facultyId}
+                                                name="departmentId"
+                                                id="departmentId"
+                                                defaultValue={departmentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
-                                        <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="name"
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="facultyId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ADI
+                                                FAKÜLTE ADI
+                                            </label>
+                                            <select
+                                                onChange={changeFacultyId}
+                                                id="facultyId"
+                                                name="facultyId"
+                                                autoComplete="facultyId"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
+                                                {faculties.map((faculty) => (
+                                                    facultyName === faculty.name
+                                                        ?
+                                                        <option value={faculty.facultyId} selected>{faculty.name}</option>
+                                                        :
+                                                        <option value={faculty.facultyId}>{faculty.name}</option>
+
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="department"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                BÖLÜM ADI
                                             </label>
                                             <input
-                                                onChange={changeFacultyName}
+                                                onChange={changeDepartmentName}
                                                 type="text"
-                                                name="name"
-                                                id="name"
+                                                name="department"
+                                                id="department"
                                                 defaultValue={name}
                                                 disabled={status === "DELETED" || status === "PASSIVE"}
                                                 className={status === "DELETED" || status === "PASSIVE"
@@ -371,12 +416,55 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                 }/>
                                         </div>
 
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="totalClassLevel"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                SINIF SAYISI
+                                            </label>
+                                            <input
+                                                onChange={changeTotalClassLevel}
+                                                type="text"
+                                                name="totalClassLevel"
+                                                id="totalClassLevel"
+                                                defaultValue={totalClassLevel}
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                }/>
+                                        </div>
+
+                                        <div className="sm:col-span-3">
+                                            <label htmlFor="isTherePreparatoryLevel"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                HAZIRLIK SINIFI
+                                            </label>
+                                            <select
+                                                onChange={changePreparatoryClass}
+                                                id="isTherePreparatoryLevel"
+                                                name="isTherePreparatoryLevel"
+                                                autoComplete="isTherePreparatoryLevel"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
+                                                {departmentPreparatoryClass.map(preparatoryClass => (
+                                                    isTherePreparatoryClass === preparatoryClass.value
+                                                        ?
+                                                        <option value={preparatoryClass.value} selected>{preparatoryClass.tr}</option>
+                                                        :
+                                                        <option value={preparatoryClass.value}>{preparatoryClass.tr}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
                                         {(
-                                            faculty.modifiedDate !== null
+                                            department.modifiedDate !== null
                                                 ?
                                                 <div className="sm:col-span-6">
                                                     <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {faculty.modifiedDate}
+                                                        Son Düzenlenme Tarihi : {department.modifiedDate}
                                                     </a>
                                                 </div>
                                                 :
@@ -385,11 +473,11 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                     </div>
                                 </div>
                                 {(
-                                    status !== "DELETED" && status !== "PASSIVE"
+                                    status !== 'DELETED' && status !== 'PASSIVE'
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
-                                                onClick={facultyUpdate}
+                                                onClick={departmentUpdate}
                                                 type="submit"
                                                 className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
@@ -399,6 +487,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                         :
                                         null
                                 )}
+
                                 <Transition appear show={isOpenSuccessActive} as={Fragment}>
                                     <Dialog
                                         as="div"
@@ -440,12 +529,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Aktifleştirme İşlemi Başarılı!
+                                                            Bölüm Aktifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Bölüm Aktifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -494,13 +583,13 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Aktifleştirme İşlemi Başarısız!
+                                                            Bölüm Aktifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz fakülte
+                                                            Verilerinizi doğru girdiyseniz bölüm kaydı
                                                             silinmiş olabilir.
                                                         </p>
                                                     </div>
@@ -550,7 +639,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Aktifleştirme İsteğiniz İşleniyor...
+                                                        Bölüm Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -599,12 +688,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Dondurma İşlemi Başarılı!
+                                                            Bölüm Pasifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Bölüm Pasifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -653,13 +742,13 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Dondurma İşlemi Başarısız!
+                                                            Bölüm Pasifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz fakülte kaydı
+                                                            Verilerinizi doğru girdiyseniz bölüm kaydı
                                                             silinmiş olabilir.
                                                         </p>
                                                     </div>
@@ -709,7 +798,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Dondurma İsteğiniz İşleniyor...
+                                                        Bölüm Pasifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -758,12 +847,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Silme İşlemi Başarılı!
+                                                            Bölüm Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Silme İşlemi başarıyla gerçekleşti.
+                                                            Bölüm Silme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -812,7 +901,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Silme İşlemi Başarısız!
+                                                            Bölüm Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -868,7 +957,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Silme İsteğiniz İşleniyor...
+                                                        Bölüm Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -917,12 +1006,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Bilgi Güncelleme İşlemi Başarılı!
+                                                            Bölüm Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Bilgi Güncellene İşlemi başarıyla
+                                                            Bölüm Bilgi Güncellene İşlemi başarıyla
                                                             gerçekleşti.
 
                                                         </p>
@@ -973,7 +1062,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Bilgi Güncelleme İşlemi Başarısız!
+                                                            Bölüm Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1029,23 +1118,19 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Bölüm Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
                                         </div>
                                     </Dialog>
                                 </Transition>
+
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                </div>
-            </div>
-        </>
+        </div>
     )
 }
