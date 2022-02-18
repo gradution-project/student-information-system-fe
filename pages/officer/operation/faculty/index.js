@@ -88,7 +88,7 @@ export default function FacultyList({faculties}) {
                                                         <div className="flex items-center">
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-sis-darkblue">{faculty.facultyId}</div>
+                                                                    className="font-phenomenaBold text-lg text-sis-darkblue">{faculty.facultyId}</div>
                                                             </div>
                                                         </div>
                                                     </td>
