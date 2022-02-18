@@ -65,7 +65,7 @@ export default function TeacherLessonList({lessons}) {
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
                                     {lessons.map((lesson) => (
-                                       lesson.teacherId == cookies.get('teacherNumber')
+                                       lesson.teacherInfoResponse.teacherId === cookies.get('teacherNumber')
                                             ?
                                             <tr key={lesson.lessonId}>
                                                 <td className="px-10 py-4 whitespace-nowrap">

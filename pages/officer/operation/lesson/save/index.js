@@ -26,10 +26,6 @@ export async function getServerSideProps() {
 export default function SaveLesson({departments, SIS_API_URL}) {
     const cookies = new Cookies();
 
-    const [semester] = useState();
-    const [compulsoryOrElective] = useState();
-    const departmentName = departments.name;
-
     const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
@@ -186,7 +182,7 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                             >
                                                 <option>Ders Yarıyılı Seçiniz...</option>
                                                 {lessonSemesters.map(lSemester => (
-                                                        <option value={lSemester.enum}>{lSemester.tr}</option>
+                                                        <option key={lSemester.enum} value={lSemester.enum}>{lSemester.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -204,7 +200,7 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                                 >
                                                     <option>Ders Durumunu Seçiniz...</option>
                                                     {lessonCompulsory.map((lCompulsory) => (
-                                                        <option value={lCompulsory.enum}>{lCompulsory.tr}</option>
+                                                        <option key={lCompulsory.enum} value={lCompulsory.enum}>{lCompulsory.tr}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -223,7 +219,7 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option value={department.departmentId}>{department.name}</option>
+                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
