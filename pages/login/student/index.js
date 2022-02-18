@@ -73,8 +73,8 @@ export default function StudentLogin({SIS_API_URL}) {
                 cookies.set('studentName', getData.response.personalInfoResponse.name, {path: '/'});
                 cookies.set('studentSurname', getData.response.personalInfoResponse.surname, {path: '/'});
                 cookies.set('studentFullName', cookies.get('studentName') + ' ' + cookies.get('studentSurname'), {path: '/'});
-                cookies.set('studentFaculty', getData.response.academicInfoResponse.departmentResponse.facultyResponse.name, {path: '/'});
-                cookies.set('studentDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
+                cookies.set('studentFacultyNumber', getData.response.academicInfoResponse.departmentResponse.facultyId, {path: '/'});
+                cookies.set('studentDepartmentNumber', getData.response.academicInfoResponse.departmentResponse.departmentId, {path: '/'});
                 closeProcessingModal();
                 await router.push("/student");
             }
