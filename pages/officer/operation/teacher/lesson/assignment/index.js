@@ -202,7 +202,7 @@ export default function LessonAssignment({SIS_API_URL}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Ders Atama İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra Öğretemen Ders Listeleme
+                                                            Mesaj penceresini kapattıktan sonra Öğretmen Ders Listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
