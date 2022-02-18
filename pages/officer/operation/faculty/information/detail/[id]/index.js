@@ -440,12 +440,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Kayıt Aktifleştirme İşlemi Başarılı!
+                                                            Fakülte Aktifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Fakülte Aktifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -494,7 +494,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Kayıt Aktifleştirme İşlemi Başarısız!
+                                                            Fakülte Aktifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -550,7 +550,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Kayıt Aktifleştirme İsteğiniz İşleniyor...
+                                                        Fakülte Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -599,12 +599,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Kayıt Dondurma İşlemi Başarılı!
+                                                            Fakülte Dondurma İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Fakülte Dondurma İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -653,7 +653,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Kayıt Dondurma İşlemi Başarısız!
+                                                            Fakülte Dondurma İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -709,7 +709,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Kayıt Dondurma İsteğiniz İşleniyor...
+                                                        Fakülte Dondurma İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -758,12 +758,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Kayıt Silme İşlemi Başarılı!
+                                                            Fakülte Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Kayıt Silme İşlemi başarıyla gerçekleşti.
+                                                            Fakülte Silme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -812,7 +812,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Kayıt Silme İşlemi Başarısız!
+                                                            Fakülte Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -868,7 +868,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Kayıt Silme İsteğiniz İşleniyor...
+                                                        Fakülte Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
