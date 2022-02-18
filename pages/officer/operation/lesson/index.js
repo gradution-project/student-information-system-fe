@@ -61,7 +61,7 @@ export default function TeacherLessonList({lessons}) {
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            BÖLÜM ADI
+                                            AKADEMİK BİLGİLER
                                         </th>
                                         <th
                                             scope="col"
@@ -101,6 +101,8 @@ export default function TeacherLessonList({lessons}) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
+                                                <div
+                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.facultyResponse.name}</div>
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.name}</div>
                                             </td>

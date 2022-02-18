@@ -4,9 +4,16 @@ import {Dialog, Transition} from "@headlessui/react";
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 import Cookies from "universal-cookie";
+export async function getServerSideProps() {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    return {
+        props: {
+            SIS_API_URL: SIS_API_URL
+        }
+    }
+}
 
-
-export default function LessonAssignment() {
+export default function LessonAssignment({SIS_API_URL}) {
 
     const router = useRouter();
 
@@ -64,7 +71,7 @@ export default function LessonAssignment() {
 
         event.preventDefault();
 
-        const saveRes = await fetch("http://localhost:8585/teacher/lesson/save", {
+        const saveRes = await fetch(`${SIS_API_URL}/teacher/lesson/save`, {
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId

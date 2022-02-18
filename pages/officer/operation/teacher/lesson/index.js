@@ -63,7 +63,7 @@ export default function TeacherLessonList({lessons}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    ÖĞRETMEN KODU
+                                                    ÖĞRETMEN ADI
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -97,29 +97,33 @@ export default function TeacherLessonList({lessons}) {
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
                                                         <div
                                                             className="font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
+                                                        {lessonSemesters.map((lSemester) => (
+                                                            lesson.lessonResponse.semester === lSemester.enum
+                                                                ?
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lSemester.tr}</div>
+                                                                :
+                                                                null
+                                                        ))}
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherId}</div>
+                                                <div className="flex items-center">
+                                                    <div className="ml-0.5">
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherInfoResponse.name} {lesson.teacherInfoResponse.surname}</div>
+                                                        <div
+                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
 
-                                                {lessonSemesters.map((lSemester) => (
-                                                    lesson.lessonResponse.semester === lSemester.enum
-                                                        ?
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lSemester.tr}</div>
-                                                        :
-                                                        null
-                                                ))}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {lessonCompulsory.map((lCompulsory) => (
