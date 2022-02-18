@@ -4,7 +4,8 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../public/constants/lesson";
 
 export async function getServerSideProps() {
-    const lessonResponse = await fetch("http://localhost:8585/teacher/lesson", {
+    const SIS_API_URL = process.env.SIS_API_URL;
+    const lessonResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -69,7 +70,7 @@ export default function TeacherLessonList({lessons}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    DERSİN AKADEMİK BİLGİLERİ
+                                                    AKADEMİK BİLGİLER
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -145,6 +146,12 @@ export default function TeacherLessonList({lessons}) {
                                                                  null
                                                          ))}
                                                 </span>
+                                            </td>
+                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                <a href={'/officer/operation/teacher/lesson/information/detail/' + lesson.teacherInfoResponse.teacherId}
+                                                   className='text-sis-yellow'>
+                                                    DETAY
+                                                </a>
                                             </td>
                                         </tr>
                                     ))}
