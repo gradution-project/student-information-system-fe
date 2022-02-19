@@ -101,10 +101,8 @@ export default function TeacherLessonList({lessons}) {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.facultyResponse.name}</div>
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.name}</div>
+                                                <div className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.facultyResponse.name}</div>
+                                                <div className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.departmentResponse.name}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {lessonCompulsory.map((lCompulsory) => (
