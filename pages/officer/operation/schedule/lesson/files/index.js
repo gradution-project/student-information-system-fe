@@ -11,7 +11,6 @@ export async function getServerSideProps(context) {
     });
     const lessonScheduleFilesData = await lessonScheduleFilesResponse.json();
     if (lessonScheduleFilesData.success) {
-        console.log(lessonScheduleFilesData.response)
         return {
             props: {lessonScheduleFiles: lessonScheduleFilesData.response}
         }
