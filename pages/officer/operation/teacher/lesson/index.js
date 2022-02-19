@@ -98,12 +98,12 @@ export default function TeacherLessonList({lessons}) {
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
                                                         <div
-                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
+                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
                                                         {lessonSemesters.map((lSemester) => (
                                                             lesson.lessonResponse.semester === lSemester.enum
                                                                 ?
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lSemester.tr}</div>
+                                                                    className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
                                                                 :
                                                                 null
                                                         ))}
@@ -116,7 +116,7 @@ export default function TeacherLessonList({lessons}) {
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherInfoResponse.name} {lesson.teacherInfoResponse.surname}</div>
                                                         <div
-                                                            className="font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
+                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -124,7 +124,7 @@ export default function TeacherLessonList({lessons}) {
                                                 <div
                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
                                                 <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+                                                    className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
 
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
