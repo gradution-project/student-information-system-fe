@@ -296,7 +296,7 @@ export default function SaveOfficer({faculties, SIS_API_URL}) {
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-4">
+                                        <div className="sm:col-span-6">
                                             <label htmlFor="facultyId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 FAKÜLTE
