@@ -599,12 +599,12 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Fakülte Dondurma İşlemi Başarılı!
+                                                            Fakülte Pasifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Fakülte Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Fakülte Pasifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -653,7 +653,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Fakülte Dondurma İşlemi Başarısız!
+                                                            Fakülte Pasifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -709,7 +709,7 @@ export default function FacultyDetail({faculty, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Fakülte Dondurma İsteğiniz İşleniyor...
+                                                        Fakülte Pasifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>

@@ -3,18 +3,24 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
-
+import Cookies from "universal-cookie";
 export async function getServerSideProps() {
+    const SIS_API_URL = process.env.SIS_API_URL;
     return {
         props: {
-            SIS_API_URL: process.env.SIS_API_URL
+            SIS_API_URL: SIS_API_URL
         }
     }
 }
 
-export default function SaveStudent({SIS_API_URL}) {
+export default function LessonAssignment({SIS_API_URL}) {
 
     const router = useRouter();
+
+    const cookies = new Cookies();
+
+    const [operationUserId] = useState(cookies.get("officerNumber"));
+
 
     const [lessonNumber, setLessonNumber] = useState();
     const changeLessonNumber = event => {
@@ -33,7 +39,7 @@ export default function SaveStudent({SIS_API_URL}) {
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/teacher/lesson");
+        router.push("/officer/operation/teacher/lesson").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -65,10 +71,10 @@ export default function SaveStudent({SIS_API_URL}) {
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/lesson/teacher`, {
+        const saveRes = await fetch(`${SIS_API_URL}/teacher/lesson/save`, {
             body: JSON.stringify({
                 operationInfoRequest: {
-                    userId: 12004
+                    userId: operationUserId
                 },
                 teacherLessonInfoRequest: {
                     lessonId: lessonNumber,
@@ -92,7 +98,7 @@ export default function SaveStudent({SIS_API_URL}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="sm:mt-5">
+            <div className="select-none sm:mt-5">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={lessonAssignment}>
@@ -196,7 +202,7 @@ export default function SaveStudent({SIS_API_URL}) {
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Ders Atama İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra Öğretemen Ders Listeleme
+                                                            Mesaj penceresini kapattıktan sonra Öğretmen Ders Listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>

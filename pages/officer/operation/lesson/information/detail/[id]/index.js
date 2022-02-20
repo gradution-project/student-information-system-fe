@@ -3,8 +3,8 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../../../../public/constants/teacher";
 import Cookies from "universal-cookie";
+import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../../../public/constants/lesson";
 
 export async function getServerSideProps({query}) {
     const SIS_API_URL = process.env.SIS_API_URL;
@@ -13,18 +13,18 @@ export async function getServerSideProps({query}) {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const teacherResponse = await fetch(`${SIS_API_URL}/teacher/` + id, {
+    const lessonResponse = await fetch(`${SIS_API_URL}/lesson/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
 
     const departmentDatas = await departmentResponses.json();
-    const teacherData = await teacherResponse.json();
-    if (teacherData.success && departmentDatas.success) {
+    const lessonData = await lessonResponse.json();
+    if (lessonData.success && departmentDatas.success) {
         return {
             props: {
                 departments: departmentDatas.response,
-                teacher: teacherData.response,
+                lesson: lessonData.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
@@ -32,102 +32,50 @@ export async function getServerSideProps({query}) {
 }
 
 
-export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
+export default function LessonDetail({departments, lesson, SIS_API_URL}) {
     const cookies = new Cookies();
-    const {academicInfoResponse} = teacher;
-    const {personalInfoResponse} = teacher;
-
-    const {
-        departmentResponse,
-        teacherId,
-        degree,
-        role,
-        fieldOfStudy,
-        registrationDate,
-        status
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
+    const {lessonId, name, credit, semester, compulsoryOrElective, status, departmentResponse, modifiedDate} = lesson;
     const {facultyResponse} = departmentResponse;
 
     const departmentId = departmentResponse.departmentId;
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
-    const phone = academicInfoResponse.phoneNumber;
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
 
-    const [teacherName, setTeacherName] = useState(name);
-    const changeTeacherName = event => {
-        const teacherName = event.target.value;
-        setTeacherName(teacherName);
+
+    const [lessonName, setLessonName] = useState(name);
+    const changeLessonName = event => {
+        const lessonName = event.target.value;
+        setLessonName(lessonName);
     }
 
-    const [teacherSurname, setTeacherSurname] = useState(surname);
-    const changeTeacherSurname = event => {
-        const teacherSurname = event.target.value;
-        setTeacherSurname(teacherSurname);
+    const [lessonCredit, setLessonCredit] = useState(credit);
+    const changeLessonCredit = event => {
+        const lessonCredit = event.target.value;
+        setLessonCredit(lessonCredit);
     }
 
-    const [teacherTcNo, setTeacherTcNo] = useState(tcNo);
-    const changeTeacherTcNo = event => {
-        const teacherTcNo = event.target.value;
-        setTeacherTcNo(teacherTcNo);
+    const [lessonCorE, setLessonCorE] = useState(compulsoryOrElective);
+    const changeLessonCorE = event => {
+        const lessonCorE = event.target.value;
+        setLessonCorE(lessonCorE);
     }
 
-    const [teacherBirthday, setTeacherBirthday] = useState(birthday);
-    const changeTeacherBirthday = event => {
-        const teacherBirthday = event.target.value;
-        setTeacherBirthday(teacherBirthday);
+    const [lessonSemester, setLessonSemester] = useState(semester);
+    const changeLessonSemester = event => {
+        const lessonSemester = event.target.value;
+        setLessonSemester(lessonSemester);
     }
 
-    const [teacherEmail, setTeacherEmail] = useState(email);
-    const changeTeacherEmail = event => {
-        const teacherEmail = event.target.value;
-        setTeacherEmail(teacherEmail);
+
+    const [lessonDepartmentId, setLessonDepartmentId] = useState(departmentId);
+    const changeLessonDepartmentId = event => {
+        const lessonDepartmentId = event.target.value;
+        setLessonDepartmentId(lessonDepartmentId);
     }
 
-    const [teacherAddress, setTeacherAddress] = useState(address);
-    const changeTeacherAddress = event => {
-        const teacherAddress = event.target.value;
-        setTeacherAddress(teacherAddress);
-    }
-
-    const [teacherDegree, setTeacherDegree] = useState(degree);
-    const changeTeacherDegree = event => {
-        const teacherDegree = event.target.value;
-        setTeacherDegree(teacherDegree);
-    }
-
-    const [teacherDepartmentId, setTeacherDepartmentId] = useState(departmentId);
-    const changeTeacherDepartmentId = event => {
-        const teacherDepartmentId = event.target.value;
-        setTeacherDepartmentId(teacherDepartmentId);
-    }
-
-    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState(phoneNumber);
-    const changeTeacherPhoneNumber = event => {
-        const teacherPhoneNumber = event.target.value;
-        setTeacherPhoneNumber(teacherPhoneNumber);
-    }
-
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState(fieldOfStudy);
-    const changeTeacherFieldOfStudy = event => {
-        const teacherFieldOfStudy = event.target.value;
-        setTeacherFieldOfStudy(teacherFieldOfStudy);
-    }
-
-    const [teacherRole, setTeacherRole] = useState(role);
-    const changeTeacherRole = event => {
-        const teacherRole = event.target.value;
-        setTeacherRole(teacherRole);
-    }
-
-    const [teacherPhone, setTeacherPhone] = useState(phone);
-    const changeTeacherPhone = event => {
-        const teacherPhone = event.target.value;
-        setTeacherPhone(teacherPhone);
-    }
 
     const router = useRouter();
 
@@ -224,81 +172,50 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         setIsOpenProcessingDelete(true);
     }
 
-    let [isOpenSuccessAcademic, setIsOpenSuccessAcademic] = useState(false);
+    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
-    function closeSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(false);
+    function closeSuccessModal() {
+        setIsOpenSuccess(false);
         router.reload();
     }
 
-    function openSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(true);
+    function openSuccessModal() {
+        setIsOpenSuccess(true);
     }
 
-    let [isOpenFailAcademic, setIsOpenFailAcademic] = useState(false);
+    let [isOpenFail, setIsOpenFail] = useState(false);
 
-    function closeFailModalAcademic() {
-        setIsOpenFailAcademic(false);
+    function closeFailModal() {
+        setIsOpenFail(false);
     }
 
-    function openFailModalAcademic() {
-        setIsOpenFailAcademic(true);
+    function openFailModal() {
+        setIsOpenFail(true);
     }
 
-    let [isOpenProcessingAcademic, setIsOpenProcessingAcademic] = useState(false);
+    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
 
-    function closeProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(false);
+    function closeProcessingModal() {
+        setIsOpenProcessing(false);
     }
 
-    function openProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(true);
-    }
-
-    let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
-
-    function closeSuccessModalPersonal() {
-        setIsOpenSuccessPersonal(false);
-        router.reload();
-    }
-
-    function openSuccessModalPersonal() {
-        setIsOpenSuccessPersonal(true);
-    }
-
-    let [isOpenFailPersonal, setIsOpenFailPersonal] = useState(false);
-
-    function closeFailModalPersonal() {
-        setIsOpenFailPersonal(false);
-    }
-
-    function openFailModalPersonal() {
-        setIsOpenFailPersonal(true);
-    }
-
-    let [isOpenProcessingPersonal, setIsOpenProcessingPersonal] = useState(false);
-
-    function closeProcessingModalPersonal() {
-        setIsOpenProcessingPersonal(false);
-    }
-
-    function openProcessingModalPersonal() {
-        setIsOpenProcessingPersonal(true);
+    function openProcessingModal() {
+        setIsOpenProcessing(true);
     }
 
 
-    const teacherActivate = async (event) => {
+    const lessonActivate = async (event) => {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/teacher/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/lesson/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                teacherId: teacherId
+                lessonId: lessonId
             }),
         });
         const activateData = await activateRes.json();
@@ -311,18 +228,18 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherPassivate = async (event) => {
+    const lessonPassivate = async (event) => {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/teacher/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/lesson/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                teacherId: teacherId
+                lessonId: lessonId
             }),
         });
         const passivateData = await passivateRes.json();
@@ -335,18 +252,18 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherDelete = async (event) => {
+    const lessonDelete = async (event) => {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/teacher/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/lesson/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                teacherId: teacherId
+                lessonId: lessonId
             }),
         });
         const deleteData = await deleteRes.json();
@@ -359,68 +276,36 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherUpdateAcademic = async (event) => {
-        openProcessingModalAcademic();
+    const lessonUpdate = async (event) => {
+        openProcessingModal();
 
         event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/teacher/update/academic-info/${teacherId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/lesson/update/${lessonId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: teacherDegree,
-                    departmentId: teacherDepartmentId,
-                    fieldOfStudy: teacherFieldOfStudy,
-                    phoneNumber: teacherPhone,
-                    role: teacherRole
+                lessonInfoRequest: {
+                    compulsoryOrElective: lessonCorE,
+                    credit: lessonCredit,
+                    departmentId: lessonDepartmentId,
+                    name: lessonName,
+                    semester: lessonSemester
                 },
                 operationInfoRequest: {
                     userId: operationUserId
                 }
             }),
         });
-        const updateAcademicData = await updateRes.json();
-        if (updateAcademicData.success) {
-            closeProcessingModalAcademic();
-            openSuccessModalAcademic()
+        const updateData = await updateRes.json();
+        if (updateData.success) {
+            closeProcessingModal();
+            openSuccessModal()
         } else {
-            closeProcessingModalAcademic();
-            openFailModalAcademic();
+            closeProcessingModal();
+            openFailModal();
         }
     }
 
-    const teacherUpdatePersonal = async (event) => {
-        openProcessingModalPersonal();
-
-        event.preventDefault()
-
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/teacher/update/personal-info/${teacherId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                personalInfoRequest: {
-                    address: teacherAddress,
-                    birthday: teacherBirthday,
-                    email: teacherEmail,
-                    name: teacherName,
-                    phoneNumber: teacherPhoneNumber,
-                    surname: teacherSurname,
-                    tcNo: teacherTcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
-            closeProcessingModalPersonal();
-            openSuccessModalPersonal()
-        } else {
-            closeProcessingModalPersonal();
-            openFailModalPersonal();
-        }
-    }
     return (
         <>
             <SISTitle/>
@@ -429,12 +314,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                 <div className="select-none px-28 py-5 mx-auto space-y-6">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                            {name} {surname}
+                            {name}
                         </a>
-                        {teacherStatuses.map((teacherStatus) => (
-                            status === teacherStatus.enum
+                        {lessonStatuses.map((lessonStatus) => (
+                            status === lessonStatus.enum
                                 ?
-                                teacherStatus.component
+                                lessonStatus.component
                                 :
                                 null
                         ))}
@@ -442,11 +327,11 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                             status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={teacherDelete}
+                                    onClick={lessonDelete}
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
                                 >
-                                    KAYDI SİL
+                                    DERSİ SİL
                                 </button>
                                 :
                                 null
@@ -456,11 +341,11 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                             status !== 'PASSIVE' && status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={teacherPassivate}
+                                    onClick={lessonPassivate}
                                     type="submit"
                                     className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
-                                    KAYDI DONDUR
+                                    DERSİ PASİFLEŞTİR
                                 </button>
                                 :
                                 null
@@ -470,11 +355,11 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                             status !== 'ACTIVE' && status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={teacherActivate}
+                                    onClick={lessonActivate}
                                     type="submit"
                                     className="float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    KAYDI AKTİFLEŞTİR
+                                    DERSİ AKTİFLEŞTİR
                                 </button>
                                 :
                                 null
@@ -486,35 +371,20 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            AKADEMİK BİLGİLER
+                                            DERS BİLGİLERİ
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="teacher-number"
+                                            <label htmlFor="lessonId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRETMEN NUMARASI
+                                                DERS NUMARASI
                                             </label>
                                             <input
                                                 type="text"
-                                                name="teacherId"
-                                                id="teacherId"
-                                                defaultValue={teacherId}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3 select-none">
-                                            <label htmlFor="registration-date"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                KAYIT TARİHİ
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="registration-date"
-                                                id="registration-date"
-                                                defaultValue={registrationDate}
+                                                name="lessonId"
+                                                id="lessonId"
+                                                defaultValue={lessonId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -523,7 +393,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                         <div className="sm:col-span-3">
                                             <label htmlFor="faculty"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTESİ
+                                                FAKÜLTE ADI
                                             </label>
                                             <select
                                                 id="faculty"
@@ -532,7 +402,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option defaultValue={facultyId} selected>{facultyName}</option>
+                                                <option defaultValue={facultyId}>{facultyName}</option>
                                             </select>
                                         </div>
 
@@ -542,369 +412,119 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeTeacherDepartmentId}
+                                                onChange={changeLessonDepartmentId}
                                                 id="department-id"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option value={department.departmentId}
-                                                                selected>{department.name}</option>
+                                                        <option value={department.departmentId} selected>{department.name}</option>
                                                         :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVANI
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
-                                                {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}
-                                                                selected>{tDegree.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tDegree.enum}>{tDegree.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="role"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ROLÜ
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherRole}
-                                                id="role"
-                                                name="role"
-                                                autoComplete="role"
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
-                                                {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
-                                                        <option value={tRole.enum}
-                                                                selected>{tRole.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tRole.enum}>{tRole.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="col-span-3">
-                                            <label htmlFor="fieldOfStudy"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÇALIŞMA ALANI
-                                            </label>
-                                            <input
-                                                onChange={changeTeacherFieldOfStudy}
-                                                type="text"
-                                                name="fieldOfStudy"
-                                                id="fieldOfStudy"
-                                                defaultValue={fieldOfStudy}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
-                                        </div>
-
-                                        <div className="col-span-3">
-                                            <label htmlFor="phone-number"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DAHİLİ NUMARA
-                                            </label>
-                                            <input
-                                                onChange={(e) => {
-                                                    let pNumberLength = e.target.value.length;
-                                                    if (pNumberLength <= 1) {
-                                                        e.target.value = "+90 (" + e.target.value;
-                                                    }
-                                                    if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value = e.target.value + ") ";
-                                                    }
-                                                    if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value = e.target.value + " ";
-                                                    }
-                                                    if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value = e.target.value + " ";
-                                                    }
-                                                    changeTeacherPhone(e)
-                                                }}
-                                                type="text"
-                                                name="phoneNumber"
-                                                id="phoneNumber"
-                                                defaultValue={phone}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="email-address"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                E-MAİL ADRESİ
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="email-address"
-                                                id="email-address"
-                                                defaultValue={academicInfoResponse.email}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-                                        {(
-                                            academicInfoResponse.modifiedDate !== null
-                                                ?
-                                                <div className="sm:col-span-6">
-                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {academicInfoResponse.modifiedDate}
-                                                    </a>
-                                                </div>
-                                                :
-                                                null
-                                        )}
-                                    </div>
-                                </div>
-                                {(
-                                    status !== "DELETED" && status !== "PASSIVE"
-                                        ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={teacherUpdateAcademic}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
-                                        null
-                                )}
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                    <div className="border-t border-gray-200"/>
-                </div>
-            </div>
-
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
-                    <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-3xl mx-auto space-y-6">
-                            <div className="shadow overflow-hidden sm:rounded-md">
-                                <div className="px-4 py-5 bg-white sm:p-6">
-                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
-                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            KİŞİSEL BİLGİLER
-                                        </h3>
-                                    </div>
-                                    <div className="grid grid-cols-6 gap-6">
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="first-name"
+                                            <label htmlFor="name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ADI
+                                                DERSİN ADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherName}
+                                                onChange={changeLessonName}
                                                 type="text"
                                                 name="name"
                                                 id="name"
+                                                required
                                                 defaultValue={name}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="last-name"
+                                            <label htmlFor="credit"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                SOYADI
+                                                DERSİN KREDİSİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherSurname}
+                                                onChange={changeLessonCredit}
                                                 type="text"
-                                                name="surname"
-                                                id="surname"
-                                                defaultValue={surname}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
-                                        </div>
-
-                                        <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="tc-no"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                T.C. KİMLİK NUMARASI
-                                            </label>
-                                            <input
-                                                onChange={changeTeacherTcNo}
-                                                type="text"
-                                                name="tc-no"
-                                                id="tc-no"
-                                                minLength="11"
-                                                maxLength="11"
-                                                pattern="[0-9]+"
+                                                name="credit"
+                                                id="credit"
                                                 required
-                                                defaultValue={tcNo}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                defaultValue={credit}
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="birthday"
+                                            <label htmlFor="semester"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DOĞUM TARİHİ
+                                                DERS DÖNEMİ
                                             </label>
-                                            <input
-                                                onChange={(e) => {
-                                                    let birthdayLength = e.target.value.length;
-                                                    if (birthdayLength > 1 && birthdayLength < 3) {
-                                                        if (e.target.value <= 31) {
-                                                            e.target.value = e.target.value + ".";
-                                                        } else {
-                                                            e.target.value = "";
-                                                        }
-                                                    }
-                                                    if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value = e.target.value + ".";
-                                                    }
-                                                    changeTeacherBirthday(e)
-                                                }}
-                                                type="text"
-                                                name="birthday"
-                                                id="birthday"
-                                                required
-                                                minLength="10"
-                                                maxLength="10"
-                                                defaultValue={birthday}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
+                                            <select
+                                                onChange={changeLessonSemester}
+                                                id="semester"
+                                                name="semester"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
+                                                {lessonSemesters.map(lSemester => (
+                                                    semester === lSemester.enum
+                                                    ?
+                                                    <option value={lSemester.enum} selected>{lSemester.tr}</option>
+                                                        :
+                                                        <option value={lSemester.enum}>{lSemester.tr}</option>
+                                                ))}
+                                            </select>
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="email-address"
+                                            <label htmlFor="compulsoryOrElective"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                E-MAİL ADRESİ
+                                                DERS ZORUNLULUĞU
                                             </label>
-                                            <input
-                                                onChange={changeTeacherEmail}
-                                                type="text"
-                                                name="email-address"
-                                                id="email-address"
-                                                autoComplete="email"
-                                                defaultValue={personalInfoResponse.email}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                        ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                        : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
+                                            <select
+                                                onChange={changeLessonCorE}
+                                                id="compulsoryOrElective"
+                                                name="compulsoryOrElective"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                }>
+                                                {lessonCompulsory.map((lCompulsory) => (
+                                                    compulsoryOrElective === lCompulsory.enum
+                                                    ?
+                                                    <option value={lCompulsory.enum} selected>{lCompulsory.tr}</option>
+                                                        :
+                                                        <option value={lCompulsory.enum}>{lCompulsory.tr}</option>
+
+                                                ))}
+                                            </select>
                                         </div>
 
-                                        <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="phone-number"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                TELEFON NUMARASI
-                                            </label>
-                                            <input
-                                                onChange={(e) => {
-                                                    let pNumberLength = e.target.value.length;
-                                                    if (pNumberLength <= 1) {
-                                                        e.target.value = "+90 (" + e.target.value;
-                                                    }
-                                                    if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value = e.target.value + ") ";
-                                                    }
-                                                    if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value = e.target.value + " ";
-                                                    }
-                                                    if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value = e.target.value + " ";
-                                                    }
-                                                    changeTeacherPhoneNumber(e)
-                                                }}
-                                                type="text"
-                                                name="phone-number"
-                                                id="phone-number"
-                                                required
-                                                minLength="19"
-                                                maxLength="19"
-                                                defaultValue={phoneNumber}
-                                                disabled={status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
-                                        </div>
-
-                                        <div className="col-span-6">
-                                            <label htmlFor="home-address"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                EV ADRESİ
-                                            </label>
-                                            <input
-                                                onChange={changeTeacherAddress}
-                                                type="text"
-                                                name="home-address"
-                                                id="home-address"
-                                                autoComplete="home-address"
-                                                defaultValue={address}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
-                                        </div>
                                         {(
-                                            personalInfoResponse.modifiedDate !== null
+                                            modifiedDate !== null
                                                 ?
                                                 <div className="sm:col-span-6">
                                                     <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
+                                                        Son Düzenlenme Tarihi : {modifiedDate}
                                                     </a>
                                                 </div>
                                                 :
@@ -917,7 +537,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
-                                                onClick={teacherUpdatePersonal}
+                                                onClick={lessonUpdate}
                                                 type="submit"
                                                 className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
@@ -927,6 +547,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                         :
                                         null
                                 )}
+
                                 <Transition appear show={isOpenSuccessActive} as={Fragment}>
                                     <Dialog
                                         as="div"
@@ -968,12 +589,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kayıt Aktifleştirme İşlemi Başarılı!
+                                                            Ders Kayıt Aktifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Ders Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1022,13 +643,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kayıt Aktifleştirme İşlemi Başarısız!
+                                                            Ders Kayıt Aktifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğretmen kaydı
+                                                            Verilerinizi doğru girdiyseniz ders kaydı
                                                             silinmiş olabilir.
                                                         </p>
                                                     </div>
@@ -1078,7 +699,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kayıt Aktifleştirme İsteğiniz İşleniyor...
+                                                        Ders Kayıt Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1127,12 +748,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kayıt Dondurma İşlemi Başarılı!
+                                                            Ders Kayıt Dondurma İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Ders Kayıt Dondurma İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1181,13 +802,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kayıt Dondurma İşlemi Başarısız!
+                                                            Ders Kayıt Dondurma İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğretmen kaydı
+                                                            Verilerinizi doğru girdiyseniz ders kaydı
                                                             silinmiş olabilir.
                                                         </p>
                                                     </div>
@@ -1237,7 +858,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kayıt Dondurma İsteğiniz İşleniyor...
+                                                        Ders Kayıt Dondurma İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1286,12 +907,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kayıt Silme İşlemi Başarılı!
+                                                            Ders Kayıt Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kayıt Silme İşlemi başarıyla gerçekleşti.
+                                                            Ders Kayıt Silme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1340,7 +961,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kayıt Silme İşlemi Başarısız!
+                                                            Ders Kayıt Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1396,7 +1017,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kayıt Silme İsteğiniz İşleniyor...
+                                                        Ders Kayıt Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1404,11 +1025,11 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                     </Dialog>
                                 </Transition>
 
-                                <Transition appear show={isOpenSuccessAcademic} as={Fragment}>
+                                <Transition appear show={isOpenSuccess} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalAcademic}
+                                        onClose={closeSuccessModal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -1445,12 +1066,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Akademik Bilgi Güncelleme İşlemi Başarılı!
+                                                            Ders Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Akademik Bilgi Güncellene İşlemi başarıyla
+                                                            Ders Bilgi Güncellene İşlemi başarıyla
                                                             gerçekleşti.
 
                                                         </p>
@@ -1460,11 +1081,11 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                         </div>
                                     </Dialog>
                                 </Transition>
-                                <Transition appear show={isOpenFailAcademic} as={Fragment}>
+                                <Transition appear show={isOpenFail} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalAcademic}
+                                        onClose={closeFailModal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -1501,7 +1122,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Akademik Bilgi Güncelleme İşlemi Başarısız!
+                                                            Ders Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1517,11 +1138,11 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                     </Dialog>
                                 </Transition>
 
-                                <Transition appear show={isOpenProcessingAcademic} as={Fragment}>
+                                <Transition appear show={isOpenProcessing} as={Fragment}>
                                     <Dialog
                                         as="div"
                                         className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalAcademic}
+                                        onClose={closeProcessingModal}
                                     >
                                         <div className="min-h-screen px-4 text-center">
                                             <Transition.Child
@@ -1557,167 +1178,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenSuccessPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi başarıyla
-                                                            gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğretmen Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Ders Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>

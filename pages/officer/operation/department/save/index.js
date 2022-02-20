@@ -255,7 +255,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Öğrenci Ekleme İşlemi başarıyla gerçekleşti.
+                                                    Bölüm Ekleme İşlemi başarıyla gerçekleşti.
                                                     Mesaj penceresini kapattıktan sonra bölüm listeleme
                                                     ekranına yönlendirileceksiniz.
                                                 </p>
