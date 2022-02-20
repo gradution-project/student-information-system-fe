@@ -205,10 +205,10 @@ export default function SaveLesson({departments, SIS_API_URL}) {
                                                 </select>
                                             </div>
 
-                                        <div className="col-span-6 sm:col-span-4">
+                                        <div className="col-span-6 sm:col-span-6">
                                             <label htmlFor="department"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
+                                                BÖLÜM ADI
                                             </label>
                                             <select
                                                 onChange={changeLessonDepartmentId}
