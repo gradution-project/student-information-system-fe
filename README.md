@@ -24,7 +24,7 @@ yarn build
 yarn dev
 ```
 
-Local URL : http://localhost:3000/
+Local URL : http://localhost:8586/
 ------------------
 
 Live URL : https://sis-fe.herokuapp.com/

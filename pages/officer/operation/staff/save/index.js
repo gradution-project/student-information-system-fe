@@ -4,98 +4,90 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import Cookies from "universal-cookie";
-import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
 
 export async function getServerSideProps() {
     const SIS_API_URL = process.env.SIS_API_URL;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const facultyDatas = await facultyResponses.json();
+    if (facultyDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response,
+                faculties: facultyDatas.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function SaveStudent({departments, SIS_API_URL}) {
+export default function SaveOfficer({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
 
     const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
 
-    const [studentName, setStudentName] = useState();
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
+    const [officerName, setOfficerName] = useState();
+    const changeOfficerName = event => {
+        const officerName = event.target.value;
+        setOfficerName(officerName);
     }
 
-    const [studentSurname, setStudentSurname] = useState();
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
+    const [officerSurname, setOfficerSurname] = useState();
+    const changeOfficerSurname = event => {
+        const officerSurname = event.target.value;
+        setOfficerSurname(officerSurname);
     }
 
-    const [studentTcNo, setStudentTcNo] = useState();
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
+    const [officerTcNo, setOfficerTcNo] = useState();
+    const changeOfficerTcNo = event => {
+        const officerTcNo = event.target.value;
+        setOfficerTcNo(officerTcNo);
     }
 
-    const [studentBirthday, setStudentBirthday] = useState();
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
+    const [officerBirthday, setOfficerBirthday] = useState();
+    const changeOfficerBirthday = event => {
+        const officerBirthday = event.target.value;
+        setOfficerBirthday(officerBirthday);
     }
 
-    const [studentEmail, setStudentEmail] = useState();
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
+    const [officerEmail, setOfficerEmail] = useState();
+    const changeOfficerEmail = event => {
+        const officerEmail = event.target.value;
+        setOfficerEmail(officerEmail);
     }
 
-    const [studentClassLevel, setStudentClassLevel] = useState();
-    const changeStudentClassLevel = event => {
-        const studentClassLevel = event.target.value;
-        setStudentClassLevel(studentClassLevel);
+    const [officerAddress, setOfficerAddress] = useState();
+    const changeOfficerAddress = event => {
+        const officerAddress = event.target.value;
+        setOfficerAddress(officerAddress);
     }
 
-    const [studentAddress, setStudentAddress] = useState();
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
+    const [officerPhoneNumber, setOfficerPhoneNumber] = useState();
+    const changeOfficerPhoneNumber = event => {
+        const officerPhoneNumber = event.target.value;
+        setOfficerPhoneNumber(officerPhoneNumber);
     }
 
-    const [studentDegree, setStudentDegree] = useState();
-    const changeStudentDegree = event => {
-        const studentDegree = event.target.value;
-        setStudentDegree(studentDegree);
+    const [officerFacultyId, setOfficerFacultyId] = useState();
+    const changeOfficerFacultyId = event => {
+        const officerFacultyId = event.target.value;
+        setOfficerFacultyId(officerFacultyId);
     }
 
-    const [studentDepartmentId, setStudentDepartmentId] = useState();
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
+    const [officerPhone, setOfficerPhone] = useState();
+    const changeOfficerPhone = event => {
+        const officerPhone = event.target.value;
+        setOfficerPhone(officerPhone);
     }
-
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
-    }
-
 
     let [isOpenSuccess, setIsOpenSuccess] = useState(false);
 
     function closeSuccessModal() {
         setIsOpenSuccess(false);
-        router.push("/officer/operation/student").then(() => router.reload());
+        router.push("/officer/operation/staff").then(() => router.reload());
     }
 
     function openSuccessModal() {
@@ -122,29 +114,30 @@ export default function SaveStudent({departments, SIS_API_URL}) {
         setIsOpenProcessing(true);
     }
 
-    const studentSave = async (event) => {
+    const officerSave = async (event) => {
         openProcessingModal();
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/student/save`, {
+        const saveRes = await fetch(`${SIS_API_URL}/officer/save`, {
             body: JSON.stringify({
+
                 academicInfoRequest: {
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId,
-                    classLevel: studentClassLevel,
+                    facultyId: officerFacultyId,
+                    phoneNumber: officerPhone
                 },
                 operationInfoRequest: {
                     userId: operationUserId
                 },
                 personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: studentBirthday,
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
+                    address: officerAddress,
+                    birthday: officerBirthday,
+                    email: officerEmail,
+                    name: officerName,
+                    phoneNumber: officerPhoneNumber,
+                    surname: officerSurname,
+                    tcNo: officerTcNo
+
                 }
             }),
             headers: {'Content-Type': 'application/json'},
@@ -167,12 +160,12 @@ export default function SaveStudent({departments, SIS_API_URL}) {
             <div className="select-none mt-10 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
+                        <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={officerSave}>
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="bg-white sm:p-6">
                                     <div className="px-4 sm:px-0 bg-gray-50 rounded-xl">
                                         <h3 className="mb-8 py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-4xl">
-                                            ÖĞRENCİ EKLEME
+                                            PERSONEL EKLEME
                                         </h3>
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
@@ -182,7 +175,7 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeOfficerName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -197,7 +190,7 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeStudentSurname}
+                                                onChange={changeOfficerSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -212,7 +205,7 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentTcNo}
+                                                onChange={changeOfficerTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -230,26 +223,11 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={(e) => {
-                                                    let birthdayLength = e.target.value.length;
-                                                    if (birthdayLength > 1 && birthdayLength < 3) {
-                                                        if (e.target.value <= 31) {
-                                                            e.target.value =  e.target.value + ".";
-                                                        } else {
-                                                            e.target.value = "";
-                                                        }
-                                                    }
-                                                    if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value =  e.target.value + ".";
-                                                    }
-                                                    changeStudentBirthday(e)
-                                                }}
+                                                onChange={changeOfficerBirthday}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
-                                                minLength="10"
-                                                maxLength="10"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -260,7 +238,7 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentEmail}
+                                                onChange={changeOfficerEmail}
                                                 type="email"
                                                 name="email-address"
                                                 id="email-address"
@@ -282,15 +260,15 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                         e.target.value = "+90 (" + e.target.value;
                                                     }
                                                     if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value =  e.target.value + ") ";
+                                                        e.target.value = e.target.value + ") ";
                                                     }
                                                     if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
-                                                    changeStudentPhoneNumber(e)
+                                                    changeOfficerPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -308,7 +286,7 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentAddress}
+                                                onChange={changeOfficerAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -317,63 +295,55 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
+                                        <div className="sm:col-span-6">
+                                            <label htmlFor="facultyId"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVANI
+                                                FAKÜLTE
                                             </label>
                                             <select
-                                                onChange={changeStudentDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                value={studentDegree}
+                                                onChange={changeOfficerFacultyId}
+                                                id="facultyId"
+                                                name="faculty-id"
+                                                autoComplete="faculty-id"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option>Ünvanını Seçiniz...</option>
-                                                {studentDegrees.map(sDegree => (
-                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
+                                                <option>Fakülte Seçiniz...</option>
+                                                {faculties.map((faculty) => (
+                                                        <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
                                         </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="classLevel"
+                                        <div className="col-span-6 sm:col-span-3">
+                                            <label htmlFor="phoneNumber"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                SINIFI
+                                                DAHİLİ NUMARA
                                             </label>
-                                            <select
-                                                onChange={changeStudentClassLevel}
-                                                id="class-level"
-                                                name="class-level"
-                                                autoComplete="class-level"
-                                                value={studentClassLevel}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Sınıfı Seçiniz...</option>
-                                                {studentClassLevels.map(sClassLevel => (
-                                                        <option key={sClassLevel.enum} value={sClassLevel.enum}>{sClassLevel.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-4">
-                                            <label htmlFor="departmentId"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
-                                            </label>
-                                            <select
-                                                onChange={changeStudentDepartmentId}
-                                                id="departmentId"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>Bölümü Seçiniz...</option>
-                                                {departments.map((department) => (
-                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
-                                                ))}
-                                            </select>
+                                            <input
+                                                onChange={(e) => {
+                                                    let pNumberLength = e.target.value.length;
+                                                    if (pNumberLength <= 1) {
+                                                        e.target.value = "+90 (" + e.target.value;
+                                                    }
+                                                    if (pNumberLength > 7 && pNumberLength < 10) {
+                                                        e.target.value = e.target.value + ") ";
+                                                    }
+                                                    if (pNumberLength > 12 && pNumberLength < 15) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    if (pNumberLength > 15 && pNumberLength < 18) {
+                                                        e.target.value = e.target.value + " ";
+                                                    }
+                                                    changeOfficerPhone(e)
+                                                }}
+                                                type="text"
+                                                name="phoneNumber"
+                                                id="phoneNumber"
+                                                required
+                                                minLength="19"
+                                                maxLength="19"
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
                                         </div>
 
                                     </div>
@@ -427,13 +397,13 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Ekleme İşlemi Başarılı!
+                                                            Personel Ekleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
+                                                            Personel Ekleme İşlemi başarıyla gerçekleşti.
+                                                            Mesaj penceresini kapattıktan sonra personel listeleme
                                                             ekranına yönlendirileceksiniz.
                                                         </p>
                                                     </div>
@@ -483,7 +453,7 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Ekleme İşlemi Başarısız!
+                                                            Personel Ekleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">

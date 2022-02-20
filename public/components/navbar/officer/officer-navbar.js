@@ -14,7 +14,7 @@ export default function OfficerNavbar() {
     const cookies = new Cookies();
 
     return (
-        <Popover className="relative bg-white">
+        <Popover className="select-none relative bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div
                     className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
@@ -55,7 +55,7 @@ export default function OfficerNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a
-                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700')}
+                                                className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
                                                 {cookies.get('officerFullName')}
                                                 <p className="font-phenomenaLight text-center text-lg">{cookies.get('officerNumber')}</p>
@@ -64,15 +64,16 @@ export default function OfficerNavbar() {
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/officer/information"
-                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}>
+                                            <a href="/officer/information/detail"
+                                               className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : '', 'block px-4 py-2 text-lg text-center text-gray-700')}
+                                            >
                                                 Bilgilerim
                                             </a>
                                         )}
                                     </Menu.Item>
                                     <Menu.Item>
                                         {({active}) => (
-                                            <a href="/"
+                                            <a href='/'
                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Çıkış Yap

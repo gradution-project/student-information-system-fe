@@ -3,28 +3,28 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../../../../public/constants/teacher";
 import Cookies from "universal-cookie";
+import {officerStatuses} from "../../../../../../../public/constants/officer";
 
 export async function getServerSideProps({query}) {
     const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
+    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const teacherResponse = await fetch(`${SIS_API_URL}/teacher/` + id, {
+    const officerResponse = await fetch(`${SIS_API_URL}/officer/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
 
-    const departmentDatas = await departmentResponses.json();
-    const teacherData = await teacherResponse.json();
-    if (teacherData.success && departmentDatas.success) {
+    const facultyDatas = await facultyResponses.json();
+    const officerData = await officerResponse.json();
+    if (officerData.success && facultyDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response,
-                teacher: teacherData.response,
+                faculties: facultyDatas.response,
+                officer: officerData.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
@@ -32,101 +32,78 @@ export async function getServerSideProps({query}) {
 }
 
 
-export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
+export default function OfficerDetail({faculties, officer, SIS_API_URL}) {
     const cookies = new Cookies();
-    const {academicInfoResponse} = teacher;
-    const {personalInfoResponse} = teacher;
+    const {academicInfoResponse} = officer;
+    const {personalInfoResponse} = officer;
 
     const {
-        departmentResponse,
-        teacherId,
-        degree,
-        role,
-        fieldOfStudy,
+        facultyResponse,
+        officerId,
         registrationDate,
         status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
-    const {facultyResponse} = departmentResponse;
 
-    const departmentId = departmentResponse.departmentId;
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
-    const departmentName = departmentResponse.name;
     const phone = academicInfoResponse.phoneNumber;
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
 
-    const [teacherName, setTeacherName] = useState(name);
-    const changeTeacherName = event => {
-        const teacherName = event.target.value;
-        setTeacherName(teacherName);
+    const [officerName, setOfficerName] = useState(name);
+    const changeOfficerName = event => {
+        const officerName = event.target.value;
+        setOfficerName(officerName);
     }
 
-    const [teacherSurname, setTeacherSurname] = useState(surname);
-    const changeTeacherSurname = event => {
-        const teacherSurname = event.target.value;
-        setTeacherSurname(teacherSurname);
+    const [officerSurname, setOfficerSurname] = useState(surname);
+    const changeOfficerSurname = event => {
+        const officerSurname = event.target.value;
+        setOfficerSurname(officerSurname);
     }
 
-    const [teacherTcNo, setTeacherTcNo] = useState(tcNo);
-    const changeTeacherTcNo = event => {
-        const teacherTcNo = event.target.value;
-        setTeacherTcNo(teacherTcNo);
+    const [officerTcNo, setOfficerTcNo] = useState(tcNo);
+    const changeOfficerTcNo = event => {
+        const officerTcNo = event.target.value;
+        setOfficerTcNo(officerTcNo);
     }
 
-    const [teacherBirthday, setTeacherBirthday] = useState(birthday);
-    const changeTeacherBirthday = event => {
-        const teacherBirthday = event.target.value;
-        setTeacherBirthday(teacherBirthday);
+    const [officerBirthday, setOfficerBirthday] = useState(birthday);
+    const changeOfficerBirthday = event => {
+        const officerBirthday = event.target.value;
+        setOfficerBirthday(officerBirthday);
     }
 
-    const [teacherEmail, setTeacherEmail] = useState(email);
-    const changeTeacherEmail = event => {
-        const teacherEmail = event.target.value;
-        setTeacherEmail(teacherEmail);
+    const [officerEmail, setOfficerEmail] = useState(email);
+    const changeOfficerEmail = event => {
+        const officerEmail = event.target.value;
+        setOfficerEmail(officerEmail);
     }
 
-    const [teacherAddress, setTeacherAddress] = useState(address);
-    const changeTeacherAddress = event => {
-        const teacherAddress = event.target.value;
-        setTeacherAddress(teacherAddress);
+    const [officerAddress, setOfficerAddress] = useState(address);
+    const changeOfficerAddress = event => {
+        const officerAddress = event.target.value;
+        setOfficerAddress(officerAddress);
     }
 
-    const [teacherDegree, setTeacherDegree] = useState(degree);
-    const changeTeacherDegree = event => {
-        const teacherDegree = event.target.value;
-        setTeacherDegree(teacherDegree);
+
+    const [officerFacultyId, setOfficerFacultyId] = useState(facultyId);
+    const changeOfficerFacultyId = event => {
+        const officerFacultyId = event.target.value;
+        setOfficerFacultyId(officerFacultyId);
     }
 
-    const [teacherDepartmentId, setTeacherDepartmentId] = useState(departmentId);
-    const changeTeacherDepartmentId = event => {
-        const teacherDepartmentId = event.target.value;
-        setTeacherDepartmentId(teacherDepartmentId);
+    const [officerPhoneNumber, setOfficerPhoneNumber] = useState(phoneNumber);
+    const changeOfficerPhoneNumber = event => {
+        const officerPhoneNumber = event.target.value;
+        setOfficerPhoneNumber(officerPhoneNumber);
     }
 
-    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState(phoneNumber);
-    const changeTeacherPhoneNumber = event => {
-        const teacherPhoneNumber = event.target.value;
-        setTeacherPhoneNumber(teacherPhoneNumber);
-    }
-
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState(fieldOfStudy);
-    const changeTeacherFieldOfStudy = event => {
-        const teacherFieldOfStudy = event.target.value;
-        setTeacherFieldOfStudy(teacherFieldOfStudy);
-    }
-
-    const [teacherRole, setTeacherRole] = useState(role);
-    const changeTeacherRole = event => {
-        const teacherRole = event.target.value;
-        setTeacherRole(teacherRole);
-    }
-
-    const [teacherPhone, setTeacherPhone] = useState(phone);
-    const changeTeacherPhone = event => {
-        const teacherPhone = event.target.value;
-        setTeacherPhone(teacherPhone);
+    const [officerPhone, setOfficerPhone] = useState(phone);
+    const changeOfficerPhone = event => {
+        const officerPhone = event.target.value;
+        setOfficerPhone(officerPhone);
     }
 
     const router = useRouter();
@@ -287,18 +264,18 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
     }
 
 
-    const teacherActivate = async (event) => {
+    const officerActivate = async (event) => {
         openProcessingModalActive();
 
         event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/teacher/activate`, {
+        const activateRes = await fetch(`${SIS_API_URL}/officer/activate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                teacherId: teacherId
+                officerId: officerId
             }),
         });
         const activateData = await activateRes.json();
@@ -311,18 +288,18 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherPassivate = async (event) => {
+    const officerPassivate = async (event) => {
         openProcessingModalPassivate();
 
         event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/teacher/passivate`, {
+        const passivateRes = await fetch(`${SIS_API_URL}/officer/passivate`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PATCH',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                teacherId: teacherId
+                officerId: officerId
             }),
         });
         const passivateData = await passivateRes.json();
@@ -335,18 +312,18 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherDelete = async (event) => {
+    const officerDelete = async (event) => {
         openProcessingModalDelete();
 
         event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/teacher/delete`, {
+        const deleteRes = await fetch(`${SIS_API_URL}/officer/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
                 operationInfoRequest: {
                     userId: operationUserId
                 },
-                teacherId: teacherId
+                officerId: officerId
             }),
         });
         const deleteData = await deleteRes.json();
@@ -359,20 +336,17 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherUpdateAcademic = async (event) => {
+    const officerUpdateAcademic = async (event) => {
         openProcessingModalAcademic();
 
         event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/teacher/update/academic-info/${teacherId}`, {
+        const updateRes = await fetch(`${SIS_API_URL}/officer/update/academic-info/${officerId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
                 academicInfoRequest: {
-                    degree: teacherDegree,
-                    departmentId: teacherDepartmentId,
-                    fieldOfStudy: teacherFieldOfStudy,
-                    phoneNumber: teacherPhone,
-                    role: teacherRole
+                    facultyId: officerFacultyId,
+                    phoneNumber: officerPhone,
                 },
                 operationInfoRequest: {
                     userId: operationUserId
@@ -389,12 +363,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
         }
     }
 
-    const teacherUpdatePersonal = async (event) => {
+    const officerUpdatePersonal = async (event) => {
         openProcessingModalPersonal();
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/teacher/update/personal-info/${teacherId}`, {
+        const updatePersonalRes = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
             headers: {'Content-Type': 'application/json'},
             method: 'PUT',
             body: JSON.stringify({
@@ -402,13 +376,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                     userId: operationUserId
                 },
                 personalInfoRequest: {
-                    address: teacherAddress,
-                    birthday: teacherBirthday,
-                    email: teacherEmail,
-                    name: teacherName,
-                    phoneNumber: teacherPhoneNumber,
-                    surname: teacherSurname,
-                    tcNo: teacherTcNo
+                    address: officerAddress,
+                    birthday: officerBirthday,
+                    email: officerEmail,
+                    name: officerName,
+                    phoneNumber: officerPhoneNumber,
+                    surname: officerSurname,
+                    tcNo: officerTcNo
                 }
             }),
         });
@@ -431,10 +405,10 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {name} {surname}
                         </a>
-                        {teacherStatuses.map((teacherStatus) => (
-                            status === teacherStatus.enum
+                        {officerStatuses.map((officerStatus) => (
+                            status === officerStatus.enum
                                 ?
-                                teacherStatus.component
+                                officerStatus.component
                                 :
                                 null
                         ))}
@@ -442,7 +416,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                             status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={teacherDelete}
+                                    onClick={officerDelete}
                                     type="submit"
                                     className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
                                 >
@@ -456,7 +430,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                             status !== 'PASSIVE' && status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={teacherPassivate}
+                                    onClick={officerPassivate}
                                     type="submit"
                                     className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                 >
@@ -470,7 +444,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                             status !== 'ACTIVE' && status !== 'DELETED'
                                 ?
                                 <button
-                                    onClick={teacherActivate}
+                                    onClick={officerActivate}
                                     type="submit"
                                     className="float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
@@ -491,15 +465,15 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                     </div>
                                     <div className="grid grid-cols-6 gap-6">
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="teacher-number"
+                                            <label htmlFor="officer-number"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRETMEN NUMARASI
+                                                PERSONEL NUMARASI
                                             </label>
                                             <input
                                                 type="text"
-                                                name="teacherId"
-                                                id="teacherId"
-                                                defaultValue={teacherId}
+                                                name="officerId"
+                                                id="officerId"
+                                                defaultValue={officerId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -526,113 +500,25 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 FAKÜLTESİ
                                             </label>
                                             <select
+                                                onChange={changeOfficerFacultyId}
                                                 id="faculty"
                                                 name="faculty"
                                                 autoComplete="faculty-name"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option defaultValue={facultyId} selected>{facultyName}</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherDepartmentId}
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
-                                                {departments.map((department) => (
-                                                    departmentName === department.name
+                                                {faculties.map((faculty) => (
+                                                    facultyName === faculty.name
                                                         ?
-                                                        <option value={department.departmentId}
-                                                                selected>{department.name}</option>
+                                                        <option value={faculty.facultyId}
+                                                                selected>{faculty.name}</option>
                                                         :
                                                         <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                            value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVANI
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherDegree}
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
-                                                {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}
-                                                                selected>{tDegree.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tDegree.enum}>{tDegree.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="role"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ROLÜ
-                                            </label>
-                                            <select
-                                                onChange={changeTeacherRole}
-                                                id="role"
-                                                name="role"
-                                                autoComplete="role"
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
-                                                {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
-                                                        <option value={tRole.enum}
-                                                                selected>{tRole.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tRole.enum}>{tRole.tr}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="col-span-3">
-                                            <label htmlFor="fieldOfStudy"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÇALIŞMA ALANI
-                                            </label>
-                                            <input
-                                                onChange={changeTeacherFieldOfStudy}
-                                                type="text"
-                                                name="fieldOfStudy"
-                                                id="fieldOfStudy"
-                                                defaultValue={fieldOfStudy}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
                                         </div>
 
                                         <div className="col-span-3">
@@ -655,14 +541,14 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherPhone(e)
+                                                    changeOfficerPhone(e)
                                                 }}
                                                 type="text"
                                                 name="phoneNumber"
                                                 id="phoneNumber"
                                                 defaultValue={phone}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -700,7 +586,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
-                                                onClick={teacherUpdateAcademic}
+                                                onClick={officerUpdateAcademic}
                                                 type="submit"
                                                 className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
@@ -740,13 +626,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherName}
+                                                onChange={changeOfficerName}
                                                 type="text"
                                                 name="name"
                                                 id="name"
                                                 defaultValue={name}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -758,13 +644,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherSurname}
+                                                onChange={changeOfficerSurname}
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
                                                 defaultValue={surname}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -776,7 +662,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherTcNo}
+                                                onChange={changeOfficerTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -785,8 +671,8 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 pattern="[0-9]+"
                                                 required
                                                 defaultValue={tcNo}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -810,7 +696,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
                                                         e.target.value = e.target.value + ".";
                                                     }
-                                                    changeTeacherBirthday(e)
+                                                    changeOfficerBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -819,8 +705,8 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 minLength="10"
                                                 maxLength="10"
                                                 defaultValue={birthday}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -832,16 +718,16 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherEmail}
+                                                onChange={changeOfficerEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                        ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                        : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
                                         </div>
 
@@ -865,7 +751,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherPhoneNumber(e)
+                                                    changeOfficerPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -874,8 +760,8 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 minLength="19"
                                                 maxLength="19"
                                                 defaultValue={phoneNumber}
-                                                disabled={status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -887,14 +773,14 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherAddress}
+                                                onChange={changeOfficerAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
                                                 defaultValue={address}
-                                                disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
-                                                className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
+                                                disabled={status === "DELETED" || status === "PASSIVE"}
+                                                className={status === "DELETED" || status === "PASSIVE"
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -917,7 +803,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                         ?
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                             <button
-                                                onClick={teacherUpdatePersonal}
+                                                onClick={officerUpdatePersonal}
                                                 type="submit"
                                                 className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
                                             >
@@ -968,12 +854,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kayıt Aktifleştirme İşlemi Başarılı!
+                                                            Personel Kayıt Aktifleştirme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
+                                                            Personel Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1022,13 +908,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kayıt Aktifleştirme İşlemi Başarısız!
+                                                            Personel Kayıt Aktifleştirme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğretmen kaydı
+                                                            Verilerinizi doğru girdiyseniz Personel kaydı
                                                             silinmiş olabilir.
                                                         </p>
                                                     </div>
@@ -1078,7 +964,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kayıt Aktifleştirme İsteğiniz İşleniyor...
+                                                        Personel Kayıt Aktifleştirme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1127,12 +1013,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kayıt Dondurma İşlemi Başarılı!
+                                                            Personel Kayıt Dondurma İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                                            Personel Kayıt Dondurma İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1181,13 +1067,13 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kayıt Dondurma İşlemi Başarısız!
+                                                            Personel Kayıt Dondurma İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğretmen kaydı
+                                                            Verilerinizi doğru girdiyseniz Personel kaydı
                                                             silinmiş olabilir.
                                                         </p>
                                                     </div>
@@ -1237,7 +1123,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kayıt Dondurma İsteğiniz İşleniyor...
+                                                        Personel Kayıt Dondurma İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1286,12 +1172,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kayıt Silme İşlemi Başarılı!
+                                                            Personel Kayıt Silme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kayıt Silme İşlemi başarıyla gerçekleşti.
+                                                            Personel Kayıt Silme İşlemi başarıyla gerçekleşti.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1340,7 +1226,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kayıt Silme İşlemi Başarısız!
+                                                            Personel Kayıt Silme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1396,7 +1282,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kayıt Silme İsteğiniz İşleniyor...
+                                                        Personel Kayıt Silme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1445,12 +1331,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Akademik Bilgi Güncelleme İşlemi Başarılı!
+                                                            Personel Akademik Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Akademik Bilgi Güncellene İşlemi başarıyla
+                                                            Personel Akademik Bilgi Güncellene İşlemi başarıyla
                                                             gerçekleşti.
 
                                                         </p>
@@ -1501,7 +1387,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Akademik Bilgi Güncelleme İşlemi Başarısız!
+                                                            Personel Akademik Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1557,7 +1443,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Personel Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>
@@ -1606,12 +1492,12 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi Başarılı!
+                                                            Personel Kişisel Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi başarıyla
+                                                            Personel Kişisel Bilgi Güncelleme İşlemi başarıyla
                                                             gerçekleşti.
                                                         </p>
                                                     </div>
@@ -1661,7 +1547,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
                                                         <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Kişisel Bilgi Güncelleme İşlemi Başarısız!
+                                                            Personel Kişisel Bilgi Güncelleme İşlemi Başarısız!
                                                         </div>
                                                     </Dialog.Title>
                                                     <div className="mt-2">
@@ -1717,7 +1603,7 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
                                                     >
-                                                        Öğretmen Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
+                                                        Personel Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
                                                     </Dialog.Title>
                                                 </div>
                                             </Transition.Child>

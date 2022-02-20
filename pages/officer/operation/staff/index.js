@@ -1,29 +1,29 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {departmentStatuses} from "../../../../public/constants/department";
+import {officerStatuses} from "../../../../public/constants/officer";
 
 export async function getServerSideProps() {
     const SIS_API_URL = process.env.SIS_API_URL;
-    const departmentResponse = await fetch(`${SIS_API_URL}/department?status=ALL`, {
+    const officerResponse = await fetch(`${SIS_API_URL}/officer?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const departmentsData = await departmentResponse.json();
-    if (departmentsData.success) {
+    const officersData = await officerResponse.json();
+    if (officersData.success) {
         return {
-            props: {departments: departmentsData.response}
+            props: {officers: officersData.response}
         }
     }
 }
 
-export default function DepartmentList({departments}) {
+export default function OfficerList({officers}) {
 
     const router = useRouter();
 
     const pushSavePage = async (event) => {
         event.preventDefault();
-        await router.push('/officer/operation/department/save');
+        await router.push('/officer/operation/staff/save');
     }
 
     return (
@@ -32,19 +32,19 @@ export default function DepartmentList({departments}) {
             <OfficerNavbar/>
             <div className="select-none px-28 py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        BÖLÜM LİSTESİ
+                    <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                        PERSONEL LİSTESİ
                     </a>
                     <button
                         type="submit"
                         onClick={pushSavePage}
                         className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
                     >
-                        BÖLÜM EKLE
+                        PERSONEL EKLE
                     </button>
                 </div>
                 {(
-                    departments != null
+                    officers !== null
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -57,13 +57,7 @@ export default function DepartmentList({departments}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    BÖLÜM ADI
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="select-none px-6 py-3 tracking-wider"
-                                                >
-                                                    BÖLÜM KODU
+                                                    ADI SOYADI
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -80,43 +74,41 @@ export default function DepartmentList({departments}) {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {departments.map((department) => (
-                                                <tr key={department.departmentId}>
+                                            {officers.map((officer) => (
+                                                <tr key={officer.officerId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
+                                                        {/*<td className="px-6 py-4 whitespace-nowrap">*/}
                                                         <div className="flex items-center">
+                                                            {/*<div className="flex-shrink-0 h-10 w-10">*/}
+                                                            {/*    <img className="select-none h-10 w-10 rounded-full"*/}
+                                                            {/*         src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"*/}
+                                                            {/*         alt=""/>*/}
+                                                            {/*</div>*/}
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{department.name}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-2 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <div className="ml-4">
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{officer.name} {officer.surname}</div>
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{department.departmentId}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-2 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <div className="ml-4">
+                                                                    className="font-phenomenaRegular text-lg text-gray-500">{officer.officerId}</div>
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{department.facultyResponse.name}</div>
+                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{officer.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {departmentStatuses.map((dStatus) => (
-                                                            department.status === dStatus.enum
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{officer.facultyResponse.name}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {officerStatuses.map((oStatus) => (
+                                                            officer.status === oStatus.enum
                                                                 ?
-                                                                dStatus.miniComponent
+                                                                oStatus.miniComponent
                                                                 :
                                                                 null
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/officer/operation/department/information/detail/' + department.departmentId}
+                                                        <a href={'/officer/operation/staff/information/detail/' + officer.officerId}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>
