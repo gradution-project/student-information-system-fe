@@ -26,10 +26,6 @@ export async function getServerSideProps() {
 export default function SaveTeacher({departments, SIS_API_URL}) {
     const cookies = new Cookies();
 
-    const departmentName = departments.name;
-    const [degree] = useState();
-    const [role] = useState();
-
     const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
@@ -350,11 +346,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Ünvan Seçiniz...</option>
                                                 {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                        :
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
+                                                        <option key={tDegree.enum} value={tDegree.enum}>{tDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -373,12 +365,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Rol Seçiniz...</option>
                                                 {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
-                                                        <option value={tRole.enum}>{tRole.tr}</option>
-                                                        :
-                                                        <option
-                                                            value={tRole.enum}>{tRole.tr}</option>
+                                                        <option key={tRole.enum} value={tRole.enum}>{tRole.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -398,13 +385,7 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                    departmentName === department.name
-                                                        ?
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
-                                                        :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
