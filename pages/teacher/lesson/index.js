@@ -1,19 +1,17 @@
 import SISTitle from "../../../public/components/page-titles";
 import Cookies from 'universal-cookie';
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
+import {lessonCompulsory, lessonSemesters} from "../../../public/constants/lesson";
 
 export const getStaticProps = async () => {
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const lessonResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
+    const lessonResponse = await fetch("http://localhost:8585/teacher/lesson/", {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
     const lessonData = await lessonResponse.json();
     if (lessonData.success) {
         return {
-            props: {
-                lessons: lessonData.response
-            }
+            props: {lessons: lessonData.response}
         }
     }
 }
@@ -61,40 +59,50 @@ export default function TeacherLessonList({lessons}) {
                                             scope="col"
                                             className="select-none px-16 py-3 tracking-wider"
                                         >
-                                            BÖLÜM KODU
+                                            BÖLÜM İSMİ
                                         </th>
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
                                     {lessons.map((lesson) => (
-                                        lesson.teacherId == cookies.get('teacherNumber')
+                                       lesson.teacherInfoResponse.teacherId === cookies.get('teacherNumber')
                                             ?
                                             <tr key={lesson.lessonId}>
                                                 <td className="px-10 py-4 whitespace-nowrap">
                                                     <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name}</div>
+                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
                                                     <div
-                                                        className="font-phenomenaRegular text-lg text-gray-600">{lesson.lessonId}</div>
-                                                    <div
-                                                        className="font-phenomenaLight text-lg text-gray-500">{lesson.semester}.
-                                                        Yarıyıl
-                                                    </div>
+                                                        className="font-phenomenaRegular text-lg text-gray-600">{lesson.lessonResponse.lessonId}</div>
+                                                    {lessonSemesters.map((lSemester) => (
+                                                        lesson.lessonResponse.semester === lSemester.enum
+                                                            ?
+                                                            <div
+                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lSemester.tr}</div>
+                                                            :
+                                                            null
+                                                    ))}
                                                 </td>
                                                 <td className="px-20 py-4 whitespace-nowrap">
                                                     <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
+                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
+                                                </td>
+                                                <td className="px-24 py-4 whitespace-nowrap">
+                                                    {lessonCompulsory.map((lCompulsory) => (
+                                                        lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
+                                                            ?
+                                                            <div
+                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
+                                                            :
+                                                            null
+                                                    ))}
                                                 </td>
                                                 <td className="px-24 py-4 whitespace-nowrap">
                                                     <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.compulsoryOrElective}</div>
-                                                </td>
-                                                <td className="px-24 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentId}</div>
+                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
                                                 </td>
                                             </tr>
-                                            : <tr>
-                                            </tr>
+                                           :
+                                           null
                                     ))}
                                     </tbody>
                                 </table>

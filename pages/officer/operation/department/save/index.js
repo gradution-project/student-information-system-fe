@@ -26,10 +26,6 @@ export async function getServerSideProps() {
 export default function DepartmentSave({faculties, SIS_API_URL}) {
     const cookies = new Cookies();
 
-    const facultyName = faculties.name;
-
-    const [preparatoriesClass] = useState();
-
     const router = useRouter();
 
     const [operationUserId] = useState(cookies.get('officerNumber'));
@@ -148,11 +144,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Fakülte Seçiniz...</option>
                                         {faculties.map((faculty) => (
-                                            facultyName === faculty.name
-                                                ?
-                                                <option value={faculty.facultyId}>{faculty.name}</option>
-                                                :
-                                                <option value={faculty.facultyId}>{faculty.name}</option>
+                                                <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -201,13 +193,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
                                         {departmentPreparatoryClass.map(preparatoryClass => (
-                                            preparatoriesClass === preparatoryClass.value
-                                                ?
-                                                <option value={preparatoryClass.value}
-                                                        selected>{preparatoryClass.tr}</option>
-                                                :
-                                                <option
-                                                    value={preparatoryClass.value}>{preparatoryClass.tr}</option>
+                                                <option key={preparatoryClass.value} value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -269,7 +255,7 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Öğrenci Ekleme İşlemi başarıyla gerçekleşti.
+                                                    Bölüm Ekleme İşlemi başarıyla gerçekleşti.
                                                     Mesaj penceresini kapattıktan sonra bölüm listeleme
                                                     ekranına yönlendirileceksiniz.
                                                 </p>
