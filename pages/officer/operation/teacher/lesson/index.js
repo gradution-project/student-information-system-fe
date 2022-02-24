@@ -12,19 +12,32 @@ export async function getServerSideProps() {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
+    const lessonResponse = await fetch(`${SIS_API_URL}/lesson?status=ACTIVE`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ACTIVE`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
     const lessonsData = await lessonsResponse.json();
-
-    if (lessonsData.success) {
+    const lessonData = await lessonResponse.json();
+    const teacherData = await teacherResponse.json();
+    if (lessonsData.success && lessonData.success && teacherData.success) {
         return {
             props: {
                 lessons: lessonsData.response,
+                lesson: lessonData.response,
+                teacher: teacherData.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function TeacherLessonList({lessons, SIS_API_URL}) {
+export default function TeacherLessonList({lessons, lesson, teacher, SIS_API_URL}) {
+    const {lessonId} = lesson;
+    const {teacherId} = teacher;
 
     const router = useRouter();
 
@@ -72,8 +85,8 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
             method: 'DELETE',
             body: JSON.stringify({
                 teacherLessonInfoRequest: {
-                    lessonId: 11012004,
-                    teacherId: 11012027
+                    lessonId: lessonId,
+                    teacherId: teacherId
                 }
             }),
         });
