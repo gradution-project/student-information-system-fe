@@ -12,7 +12,6 @@ import {
 import {ChevronDownIcon} from '@heroicons/react/solid'
 
 const university = [
-
     {
         name: 'Fakülte İşlemleri',
         description: '',
@@ -74,15 +73,15 @@ const student = [
 
 const schedules = [
     {
-        name: 'Ders Programı',
+        name: 'Ders Programları',
         description: '',
-        href: '/student/notes',
+        href: '/officer/operation/schedule/lesson/files',
         icon: ViewGridIcon,
     },
     {
-        name: 'Sınav Programı',
+        name: 'Sınav Programları',
         description: '',
-        href: '/student/transcript',
+        href: '/officer/operation/schedule/exam/files',
         icon: DocumentReportIcon,
     },
 ]
