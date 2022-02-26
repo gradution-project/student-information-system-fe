@@ -4,11 +4,21 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../../../../public/constants/teacher";
-import Cookies from "universal-cookie";
+import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = query;
+    const {id} = context.query;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -23,17 +33,25 @@ export async function getServerSideProps({query}) {
     if (teacherData.success && departmentDatas.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
                 departments: departmentDatas.response,
-                teacher: teacherData.response,
-                SIS_API_URL: SIS_API_URL
+                teacher: teacherData.response
             }
         }
     }
 }
 
 
-export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
-    const cookies = new Cookies();
+export default function TeacherDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments, teacher}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
     const {academicInfoResponse} = teacher;
     const {personalInfoResponse} = teacher;
 
@@ -54,8 +72,6 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
     const phone = academicInfoResponse.phoneNumber;
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [teacherName, setTeacherName] = useState(name);
     const changeTeacherName = event => {
@@ -840,8 +856,8 @@ export default function TeacherDetail({departments, teacher, SIS_API_URL}) {
                                                 defaultValue={personalInfoResponse.email}
                                                 disabled={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"}
                                                 className={academicInfoResponse.status === "DELETED" || academicInfoResponse.status === "PASSIVE"
-                                                        ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                        : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
                                         </div>
 
