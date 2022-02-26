@@ -1,6 +1,10 @@
 import SISTitle from "../public/components/page-titles";
+import {useState} from "react";
 
-export default function UnauthorizedAccessPage() {
+export default function UnauthorizedAccessPage({user}) {
+
+    const [homePagePath] = useState("/" + user);
+
     return (
         <div className="flex items-center justify-center w-screen h-screen bg-sis-yellow">
             <SISTitle/>
@@ -17,7 +21,7 @@ export default function UnauthorizedAccessPage() {
                             Geri Dön
                         </a>
 
-                        <a href="/"  className="ArrowLeftIcon px-6 py-3 text-sm font-semibold text-sis-white bg-sis-blue rounded-xl">
+                        <a href={homePagePath}  className="ArrowLeftIcon px-6 py-3 text-sm font-semibold text-sis-white bg-sis-blue rounded-xl">
                            Ana Ekran
                         </a>
                     </div>
