@@ -2,9 +2,6 @@ import {useRouter} from "next/router";
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../public/constants/lesson";
-import {Fragment, useState} from "react";
-import {Dialog, Transition} from "@headlessui/react";
-
 
 export async function getServerSideProps() {
     const SIS_API_URL = process.env.SIS_API_URL;
@@ -12,92 +9,24 @@ export async function getServerSideProps() {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-    const lessonResponse = await fetch(`${SIS_API_URL}/lesson?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
     const lessonsData = await lessonsResponse.json();
-    const lessonData = await lessonResponse.json();
-    const teacherData = await teacherResponse.json();
-    if (lessonsData.success && lessonData.success && teacherData.success) {
+    if (lessonsData.success) {
         return {
             props: {
                 lessons: lessonsData.response,
-                lesson: lessonData.response,
-                teacher: teacherData.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
     }
 }
 
-export default function TeacherLessonList({lessons, lesson, teacher, SIS_API_URL}) {
-    const {lessonId} = lesson;
-    const {teacherId} = teacher;
+export default function TeacherLessonList({lessons}) {
 
     const router = useRouter();
 
     const pushAssigmentPage = async (event) => {
         event.preventDefault();
         await router.push('/officer/operation/teacher/lesson/assignment');
-    }
-
-    let [isOpenSuccessDelete, setIsOpenSuccessDelete] = useState(false);
-
-    function closeSuccessModalDelete() {
-        setIsOpenSuccessDelete(false);
-        router.reload();
-    }
-
-    function openSuccessModalDelete() {
-        setIsOpenSuccessDelete(true);
-    }
-
-    let [isOpenFailDelete, setIsOpenFailDelete] = useState(false);
-
-    function closeFailModalDelete() {
-        setIsOpenFailDelete(false);
-    }
-
-    function openFailModalDelete() {
-        setIsOpenFailDelete(true);
-    }
-
-    let [isOpenProcessingDelete, setIsOpenProcessingDelete] = useState(false);
-
-    function closeProcessingModalDelete() {
-        setIsOpenProcessingDelete(false);
-    }
-
-    function openProcessingModalDelete() {
-        setIsOpenProcessingDelete(true);
-    }
-
-    const lessonDelete = async (event) => {
-        openProcessingModalDelete();
-        event.preventDefault();
-        const deleteRes = await fetch(`${SIS_API_URL}/teacher/lesson/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                teacherLessonInfoRequest: {
-                    lessonId: lessonId,
-                    teacherId: teacherId
-                }
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
-            closeProcessingModalDelete();
-            openSuccessModalDelete()
-        } else {
-            closeProcessingModalDelete();
-            openFailModalDelete();
-        }
     }
 
     return (
@@ -219,175 +148,14 @@ export default function TeacherLessonList({lessons, lesson, teacher, SIS_API_URL
                                                 </span>
                                             </td>
                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                               <button
-                                                   onClick={lessonDelete}
-                                                   type="submit"
-                                                   className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                               >
-                                                   SİL
-                                               </button>
+                                               <a href={'/officer/operation/teacher/lesson/information/detail/' + lesson.lessonResponse.lessonId}
+                                                  className='text-sis-yellow'>
+                                                   DETAY
+                                               </a>
                                             </td>
                                         </tr>
                                     ))}
                                     </tbody>
-                                            <Transition appear show={isOpenSuccessDelete} as={Fragment}>
-                                                <Dialog
-                                                    as="div"
-                                                    className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                    onClose={closeSuccessModalDelete}
-                                                >
-                                                    <div className="min-h-screen px-4 text-center">
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0"
-                                                            enterTo="opacity-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100"
-                                                            leaveTo="opacity-0"
-                                                        >
-                                                            <Dialog.Overlay className="fixed inset-0"/>
-                                                        </Transition.Child>
-
-                                                        <span
-                                                            className="inline-block h-screen align-middle"
-                                                            aria-hidden="true"
-                                                        >
-              &#8203;
-            </span>
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0 scale-95"
-                                                            enterTo="opacity-100 scale-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100 scale-100"
-                                                            leaveTo="opacity-0 scale-95"
-                                                        >
-                                                            <div
-                                                                className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                                <Dialog.Title
-                                                                    as="h3"
-                                                                    className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                                >
-                                                                    <div className="border bg-sis-success rounded-xl p-6">
-                                                                        Ders Kayıt Silme İşlemi Başarılı!
-                                                                    </div>
-                                                                </Dialog.Title>
-                                                                <div className="mt-2">
-                                                                    <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                        Ders Kayıt Silme İşlemi başarıyla gerçekleşti.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </Transition.Child>
-                                                    </div>
-                                                </Dialog>
-                                            </Transition>
-                                            <Transition appear show={isOpenFailDelete} as={Fragment}>
-                                                <Dialog
-                                                    as="div"
-                                                    className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                    onClose={closeFailModalDelete}
-                                                >
-                                                    <div className="min-h-screen px-4 text-center">
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0"
-                                                            enterTo="opacity-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100"
-                                                            leaveTo="opacity-0"
-                                                        >
-                                                            <Dialog.Overlay className="fixed inset-0"/>
-                                                        </Transition.Child>
-
-                                                        <span
-                                                            className="inline-block h-screen align-middle"
-                                                            aria-hidden="true"
-                                                        >
-              &#8203;
-            </span>
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0 scale-95"
-                                                            enterTo="opacity-100 scale-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100 scale-100"
-                                                            leaveTo="opacity-0 scale-95"
-                                                        >
-                                                            <div
-                                                                className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                                <Dialog.Title
-                                                                    as="h3"
-                                                                    className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                                >
-                                                                    <div className="border bg-sis-fail rounded-xl p-6">
-                                                                        Ders Kayıt Silme İşlemi Başarısız!
-                                                                    </div>
-                                                                </Dialog.Title>
-                                                                <div className="mt-2">
-                                                                    <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                        Lütfen girdiğiniz verileri kontrol ediniz.
-                                                                        Verilerinizi doğru girdiyseniz sistemsel bir
-                                                                        hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </Transition.Child>
-                                                    </div>
-                                                </Dialog>
-                                            </Transition>
-
-                                            <Transition appear show={isOpenProcessingDelete} as={Fragment}>
-                                                <Dialog
-                                                    as="div"
-                                                    className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                    onClose={closeProcessingModalDelete}
-                                                >
-                                                    <div className="min-h-screen px-4 text-center">
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0"
-                                                            enterTo="opacity-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100"
-                                                            leaveTo="opacity-0"
-                                                        >
-                                                            <Dialog.Overlay className="fixed inset-0"/>
-                                                        </Transition.Child>
-
-                                                        <span
-                                                            className="inline-block h-screen align-middle"
-                                                            aria-hidden="true"
-                                                        >
-              &#8203;
-            </span>
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0 scale-95"
-                                                            enterTo="opacity-100 scale-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100 scale-100"
-                                                            leaveTo="opacity-0 scale-95"
-                                                        >
-                                                            <div
-                                                                className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                                <Dialog.Title
-                                                                    as="h3"
-                                                                    className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                                >
-                                                                    Ders Kayıt Silme İsteğiniz İşleniyor...
-                                                                </Dialog.Title>
-                                                            </div>
-                                                        </Transition.Child>
-                                                    </div>
-                                                </Dialog>
-                                            </Transition>
                                         </table>
                                     </div>
                                 </div>

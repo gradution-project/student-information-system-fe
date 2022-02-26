@@ -3,21 +3,27 @@ import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import SISTitle from "../../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../../public/components/navbar/officer/officer-navbar";
-import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../../../../public/constants/lesson";
+import {lessonCompulsory, lessonSemesters} from "../../../../../../../../public/constants/lesson";
 
 
 export async function getServerSideProps({query}) {
     const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = query;
-    const lessonResponse = await fetch(`${SIS_API_URL}/teacher/lesson/get?teacherId=` + id , {
+    const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
+    const lessonResponse = await fetch(`${SIS_API_URL}/lesson/` + id, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    const teacherData = await teacherResponse.json();
     const lessonData = await lessonResponse.json();
-    if (lessonData.success) {
+    if (lessonData.success && teacherData.success) {
         return {
             props: {
-                lessons: lessonData.response,
+                teacher: teacherData.response,
+                lesson: lessonData.response,
                 SIS_API_URL: SIS_API_URL
             }
         }
@@ -25,19 +31,9 @@ export async function getServerSideProps({query}) {
 }
 
 
-export default function LessonDetail({lessons, SIS_API_URL}) {
-    const {teacherInfoResponse} = lessons ;
-    const {lessonResponse} = lessons;
-
-    const {lessonId, name, credit, semester, compulsoryOrElective, status, departmentResponse, modifiedDate} = lessonResponse;
-    const {facultyResponse} = departmentResponse;
-
-    const teacherId = teacherInfoResponse.teacherId;
-    const departmentId = departmentResponse.departmentId;
-    const facultyId = facultyResponse.facultyId;
-    const facultyName = facultyResponse.name;
-    const departmentName = departmentResponse.name;
-
+export default function LessonDetail({teacher, lesson, SIS_API_URL}) {
+    const {teacherId} = teacher;
+    const {lessonId, name, credit, semester, compulsoryOrElective} = lesson;
 
     const router = useRouter();
 
@@ -82,8 +78,10 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
-                lessonId: lessonId,
-                teacherId:teacherId
+                teacherLessonInfoRequest: {
+                    lessonId: lessonId,
+                    teacherId: teacherId
+                }
             }),
         });
         const deleteData = await deleteRes.json();
@@ -106,16 +104,6 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {name}
                         </a>
-                        {lessonStatuses.map((lessonStatus) => (
-                            status === lessonStatus.enum
-                                ?
-                                lessonStatus.component
-                                :
-                                null
-                        ))}
-                        {(
-                            status !== 'DELETED'
-                                ?
                                 <button
                                     onClick={lessonDelete}
                                     type="submit"
@@ -123,10 +111,6 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                 >
                                     DERSİ SİL
                                 </button>
-                                :
-                                null
-                        )}
-
                     </div>
                     <div className="md:col-span-1">
                         <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
@@ -147,7 +131,7 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                                 type="text"
                                                 name="teacherId"
                                                 id="teacherId"
-                                                defaultValue={teacherInfoResponse.teacherId}
+                                                defaultValue={teacherId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -162,7 +146,7 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                defaultValue={teacherInfoResponse.name + " " + teacherInfoResponse.surname}
+                                                defaultValue={teacher.name + " " + teacher.surname}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -183,40 +167,6 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                             />
                                         </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="faculty"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTE ADI
-                                            </label>
-                                            <select
-                                                id="faculty"
-                                                name="faculty"
-                                                autoComplete="faculty-name"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option defaultValue={facultyId}>{facultyName}</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜMÜ
-                                            </label>
-                                            <select
-                                                id="department-id"
-                                                name="department-id"
-                                                autoComplete="department-id"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
-                                                <option defaultValue={departmentId}>{departmentName}</option>
-                                            </select>
-                                        </div>
-
 
                                         <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="name"
@@ -229,11 +179,9 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                                 id="name"
                                                 required
                                                 defaultValue={name}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -247,11 +195,9 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                                 id="credit"
                                                 required
                                                 defaultValue={credit}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                }/>
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
@@ -262,11 +208,9 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                             <select
                                                 id="semester"
                                                 name="semester"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-500 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            >
                                                 {lessonSemesters.map(lSemester => (
                                                     semester === lSemester.enum
                                                         ?
@@ -285,11 +229,9 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                             <select
                                                 id="compulsoryOrElective"
                                                 name="compulsoryOrElective"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
-                                                    ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                    : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                }>
+                                                disabled
+                                                className="font-phenomenaRegular text-gray-500 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            >
                                                 {lessonCompulsory.map((lCompulsory) => (
                                                     compulsoryOrElective === lCompulsory.enum
                                                         ?
@@ -300,18 +242,6 @@ export default function LessonDetail({lessons, SIS_API_URL}) {
                                                 ))}
                                             </select>
                                         </div>
-
-                                        {(
-                                            modifiedDate !== null
-                                                ?
-                                                <div className="sm:col-span-6">
-                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {modifiedDate}
-                                                    </a>
-                                                </div>
-                                                :
-                                                null
-                                        )}
                                     </div>
                                 </div>
 

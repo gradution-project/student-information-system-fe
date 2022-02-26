@@ -20,8 +20,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function TeacherLessonList({lessons}) {
-
-
     return (
         <div>
             <SISTitle/>
@@ -32,82 +30,82 @@ export default function TeacherLessonList({lessons}) {
                         DERSLERİM
                     </a>
                 </div>
-                <div className="flex flex-col">
-                    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                <table className="bg-gray-50 min-w-full divide-y divide-gray-200">
-                                    <thead className="font-phenomenaBold text-xl text-gray-500 text-left">
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            className="select-none px-10 py-3 tracking-wider"
-                                        >
-                                            DERS
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="select-none px-16 py-3 tracking-wider"
-                                        >
-                                            KREDİ
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="select-none px-16 py-3 tracking-wider"
-                                        >
-                                            ZORUNLU/SEÇMELİ
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="select-none px-16 py-3 tracking-wider"
-                                        >
-                                            BÖLÜM İSMİ
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                    {lessons.map((lesson) => (
-                                            <tr key={lesson.lessonId}>
-                                                <td className="px-10 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
-                                                    <div
-                                                        className="font-phenomenaRegular text-lg text-gray-600">{lesson.lessonResponse.lessonId}</div>
-                                                    {lessonSemesters.map((lSemester) => (
-                                                        lesson.lessonResponse.semester === lSemester.enum
-                                                            ?
-                                                            <div
-                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lSemester.tr}</div>
-                                                            :
-                                                            null
-                                                    ))}
-                                                </td>
-                                                <td className="px-20 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
-                                                </td>
-                                                <td className="px-24 py-4 whitespace-nowrap">
-                                                    {lessonCompulsory.map((lCompulsory) => (
-                                                        lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
-                                                            ?
-                                                            <div
-                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
-                                                            :
-                                                            null
-                                                    ))}
-                                                </td>
-                                                <td className="px-24 py-4 whitespace-nowrap">
-                                                    <div
-                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
-                                                </td>
+                {(
+                    lessons != null
+                        ?
+                        <div className="flex flex-col">
+                            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                        <table className="bg-gray-50 min-w-full divide-y divide-gray-200">
+                                            <thead className="font-phenomenaBold text-xl text-gray-500 text-left">
+                                            <tr>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    DERSİN ADI
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    AKADEMİK BİLGİLER
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    DERS ZORUNLULUĞU
+                                                </th>
                                             </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                            {lessons.map((lesson) => (
+                                                <tr key={lesson.lessonResponse.lessonId}>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-0.5">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
+                                                                {lessonSemesters.map((lSemester) => (
+                                                                    lesson.lessonResponse.semester === lSemester.enum
+                                                                        ?
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                        :
+                                                                        null
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div
+                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {lessonCompulsory.map((lCompulsory) => (
+                                                            lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
+                                                                ?
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
+                                                                :
+                                                                null
+                                                        ))}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        :
+                        null
+                )}
             </div>
         </div>
     )
