@@ -1,6 +1,6 @@
 import SISTitle from "../public/components/page-titles";
 
-export default function Main() {
+export default function PageNotFound() {
     return (
         <div className="flex items-center justify-center w-screen h-screen bg-sis-yellow">
             <SISTitle/>
