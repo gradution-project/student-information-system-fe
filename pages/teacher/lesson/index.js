@@ -1,11 +1,11 @@
 import SISTitle from "../../../public/components/page-titles";
-import Cookies from 'universal-cookie';
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 import {lessonCompulsory, lessonSemesters} from "../../../public/constants/lesson";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
     const SIS_API_URL = process.env.SIS_API_URL;
-    const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
+    const teacherId = context.req.cookies['teacherNumber']
+    const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson/get/` + teacherId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -21,7 +21,6 @@ export async function getServerSideProps() {
 
 export default function TeacherLessonList({lessons}) {
 
-    const cookies = new Cookies();
 
     return (
         <div>
@@ -68,8 +67,6 @@ export default function TeacherLessonList({lessons}) {
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
                                     {lessons.map((lesson) => (
-                                       lesson.teacherInfoResponse.teacherId === cookies.get('teacherNumber')
-                                            ?
                                             <tr key={lesson.lessonId}>
                                                 <td className="px-10 py-4 whitespace-nowrap">
                                                     <div
@@ -104,8 +101,6 @@ export default function TeacherLessonList({lessons}) {
                                                         className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
                                                 </td>
                                             </tr>
-                                           :
-                                           null
                                     ))}
                                     </tbody>
                                 </table>
