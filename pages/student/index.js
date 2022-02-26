@@ -44,7 +44,7 @@ export default function StudentDashboard({isPagePermissionSuccess}) {
                         </div>
                     </div>
                     :
-                    <UnauthorizedAccessPage/>
+                    <UnauthorizedAccessPage user=""/>
             )}
         </>
     )
