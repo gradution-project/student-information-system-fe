@@ -1,9 +1,23 @@
 import SISTitle from "../../../../../public/components/page-titles";
 import StudentNavbar from "../../../../../public/components/navbar/student/student-navbar";
+import UnauthorizedAccessPage from "../../../../401";
+import {
+    getStudentDepartmentNumberWithContext,
+    getStudentNumberWithContext
+} from "../../../../../public/storage/student";
 
 export async function getServerSideProps(context) {
+    const studentId = getStudentNumberWithContext(context)
+    if (studentId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const departmentId = context.req.cookies['studentDepartmentNumber']
+    const departmentId = getStudentDepartmentNumberWithContext(context);
     const examScheduleFileResponse = await fetch(`${SIS_API_URL}/exam-schedule-file/department/` + departmentId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -12,6 +26,7 @@ export async function getServerSideProps(context) {
     if (examScheduleFileData.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 examScheduleFile: examScheduleFileData.response
             }
         }
@@ -24,7 +39,13 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function ExamScheduleFile({examScheduleFile}) {
+export default function StudentExamScheduleFile({isPagePermissionSuccess, examScheduleFile}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user=""/>
+        )
+    }
 
     return (
         <div>
@@ -56,7 +77,8 @@ export default function ExamScheduleFile({examScheduleFile}) {
                                 </div>
                             </div>
                             :
-                            <div className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                                 <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
                                     Sınav Programı Henüz Sisteme Yüklenmedi!
                                 </a>

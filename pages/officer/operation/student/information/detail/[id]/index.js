@@ -4,11 +4,21 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../../../../public/constants/student";
-import Cookies from "universal-cookie";
+import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = query;
+    const {id} = context.query;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -22,16 +32,25 @@ export async function getServerSideProps({query}) {
     if (studentData.success && departmentDatas.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
                 departments: departmentDatas.response,
-                student: studentData.response,
-                SIS_API_URL: SIS_API_URL
+                student: studentData.response
             }
         }
     }
 }
 
-export default function StudentDetail({departments, student, SIS_API_URL}) {
-    const cookies = new Cookies();
+
+export default function StudentDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments, student}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
 
@@ -111,7 +130,6 @@ export default function StudentDetail({departments, student, SIS_API_URL}) {
         setStudentPhoneNumber(studentPhoneNumber);
     }
 
-    const [operationUserId, setOperationUserId] = useState(cookies.get("officerNumber"));
 
     const router = useRouter();
 

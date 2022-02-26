@@ -1,14 +1,23 @@
 import SISTitle from "../../../../public/components/page-titles";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
-import Cookies from "universal-cookie";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher";
+import UnauthorizedAccessPage from "../../../401";
+import {getTeacherNumberWithContext} from "../../../../public/storage/teacher";
 
 export async function getServerSideProps(context) {
+    const teacherId = getTeacherNumberWithContext(context);
+    if (teacherId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const teacherId = context.req.cookies['teacherNumber']
     const teacherResponse = await fetch(`${SIS_API_URL}/teacher/` + teacherId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -17,14 +26,22 @@ export async function getServerSideProps(context) {
     if (teacherData.success) {
         return {
             props: {
-                teacher: teacherData.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                SIS_API_URL: SIS_API_URL,
+                teacher: teacherData.response
             }
         }
     }
 }
 
-export default function MyInfo({teacher, SIS_API_URL}) {
+export default function TeacherMyInformation({isPagePermissionSuccess, SIS_API_URL, teacher}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
     const {academicInfoResponse} = teacher;
     const {personalInfoResponse} = teacher;
 
@@ -38,8 +55,6 @@ export default function MyInfo({teacher, SIS_API_URL}) {
     } = academicInfoResponse;
     const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
     const {facultyResponse} = departmentResponse;
-
-    const cookies = new Cookies();
 
     const router = new useRouter();
 

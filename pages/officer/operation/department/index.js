@@ -2,8 +2,19 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {departmentStatuses} from "../../../../public/constants/department";
+import UnauthorizedAccessPage from "../../../401";
+import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const departmentResponse = await fetch(`${SIS_API_URL}/department?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
@@ -12,12 +23,22 @@ export async function getServerSideProps() {
     const departmentsData = await departmentResponse.json();
     if (departmentsData.success) {
         return {
-            props: {departments: departmentsData.response}
+            props: {
+                isPagePermissionSuccess: true,
+                departments: departmentsData.response
+            }
         }
     }
 }
 
-export default function DepartmentList({departments}) {
+
+export default function DepartmentList({isPagePermissionSuccess, departments}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="/officer"/>
+        )
+    }
 
     const router = useRouter();
 
