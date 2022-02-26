@@ -31,18 +31,21 @@ const otherTransactions = [
         name: 'Staj İşlemleri',
         description: '',
         href: '/student/notes',
+        role: 'ADVISOR' || 'HEAD_OF_DEPARTMENT',
         icon: BookmarkAltIcon,
     },
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
         href: '/student/transcript',
+        role: 'ADVISOR' || 'HEAD_OF_DEPARTMENT',
         icon: DocumentReportIcon,
     },
     {
         name: 'Ders Kayıt İşlemleri',
         description: '',
         href: '/student/transcript',
+        role: 'ADVISOR' || 'HEAD_OF_DEPARTMENT',
         icon: CalendarIcon,
     },
 ]
