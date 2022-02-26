@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function ExamScheduleFile({isPagePermissionSuccess, examScheduleFile}) {
+export default function StudentExamScheduleFile({isPagePermissionSuccess, examScheduleFile}) {
 
     if (isPagePermissionSuccess) {
         return (
