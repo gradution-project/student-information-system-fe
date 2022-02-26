@@ -22,30 +22,29 @@ export async function getServerSideProps(context) {
 
 export default function StudentDashboard({isPagePermissionSuccess}) {
 
-    const cookies = new Cookies();
+    if (isPagePermissionSuccess) {
 
-    return (
-        <>
-            {(
-                isPagePermissionSuccess === true
-                    ?
-                    <div>
-                        <SISTitle/>
-                        <StudentNavbar/>
-                        <div className="py-10 bg-sis-yellow rounded-3xl shadow-xl ml-80 mr-80 mt-56">
-                            <div className="mb-2 select-none font-phenomenaRegular text-6xl text-center text-sis-white">
-                                <div>
-                                    Merhaba <a className="font-phenomenaBold">{cookies.get("studentFullName")}</a>,
-                                </div>
-                                <div>
-                                    Öğrenci Bilgi Sistemine Hoşgeldiniz!
-                                </div>
-                            </div>
+        const cookies = new Cookies();
+
+        return (
+            <div>
+                <SISTitle/>
+                <StudentNavbar/>
+                <div className="py-10 bg-sis-yellow rounded-3xl shadow-xl ml-80 mr-80 mt-56">
+                    <div className="mb-2 select-none font-phenomenaRegular text-6xl text-center text-sis-white">
+                        <div>
+                            Merhaba <a className="font-phenomenaBold">{cookies.get("studentFullName")}</a>,
+                        </div>
+                        <div>
+                            Öğrenci Bilgi Sistemine Hoşgeldiniz!
                         </div>
                     </div>
-                    :
-                    <UnauthorizedAccessPage user=""/>
-            )}
-        </>
-    )
+                </div>
+            </div>
+        )
+    } else {
+        return (
+            <UnauthorizedAccessPage user=""/>
+        )
+    }
 }
