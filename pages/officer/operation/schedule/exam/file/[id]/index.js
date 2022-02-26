@@ -3,10 +3,21 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
+import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = query;
+    const {id} = context.query;
     const examScheduleFileResponse = await fetch(`${SIS_API_URL}/exam-schedule-file/department/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -15,14 +26,21 @@ export async function getServerSideProps({query}) {
     if (examScheduleFileData.success) {
         return {
             props: {
-                examScheduleFile: examScheduleFileData.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                SIS_API_URL: SIS_API_URL,
+                examScheduleFile: examScheduleFileData.response
             }
         }
     }
 }
 
-export default function ExamScheduleFileDetail({examScheduleFile, SIS_API_URL}) {
+export default function ExamScheduleFileDetail({isPagePermissionSuccess, SIS_API_URL, examScheduleFile}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 
