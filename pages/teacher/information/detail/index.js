@@ -714,7 +714,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher, 
         )
     } else {
         return (
-            <UnauthorizedAccessPage user="student"/>
+            <UnauthorizedAccessPage user="teacher"/>
         )
     }
 }
