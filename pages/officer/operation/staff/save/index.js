@@ -3,9 +3,19 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
+import UnauthorizedAccessPage from "../../../../401";
+import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
@@ -15,19 +25,24 @@ export async function getServerSideProps() {
     if (facultyDatas.success) {
         return {
             props: {
-                faculties: facultyDatas.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
+                faculties: facultyDatas.response
             }
         }
     }
 }
 
-export default function SaveOfficer({faculties, SIS_API_URL}) {
-    const cookies = new Cookies();
+export default function SaveOfficer({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculties}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [officerName, setOfficerName] = useState();
     const changeOfficerName = event => {
