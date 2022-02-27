@@ -300,11 +300,8 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
                                                             </Dialog.Title>
                                                             <div className="mt-2">
                                                                 <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                    Öğrenci Numaranızı kontrol ediniz.
-                                                                    Öğrenci Numaranızı doğru girdiyseniz
-                                                                    sistemsel bir
-                                                                    hatadan dolayı isteğiniz sonuçlandıralamamış
-                                                                    olabilir.
+                                                                    Sistemsel bir hatadan dolayı isteğiniz
+                                                                    sonuçlandıralamamış olabilir.
                                                                 </p>
                                                             </div>
                                                         </div>
