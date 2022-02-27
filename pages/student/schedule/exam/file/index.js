@@ -33,6 +33,7 @@ export async function getServerSideProps(context) {
     } else {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 examScheduleFile: null
             }
         }
