@@ -18,6 +18,7 @@ export async function getServerSideProps(context) {
     }
 
     const SIS_API_URL = process.env.SIS_API_URL;
+    const SIS_FE_URL = process.env.SIS_FE_URL;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -29,6 +30,7 @@ export async function getServerSideProps(context) {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
                 SIS_API_URL: SIS_API_URL,
+                SIS_FE_URL: SIS_FE_URL,
                 departments: departmentDatas.response
             }
         }
@@ -36,7 +38,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function SaveStudent({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments}) {
+export default function SaveStudent({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -151,7 +153,8 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                     classLevel: studentClassLevel,
                 },
                 operationInfoRequest: {
-                    userId: operationUserId
+                    userId: operationUserId,
+                    feUrl: SIS_FE_URL
                 },
                 personalInfoRequest: {
                     address: studentAddress,
@@ -250,13 +253,13 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                     let birthdayLength = e.target.value.length;
                                                     if (birthdayLength > 1 && birthdayLength < 3) {
                                                         if (e.target.value <= 31) {
-                                                            e.target.value =  e.target.value + ".";
+                                                            e.target.value = e.target.value + ".";
                                                         } else {
                                                             e.target.value = "";
                                                         }
                                                     }
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value =  e.target.value + ".";
+                                                        e.target.value = e.target.value + ".";
                                                     }
                                                     changeStudentBirthday(e)
                                                 }}
@@ -298,13 +301,13 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                         e.target.value = "+90 (" + e.target.value;
                                                     }
                                                     if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value =  e.target.value + ") ";
+                                                        e.target.value = e.target.value + ") ";
                                                     }
                                                     if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     changeStudentPhoneNumber(e)
                                                 }}
@@ -348,7 +351,8 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
                                                 {studentDegrees.map(sDegree => (
-                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
+                                                    <option key={sDegree.enum}
+                                                            value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -368,7 +372,8 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
                                                 {studentClassLevels.map(sClassLevel => (
-                                                        <option key={sClassLevel.enum} value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                    <option key={sClassLevel.enum}
+                                                            value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -387,7 +392,8 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Bölümü Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
+                                                    <option key={department.departmentId}
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
