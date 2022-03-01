@@ -17,6 +17,7 @@ export async function getServerSideProps(context) {
     }
 
     const SIS_API_URL = process.env.SIS_API_URL;
+    const SIS_FE_URL = process.env.SIS_FE_URL;
     const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -28,13 +29,14 @@ export async function getServerSideProps(context) {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
                 SIS_API_URL: SIS_API_URL,
+                SIS_FE_URL: SIS_FE_URL,
                 faculties: facultyDatas.response
             }
         }
     }
 }
 
-export default function SaveOfficer({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculties}) {
+export default function SaveOfficer({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, faculties}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -142,7 +144,8 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                     phoneNumber: officerPhone
                 },
                 operationInfoRequest: {
-                    userId: operationUserId
+                    userId: operationUserId,
+                    feUrl: SIS_FE_URL
                 },
                 personalInfoRequest: {
                     address: officerAddress,
@@ -324,7 +327,8 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Fakülte Seçiniz...</option>
                                                 {faculties.map((faculty) => (
-                                                        <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
+                                                    <option key={faculty.facultyId}
+                                                            value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
                                         </div>
