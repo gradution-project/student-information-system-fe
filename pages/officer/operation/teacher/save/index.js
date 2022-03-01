@@ -18,6 +18,7 @@ export async function getServerSideProps(context) {
     }
 
     const SIS_API_URL = process.env.SIS_API_URL;
+    const SIS_FE_URL = process.env.SIS_FE_URL;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -29,6 +30,7 @@ export async function getServerSideProps(context) {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
                 SIS_API_URL: SIS_API_URL,
+                SIS_FE_URL: SIS_FE_URL,
                 departments: departmentDatas.response
             }
         }
@@ -36,7 +38,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function SaveTeacher({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments}) {
+export default function SaveTeacher({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -165,7 +167,8 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                     role: teacherRole
                 },
                 operationInfoRequest: {
-                    userId: operationUserId
+                    userId: operationUserId,
+                    feUrl: SIS_FE_URL
                 },
                 personalInfoRequest: {
                     address: teacherAddress,

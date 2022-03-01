@@ -7,12 +7,13 @@ import {Dialog, Transition} from "@headlessui/react";
 export async function getServerSideProps() {
     return {
         props: {
-            SIS_API_URL: process.env.SIS_API_URL
+            SIS_API_URL: process.env.SIS_API_URL,
+            SIS_FE_URL: process.env.SIS_FE_URL
         }
     }
 }
 
-export default function TeacherForgotPassword({SIS_API_URL}) {
+export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
 
     const router = useRouter();
 
@@ -58,8 +59,11 @@ export default function TeacherForgotPassword({SIS_API_URL}) {
         openProcessingModal();
 
         event.preventDefault();
-        const res = await fetch(`${SIS_API_URL}/login/teacher/forgot-password`, {
-            body: JSON.stringify({teacherId: teacherNumber}),
+        const res = await fetch(`${SIS_API_URL}/teacher/password-operation/forgot-password`, {
+            body: JSON.stringify({
+                teacherId: teacherNumber,
+                feUrl: SIS_FE_URL
+            }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
