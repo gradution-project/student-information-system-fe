@@ -351,8 +351,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
                                                 {studentDegrees.map(sDegree => (
-                                                    <option key={sDegree.enum}
-                                                            value={sDegree.enum}>{sDegree.tr}</option>
+                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -372,8 +371,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
                                                 {studentClassLevels.map(sClassLevel => (
-                                                    <option key={sClassLevel.enum}
-                                                            value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                        <option key={sClassLevel.enum} value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -392,8 +390,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Bölümü Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                    <option key={department.departmentId}
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>

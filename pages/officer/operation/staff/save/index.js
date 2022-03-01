@@ -327,8 +327,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Fakülte Seçiniz...</option>
                                                 {faculties.map((faculty) => (
-                                                    <option key={faculty.facultyId}
-                                                            value={faculty.facultyId}>{faculty.name}</option>
+                                                        <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
                                         </div>
