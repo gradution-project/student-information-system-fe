@@ -9,7 +9,8 @@ import {
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
-import Cookies from "universal-cookie";
+import {getTeacherRole} from "../../../storage/teacher";
+
 
 const lesson = [
     {
@@ -70,8 +71,8 @@ function classNames(...classes) {
 }
 
 export default function TeacherComponent() {
-    const cookies = new Cookies;
-    const role = cookies.get('teacherRole');
+
+    const role = getTeacherRole();
 
     return (
         <Popover.Group as="nav" className="hidden md:flex space-x-10 font-phenomenaBold">
