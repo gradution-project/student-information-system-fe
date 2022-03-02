@@ -1,6 +1,37 @@
 import SISTitle from "../public/components/page-titles";
+import {getOfficerNumberWithContext} from "../public/storage/officer";
+import {getTeacherNumberWithContext} from "../public/storage/teacher";
+import {getStudentNumberWithContext} from "../public/storage/student";
 
-export default function Main() {
+export async function getServerSideProps(context) {
+    const studentId = getStudentNumberWithContext(context)
+    let isStudentLoginSuccess = true;
+    if (studentId === undefined) {
+        isStudentLoginSuccess = false;
+    }
+
+    const teacherId = getTeacherNumberWithContext(context)
+    let isTeacherLoginSuccess = true;
+    if (teacherId === undefined) {
+        isTeacherLoginSuccess = false;
+    }
+
+    const officerId = getOfficerNumberWithContext(context);
+    let isOfficerLoginSuccess = true;
+    if (officerId === undefined) {
+        isOfficerLoginSuccess = false;
+    }
+
+    return {
+        props: {
+            isStudentLoginSuccess: isStudentLoginSuccess,
+            isTeacherLoginSuccess: isTeacherLoginSuccess,
+            isOfficerLoginSuccess: isOfficerLoginSuccess,
+        }
+    }
+}
+
+export default function Main({isStudentLoginSuccess, isTeacherLoginSuccess, isOfficerLoginSuccess}) {
     return (
         <div className="bg-sis-gray h-screen font-phenomenaBold">
             <div
@@ -13,7 +44,7 @@ export default function Main() {
                 <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
                     <div className="inline-flex rounded-md shadow">
                         <a
-                            href="/login/student"
+                            href={isStudentLoginSuccess ? "/student" : "/login/student"}
                             className="text-2xl h-16 inline-flex items-center justify-center px-5 py-3 border border-transparent font-medium rounded-md text-white bg-sis-yellow hover:bg-sis-yellow"
                         >
                             Öğrenci Girişi
@@ -21,7 +52,7 @@ export default function Main() {
                     </div>
                     <div className="ml-3 inline-flex rounded-md shadow">
                         <a
-                            href="/login/teacher"
+                            href={isTeacherLoginSuccess ? "/teacher" : "/login/teacher"}
                             className="text-2xl h-16 inline-flex items-center justify-center px-5 py-3 border border-transparent font-medium rounded-md text-white bg-sis-darkblue hover:bg-sis-darkblue"
                         >
                             Öğretmen Girişi
@@ -29,7 +60,7 @@ export default function Main() {
                     </div>
                     <div className="ml-3 inline-flex rounded-md shadow">
                         <a
-                            href="/login/officer"
+                            href={isOfficerLoginSuccess ? "/officer" : "/login/officer"}
                             className="text-2xl h-16 inline-flex items-center justify-center px-5 py-3 border border-transparent font-medium rounded-md text-white bg-sis-blue hover:bg-sis-blue"
                         >
                             Personel Girişi

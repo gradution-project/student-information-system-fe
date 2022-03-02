@@ -3,12 +3,22 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
 import {officerStatuses} from "../../../../../../../public/constants/officer";
+import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = query;
+    const {id} = context.query;
     const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -17,23 +27,30 @@ export async function getServerSideProps({query}) {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
-
     const facultyDatas = await facultyResponses.json();
     const officerData = await officerResponse.json();
     if (officerData.success && facultyDatas.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
                 faculties: facultyDatas.response,
-                officer: officerData.response,
-                SIS_API_URL: SIS_API_URL
+                officer: officerData.response
             }
         }
     }
 }
 
 
-export default function OfficerDetail({faculties, officer, SIS_API_URL}) {
-    const cookies = new Cookies();
+export default function OfficerDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculties, officer}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
     const {academicInfoResponse} = officer;
     const {personalInfoResponse} = officer;
 
@@ -49,7 +66,6 @@ export default function OfficerDetail({faculties, officer, SIS_API_URL}) {
     const facultyName = facultyResponse.name;
     const phone = academicInfoResponse.phoneNumber;
 
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [officerName, setOfficerName] = useState(name);
     const changeOfficerName = event => {

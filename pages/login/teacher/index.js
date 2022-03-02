@@ -3,7 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from 'universal-cookie';
+import {saveTeacherData} from "../../../public/storage/teacher";
 
 export async function getServerSideProps() {
     return {
@@ -12,6 +12,7 @@ export async function getServerSideProps() {
         }
     }
 }
+
 
 export default function TeacherLogin({SIS_API_URL}) {
 
@@ -62,21 +63,13 @@ export default function TeacherLogin({SIS_API_URL}) {
         });
         const loginData = await loginRes.json();
         if (loginData.response.loginSuccess) {
-            const cookies = new Cookies();
-            cookies.set('teacherNumber', teacherNumber, {path: '/'});
-            const getRes = await fetch(`${SIS_API_URL}/teacher/` + cookies.get('teacherNumber'), {
+            const getRes = await fetch(`${SIS_API_URL}/teacher/` + teacherNumber, {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('teacherName', getData.response.personalInfoResponse.name, {path: '/'});
-                cookies.set('teacherSurname', getData.response.personalInfoResponse.surname, {path: '/'});
-                cookies.set('teacherFullName', cookies.get('teacherName') + ' ' + cookies.get('teacherSurname'), {path: '/'});
-                cookies.set('teacherRole', getData.response.academicInfoResponse.role, {path: '/'});
-                cookies.set('teacherAcademicEmail', getData.response.academicInfoResponse.email, {path: '/'});
-                cookies.set('teacherFacultyNumber', getData.response.academicInfoResponse.departmentResponse.facultyResponse.facultyId, {path: '/'});
-                cookies.set('teacherDepartmentNumber', getData.response.academicInfoResponse.departmentResponse.departmentId, {path: '/'});
+                saveTeacherData(getData.response)
                 closeProcessingModal();
                 await router.push("/teacher");
             }

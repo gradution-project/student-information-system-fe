@@ -2,8 +2,19 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {officerStatuses} from "../../../../public/constants/officer";
+import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../401";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const officerResponse = await fetch(`${SIS_API_URL}/officer?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
@@ -12,12 +23,21 @@ export async function getServerSideProps() {
     const officersData = await officerResponse.json();
     if (officersData.success) {
         return {
-            props: {officers: officersData.response}
+            props: {
+                isPagePermissionSuccess: true,
+                officers: officersData.response
+            }
         }
     }
 }
 
-export default function OfficerList({officers}) {
+export default function OfficerList({isPagePermissionSuccess, officers}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 

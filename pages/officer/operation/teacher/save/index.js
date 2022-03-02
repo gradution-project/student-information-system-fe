@@ -3,11 +3,22 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
 import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
+import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../401";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
+    const SIS_FE_URL = process.env.SIS_FE_URL;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -16,19 +27,26 @@ export async function getServerSideProps() {
     if (departmentDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
+                SIS_FE_URL: SIS_FE_URL,
+                departments: departmentDatas.response
             }
         }
     }
 }
 
-export default function SaveTeacher({departments, SIS_API_URL}) {
-    const cookies = new Cookies();
+
+export default function SaveTeacher({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [teacherName, setTeacherName] = useState();
     const changeTeacherName = event => {
@@ -149,7 +167,8 @@ export default function SaveTeacher({departments, SIS_API_URL}) {
                     role: teacherRole
                 },
                 operationInfoRequest: {
-                    userId: operationUserId
+                    userId: operationUserId,
+                    feUrl: SIS_FE_URL
                 },
                 personalInfoRequest: {
                     address: teacherAddress,
