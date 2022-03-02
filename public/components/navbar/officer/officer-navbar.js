@@ -2,16 +2,14 @@ import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
 import OfficerComponent from "./officer-component";
-import Cookies from "universal-cookie";
-
+import {getOfficerFullName, getOfficerNumber} from "../../../storage/officer";
+import {clearCookies} from "../../../storage";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function OfficerNavbar() {
-
-    const cookies = new Cookies();
 
     return (
         <Popover className="select-none relative bg-white">
@@ -57,8 +55,8 @@ export default function OfficerNavbar() {
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
-                                                {cookies.get('officerFullName')}
-                                                <p className="font-phenomenaLight text-center text-lg">{cookies.get('officerNumber')}</p>
+                                                {getOfficerFullName()}
+                                                <p className="font-phenomenaLight text-center text-lg">{getOfficerNumber()}</p>
                                             </a>
                                         )}
                                     </Menu.Item>
@@ -74,6 +72,7 @@ export default function OfficerNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a href='/'
+                                               onClick={clearCookies}
                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Çıkış Yap

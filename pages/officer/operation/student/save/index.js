@@ -3,11 +3,22 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
 import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
+import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../401";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
+    const SIS_FE_URL = process.env.SIS_FE_URL;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -16,19 +27,26 @@ export async function getServerSideProps() {
     if (departmentDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
+                SIS_FE_URL: SIS_FE_URL,
+                departments: departmentDatas.response
             }
         }
     }
 }
 
-export default function SaveStudent({departments, SIS_API_URL}) {
-    const cookies = new Cookies();
+
+export default function SaveStudent({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [studentName, setStudentName] = useState();
     const changeStudentName = event => {
@@ -135,7 +153,8 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                     classLevel: studentClassLevel,
                 },
                 operationInfoRequest: {
-                    userId: operationUserId
+                    userId: operationUserId,
+                    feUrl: SIS_FE_URL
                 },
                 personalInfoRequest: {
                     address: studentAddress,
@@ -234,13 +253,13 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                     let birthdayLength = e.target.value.length;
                                                     if (birthdayLength > 1 && birthdayLength < 3) {
                                                         if (e.target.value <= 31) {
-                                                            e.target.value =  e.target.value + ".";
+                                                            e.target.value = e.target.value + ".";
                                                         } else {
                                                             e.target.value = "";
                                                         }
                                                     }
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value =  e.target.value + ".";
+                                                        e.target.value = e.target.value + ".";
                                                     }
                                                     changeStudentBirthday(e)
                                                 }}
@@ -282,13 +301,13 @@ export default function SaveStudent({departments, SIS_API_URL}) {
                                                         e.target.value = "+90 (" + e.target.value;
                                                     }
                                                     if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value =  e.target.value + ") ";
+                                                        e.target.value = e.target.value + ") ";
                                                     }
                                                     if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     changeStudentPhoneNumber(e)
                                                 }}

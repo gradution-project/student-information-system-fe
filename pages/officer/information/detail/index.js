@@ -3,10 +3,20 @@ import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
+import UnauthorizedAccessPage from "../../../401";
+import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
 
 export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context);
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const officerId = context.req.cookies['officerNumber']
     const officerResponse = await fetch(`${SIS_API_URL}/officer/` + officerId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -15,6 +25,7 @@ export async function getServerSideProps(context) {
     if (officerData.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 officer: officerData.response,
                 SIS_API_URL: SIS_API_URL
             }
@@ -22,7 +33,15 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function MyInfo({officer, SIS_API_URL}) {
+
+export default function OfficerMyInformation({isPagePermissionSuccess, officer, SIS_API_URL}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user=""/>
+        )
+    }
+
     const {academicInfoResponse} = officer;
     const {personalInfoResponse} = officer;
 

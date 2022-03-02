@@ -4,10 +4,20 @@ import {Fragment, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {useRouter} from "next/router";
 import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
+import UnauthorizedAccessPage from "../../../401";
+import {getStudentNumberWithContext} from "../../../../public/storage/student";
 
 export async function getServerSideProps(context) {
+    const studentId = getStudentNumberWithContext(context)
+    if (studentId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const studentId = context.req.cookies['studentNumber']
     const studentResponse = await fetch(`${SIS_API_URL}/student/` + studentId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -16,6 +26,7 @@ export async function getServerSideProps(context) {
     if (studentData.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 student: studentData.response,
                 SIS_API_URL: SIS_API_URL
             }
@@ -23,7 +34,13 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function MyInfo({student, SIS_API_URL}) {
+export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_URL, student}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user=""/>
+        )
+    }
 
     const {academicInfoResponse} = student;
     const {personalInfoResponse} = student;
@@ -34,7 +51,6 @@ export default function MyInfo({student, SIS_API_URL}) {
         classLevel,
         degree,
         registrationDate,
-        status
     } = academicInfoResponse;
     const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
     const {facultyResponse} = departmentResponse;
@@ -58,7 +74,6 @@ export default function MyInfo({student, SIS_API_URL}) {
         const studentPhoneNumber = event.target.value;
         setStudentPhoneNumber(studentPhoneNumber);
     }
-
 
     let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
 
@@ -203,7 +218,8 @@ export default function MyInfo({student, SIS_API_URL}) {
                                         </div>
 
                                         <div className="sm:col-span-3">
-                                            <label htmlFor="degree" className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            <label htmlFor="degree"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                 DERECESİ
                                             </label>
                                             <select
@@ -237,7 +253,8 @@ export default function MyInfo({student, SIS_API_URL}) {
                                                 {studentClassLevels.map(sClassLevel => (
                                                     classLevel === sClassLevel.enum
                                                         ?
-                                                        <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                        <option
+                                                            value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                         :
                                                         null
                                                 ))}
@@ -477,7 +494,8 @@ export default function MyInfo({student, SIS_API_URL}) {
                                             ?
                                             <div className="mt-6 sm:col-span-6">
                                                 <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                    Son Düzenlenme Tarihi : {personalInfoResponse.modifiedDate}
+                                                    Son Düzenlenme Tarihi
+                                                    : {personalInfoResponse.modifiedDate}
                                                 </a>
                                             </div>
                                             :
@@ -534,7 +552,8 @@ export default function MyInfo({student, SIS_API_URL}) {
                                                         as="h3"
                                                         className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                     >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
+                                                        <div
+                                                            className="border bg-sis-success rounded-xl p-6">
                                                             Kişisel Bilgi Güncelleme İşlemi Başarılı!
                                                         </div>
                                                     </Dialog.Title>
@@ -597,7 +616,8 @@ export default function MyInfo({student, SIS_API_URL}) {
                                                         <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                             Lütfen girdiğiniz verileri kontrol ediniz.
                                                             Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                            hatadan dolayı isteğiniz sonuçlandıralamamış
+                                                            olabilir.
                                                         </p>
                                                     </div>
                                                 </div>
@@ -658,7 +678,6 @@ export default function MyInfo({student, SIS_API_URL}) {
                     </div>
                 </div>
             </div>
-
         </>
     )
 }

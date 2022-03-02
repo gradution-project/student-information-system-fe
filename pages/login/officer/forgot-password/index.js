@@ -7,12 +7,13 @@ import {Dialog, Transition} from "@headlessui/react";
 export async function getServerSideProps() {
     return {
         props: {
-            SIS_API_URL: process.env.SIS_API_URL
+            SIS_API_URL: process.env.SIS_API_URL,
+            SIS_FE_URL: process.env.SIS_FE_URL
         }
     }
 }
 
-export default function OfficerForgotPassword({SIS_API_URL}) {
+export default function OfficerForgotPassword({SIS_API_URL, SIS_FE_URL}) {
 
     const router = useRouter();
 
@@ -58,8 +59,11 @@ export default function OfficerForgotPassword({SIS_API_URL}) {
         openProcessingModal();
 
         event.preventDefault();
-        const res = await fetch(`${SIS_API_URL}/login/officer/forgot-password`, {
-            body: JSON.stringify({officerId: officerNumber}),
+        const res = await fetch(`${SIS_API_URL}/officer/password-operation/forgot-password`, {
+            body: JSON.stringify({
+                officerId: officerNumber,
+                feUrl: SIS_FE_URL
+            }),
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });

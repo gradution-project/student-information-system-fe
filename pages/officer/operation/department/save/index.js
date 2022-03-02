@@ -1,12 +1,22 @@
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
-import Cookies from "universal-cookie";
 import {useRouter} from "next/router";
 import {Fragment, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
 import {departmentPreparatoryClass} from "../../../../../public/constants/department";
+import UnauthorizedAccessPage from "../../../../401";
+import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
@@ -16,19 +26,24 @@ export async function getServerSideProps() {
     if (facultyDatas.success) {
         return {
             props: {
-                faculties: facultyDatas.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                SIS_API_URL: SIS_API_URL,
+                faculties: facultyDatas.response
             }
         }
     }
 }
 
-export default function DepartmentSave({faculties, SIS_API_URL}) {
-    const cookies = new Cookies();
+
+export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, faculties}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [departmentName, setDepartmentName] = useState();
     const changeDepartmentName = event => {
@@ -144,7 +159,8 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Fakülte Seçiniz...</option>
                                         {faculties.map((faculty) => (
-                                                <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
+                                            <option key={faculty.facultyId}
+                                                    value={faculty.facultyId}>{faculty.name}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -193,7 +209,8 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
                                         {departmentPreparatoryClass.map(preparatoryClass => (
-                                                <option key={preparatoryClass.value} value={preparatoryClass.value}>{preparatoryClass.tr}</option>
+                                            <option key={preparatoryClass.value}
+                                                    value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -373,6 +390,5 @@ export default function DepartmentSave({faculties, SIS_API_URL}) {
                 </form>
             </div>
         </div>
-
     )
 }
