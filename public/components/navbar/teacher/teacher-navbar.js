@@ -2,15 +2,14 @@ import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
 import TeacherComponent from "./teacher-component";
-import Cookies from 'universal-cookie';
+import {getTeacherFullName, getTeacherNumber} from "../../../storage/teacher";
+import {clearCookies} from "../../../storage";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function TeacherNavbar() {
-
-    const cookies = new Cookies();
 
     return (
         <Popover className="relative bg-white">
@@ -56,8 +55,8 @@ export default function TeacherNavbar() {
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
-                                                {cookies.get('teacherFullName')}
-                                                <p className="font-phenomenaLight text-center text-lg">{cookies.get('teacherNumber')}</p>
+                                                {getTeacherFullName()}
+                                                <p className="font-phenomenaLight text-center text-lg">{getTeacherNumber()}</p>
                                             </a>
                                         )}
                                     </Menu.Item>
@@ -74,6 +73,7 @@ export default function TeacherNavbar() {
                                         {({active}) => (
                                             <a
                                                 href="/"
+                                                onClick={clearCookies}
                                                 className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Çıkış Yap

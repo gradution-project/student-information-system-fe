@@ -2,8 +2,19 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../public/constants/student";
+import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../401";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const studentResponse = await fetch(`${SIS_API_URL}/student?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
@@ -12,12 +23,21 @@ export async function getServerSideProps() {
     const studentsData = await studentResponse.json();
     if (studentsData.success) {
         return {
-            props: {students: studentsData.response}
+            props: {
+                isPagePermissionSuccess: true,
+                students: studentsData.response
+            }
         }
     }
 }
 
-export default function StudentList({students}) {
+export default function StudentList({isPagePermissionSuccess, students}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 

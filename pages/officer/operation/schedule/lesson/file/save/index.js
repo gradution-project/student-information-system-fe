@@ -2,11 +2,25 @@ import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 import {Dialog, Transition} from "@headlessui/react";
 import {Fragment, useState} from "react";
-import Cookies from "universal-cookie";
 import {useRouter} from "next/router";
+import {
+    getOfficerFacultyNumberWithContext,
+    getOfficerNumberWithContext
+} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
+    const facultyId = getOfficerFacultyNumberWithContext(context);
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -15,22 +29,25 @@ export async function getServerSideProps() {
     if (departmentDatas.success) {
         return {
             props: {
-                departments: departmentDatas.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                facultyId: facultyId,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
+                departments: departmentDatas.response
             }
         }
     }
 }
 
-export default function LessonScheduleFileSave({departments, SIS_API_URL}) {
+export default function LessonScheduleFileSave({isPagePermissionSuccess, facultyId, operationUserId, SIS_API_URL, departments}) {
 
-    const cookies = new Cookies();
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
-
-    const [operationUserId, setOperationUserId] = useState(cookies.get("officerNumber"));
-
-    const [facultyId, setFacultyId] = useState(cookies.get("officerFacultyNumber"));
 
     const [departmentId, setDepartmentId] = useState();
     const changeDepartmentId = event => {
