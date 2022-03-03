@@ -205,12 +205,12 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                          ))}
                                                 </span>
                                             </td>
-                                               <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                        {/*       <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
                                                    <a onClick={lessonDelete}
                                                       className='text-sis-fail'>
                                                        SİL
                                                    </a>
-                                               </td>
+                                               </td> */}
                                         </tr>
                                     ))}
                                     </tbody>
