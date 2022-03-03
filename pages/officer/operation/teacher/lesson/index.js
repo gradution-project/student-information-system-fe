@@ -105,7 +105,7 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                     </button>
                 </div>
                 {(
-                    lessons != null
+                    lessons.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
