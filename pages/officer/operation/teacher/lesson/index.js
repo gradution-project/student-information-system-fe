@@ -72,8 +72,8 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
             method: 'DELETE',
             body: JSON.stringify({
                 teacherLessonInfoRequest: {
-                    lessonId: lessons.lessonId,
-                    teacherId: lessons.teacherId
+                    lessonId: 0,
+                    teacherId: 0
                 }
             }),
         });
@@ -111,7 +111,7 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                        <table className="bg-gray-50 min-w-full divide-y divide-gray-200" onSubmit={lessonDelete}>
+                                        <table className="bg-gray-50 min-w-full divide-y divide-gray-200">
                                             <thead className="font-phenomenaBold text-xl text-gray-500 text-left">
                                             <tr>
                                                 <th
@@ -205,15 +205,12 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                          ))}
                                                 </span>
                                             </td>
-                                           <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                               <button
-                                                   onClick={lessonDelete}
-                                                   type="submit"
-                                                   className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                               >
-                                                    SİL
-                                               </button>
-                                            </td>
+                                               <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                   <a onClick={lessonDelete}
+                                                      className='text-sis-fail'>
+                                                       SİL
+                                                   </a>
+                                               </td>
                                         </tr>
                                     ))}
                                     </tbody>
