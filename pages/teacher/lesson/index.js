@@ -95,7 +95,7 @@ export default function TeacherLessonList({lessons}) {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
 
                                                         <div
                                                             className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
