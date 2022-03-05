@@ -72,7 +72,7 @@ function classNames(...classes) {
 
 export default function TeacherComponent() {
 
-    const role = getTeacherRole();
+    const teacherRole = getTeacherRole();
 
     return (
         <Popover.Group as="nav" className="select-none hidden md:flex space-x-10 font-phenomenaBold">
@@ -197,7 +197,7 @@ export default function TeacherComponent() {
             </Popover>
 
             {(
-                role === 'ADVISOR' || role === 'HEAD_OF_DEPARTMENT'
+                teacherRole === 'ADVISOR' || teacherRole === 'HEAD_OF_DEPARTMENT'
                     ?
                     <Popover className="relative">
                         {({open}) => (
