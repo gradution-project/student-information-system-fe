@@ -64,7 +64,7 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                     </button>
                 </div>
                 {(
-                    students != null
+                    students.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
