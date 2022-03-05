@@ -124,7 +124,7 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    DERSİN ADI
+                                                    DERS
                                                 </th>
                                                 <th
                                                     scope="col"

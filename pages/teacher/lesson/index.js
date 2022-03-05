@@ -1,6 +1,6 @@
 import SISTitle from "../../../public/components/page-titles";
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
-import {lessonCompulsory, lessonSemesters} from "../../../public/constants/lesson";
+import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../public/constants/lesson";
 
 export async function getServerSideProps(context) {
     const SIS_API_URL = process.env.SIS_API_URL;
@@ -44,7 +44,7 @@ export default function TeacherLessonList({lessons}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    DERSİN ADI
+                                                    DERS
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -56,7 +56,19 @@ export default function TeacherLessonList({lessons}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    KREDİ
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     DERS ZORUNLULUĞU
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    STATÜSÜ
                                                 </th>
                                             </tr>
                                             </thead>
@@ -83,7 +95,15 @@ export default function TeacherLessonList({lessons}) {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
+                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
+
+                                                        <div
                                                             className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div
+                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
+
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {lessonCompulsory.map((lCompulsory) => (
@@ -94,6 +114,17 @@ export default function TeacherLessonList({lessons}) {
                                                                 :
                                                                 null
                                                         ))}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                <span>
+                                                         {lessonStatuses.map((lStatus) => (
+                                                             lesson.lessonResponse.status === lStatus.enum
+                                                                 ?
+                                                                 lStatus.miniComponent
+                                                                 :
+                                                                 null
+                                                         ))}
+                                                </span>
                                                     </td>
                                                 </tr>
                                             ))}
