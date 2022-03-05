@@ -78,7 +78,7 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            DERSİN ADI
+                                            DERS
                                         </th>
                                         <th
                                             scope="col"
