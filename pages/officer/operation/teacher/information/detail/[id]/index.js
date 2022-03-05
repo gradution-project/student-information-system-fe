@@ -37,7 +37,8 @@ export async function getServerSideProps(context) {
                 operationUserId: officerId,
                 SIS_API_URL: SIS_API_URL,
                 departments: departmentDatas.response,
-                teacher: teacherData.response
+                teacher: teacherData.response,
+                SIS_API_URL: SIS_API_URL
             }
         }
     }
