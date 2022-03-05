@@ -64,6 +64,9 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                         DERS EKLE
                     </button>
                 </div>
+                {(
+                    lessons.length !== 0
+                        ?
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -98,8 +101,6 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                    {
-                                    }
                                     {lessons.map((lesson) => (
                                         <tr key={lesson.lessonId}>
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -264,6 +265,9 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                     {/*            </Dialog>*/}
                     {/*        </Transition>*/}
                 </div>
+                        :
+                        null
+                )}
             </div>
         </div>
 
