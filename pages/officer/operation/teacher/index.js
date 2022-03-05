@@ -2,9 +2,20 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../public/constants/teacher";
+import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../401";
 
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
@@ -13,12 +24,21 @@ export async function getServerSideProps() {
     const teachersData = await teacherResponse.json();
     if (teachersData.success) {
         return {
-            props: {teachers: teachersData.response}
+            props: {
+                isPagePermissionSuccess: true,
+                teachers: teachersData.response
+            }
         }
     }
 }
 
-export default function TeacherList({teachers}) {
+export default function TeacherList({isPagePermissionSuccess, teachers}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 
@@ -45,7 +65,7 @@ export default function TeacherList({teachers}) {
                     </button>
                 </div>
                 {(
-                    teachers !== null
+                    teachers.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -118,7 +138,8 @@ export default function TeacherList({teachers}) {
                                                                 :
                                                                 null
                                                         ))}
-                                                        <div className="font-phenomenaLight text-lg text-gray-500">{teacher.fieldOfStudy}</div>
+                                                        <div
+                                                            className="font-phenomenaLight text-lg text-gray-500">{teacher.fieldOfStudy}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div

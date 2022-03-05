@@ -3,12 +3,22 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
 import {facultyStatuses} from "../../../../../../../public/constants/faculty";
+import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = query;
+    const {id} = context.query;
     const facultyResponse = await fetch(`${SIS_API_URL}/faculty/` + id, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -18,22 +28,26 @@ export async function getServerSideProps({query}) {
     if (facultyData.success) {
         return {
             props: {
-                faculty: facultyData.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
+                faculty: facultyData.response
             }
         }
     }
 }
 
 
-export default function FacultyDetail({faculty, SIS_API_URL}) {
-    const cookies = new Cookies();
+export default function FacultyDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculty}) {
 
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="/officer"/>
+        )
+    }
 
     const {name, facultyId, status} = faculty;
 
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
     const [facultyName, setFacultyName] = useState(name);
     const changeFacultyName = event => {

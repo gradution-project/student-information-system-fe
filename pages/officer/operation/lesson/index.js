@@ -2,9 +2,20 @@ import {useRouter} from "next/router";
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../public/constants/lesson";
+import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../401";
 
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const lessonResponse = await fetch(`${SIS_API_URL}/lesson?status=ALL`, {
         headers: {'Content-Type': 'application/json'},
@@ -13,12 +24,21 @@ export async function getServerSideProps() {
     const lessonsData = await lessonResponse.json();
     if (lessonsData.success) {
         return {
-            props: {lessons: lessonsData.response}
+            props: {
+                isPagePermissionSuccess: true,
+                lessons: lessonsData.response
+            }
         }
     }
 }
 
-export default function TeacherLessonList({lessons}) {
+export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 
@@ -44,6 +64,9 @@ export default function TeacherLessonList({lessons}) {
                         DERS EKLE
                     </button>
                 </div>
+                {(
+                    lessons.length !== 0
+                        ?
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -55,7 +78,7 @@ export default function TeacherLessonList({lessons}) {
                                             scope="col"
                                             className="select-none px-6 py-3 tracking-wider"
                                         >
-                                            DERSİN ADI
+                                            DERS
                                         </th>
                                         <th
                                             scope="col"
@@ -78,8 +101,6 @@ export default function TeacherLessonList({lessons}) {
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                    {
-                                    }
                                     {lessons.map((lesson) => (
                                         <tr key={lesson.lessonId}>
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -244,6 +265,9 @@ export default function TeacherLessonList({lessons}) {
                     {/*            </Dialog>*/}
                     {/*        </Transition>*/}
                 </div>
+                        :
+                        null
+                )}
             </div>
         </div>
 

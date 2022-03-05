@@ -3,7 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from 'universal-cookie';
+import {saveStudentData} from "../../../public/storage/student";
 
 export async function getServerSideProps() {
     return {
@@ -13,18 +13,18 @@ export async function getServerSideProps() {
     }
 }
 
-export default function StudentLogin({SIS_API_URL}) {
 
-    const [studentNumber, setStudentNumber] = useState();
-    const [password, setPassword] = useState();
+export default function StudentLogin({SIS_API_URL}) {
 
     const router = useRouter();
 
+    const [studentNumber, setStudentNumber] = useState();
     const changeStudentNumber = event => {
         const studentNumber = event.target.value;
         setStudentNumber(studentNumber);
     }
 
+    const [password, setPassword] = useState();
     const changePassword = event => {
         const password = event.target.value;
         setPassword(password);
@@ -62,19 +62,13 @@ export default function StudentLogin({SIS_API_URL}) {
         });
         const loginData = await loginRes.json();
         if (loginData.response.loginSuccess) {
-            const cookies = new Cookies();
-            cookies.set('studentNumber', studentNumber, {path: '/'});
-            const getRes = await fetch(`${SIS_API_URL}/student/` + cookies.get('studentNumber'), {
+            const getRes = await fetch(`${SIS_API_URL}/student/` + studentNumber, {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('studentName', getData.response.personalInfoResponse.name, {path: '/'});
-                cookies.set('studentSurname', getData.response.personalInfoResponse.surname, {path: '/'});
-                cookies.set('studentFullName', cookies.get('studentName') + ' ' + cookies.get('studentSurname'), {path: '/'});
-                cookies.set('studentFaculty', getData.response.academicInfoResponse.departmentResponse.facultyResponse.name, {path: '/'});
-                cookies.set('studentDepartment', getData.response.academicInfoResponse.departmentResponse.name, {path: '/'});
+                saveStudentData(getData.response)
                 closeProcessingModal();
                 await router.push("/student");
             }

@@ -3,7 +3,7 @@ import SISTitle from "../../../public/components/page-titles";
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
+import {saveOfficerData} from "../../../public/storage/officer";
 
 export async function getServerSideProps() {
     return {
@@ -13,18 +13,18 @@ export async function getServerSideProps() {
     }
 }
 
-export default function OfficerLogin({SIS_API_URL}) {
 
-    const [officerNumber, setOfficerNumber] = useState();
-    const [password, setPassword] = useState();
+export default function OfficerLogin({SIS_API_URL}) {
 
     const router = useRouter();
 
+    const [officerNumber, setOfficerNumber] = useState();
     const changeOfficerNumber = event => {
         const officerNumber = event.target.value;
         setOfficerNumber(officerNumber);
     }
 
+    const [password, setPassword] = useState();
     const changePassword = event => {
         const password = event.target.value;
         setPassword(password);
@@ -62,17 +62,13 @@ export default function OfficerLogin({SIS_API_URL}) {
         });
         const loginData = await loginRes.json();
         if (loginData.response.loginSuccess) {
-            const cookies = new Cookies();
-            cookies.set('officerNumber', officerNumber, {path: '/'});
-            const getRes = await fetch(`${SIS_API_URL}/officer/` + cookies.get('officerNumber'), {
+            const getRes = await fetch(`${SIS_API_URL}/officer/` + officerNumber, {
                 headers: {'Content-Type': 'application/json'},
                 method: 'GET'
             });
             const getData = await getRes.json();
             if (getData.success) {
-                cookies.set('officerName', getData.response.personalInfoResponse.name, {path: '/'});
-                cookies.set('officerSurname', getData.response.personalInfoResponse.surname, {path: '/'});
-                cookies.set('officerFullName', cookies.get('officerName') + ' ' + cookies.get('officerSurname'), {path: '/'});
+                await saveOfficerData(getData.response);
                 closeProcessingModal();
                 await router.push("/officer");
             }

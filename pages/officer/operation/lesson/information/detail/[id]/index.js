@@ -3,12 +3,22 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {Fragment, useState} from "react";
 import {useRouter} from "next/router";
 import {Dialog, Transition} from "@headlessui/react";
-import Cookies from "universal-cookie";
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../../../public/constants/lesson";
+import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../../../401";
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context)
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = query;
+    const {id} = context.query;
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -23,17 +33,25 @@ export async function getServerSideProps({query}) {
     if (lessonData.success && departmentDatas.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
+                operationUserId: officerId,
+                SIS_API_URL: SIS_API_URL,
                 departments: departmentDatas.response,
-                lesson: lessonData.response,
-                SIS_API_URL: SIS_API_URL
+                lesson: lessonData.response
             }
         }
     }
 }
 
 
-export default function LessonDetail({departments, lesson, SIS_API_URL}) {
-    const cookies = new Cookies();
+export default function LessonDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments, lesson}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
     const {lessonId, name, credit, semester, compulsoryOrElective, status, departmentResponse, modifiedDate} = lesson;
     const {facultyResponse} = departmentResponse;
 
@@ -41,8 +59,6 @@ export default function LessonDetail({departments, lesson, SIS_API_URL}) {
     const facultyId = facultyResponse.facultyId;
     const facultyName = facultyResponse.name;
     const departmentName = departmentResponse.name;
-
-    const [operationUserId] = useState(cookies.get('officerNumber'));
 
 
     const [lessonName, setLessonName] = useState(name);
@@ -424,9 +440,11 @@ export default function LessonDetail({departments, lesson, SIS_API_URL}) {
                                                 {departments.map((department) => (
                                                     departmentName === department.name
                                                         ?
-                                                        <option value={department.departmentId} selected>{department.name}</option>
+                                                        <option value={department.departmentId}
+                                                                selected>{department.name}</option>
                                                         :
-                                                        <option value={department.departmentId}>{department.name}</option>
+                                                        <option
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -486,8 +504,8 @@ export default function LessonDetail({departments, lesson, SIS_API_URL}) {
                                                 }>
                                                 {lessonSemesters.map(lSemester => (
                                                     semester === lSemester.enum
-                                                    ?
-                                                    <option value={lSemester.enum} selected>{lSemester.tr}</option>
+                                                        ?
+                                                        <option value={lSemester.enum} selected>{lSemester.tr}</option>
                                                         :
                                                         <option value={lSemester.enum}>{lSemester.tr}</option>
                                                 ))}
@@ -510,8 +528,9 @@ export default function LessonDetail({departments, lesson, SIS_API_URL}) {
                                                 }>
                                                 {lessonCompulsory.map((lCompulsory) => (
                                                     compulsoryOrElective === lCompulsory.enum
-                                                    ?
-                                                    <option value={lCompulsory.enum} selected>{lCompulsory.tr}</option>
+                                                        ?
+                                                        <option value={lCompulsory.enum}
+                                                                selected>{lCompulsory.tr}</option>
                                                         :
                                                         <option value={lCompulsory.enum}>{lCompulsory.tr}</option>
 
