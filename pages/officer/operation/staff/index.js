@@ -64,7 +64,7 @@ export default function OfficerList({isPagePermissionSuccess, officers}) {
                     </button>
                 </div>
                 {(
-                    officers !== null
+                    officers.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
