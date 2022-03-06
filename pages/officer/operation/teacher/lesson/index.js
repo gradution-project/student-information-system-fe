@@ -63,17 +63,16 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
     }
 
 
-    const lessonDelete = async (event) => {
+    const deleteTeacherLesson = async (lessonId, teacherId) => {
         openProcessingModalDelete();
 
-        event.preventDefault()
         const deleteRes = await fetch(`${SIS_API_URL}/teacher/lesson/delete`, {
             headers: {'Content-Type': 'application/json'},
             method: 'DELETE',
             body: JSON.stringify({
                 teacherLessonInfoRequest: {
-                    lessonId: 0,
-                    teacherId: 0
+                    lessonId: lessonId,
+                    teacherId: teacherId
                 }
             }),
         });
@@ -144,57 +143,57 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                 >
                                                     STATÜSÜ
                                                 </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                    {lessons.map((lesson) => (
-                                        <tr key={lesson.lessonResponse.lessonId}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div className="ml-0.5">
+                                            </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                            {lessons.map((lesson) => (
+                                                <tr key={lesson.lessonResponse.lessonId}>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-0.5">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherInfoResponse.name} {lesson.teacherInfoResponse.surname}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-0.5">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
+                                                                {lessonSemesters.map((lSemester) => (
+                                                                    lesson.lessonResponse.semester === lSemester.enum
+                                                                        ?
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                        :
+                                                                        null
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherInfoResponse.name} {lesson.teacherInfoResponse.surname}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
                                                         <div
-                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div className="ml-0.5">
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
-                                                        <div
-                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
-                                                        {lessonSemesters.map((lSemester) => (
-                                                            lesson.lessonResponse.semester === lSemester.enum
+                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {lessonCompulsory.map((lCompulsory) => (
+                                                            lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
                                                                 ?
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
                                                                 :
                                                                 null
                                                         ))}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
-                                                <div
-                                                    className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
-
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {lessonCompulsory.map((lCompulsory) => (
-                                                    lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
-                                                        ?
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
-                                                        :
-                                                        null
-                                                ))}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                 <span>
                                                          {lessonStatuses.map((lStatus) => (
                                                              lesson.lessonResponse.status === lStatus.enum
@@ -204,16 +203,15 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                                  null
                                                          ))}
                                                 </span>
-                                            </td>
-                                        {/*       <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                   <a onClick={lessonDelete}
-                                                      className='text-sis-fail'>
-                                                       SİL
-                                                   </a>
-                                               </td> */}
-                                        </tr>
-                                    ))}
-                                    </tbody>
+                                                    </td>
+                                                    <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                        <button onClick={() => deleteTeacherLesson(lesson.lessonResponse.lessonId, lesson.teacherInfoResponse.teacherId)} className='text-sis-fail'>
+                                                            SİL
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
                                             <Transition appear show={isOpenSuccessDelete} as={Fragment}>
                                                 <Dialog
                                                     as="div"
@@ -254,7 +252,8 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                                     as="h3"
                                                                     className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
                                                                 >
-                                                                    <div className="border bg-sis-success rounded-xl p-6">
+                                                                    <div
+                                                                        className="border bg-sis-success rounded-xl p-6">
                                                                         Atanan Ders Silme İşlemi Başarılı!
                                                                     </div>
                                                                 </Dialog.Title>
@@ -316,7 +315,8 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                                     <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
                                                                         Lütfen girdiğiniz verileri kontrol ediniz.
                                                                         Verilerinizi doğru girdiyseniz sistemsel bir
-                                                                        hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
+                                                                        hatadan dolayı isteğiniz sonuçlandıralamamış
+                                                                        olabilir.
                                                                     </p>
                                                                 </div>
                                                             </div>
