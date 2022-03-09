@@ -34,37 +34,37 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
 
     const router = useRouter();
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingChangePasswordNotification, setIsOpenProcessingChangePasswordNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingChangePasswordNotification() {
+        setIsOpenProcessingChangePasswordNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingChangePasswordNotification() {
+        setIsOpenProcessingChangePasswordNotification(true);
     }
 
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+    let [isOpenSuccessChangePasswordNotification, setIsOpenSuccessChangePasswordNotification] = useState(false);
 
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
+    function closeSuccessChangePasswordNotification() {
+        setIsOpenSuccessChangePasswordNotification(false);
         router.push("/login/officer");
     }
 
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
+    function openSuccessChangePasswordNotification() {
+        setIsOpenSuccessChangePasswordNotification(true);
     }
 
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailChangePasswordNotification, setIsOpenFailChangePasswordNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailChangePasswordNotification() {
+        setIsOpenFailChangePasswordNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailChangePasswordNotification() {
+        setIsOpenFailChangePasswordNotification(true);
     }
 
 
@@ -92,7 +92,7 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
     }
 
     const officerChangePassword = async (event) => {
-        openProcessingNotification();
+        openProcessingChangePasswordNotification();
 
         event.preventDefault();
 
@@ -108,17 +108,17 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
             });
             const data = await res.json();
             if (!data.success) {
-                closeProcessingNotification();
-                openFailNotification();
+                closeProcessingChangePasswordNotification();
+                openFailNotiChangePasswordNotification();
             } else if (data.response.passwordChanged) {
-                closeProcessingNotification();
-                openSuccessNotification();
+                closeProcessingChangePasswordNotification();
+                openSuccessChangePasswordNotification();
             } else {
-                closeProcessingNotification();
-                openFailNotification();
+                closeProcessingChangePasswordNotification();
+                openFailChangePasswordNotification();
             }
         } else {
-            closeProcessingNotification();
+            closeProcessingChangePasswordNotification();
             openPasswordsNotMatchedNotification();
         }
     }
@@ -202,14 +202,14 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
 
 
                                         <ProcessNotification
-                                            isOpen={isOpenProcessingNotification}
-                                            closeNotification={closeProcessingNotification}
+                                            isOpen={isOpenProcessingChangePasswordNotification}
+                                            closeNotification={closeProcessingChangePasswordNotification}
                                             title="İsteğiniz İşleniyor..."
                                         />
 
                                         <SuccessNotification
-                                            isOpen={isOpenSuccessNotification}
-                                            closeNotification={closeSuccessNotification}
+                                            isOpen={isOpenSuccessChangePasswordNotification}
+                                            closeNotification={closeSuccessChangePasswordNotification}
                                             title="Şifre Değiştirme İsteğiniz Başarılı!"
                                             description="Şifreniz başarılı bir şekilde değiştirildi.
                                             Belirlemiş olduğunuz şifre ile sisteme giriş yapabilirsiniz.
@@ -217,8 +217,8 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
                                         />
 
                                         <FailNotification
-                                            isOpen={isOpenFailNotification}
-                                            closeNotification={closeFailNotification}
+                                            isOpen={isOpenFailChangePasswordNotification}
+                                            closeNotification={closeFailChangePasswordNotification}
                                             title="Şifre Değiştirme İsteğiniz Başarısız!"
                                             description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                         />
