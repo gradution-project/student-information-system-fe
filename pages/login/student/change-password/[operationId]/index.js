@@ -34,26 +34,26 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
 
     const router = useRouter();
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingChangePasswordNotification, setIsOpenProcessingChangePasswordNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingChangePasswordNotification() {
+        setIsOpenProcessingChangePasswordNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingChangePasswordNotification() {
+        setIsOpenProcessingChangePasswordNotification(true);
     }
 
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+    let [isOpenSuccessChangePasswordNotification, setIsOpenSuccessChangePasswordNotification] = useState(false);
 
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
+    function closeSuccessChangePasswordNotification() {
+        setIsOpenSuccessChangePasswordNotification(false);
         router.push("/login/student");
     }
 
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
+    function openSuccessChangePasswordNotification() {
+        setIsOpenSuccessChangePasswordNotification(true);
     }
 
 
@@ -68,6 +68,17 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
     }
 
 
+    let [isOpenFailChangePasswordNotification, setIsOpenFailChangePasswordNotification] = useState(false);
+
+    function closeFailChangePasswordNotification() {
+        setIsOpenFailChangePasswordNotification(false);
+    }
+
+    function openFailChangePasswordNotification() {
+        setIsOpenFailChangePasswordNotification(true);
+    }
+
+
     let [isOpenPasswordsNotMatched, setIsPasswordsNotMatched] = useState(false);
 
     function closePasswordsNotMatchedNotification() {
@@ -77,6 +88,7 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
     function openPasswordsNotMatchedNotification() {
         setIsPasswordsNotMatched(true);
     }
+
 
     const [newPassword, setNewPassword] = useState();
     const changeNewPassword = event => {
@@ -91,7 +103,7 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
     }
 
     const studentForgotPassword = async (event) => {
-        openProcessingNotification();
+        openProcessingChangePasswordNotification();
 
         event.preventDefault();
 
@@ -107,17 +119,17 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
             });
             const data = await res.json();
             if (!data.success) {
-                closeProcessingNotification();
-                openFailNotification();
+                closeProcessingChangePasswordNotification();
+                openFailChangePasswordNotification();
             } else if (data.response.passwordChanged) {
-                closeProcessingNotification();
-                openSuccessNotification();
+                closeProcessingChangePasswordNotification();
+                openSuccessChangePasswordNotification();
             } else {
-                closeProcessingNotification();
-                openFailNotification();
+                closeProcessingChangePasswordNotification();
+                openFailChangePasswordNotification();
             }
         } else {
-            closeProcessingNotification();
+            closeProcessingChangePasswordNotification();
             openPasswordsNotMatchedNotification();
         }
     }
@@ -202,14 +214,14 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
                                         </div>
 
                                         <ProcessNotification
-                                            isOpen={isOpenProcessingNotification}
-                                            closeNotification={closeProcessingNotification}
-                                            title="İsteğiniz İşleniyor..."
+                                            isOpen={isOpenProcessingChangePasswordNotification}
+                                            closeNotification={closeProcessingChangePasswordNotification}
+                                            title="Şifre Değiştirme İsteğiniz İşleniyor..."
                                         />
 
                                         <SuccessNotification
-                                            isOpen={isOpenSuccessNotification}
-                                            closeNotification={closeSuccessNotification}
+                                            isOpen={isOpenSuccessChangePasswordNotification}
+                                            closeNotification={closeSuccessChangePasswordNotification}
                                             title="Şifre Değiştirme İsteğiniz Başarılı!"
                                             description="Şifreniz başarılı bir şekilde değiştirildi.
                                             Belirlemiş olduğunuz şifre ile sisteme giriş yapabilirsiniz.
@@ -217,8 +229,8 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
                                         />
 
                                         <FailNotification
-                                            isOpen={isOpenFailNotification}
-                                            closeNotification={closeFailNotification}
+                                            isOpen={isOpenFailChangePasswordNotification}
+                                            closeNotification={closeFailChangePasswordNotification}
                                             title="Şifre Değiştirme İsteğiniz Başarısız!"
                                             description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                         />
