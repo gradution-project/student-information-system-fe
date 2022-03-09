@@ -8,7 +8,7 @@ import FailNotification from "../../../../../../public/notifications/fail";
 import UnauthorizedAccessPage from "../../../../../401";
 import {getOfficerNumberWithContext} from "../../../../../../public/storage/officer";
 
-export async function getServerSideProps({context}) {
+export async function getServerSideProps(context) {
     const officerId = getOfficerNumberWithContext(context);
     if (officerId === undefined) {
         return {
