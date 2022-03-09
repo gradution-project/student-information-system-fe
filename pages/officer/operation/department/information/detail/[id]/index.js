@@ -231,22 +231,22 @@ export default function DepartmentDetail({
 
     let [isOpenSuccessDeleteNotification, setIsOpenSuccessDeleteNotification] = useState(false);
 
-    function closeSuccessNotificationDeleteNotification() {
+    function closeSuccessDeleteNotification() {
         setIsOpenSuccessDeleteNotification(false);
         router.reload();
     }
 
-    function openSuccessNotificationDeleteNotification() {
+    function openSuccessDeleteNotification() {
         setIsOpenSuccessDeleteNotification(true);
     }
 
     let [isOpenFailDeleteNotification, setIsOpenFailDeleteNotification] = useState(false);
 
-    function closeFailNotificationDeleteNotification() {
+    function closeFailDeleteNotification() {
         setIsOpenFailDeleteNotification(false);
     }
 
-    function openFailNotificationDeleteNotification() {
+    function openFailDeleteNotification() {
         setIsOpenFailDeleteNotification(true);
     }
 
@@ -267,10 +267,10 @@ export default function DepartmentDetail({
         const deleteData = await deleteRes.json();
         if (deleteData.success) {
             closeProcessingDeleteNotification();
-            openSuccessNotificationDeleteNotification()
+            openSuccessDeleteNotification()
         } else {
             closeProcessingDeleteNotification();
-            openFailNotificationDeleteNotification();
+            openFailDeleteNotification();
         }
     }
 
@@ -593,14 +593,14 @@ export default function DepartmentDetail({
 
                                     <SuccessNotification
                                         isOpen={isOpenSuccessDeleteNotification}
-                                        closeNotification={closeSuccessNotificationDeleteNotification}
+                                        closeNotification={closeSuccessDeleteNotification}
                                         title="Bölüm Sime İşlemi Başarılı!"
                                         description="Bölüm Silindi."
                                     />
 
                                     <FailNotification
                                         isOpen={isOpenFailDeleteNotification}
-                                        closeNotification={closeFailNotificationDeleteNotification}
+                                        closeNotification={closeFailDeleteNotification}
                                         title="Bölüm Silme İşlemi Başarısız!"
                                         description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                     />
