@@ -68,7 +68,7 @@ export default function TeacherLogin({SIS_API_URL}) {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                saveTeacherData(getData.response)
+                await SisTeacherStorage.saveData(getData.response)
                 closeProcessingLoginNotification();
                 await router.push("/teacher");
             }
