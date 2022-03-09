@@ -241,7 +241,7 @@ export default function LessonDetail({isPagePermissionSuccess, operationUserId, 
     }
 
     const lessonDelete = async (event) => {
-        openProcessingNotificationDeleteNotification();
+        openProcessingDeleteNotification();
 
         event.preventDefault()
         const deleteRes = await fetch(`${SIS_API_URL}/lesson/delete`, {
@@ -256,11 +256,11 @@ export default function LessonDetail({isPagePermissionSuccess, operationUserId, 
         });
         const deleteData = await deleteRes.json();
         if (deleteData.success) {
-            closeProcessingNotificationDeleteNotification();
-            openSuccessNotificationDeleteNotification()
+            closeProcessingDeleteNotification();
+            openSuccessDeleteNotification()
         } else {
-            closeProcessingNotificationDeleteNotification();
-            openFailNotificationDeleteNotification();
+            closeProcessingDeleteNotification();
+            openFailDeleteNotification();
         }
     }
 
@@ -622,20 +622,20 @@ export default function LessonDetail({isPagePermissionSuccess, operationUserId, 
                                  */}
                                 <ProcessNotification
                                     isOpen={isOpenProcessingDeleteNotification}
-                                    closeNotification={closeProcessingNotificationDeleteNotification}
+                                    closeNotification={closeProcessingDeleteNotification}
                                     title="Ders Silme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessDeleteNotification}
-                                    closeNotification={closeSuccessNotificationDeleteNotification}
+                                    closeNotification={closeSuccessDeleteNotification}
                                     title="Ders Sime İşlemi Başarılı!"
                                     description="Ders Silindi."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailDeleteNotification}
-                                    closeNotification={closeFailNotificationDeleteNotification}
+                                    closeNotification={closeFailDeleteNotification}
                                     title="Ders Silme İşlemi Başarısız!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
