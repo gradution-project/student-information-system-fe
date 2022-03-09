@@ -57,35 +57,35 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
 
     const router = new useRouter();
 
-    let [isOpenPersonalInfoSuccessNotification, setIsOpenPersonalInfoSuccessNotification] = useState(false);
+    let [isOpenSuccessPersonalInfoUpdateNotification, setIsOpenSuccessPersonalInfoUpdateNotification] = useState(false);
 
-    function closePersonalInfoSuccessNotification() {
-        setIsOpenPersonalInfoSuccessNotification(false);
+    function closeSuccessPersonalInfoUpdateNotification() {
+        setIsOpenSuccessPersonalInfoUpdateNotification(false);
         router.reload();
     }
 
-    function openPersonalInfoSuccessNotification() {
-        setIsOpenPersonalInfoSuccessNotification(true);
+    function openSuccessPersonalInfoUpdateNotification() {
+        setIsOpenSuccessPersonalInfoUpdateNotification(true);
     }
 
-    let [isOpenPersonalInfoFailNotification, setIsOpenPersonalInfoFailNotification] = useState(false);
+    let [isOpenFailPersonalInfoUpdateNotification, setIsOpenFailPersonalInfoUpdateNotification] = useState(false);
 
-    function closePersonalInfoFailNotification() {
-        setIsOpenPersonalInfoFailNotification(false);
+    function closeFailPersonalInfoUpdateNotification() {
+        setIsOpenFailPersonalInfoUpdateNotification(false);
     }
 
-    function openPersonalInfoFailNotification() {
-        setIsOpenPersonalInfoFailNotification(true);
+    function openFailPersonalInfoUpdateNotification() {
+        setIsOpenFailPersonalInfoUpdateNotification(true);
     }
 
-    let [isOpenPersonalInfoProcessingNotification, setIsOpenPersonalInfoProcessingNotification] = useState(false);
+    let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
 
-    function closePersonalInfoProcessingNotification() {
-        setIsOpenPersonalInfoProcessingNotification(false);
+    function closeProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(false);
     }
 
-    function openPersonalInfoProcessingNotification() {
-        setIsOpenPersonalInfoProcessingNotification(true);
+    function openProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(true);
     }
 
     const [officerEmail, setOfficerEmail] = useState(personalInfoResponse.email);
@@ -107,7 +107,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
     }
 
     const officerUpdatePersonal = async (event) => {
-        openPersonalInfoProcessingNotification();
+        openProcessingPersonalInfoUpdateNotification();
 
         event.preventDefault()
 
@@ -131,11 +131,11 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
         });
         const updatePersonalData = await updatePersonalRes.json();
         if (updatePersonalData.success) {
-            closePersonalInfoProcessingNotification();
-            openPersonalInfoSuccessNotification();
+            closeProcessingPersonalInfoUpdateNotification();
+            openSuccessPersonalInfoUpdateNotification();
         } else {
-            closePersonalInfoProcessingNotification();
-            openPersonalInfoFailNotification();
+            closeProcessingPersonalInfoUpdateNotification();
+            openFailPersonalInfoUpdateNotification();
         }
     }
 
@@ -471,21 +471,21 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                 </div>
 
                                 <ProcessNotification
-                                    isOpen={isOpenPersonalInfoProcessingNotification}
-                                    closeNotification={closePersonalInfoProcessingNotification}
+                                    isOpen={isOpenProcessingPersonalInfoUpdateNotification}
+                                    closeNotification={closeProcessingPersonalInfoUpdateNotification}
                                     title="Kişisel Bilgi Güncelleme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
-                                    isOpen={isOpenPersonalInfoSuccessNotification}
-                                    closeNotification={closePersonalInfoFailNotification}
+                                    isOpen={isOpenSuccessPersonalInfoUpdateNotification}
+                                    closeNotification={closeSuccessPersonalInfoUpdateNotification}
                                     title="Kişisel Bilgi Güncelleme İşlemi Başarılı!"
                                     description="Kişisel Bilgi Güncelleme İşlemi başarıyla gerçekleşti."
                                 />
 
                                 <FailNotification
-                                    isOpen={isOpenPersonalInfoFailNotification}
-                                    closeNotification={closePersonalInfoFailNotification}
+                                    isOpen={isOpenFailPersonalInfoUpdateNotification}
+                                    closeNotification={closeFailPersonalInfoUpdateNotification}
                                     title="Kişisel Bilgi Güncelleme İşlemi Başarısız!"
                                     description="Lütfen girdiğiniz verileri kontrol ediniz.
                                     Verilerinizi doğru girdiyseniz
