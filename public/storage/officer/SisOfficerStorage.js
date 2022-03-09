@@ -94,7 +94,7 @@ const getStatus = () => {
 };
 
 const getStatusWithContext = (context) => {
-    return cookies.get('officerStatus');
+    return context.req.cookies['officerStatus'];
 };
 
 function saveStatus(officerStatus) {
