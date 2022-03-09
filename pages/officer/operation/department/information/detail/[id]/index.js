@@ -109,37 +109,37 @@ export default function DepartmentDetail({
 
     let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
 
-    function closeProcessingNotificationActivateNotification() {
+    function closeProcessingActivateNotification() {
         setIsOpenProcessingActivateNotification(false);
     }
 
-    function openProcessingNotificationActivateNotification() {
+    function openProcessingActivateNotification() {
         setIsOpenProcessingActivateNotification(true);
     }
 
     let [isOpenSuccessActivateNotification, setIsOpenSuccessActivateNotification] = useState(false);
 
-    function closeSuccessNotificationActivateNotification() {
+    function closeSuccessActivateNotification() {
         setIsOpenSuccessActivateNotification(false);
         router.reload();
     }
 
-    function openSuccessNotificationActivateNotification() {
+    function openSuccessActivateNotification() {
         setIsOpenSuccessActivateNotification(true);
     }
 
     let [isOpenFailActivateNotification, setIsOpenFailActivateNotification] = useState(false);
 
-    function closeFailNotificationActivateNotification() {
+    function closeFailActivateNotification() {
         setIsOpenFailActivateNotification(false);
     }
 
-    function openFailNotificationActivateNotification() {
+    function openFailActivateNotification() {
         setIsOpenFailActivateNotification(true);
     }
 
     const departmentActivate = async (event) => {
-        openProcessingNotificationActivateNotification();
+        openProcessingActivateNotification();
 
         event.preventDefault()
         const activateRes = await fetch(`${SIS_API_URL}/department/activate`, {
@@ -154,48 +154,48 @@ export default function DepartmentDetail({
         });
         const activateData = await activateRes.json();
         if (activateData.success) {
-            closeProcessingNotificationActivateNotification();
-            openSuccessNotificationActivateNotification()
+            closeProcessingActivateNotification();
+            openSuccessActivateNotification()
         } else {
-            closeProcessingNotificationActivateNotification();
-            openFailNotificationActivateNotification();
+            closeProcessingActivateNotification();
+            openFailActivateNotification();
         }
     }
 
 
     let [isOpenProcessingPassivateNotification, setIsOpenProcessingPassivateNotification] = useState(false);
 
-    function closeProcessingNotificationPassivateNotification() {
+    function closeProcessingPassivateNotification() {
         setIsOpenProcessingPassivateNotification(false);
     }
 
-    function openProcessingNotificationPassivateNotification() {
+    function openProcessingPassivateNotification() {
         setIsOpenProcessingPassivateNotification(true);
     }
 
     let [isOpenSuccessPassivateNotification, setIsOpenSuccessPassivateNotification] = useState(false);
 
-    function closeSuccessNotificationPassivateNotification() {
+    function closeSuccessPassivateNotification() {
         setIsOpenSuccessPassivateNotification(false);
         router.reload();
     }
 
-    function openSuccessNotificationPassivateNotification() {
+    function openSuccessPassivateNotification() {
         setIsOpenSuccessPassivateNotification(true);
     }
 
     let [isOpenFailPassivateNotification, setIsOpenFailPassivateNotification] = useState(false);
 
-    function closeFailNotificationPassivateNotification() {
+    function closeFailPassivateNotification() {
         setIsOpenFailPassivateNotification(false);
     }
 
-    function openFailNotificationPassivateNotification() {
+    function openFailPassivateNotification() {
         setIsOpenFailPassivateNotification(true);
     }
 
     const departmentPassivate = async (event) => {
-        openProcessingNotificationPassivateNotification();
+        openProcessingPassivateNotification();
 
         event.preventDefault()
         const passivateRes = await fetch(`${SIS_API_URL}/department/passivate`, {
@@ -210,22 +210,22 @@ export default function DepartmentDetail({
         });
         const passivateData = await passivateRes.json();
         if (passivateData.success) {
-            closeProcessingNotificationPassivateNotification();
-            openSuccessNotificationPassivateNotification()
+            closeProcessingPassivateNotification();
+            openSuccessPassivateNotification()
         } else {
-            closeProcessingNotificationPassivateNotification();
-            openFailNotificationPassivateNotification();
+            closeProcessingPassivateNotification();
+            openFailPassivateNotification();
         }
     }
 
 
     let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
 
-    function closeProcessingNotificationDeleteNotification() {
+    function closeProcessingDeleteNotification() {
         setIsOpenProcessingDeleteNotification(false);
     }
 
-    function openProcessingNotificationDeleteNotification() {
+    function openProcessingDeleteNotification() {
         setIsOpenProcessingDeleteNotification(true);
     }
 
@@ -251,7 +251,7 @@ export default function DepartmentDetail({
     }
 
     const departmentDelete = async (event) => {
-        openProcessingNotificationDeleteNotification();
+        openProcessingDeleteNotification();
 
         event.preventDefault()
         const deleteRes = await fetch(`${SIS_API_URL}/department/delete`, {
@@ -266,48 +266,48 @@ export default function DepartmentDetail({
         });
         const deleteData = await deleteRes.json();
         if (deleteData.success) {
-            closeProcessingNotificationDeleteNotification();
+            closeProcessingDeleteNotification();
             openSuccessNotificationDeleteNotification()
         } else {
-            closeProcessingNotificationDeleteNotification();
+            closeProcessingDeleteNotification();
             openFailNotificationDeleteNotification();
         }
     }
 
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingUpdateNotification, setIsOpenProcessingUpdateNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingUpdateNotification() {
+        setIsOpenProcessingUpdateNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingUpdateNotification() {
+        setIsOpenProcessingUpdateNotification(true);
     }
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+    let [isOpenSuccessUpdateNotification, setIsOpenSuccessUpdateNotification] = useState(false);
 
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
+    function closeSuccessUpdateNotification() {
+        setIsOpenSuccessUpdateNotification(false);
         router.reload();
     }
 
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
+    function openSuccessUpdateNotification() {
+        setIsOpenSuccessUpdateNotification(true);
     }
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailUpdateNotification, setIsOpenFailUpdateNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailUpdateNotification() {
+        setIsOpenFailUpdateNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailUpdateNotification() {
+        setIsOpenFailUpdateNotification(true);
     }
 
     const departmentUpdate = async (event) => {
-        openProcessingNotification();
+        openProcessingUpdateNotification();
 
         event.preventDefault()
         const updateRes = await fetch(`${SIS_API_URL}/department/update/${departmentId}`, {
@@ -327,11 +327,11 @@ export default function DepartmentDetail({
         });
         const updateData = await updateRes.json();
         if (updateData.success) {
-            closeProcessingNotification();
-            openSuccessNotification()
+            closeProcessingUpdateNotification();
+            openSuccessUpdateNotification();
         } else {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingUpdateNotification();
+            openFailUpdateNotification();
         }
     }
     return (
@@ -541,20 +541,20 @@ export default function DepartmentDetail({
                                      */}
                                     <ProcessNotification
                                         isOpen={isOpenProcessingActivateNotification}
-                                        closeNotification={closeProcessingNotificationActivateNotification}
+                                        closeNotification={closeProcessingActivateNotification}
                                         title="Bölüm Aktifleştirme İsteğiniz İşleniyor..."
                                     />
 
                                     <SuccessNotification
                                         isOpen={isOpenSuccessActivateNotification}
-                                        closeNotification={closeSuccessNotificationActivateNotification}
+                                        closeNotification={closeSuccessActivateNotification}
                                         title="Bölüm Aktifleştime İşlemi Başarılı!"
                                         description="Bölüm Aktifleştirildi."
                                     />
 
                                     <FailNotification
                                         isOpen={isOpenFailActivateNotification}
-                                        closeNotification={closeFailNotificationActivateNotification}
+                                        closeNotification={closeFailActivateNotification}
                                         title="Bölüm Aktifleştirme İşlemi Başarısız!"
                                         description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                     />
@@ -564,20 +564,20 @@ export default function DepartmentDetail({
                                      */}
                                     <ProcessNotification
                                         isOpen={isOpenProcessingPassivateNotification}
-                                        closeNotification={closeProcessingNotificationPassivateNotification}
+                                        closeNotification={closeProcessingPassivateNotification}
                                         title="Bölüm Bilgi Güncelleme İsteğiniz İşleniyor..."
                                     />
 
                                     <SuccessNotification
                                         isOpen={isOpenSuccessPassivateNotification}
-                                        closeNotification={closeSuccessNotificationPassivateNotification}
+                                        closeNotification={closeSuccessPassivateNotification}
                                         title="Bölüm Pasifleştirme İşlemi Başarılı!"
                                         description="Bölüm Pasifleştirildi."
                                     />
 
                                     <FailNotification
                                         isOpen={isOpenFailPassivateNotification}
-                                        closeNotification={closeFailNotificationPassivateNotification}
+                                        closeNotification={closeFailPassivateNotification}
                                         title="Bölüm Pasifleştirme İşlemi Başarısız!"
                                         description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                     />
@@ -587,7 +587,7 @@ export default function DepartmentDetail({
                                      */}
                                     <ProcessNotification
                                         isOpen={isOpenProcessingDeleteNotification}
-                                        closeNotification={closeProcessingNotificationDeleteNotification}
+                                        closeNotification={closeProcessingDeleteNotification}
                                         title="Bölüm Silme İsteğiniz İşleniyor..."
                                     />
 
@@ -609,21 +609,21 @@ export default function DepartmentDetail({
                                      * Update
                                      */}
                                     <ProcessNotification
-                                        isOpen={isOpenProcessingNotification}
-                                        closeNotification={closeProcessingNotification}
+                                        isOpen={isOpenProcessingUpdateNotification}
+                                        closeNotification={closeProcessingUpdateNotification}
                                         title="Bölüm Bilgi Güncelleme İsteğiniz İşleniyor..."
                                     />
 
                                     <SuccessNotification
-                                        isOpen={isOpenSuccessNotification}
-                                        closeNotification={closeSuccessNotification}
+                                        isOpen={isOpenSuccessUpdateNotification}
+                                        closeNotification={closeSuccessUpdateNotification}
                                         title="Bölüm Bilgi Güncelleme İşlemi Başarılı!"
                                         description="Bölüm Bilgi Güncellene İşlemi başarıyla gerçekleşti."
                                     />
 
                                     <FailNotification
-                                        isOpen={isOpenFailNotification}
-                                        closeNotification={closeFailNotification}
+                                        isOpen={isOpenFailUpdateNotification}
+                                        closeNotification={closeFailUpdateNotification}
                                         title="Bölüm Bilgi Güncelleme İşlemi Başarısız!"
                                         description="Lütfen girdiğiniz verileri kontrol ediniz.
                                         Verilerinizi doğru girdiyseniz
