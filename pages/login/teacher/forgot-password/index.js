@@ -1,82 +1,66 @@
 import SISTitle from "../../../../public/components/page-titles";
 import {FingerPrintIcon} from "@heroicons/react/outline";
-import {Fragment, useState} from "react";
-import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
+import {useState} from "react";
+import ProcessNotification from "../../../../public/notifications/process";
+import SuccessNotification from "../../../../public/notifications/success";
+import FailNotification from "../../../../public/notifications/fail";
+import SisStudentRouter from "../../../../public/router/SisStudentRouter";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL,
-            SIS_FE_URL: process.env.SIS_FE_URL
-        }
+export default function TeacherForgotPassword() {
+
+    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+
+    function closeProcessingNotification() {
+        setIsOpenProcessingNotification(false);
     }
-}
 
-export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
+    function openProcessingNotification() {
+        setIsOpenProcessingNotification(true);
+    }
 
-    const router = useRouter();
+    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+
+    function closeSuccessNotification() {
+        setIsOpenSuccessNotification(false);
+        SisStudentRouter.toStudentLoginPage();
+    }
+
+    function openSuccessNotification() {
+        setIsOpenSuccessNotification(true);
+    }
+
+    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+
+    function closeFailNotification() {
+        setIsOpenFailNotification(false);
+    }
+
+    function openFailNotification() {
+        setIsOpenFailNotification(true);
+    }
 
     const [teacherNumber, setTeacherNumber] = useState();
-
-    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
-
-    function closeSuccessModal() {
-        setIsOpenSuccess(false);
-        router.push("/login/teacher");
-    }
-
-    function openSuccessModal() {
-        setIsOpenSuccess(true);
-    }
-
-    let [isOpenFail, setIsOpenFail] = useState(false);
-
-    function closeFailModal() {
-        setIsOpenFail(false);
-    }
-
-    function openFailModal() {
-        setIsOpenFail(true);
-    }
-
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
-
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
-    }
-
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
-    }
-
     const changeTeacherNumber = event => {
         const teacherNumber = event.target.value;
         setTeacherNumber(teacherNumber);
     }
 
     const teacherForgotPassword = async (event) => {
-        openProcessingModal();
+        openProcessingNotification();
 
         event.preventDefault();
-        const res = await fetch(`${SIS_API_URL}/teacher/password-operation/forgot-password`, {
-            body: JSON.stringify({
-                teacherId: teacherNumber,
-                feUrl: SIS_FE_URL
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const data = await res.json();
-        if (!data.success) {
-            closeProcessingModal();
-            openFailModal();
-        } else if (data.response.forgotPasswordSuccess) {
-            closeProcessingModal();
-            openSuccessModal();
+
+        const apiResult = postApiTeacherForgotPassword(teacherNumber);
+
+        if (!apiResult.success) {
+            closeProcessingNotification();
+            openFailNotification();
+        } else if (apiResult.response.forgotPasswordSuccess) {
+            closeProcessingNotification();
+            openSuccessNotification();
         } else {
-            closeProcessingModal();
-            openFailModal();
+            closeProcessingNotification();
+            openFailNotification();
         }
     }
 
@@ -144,166 +128,28 @@ export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
                                         </div>
                                     </div>
 
-                                    <Transition appear show={isOpenSuccess} as={Fragment}>
-                                        <Dialog
-                                            as="div"
-                                            className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                            onClose={closeSuccessModal}
-                                        >
-                                            <div className="min-h-screen px-4 text-center">
-                                                <Transition.Child
-                                                    as={Fragment}
-                                                    enter="ease-out duration-300"
-                                                    enterFrom="opacity-0"
-                                                    enterTo="opacity-100"
-                                                    leave="ease-in duration-200"
-                                                    leaveFrom="opacity-100"
-                                                    leaveTo="opacity-0"
-                                                >
-                                                    <Dialog.Overlay className="fixed inset-0"/>
-                                                </Transition.Child>
 
-                                                <span
-                                                    className="inline-block h-screen align-middle"
-                                                    aria-hidden="true"
-                                                >
-              &#8203;
-            </span>
-                                                <Transition.Child
-                                                    as={Fragment}
-                                                    enter="ease-out duration-300"
-                                                    enterFrom="opacity-0 scale-95"
-                                                    enterTo="opacity-100 scale-100"
-                                                    leave="ease-in duration-200"
-                                                    leaveFrom="opacity-100 scale-100"
-                                                    leaveTo="opacity-0 scale-95"
-                                                >
-                                                    <div
-                                                        className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                        <Dialog.Title
-                                                            as="h3"
-                                                            className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                        >
-                                                            <div className="border bg-sis-success rounded-xl p-6">
-                                                                Şifre Değiştirme İsteğiniz Başarılı!
-                                                            </div>
-                                                        </Dialog.Title>
-                                                        <div className="mt-2">
-                                                            <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                Mail Adresinize gönderilen şifre ile hesabınıza giriş
-                                                                yapabilirsiniz.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </Transition.Child>
-                                            </div>
-                                        </Dialog>
-                                    </Transition>
+                                    <ProcessNotification
+                                        isOpen={isOpenProcessingNotification}
+                                        closeNotification={closeProcessingNotification}
+                                        title="İsteğiniz İşleniyor..."
+                                    />
 
-                                    <Transition appear show={isOpenFail} as={Fragment}>
-                                        <Dialog
-                                            as="div"
-                                            className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                            onClose={closeFailModal}
-                                        >
-                                            <div className="min-h-screen px-4 text-center">
-                                                <Transition.Child
-                                                    as={Fragment}
-                                                    enter="ease-out duration-300"
-                                                    enterFrom="opacity-0"
-                                                    enterTo="opacity-100"
-                                                    leave="ease-in duration-200"
-                                                    leaveFrom="opacity-100"
-                                                    leaveTo="opacity-0"
-                                                >
-                                                    <Dialog.Overlay className="fixed inset-0"/>
-                                                </Transition.Child>
+                                    <SuccessNotification
+                                        isOpen={isOpenSuccessNotification}
+                                        closeNotification={closeSuccessNotification}
+                                        title="Şifre Değiştirme İsteğiniz Başarılı!"
+                                        description="Mail Adresinize gönderilen şifre ile hesabınıza giriş yapabilirsiniz."
+                                    />
 
-                                                <span
-                                                    className="inline-block h-screen align-middle"
-                                                    aria-hidden="true"
-                                                >
-              &#8203;
-            </span>
-                                                <Transition.Child
-                                                    as={Fragment}
-                                                    enter="ease-out duration-300"
-                                                    enterFrom="opacity-0 scale-95"
-                                                    enterTo="opacity-100 scale-100"
-                                                    leave="ease-in duration-200"
-                                                    leaveFrom="opacity-100 scale-100"
-                                                    leaveTo="opacity-0 scale-95"
-                                                >
-                                                    <div
-                                                        className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                        <Dialog.Title
-                                                            as="h3"
-                                                            className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                        >
-                                                            <div className="border bg-sis-fail rounded-xl p-6">
-                                                                Şifre Değiştirme İsteğiniz Başarısız!
-                                                            </div>
-                                                        </Dialog.Title>
-                                                        <div className="mt-2">
-                                                            <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                Öğretmen Numaranızı kontrol ediniz.
-                                                                Öğretmen Numaranızı doğru girdiyseniz sistemsel bir
-                                                                hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </Transition.Child>
-                                            </div>
-                                        </Dialog>
-                                    </Transition>
-
-                                    <Transition appear show={isOpenProcessing} as={Fragment}>
-                                        <Dialog
-                                            as="div"
-                                            className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                            onClose={closeProcessingModal}
-                                        >
-                                            <div className="min-h-screen px-4 text-center">
-                                                <Transition.Child
-                                                    as={Fragment}
-                                                    enter="ease-out duration-300"
-                                                    enterFrom="opacity-0"
-                                                    enterTo="opacity-100"
-                                                    leave="ease-in duration-200"
-                                                    leaveFrom="opacity-100"
-                                                    leaveTo="opacity-0"
-                                                >
-                                                    <Dialog.Overlay className="fixed inset-0"/>
-                                                </Transition.Child>
-
-                                                <span
-                                                    className="inline-block h-screen align-middle"
-                                                    aria-hidden="true"
-                                                >
-              &#8203;
-            </span>
-                                                <Transition.Child
-                                                    as={Fragment}
-                                                    enter="ease-out duration-300"
-                                                    enterFrom="opacity-0 scale-95"
-                                                    enterTo="opacity-100 scale-100"
-                                                    leave="ease-in duration-200"
-                                                    leaveFrom="opacity-100 scale-100"
-                                                    leaveTo="opacity-0 scale-95"
-                                                >
-                                                    <div
-                                                        className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                        <Dialog.Title
-                                                            as="h3"
-                                                            className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                        >
-                                                            İsteğiniz İşleniyor...
-                                                        </Dialog.Title>
-                                                    </div>
-                                                </Transition.Child>
-                                            </div>
-                                        </Dialog>
-                                    </Transition>
+                                    <FailNotification
+                                        isOpen={isOpenFailNotification}
+                                        closeNotification={closeFailNotification}
+                                        title="Şifre Değiştirme İsteğiniz Başarısız!"
+                                        description="Öğretmen Numaranızı kontrol ediniz.
+                                        Öğretmen Numaranızı doğru girdiyseniz sistemsel bir
+                                        hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                    />
                                 </div>
                             </form>
                         </div>
