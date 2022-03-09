@@ -4,8 +4,19 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../public/constants/lesson";
 import {Fragment, useState} from "react";
 import {Dialog, Transition} from "@headlessui/react";
+import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import UnauthorizedAccessPage from "../../../../401";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+    const officerId = getOfficerNumberWithContext(context);
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
     const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
         headers: {'Content-Type': 'application/json'},
@@ -15,6 +26,7 @@ export async function getServerSideProps() {
     if (lessonsData.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 lessons: lessonsData.response,
                 SIS_API_URL: SIS_API_URL
             }
@@ -22,7 +34,13 @@ export async function getServerSideProps() {
     }
 }
 
-export default function TeacherLessonList({lessons, SIS_API_URL}) {
+export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL, lessons}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 
