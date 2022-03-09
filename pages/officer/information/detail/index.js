@@ -74,7 +74,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
         setIsOpenPersonalInfoFailNotification(false);
     }
 
-    function openFailPersonalInfoFailNotification() {
+    function openPersonalInfoFailNotification() {
         setIsOpenPersonalInfoFailNotification(true);
     }
 
@@ -135,7 +135,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
             openPersonalInfoSuccessNotification();
         } else {
             closePersonalInfoProcessingNotification();
-            openFailPersonalInfoFailNotification();
+            openPersonalInfoFailNotification();
         }
     }
 
