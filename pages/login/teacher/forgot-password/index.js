@@ -4,39 +4,51 @@ import {useState} from "react";
 import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
-import SisStudentRouter from "../../../../public/router/SisStudentRouter";
+import {useRouter} from "next/router";
 
-export default function TeacherForgotPassword() {
+export async function getServerSideProps() {
+    return {
+        props: {
+            SIS_API_URL: process.env.SIS_API_URL,
+            SIS_FE_URL: process.env.SIS_FE_URL
+        }
+    }
+}
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
+
+    const router = useRouter();
+
+    let [isOpenProcessingForgotPasswordNotification, setIsOpenProcessingForgotPasswordNotification] = useState(false);
+
+    function closeProcessingForgotPasswordNotification() {
+        setIsOpenProcessingForgotPasswordNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingForgotPasswordNotification() {
+        setIsOpenProcessingForgotPasswordNotification(true);
     }
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+    let [isOpenSuccessForgotPasswordNotification, setIsOpenSuccessForgotPasswordNotification] = useState(false);
 
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
-        SisStudentRouter.toStudentLoginPage();
+    function closeSuccessForgotPasswordNotification() {
+        setIsOpenSuccessForgotPasswordNotification(false);
+        router.push("/login/teacher");
     }
 
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
+    function openSuccessForgotPasswordNotification() {
+        setIsOpenSuccessForgotPasswordNotification(true);
     }
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailForgotPasswordNotification, setIsOpenFailForgotPasswordNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailForgotPasswordNotification() {
+        setIsOpenFailForgotPasswordNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailForgotPasswordNotification() {
+        setIsOpenFailForgotPasswordNotification(true);
     }
 
     const [teacherNumber, setTeacherNumber] = useState();
@@ -46,21 +58,27 @@ export default function TeacherForgotPassword() {
     }
 
     const teacherForgotPassword = async (event) => {
-        openProcessingNotification();
+        openProcessingForgotPasswordNotification();
 
         event.preventDefault();
 
-        const apiResult = postApiTeacherForgotPassword(teacherNumber);
-
+        const apiResult = await fetch(`${SIS_API_URL}/teacher/password-operation/forgot-password`, {
+            body: JSON.stringify({
+                teacherId: teacherNumber,
+                feUrl: SIS_FE_URL
+            }),
+            headers: {'Content-Type': 'application/json'},
+            method: 'POST'
+        });
         if (!apiResult.success) {
-            closeProcessingNotification();
-            openFailNotification();
-        } else if (apiResult.response.forgotPasswordSuccess) {
-            closeProcessingNotification();
-            openSuccessNotification();
+            closeProcessingForgotPasswordNotification();
+            openFailForgotPasswordNotification();
+        } else if (data.response.forgotPasswordSuccess) {
+            closeProcessingForgotPasswordNotification();
+            openSuccessForgotPasswordNotification();
         } else {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingForgotPasswordNotification();
+            openFailForgotPasswordNotification();
         }
     }
 
@@ -130,21 +148,21 @@ export default function TeacherForgotPassword() {
 
 
                                     <ProcessNotification
-                                        isOpen={isOpenProcessingNotification}
-                                        closeNotification={closeProcessingNotification}
-                                        title="İsteğiniz İşleniyor..."
+                                        isOpen={isOpenProcessingForgotPasswordNotification}
+                                        closeNotification={closeProcessingForgotPasswordNotification}
+                                        title="Şifremi Değiştirme Maili Gönderiliyor..."
                                     />
 
                                     <SuccessNotification
-                                        isOpen={isOpenSuccessNotification}
-                                        closeNotification={closeSuccessNotification}
+                                        isOpen={isOpenSuccessForgotPasswordNotification}
+                                        closeNotification={closeSuccessForgotPasswordNotification}
                                         title="Şifre Değiştirme İsteğiniz Başarılı!"
                                         description="Mail Adresinize gönderilen şifre ile hesabınıza giriş yapabilirsiniz."
                                     />
 
                                     <FailNotification
-                                        isOpen={isOpenFailNotification}
-                                        closeNotification={closeFailNotification}
+                                        isOpen={isOpenFailForgotPasswordNotification}
+                                        closeNotification={closeFailForgotPasswordNotification}
                                         title="Şifre Değiştirme İsteğiniz Başarısız!"
                                         description="Öğretmen Numaranızı kontrol ediniz.
                                         Öğretmen Numaranızı doğru girdiyseniz sistemsel bir
