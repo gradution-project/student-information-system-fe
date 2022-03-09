@@ -47,6 +47,39 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
 
     const router = useRouter();
 
+
+    let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
+
+    function closeSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(false);
+        router.push("/officer/operation/lesson").then(() => router.reload());
+    }
+
+    function openSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(true);
+    }
+
+    let [isOpenFailSaveNotification, setIsOpenFailSaveNotification] = useState(false);
+
+    function closeFailSaveNotification() {
+        setIsOpenFailSaveNotification(false);
+    }
+
+    function openFailSaveNotification() {
+        setIsOpenFailSaveNotification(true);
+    }
+
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
+
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
+    }
+
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
+    }
+
+
     const [lessonName, setLessonName] = useState();
     const changeLessonName = event => {
         const lessonName = event.target.value;
@@ -71,46 +104,14 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
         setLessonSemester(lessonSemester);
     }
 
-
     const [lessonDepartmentId, setLessonDepartmentId] = useState();
     const changeLessonDepartmentId = event => {
         const lessonDepartmentId = event.target.value;
         setLessonDepartmentId(lessonDepartmentId);
     }
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
-
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
-        router.push("/officer/operation/lesson").then(() => router.reload());
-    }
-
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
-    }
-
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
-
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
-    }
-
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
-    }
-
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
-
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
-    }
-
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
-    }
-
     const lessonSave = async (event) => {
-        openProcessingNotification();
+        openProcessingSaveNotification();
 
         event.preventDefault();
 
@@ -132,11 +133,11 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
         });
         const saveData = await saveRes.json();
         if (saveData.success) {
-            closeProcessingNotification();
-            openSuccessNotification()
+            closeProcessingSaveNotification();
+            openSuccessSaveNotification();
         } else {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingSaveNotification();
+            openFailSaveNotification();
         }
     }
 
@@ -252,22 +253,22 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
                                 </div>
 
                                 <ProcessNotification
-                                    isOpen={isOpenProcessingNotification}
-                                    closeNotification={closeProcessingNotification}
+                                    isOpen={isOpenProcessingSaveNotification}
+                                    closeNotification={closeProcessingSaveNotification}
                                     title="Ders Ekleme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
-                                    isOpen={isOpenSuccessNotification}
-                                    closeNotification={closeSuccessNotification}
+                                    isOpen={isOpenSuccessSaveNotification}
+                                    closeNotification={closeSuccessSaveNotification}
                                     title="Ders Ekleme İşlemi Başarılı!"
                                     description="Ders Ekleme İşlemi başarıyla gerçekleşti.
                                     Mesaj penceresini kapattıktan sonra bölüm listeleme ekranına yönlendirileceksiniz."
                                 />
 
                                 <FailNotification
-                                    isOpen={isOpenFailNotification}
-                                    closeNotification={closeFailNotification}
+                                    isOpen={isOpenFailSaveNotification}
+                                    closeNotification={closeFailSaveNotification}
                                     title="Ders Ekleme İşlemi Başarısız!"
                                     description="Lütfen girdiğiniz verileri kontrol ediniz.
                                     Verilerinizi doğru girdiyseniz
