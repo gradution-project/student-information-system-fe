@@ -60,37 +60,37 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
 
     let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
 
-    function closeProcessingNotificationActivateNotification() {
+    function closeProcessingActivateNotification() {
         setIsOpenProcessingActivateNotification(false);
     }
 
-    function openProcessingNotificationActivateNotification() {
+    function openProcessingActivateNotification() {
         setIsOpenProcessingActivateNotification(true);
     }
 
     let [isOpenSuccessActivateNotification, setIsOpenSuccessActivateNotification] = useState(false);
 
-    function closeSuccessNotificationActivateNotification() {
+    function closeSuccessActivateNotification() {
         setIsOpenSuccessActivateNotification(false);
         router.reload();
     }
 
-    function openSuccessNotificationActivateNotification() {
+    function openSuccessActivateNotification() {
         setIsOpenSuccessActivateNotification(true);
     }
 
     let [isOpenFailActivateNotification, setIsOpenFailActivateNotification] = useState(false);
 
-    function closeFailNotificationActivateNotification() {
+    function closeFailActivateNotification() {
         setIsOpenFailActivateNotification(false);
     }
 
-    function openFailNotificationActivateNotification() {
+    function openFailActivateNotification() {
         setIsOpenFailActivateNotification(true);
     }
 
     const facultyActivate = async (event) => {
-        openProcessingNotificationActivateNotification();
+        openProcessingActivateNotification();
 
         event.preventDefault()
         const activateRes = await fetch(`${SIS_API_URL}/faculty/activate`, {
@@ -105,48 +105,48 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
         });
         const activateData = await activateRes.json();
         if (activateData.success) {
-            closeProcessingNotificationActivateNotification();
-            openSuccessNotificationActivateNotification()
+            closeProcessingActivateNotification();
+            openSuccessActivateNotification()
         } else {
-            closeProcessingNotificationActivateNotification();
-            openFailNotificationActivateNotification();
+            closeProcessingActivateNotification();
+            openFailActivateNotification();
         }
     }
 
 
     let [isOpenProcessingPassivateNotification, setIsOpenProcessingPassivateNotification] = useState(false);
 
-    function closeProcessingNotificationPassivateNotification() {
+    function closeProcessingPassivateNotification() {
         setIsOpenProcessingPassivateNotification(false);
     }
 
-    function openProcessingNotificationPassivateNotification() {
+    function openProcessingPassivateNotification() {
         setIsOpenProcessingPassivateNotification(true);
     }
 
     let [isOpenSuccessPassivateNotification, setIsOpenSuccessPassivateNotification] = useState(false);
 
-    function closeSuccessNotificationPassivateNotification() {
+    function closeSuccessPassivateNotification() {
         setIsOpenSuccessPassivateNotification(false);
         router.reload();
     }
 
-    function openSuccessNotificationPassivateNotification() {
+    function openSuccessPassivateNotification() {
         setIsOpenSuccessPassivateNotification(true);
     }
 
     let [isOpenFailPassivateNotification, setIsOpenFailPassivateNotification] = useState(false);
 
-    function closeFailNotificationPassivateNotification() {
+    function closeFailPassivateNotification() {
         setIsOpenFailPassivateNotification(false);
     }
 
-    function openFailNotificationPassivateNotification() {
+    function openFailPassivateNotification() {
         setIsOpenFailPassivateNotification(true);
     }
 
     const facultyPassivate = async (event) => {
-        openProcessingNotificationPassivateNotification();
+        openProcessingPassivateNotification();
 
         event.preventDefault()
         const passivateRes = await fetch(`${SIS_API_URL}/faculty/passivate`, {
@@ -161,48 +161,48 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
         });
         const passivateData = await passivateRes.json();
         if (passivateData.success) {
-            closeProcessingNotificationPassivateNotification();
-            openSuccessNotificationPassivateNotification();
+            closeProcessingPassivateNotification();
+            openSuccessPassivateNotification();
         } else {
-            closeProcessingNotificationPassivateNotification();
-            openFailNotificationPassivateNotification();
+            closeProcessingPassivateNotification();
+            openFailPassivateNotification();
         }
     }
 
 
     let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
 
-    function closeProcessingNotificationDeleteNotification() {
+    function closeProcessingDeleteNotification() {
         setIsOpenProcessingDeleteNotification(false);
     }
 
-    function openProcessingNotificationDeleteNotification() {
+    function openProcessingDeleteNotification() {
         setIsOpenProcessingDeleteNotification(true);
     }
 
     let [isOpenSuccessDeleteNotification, setIsOpenSuccessDeleteNotification] = useState(false);
 
-    function closeSuccessNotificationDeleteNotification() {
+    function closeSuccessDeleteNotification() {
         setIsOpenSuccessDeleteNotification(false);
         router.reload();
     }
 
-    function openSuccessNotificationDeleteNotification() {
+    function openSuccessDeleteNotification() {
         setIsOpenSuccessDeleteNotification(true);
     }
 
     let [isOpenFailDeleteNotification, setIsOpenFailDeleteNotification] = useState(false);
 
-    function closeFailNotificationDeleteNotification() {
+    function closeFailDeleteNotification() {
         setIsOpenFailDeleteNotification(false);
     }
 
-    function openFailNotificationDeleteNotification() {
+    function openFailDeleteNotification() {
         setIsOpenFailDeleteNotification(true);
     }
 
     const facultyDelete = async (event) => {
-        openProcessingNotificationDeleteNotification();
+        openProcessingDeleteNotification();
 
         event.preventDefault()
         const deleteRes = await fetch(`${SIS_API_URL}/faculty/delete`, {
@@ -217,11 +217,11 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
         });
         const deleteData = await deleteRes.json();
         if (deleteData.success) {
-            closeProcessingNotificationDeleteNotification();
-            openSuccessNotificationDeleteNotification()
+            closeProcessingDeleteNotification();
+            openSuccessDeleteNotification()
         } else {
-            closeProcessingNotificationDeleteNotification();
-            openFailNotificationDeleteNotification();
+            closeProcessingDeleteNotification();
+            openFailDeleteNotification();
         }
     }
 
@@ -423,20 +423,20 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
                                  */}
                                 <ProcessNotification
                                     isOpen={isOpenProcessingActivateNotification}
-                                    closeNotification={closeProcessingNotificationActivateNotification}
+                                    closeNotification={closeProcessingActivateNotification}
                                     title="Fakülte Aktifleştirme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessActivateNotification}
-                                    closeNotification={closeSuccessNotificationActivateNotification}
+                                    closeNotification={closeSuccessActivateNotification}
                                     title="Fakülte Aktifleştime İşlemi Başarılı!"
                                     description="Fakülte Aktifleştirildi."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailActivateNotification}
-                                    closeNotification={closeFailNotificationActivateNotification}
+                                    closeNotification={closeFailActivateNotification}
                                     title="Fakülte Aktifleştirme İşlemi Başarısız!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
@@ -446,20 +446,20 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
                                  */}
                                 <ProcessNotification
                                     isOpen={isOpenProcessingPassivateNotification}
-                                    closeNotification={closeProcessingNotificationPassivateNotification}
+                                    closeNotification={closeProcessingPassivateNotification}
                                     title="Fakülte Bilgi Güncelleme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessPassivateNotification}
-                                    closeNotification={closeSuccessNotificationPassivateNotification}
+                                    closeNotification={closeSuccessPassivateNotification}
                                     title="Fakülte Pasifleştirme İşlemi Başarılı!"
                                     description="Fakülte Pasifleştirildi."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailPassivateNotification}
-                                    closeNotification={closeFailNotificationPassivateNotification}
+                                    closeNotification={closeFailPassivateNotification}
                                     title="Fakülte Pasifleştirme İşlemi Başarısız!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
@@ -469,20 +469,20 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
                                  */}
                                 <ProcessNotification
                                     isOpen={isOpenProcessingDeleteNotification}
-                                    closeNotification={closeProcessingNotificationDeleteNotification}
+                                    closeNotification={closeProcessingDeleteNotification}
                                     title="Fakülte Silme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessDeleteNotification}
-                                    closeNotification={closeSuccessNotificationDeleteNotification}
+                                    closeNotification={closeSuccessDeleteNotification}
                                     title="Fakülte Sime İşlemi Başarılı!"
                                     description="Fakülte Silindi."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailDeleteNotification}
-                                    closeNotification={closeFailNotificationDeleteNotification}
+                                    closeNotification={closeFailDeleteNotification}
                                     title="Fakülte Silme İşlemi Başarısız!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
