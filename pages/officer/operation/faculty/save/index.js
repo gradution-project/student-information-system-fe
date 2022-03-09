@@ -38,46 +38,47 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
 
     const router = useRouter();
 
+
+    let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
+
+    function closeSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(false);
+        router.push("/officer/operation/faculty").then(() => router.reload());
+    }
+
+    function openSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(true);
+    }
+
+    let [isOpenFailSaveNotification, setIsOpenFailSaveNotification] = useState(false);
+
+    function closeFailSaveNotification() {
+        setIsOpenFailSaveNotification(false);
+    }
+
+    function openFailSaveNotification() {
+        setIsOpenFailSaveNotification(true);
+    }
+
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
+
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
+    }
+
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
+    }
+
+
     const [facultyName, setFacultyName] = useState();
     const changeFacultyName = event => {
         const facultyName = event.target.value;
         setFacultyName(facultyName);
     }
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
-
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
-        router.push("/officer/operation/faculty").then(() => router.reload());
-    }
-
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
-    }
-
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
-
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
-    }
-
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
-    }
-
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
-
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
-    }
-
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
-    }
-
     const facultySave = async (event) => {
-
-        openProcessingNotification();
+        openProcessingSaveNotification();
 
         event.preventDefault();
 
@@ -95,11 +96,11 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
         });
         const saveData = await saveRes.json();
         if (saveData.success) {
-            closeProcessingNotification();
-            openSuccessNotification()
+            closeProcessingSaveNotification();
+            openSuccessSaveNotification();
         } else {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingSaveNotification();
+            openFailSaveNotification();
         }
     }
 
@@ -145,22 +146,22 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
                         </div>
 
                         <ProcessNotification
-                            isOpen={isOpenProcessingNotification}
-                            closeNotification={closeProcessingNotification}
+                            isOpen={isOpenProcessingSaveNotification}
+                            closeNotification={closeProcessingSaveNotification}
                             title="Bölüm Ekleme İsteğiniz İşleniyor..."
                         />
 
                         <SuccessNotification
-                            isOpen={isOpenSuccessNotification}
-                            closeNotification={closeSuccessNotification}
+                            isOpen={isOpenSuccessSaveNotification}
+                            closeNotification={closeSuccessSaveNotification}
                             title="Bölüm Ekleme İşlemi Başarılı!"
                             description="Bölüm Ekleme İşlemi başarıyla gerçekleşti.
                             Mesaj penceresini kapattıktan sonra bölüm listeleme ekranına yönlendirileceksiniz."
                         />
 
                         <FailNotification
-                            isOpen={isOpenFailNotification}
-                            closeNotification={closeFailNotification}
+                            isOpen={isOpenFailSaveNotification}
+                            closeNotification={closeFailSaveNotification}
                             title="Bölüm Ekleme İşlemi Başarısız!"
                             description="Lütfen girdiğiniz verileri kontrol ediniz.
                             Verilerinizi doğru girdiyseniz
