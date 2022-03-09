@@ -38,6 +38,16 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
 
     const router = useRouter();
 
+    let [isOpenProcessingAssignmentNotification, setIsOpenProcessingAssignmentNotification] = useState(false);
+
+    function closeProcessingAssignmentNotification() {
+        setIsOpenProcessingAssignmentNotification(false);
+    }
+
+    function openProcessingAssignmentNotification() {
+        setIsOpenProcessingAssignmentNotification(true);
+    }
+
     let [isOpenSuccessAssignmentNotification, setIsOpenSuccessAssignmentNotification] = useState(false);
 
     function closeSuccessAssignmentNotification() {
@@ -57,16 +67,6 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
 
     function openFailAssignmentNotification() {
         setIsOpenFailAssignmentNotification(true);
-    }
-
-    let [isOpenProcessingAssignmentNotification, setIsOpenProcessingAssignmentNotification] = useState(false);
-
-    function closeProcessingAssignmentNotification() {
-        setIsOpenProcessingAssignmentNotification(false);
-    }
-
-    function openProcessingAssignmentNotification() {
-        setIsOpenProcessingAssignmentNotification(true);
     }
 
 
