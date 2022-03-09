@@ -1,11 +1,13 @@
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
 import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../../../../public/constants/student";
 import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
 import UnauthorizedAccessPage from "../../../../../../401";
+import ProcessNotification from "../../../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../../../public/notifications/success";
+import FailNotification from "../../../../../../../public/notifications/fail";
 
 export async function getServerSideProps(context) {
     const officerId = getOfficerNumberWithContext(context)
@@ -133,195 +135,39 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
 
     const router = useRouter();
 
-    let [isOpenSuccessActive, setIsOpenSuccessActive] = useState(false);
+    let [isOpenProcessingGraduateNotification, setIsOpenProcessingGraduateNotification] = useState(false);
 
-    function closeSuccessModalActive() {
-        setIsOpenSuccessActive(false);
-        router.reload();
+    function closeProcessingGraduateNotification() {
+        setIsOpenProcessingGraduateNotification(false);
     }
 
-    function openSuccessModalActive() {
-        setIsOpenSuccessActive(true);
+    function openProcessingGraduateNotification() {
+        setIsOpenProcessingGraduateNotification(true);
     }
 
-    let [isOpenFailActive, setIsOpenFailActive] = useState(false);
+    let [isOpenSuccessGraduateNotification, setIsOpenSuccessGraduateNotification] = useState(false);
 
-    function closeFailModalActive() {
-        setIsOpenFailActive(false);
-    }
-
-    function openFailModalActive() {
-        setIsOpenFailActive(true);
-    }
-
-    let [isOpenProcessingActive, setIsOpenProcessingActive] = useState(false);
-
-    function closeProcessingModalActive() {
-        setIsOpenProcessingActive(false);
-    }
-
-    function openProcessingModalActive() {
-        setIsOpenProcessingActive(true);
-    }
-
-    let [isOpenSuccessGraduate, setIsOpenSuccessGraduate] = useState(false);
-
-    function closeSuccessModalGraduate() {
-        setIsOpenSuccessGraduate(false);
+    function closeSuccessGraduateNotification() {
+        setIsOpenSuccessGraduateNotification(false);
         router.push("/officer/operation/student").then(() => router.reload());
     }
 
-    function openSuccessModalGraduate() {
-        setIsOpenSuccessGraduate(true);
+    function openSuccessGraduateNotification() {
+        setIsOpenSuccessGraduateNotification(true);
     }
 
-    let [isOpenFailGraduate, setIsOpenFailGraduate] = useState(false);
+    let [isOpenFailGraduateNotification, setIsOpenFailGraduateNotification] = useState(false);
 
-    function closeFailModalGraduate() {
-        setIsOpenFailGraduate(false);
+    function closeFailGraduateNotification() {
+        setIsOpenFailGraduateNotification(false);
     }
 
-    function openFailModalGraduate() {
-        setIsOpenFailGraduate(true);
+    function openFailGraduateNotification() {
+        setIsOpenFailGraduateNotification(true);
     }
-
-    let [isOpenProcessingGraduate, setIsOpenProcessingGraduate] = useState(false);
-
-    function closeProcessingModalGraduate() {
-        setIsOpenProcessingGraduate(false);
-    }
-
-    function openProcessingModalGraduate() {
-        setIsOpenProcessingGraduate(true);
-    }
-
-    let [isOpenSuccessPassivate, setIsOpenSuccessPassivate] = useState(false);
-
-    function closeSuccessModalPassivate() {
-        setIsOpenSuccessPassivate(false);
-        router.reload();
-    }
-
-    function openSuccessModalPassivate() {
-        setIsOpenSuccessPassivate(true);
-    }
-
-    let [isOpenFailPassivate, setIsOpenFailPassivate] = useState(false);
-
-    function closeFailModalPassivate() {
-        setIsOpenFailPassivate(false);
-    }
-
-    function openFailModalPassivate() {
-        setIsOpenFailPassivate(true);
-    }
-
-    let [isOpenProcessingPassivate, setIsOpenProcessingPassivate] = useState(false);
-
-    function closeProcessingModalPassivate() {
-        setIsOpenProcessingPassivate(false);
-    }
-
-    function openProcessingModalPassivate() {
-        setIsOpenProcessingPassivate(true);
-    }
-
-    let [isOpenSuccessDelete, setIsOpenSuccessDelete] = useState(false);
-
-    function closeSuccessModalDelete() {
-        setIsOpenSuccessDelete(false);
-        router.reload();
-    }
-
-    function openSuccessModalDelete() {
-        setIsOpenSuccessDelete(true);
-    }
-
-    let [isOpenFailDelete, setIsOpenFailDelete] = useState(false);
-
-    function closeFailModalDelete() {
-        setIsOpenFailDelete(false);
-    }
-
-    function openFailModalDelete() {
-        setIsOpenFailDelete(true);
-    }
-
-    let [isOpenProcessingDelete, setIsOpenProcessingDelete] = useState(false);
-
-    function closeProcessingModalDelete() {
-        setIsOpenProcessingDelete(false);
-    }
-
-    function openProcessingModalDelete() {
-        setIsOpenProcessingDelete(true);
-    }
-
-    let [isOpenSuccessAcademic, setIsOpenSuccessAcademic] = useState(false);
-
-    function closeSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(false);
-        router.reload();
-    }
-
-    function openSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(true);
-    }
-
-    let [isOpenFailAcademic, setIsOpenFailAcademic] = useState(false);
-
-    function closeFailModalAcademic() {
-        setIsOpenFailAcademic(false);
-    }
-
-    function openFailModalAcademic() {
-        setIsOpenFailAcademic(true);
-    }
-
-    let [isOpenProcessingAcademic, setIsOpenProcessingAcademic] = useState(false);
-
-    function closeProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(false);
-    }
-
-    function openProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(true);
-    }
-
-    let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
-
-    function closeSuccessModalPersonal() {
-        setIsOpenSuccessPersonal(false);
-        router.reload();
-    }
-
-    function openSuccessModalPersonal() {
-        setIsOpenSuccessPersonal(true);
-    }
-
-    let [isOpenFailPersonal, setIsOpenFailPersonal] = useState(false);
-
-    function closeFailModalPersonal() {
-        setIsOpenFailPersonal(false);
-    }
-
-    function openFailModalPersonal() {
-        setIsOpenFailPersonal(true);
-    }
-
-    let [isOpenProcessingPersonal, setIsOpenProcessingPersonal] = useState(false);
-
-    function closeProcessingModalPersonal() {
-        setIsOpenProcessingPersonal(false);
-    }
-
-    function openProcessingModalPersonal() {
-        setIsOpenProcessingPersonal(true);
-    }
-
 
     const studentGraduate = async (event) => {
-        openProcessingModalGraduate();
+        openProcessingGraduateNotification();
 
         event.preventDefault()
         const graduateRes = await fetch(`${SIS_API_URL}/student/graduate`, {
@@ -336,16 +182,48 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         });
         const graduateData = await graduateRes.json();
         if (graduateData.success) {
-            closeProcessingModalGraduate();
-            openSuccessModalGraduate()
+            closeProcessingGraduateNotification();
+            openSuccessGraduateNotification();
         } else {
-            closeProcessingModalGraduate();
-            openFailModalGraduate();
+            closeProcessingGraduateNotification();
+            openFailGraduateNotification();
         }
     }
 
+
+    let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
+
+    function closeProcessingActivateNotification() {
+        setIsOpenProcessingActivateNotification(false);
+    }
+
+    function openProcessingActivateNotification() {
+        setIsOpenProcessingActivateNotification(true);
+    }
+
+    let [isOpenSuccessActivateNotification, setIsOpenSuccessActivateNotification] = useState(false);
+
+    function closeSuccessActivateNotification() {
+        setIsOpenSuccessActivateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessActivateNotification() {
+        setIsOpenSuccessActivateNotification(true);
+    }
+
+    let [isOpenFailActivateNotification, setIsOpenFailActivateNotification] = useState(false);
+
+    function closeFailActivateNotification() {
+        setIsOpenFailActivateNotification(false);
+    }
+
+    function openFailActivateNotification() {
+        setIsOpenFailActivateNotification(true);
+    }
+
     const studentActivate = async (event) => {
-        openProcessingModalActive();
+        openProcessingActivateNotification();
 
         event.preventDefault()
         const activateRes = await fetch(`${SIS_API_URL}/student/activate`, {
@@ -360,16 +238,48 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         });
         const activateData = await activateRes.json();
         if (activateData.success) {
-            closeProcessingModalActive();
-            openSuccessModalActive()
+            closeProcessingActivateNotification();
+            openSuccessActivateNotification();
         } else {
-            closeProcessingModalActive();
-            openFailModalActive();
+            closeProcessingActivateNotification();
+            openFailActivateNotification();
         }
     }
 
+
+    let [isOpenProcessingPassivateNotification, setIsOpenProcessingPassivateNotification] = useState(false);
+
+    function closeProcessingPassivateNotification() {
+        setIsOpenProcessingPassivateNotification(false);
+    }
+
+    function openProcessingPassivateNotification() {
+        setIsOpenProcessingPassivateNotification(true);
+    }
+
+    let [isOpenSuccessPassivateNotification, setIsOpenSuccessPassivateNotification] = useState(false);
+
+    function closeSuccessPassivateNotification() {
+        setIsOpenSuccessPassivateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessPassivateNotification() {
+        setIsOpenSuccessPassivateNotification(true);
+    }
+
+    let [isOpenFailPassivateNotification, setIsOpenFailPassivateNotification] = useState(false);
+
+    function closeFailPassivateNotification() {
+        setIsOpenFailPassivateNotification(false);
+    }
+
+    function openFailPassivateNotification() {
+        setIsOpenFailPassivateNotification(true);
+    }
+
     const studentPassivate = async (event) => {
-        openProcessingModalPassivate();
+        openProcessingPassivateNotification();
 
         event.preventDefault()
         const passivateRes = await fetch(`${SIS_API_URL}/student/passivate`, {
@@ -384,16 +294,48 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         });
         const passivateData = await passivateRes.json();
         if (passivateData.success) {
-            closeProcessingModalPassivate();
-            openSuccessModalPassivate()
+            closeProcessingPassivateNotification();
+            openSuccessPassivateNotification();
         } else {
-            closeProcessingModalPassivate();
-            openFailModalPassivate();
+            closeProcessingPassivateNotification();
+            openFailPassivateNotification();
         }
     }
 
+
+    let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
+
+    function closeProcessingDeleteNotification() {
+        setIsOpenProcessingDeleteNotification(false);
+    }
+
+    function openProcessingDeleteNotification() {
+        setIsOpenProcessingDeleteNotification(true);
+    }
+
+    let [isOpenSuccessDeleteNotification, setIsOpenSuccessDeleteNotification] = useState(false);
+
+    function closeSuccessDeleteNotification() {
+        setIsOpenSuccessDeleteNotification(false);
+        router.reload();
+    }
+
+    function openSuccessDeleteNotification() {
+        setIsOpenSuccessDeleteNotification(true);
+    }
+
+    let [isOpenFailDeleteNotification, setIsOpenFailDeleteNotification] = useState(false);
+
+    function closeFailDeleteNotification() {
+        setIsOpenFailDeleteNotification(false);
+    }
+
+    function openFailDeleteNotification() {
+        setIsOpenFailDeleteNotification(true);
+    }
+
     const studentDelete = async (event) => {
-        openProcessingModalDelete();
+        openProcessingDeleteNotification();
 
         event.preventDefault()
         const deleteRes = await fetch(`${SIS_API_URL}/student/delete`, {
@@ -408,16 +350,49 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         });
         const deleteData = await deleteRes.json();
         if (deleteData.success) {
-            closeProcessingModalDelete();
-            openSuccessModalDelete()
+            closeProcessingDeleteNotification();
+            openSuccessDeleteNotification();
         } else {
-            closeProcessingModalDelete();
-            openFailModalDelete();
+            closeProcessingDeleteNotification();
+            openFailDeleteNotification();
         }
     }
 
+
+    let [isOpenProcessingAcademicInfoUpdateNotification, setIsOpenProcessingAcademicInfoUpdateNotification] = useState(false);
+
+    function closeProcessingAcademicInfoUpdateNotification() {
+        setIsOpenProcessingAcademicInfoUpdateNotification(false);
+    }
+
+    function openProcessingAcademicInfoUpdateNotification() {
+        setIsOpenProcessingAcademicInfoUpdateNotification(true);
+    }
+
+    let [isOpenSuccessAcademicInfoUpdateNotification, setIsOpenSuccessAcademicInfoUpdateNotification] = useState(false);
+
+    function closeSuccessAcademicInfoUpdateNotification() {
+        setIsOpenSuccessAcademicInfoUpdateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessAcademicInfoUpdateNotification() {
+        setIsOpenSuccessAcademicInfoUpdateNotification(true);
+    }
+
+    let [isOpenFailAcademicInfoUpdateNotification, setIsOpenFailAcademicInfoUpdateNotification] = useState(false);
+
+    function closeFailAcademicInfoUpdateNotification() {
+        setIsOpenFailAcademicInfoUpdateNotification(false);
+    }
+
+    function openFailAcademicInfoUpdateNotification() {
+        setIsOpenFailAcademicInfoUpdateNotification(true);
+    }
+
     const studentUpdateAcademic = async (event) => {
-        openProcessingModalAcademic();
+        openProcessingAcademicInfoUpdateNotification();
+
         event.preventDefault()
         const updateRes = await fetch(`${SIS_API_URL}/student/update/academic-info/${studentId}`, {
             headers: {'Content-Type': 'application/json'},
@@ -435,16 +410,48 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         });
         const updateAcademicData = await updateRes.json();
         if (updateAcademicData.success) {
-            closeProcessingModalAcademic();
-            openSuccessModalAcademic()
+            closeProcessingAcademicInfoUpdateNotification();
+            openSuccessAcademicInfoUpdateNotification();
         } else {
-            closeProcessingModalAcademic();
-            openFailModalAcademic();
+            closeProcessingAcademicInfoUpdateNotification();
+            openFailAcademicInfoUpdateNotification();
         }
     }
 
+
+    let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
+
+    function closeProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(false);
+    }
+
+    function openProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(true);
+    }
+
+    let [isOpenSuccessPersonalInfoUpdateNotification, setIsOpenSuccessPersonalInfoUpdateNotification] = useState(false);
+
+    function closeSuccessPersonalInfoUpdateNotification() {
+        setIsOpenSuccessPersonalInfoUpdateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessPersonalInfoUpdateNotification() {
+        setIsOpenSuccessPersonalInfoUpdateNotification(true);
+    }
+
+    let [isOpenFailPersonalInfoUpdateNotification, setIsOpenFailPersonalInfoUpdateNotification] = useState(false);
+
+    function closeFailPersonalInfoUpdateNotification() {
+        setIsOpenFailPersonalInfoUpdateNotification(false);
+    }
+
+    function openFailPersonalInfoUpdateNotification() {
+        setIsOpenFailPersonalInfoUpdateNotification(true);
+    }
+
     const studentUpdatePersonal = async (event) => {
-        openProcessingModalPersonal();
+        openProcessingPersonalInfoUpdateNotification();
 
         event.preventDefault()
         const updatePersonalRes = await fetch(`${SIS_API_URL}/student/update/personal-info/${studentId}`, {
@@ -467,11 +474,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         });
         const updatePersonalData = await updatePersonalRes.json();
         if (updatePersonalData.success) {
-            closeProcessingModalPersonal();
-            openSuccessModalPersonal()
+            closeProcessingPersonalInfoUpdateNotification();
+            openSuccessPersonalInfoUpdateNotification();
         } else {
-            closeProcessingModalPersonal();
-            openFailModalPersonal();
+            closeProcessingPersonalInfoUpdateNotification();
+            openFailPersonalInfoUpdateNotification();
         }
     }
     return (
@@ -688,7 +695,8 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 {studentClassLevels.map(sClassLevel => (
                                                     classLevel === sClassLevel.enum
                                                         ?
-                                                        <option value={sClassLevel.enum} selected>{sClassLevel.tr}</option>
+                                                        <option value={sClassLevel.enum}
+                                                                selected>{sClassLevel.tr}</option>
                                                         :
                                                         <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
@@ -831,13 +839,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                     let birthdayLength = e.target.value.length;
                                                     if (birthdayLength > 1 && birthdayLength < 3) {
                                                         if (e.target.value <= 31) {
-                                                            e.target.value =  e.target.value + ".";
+                                                            e.target.value = e.target.value + ".";
                                                         } else {
                                                             e.target.value = "";
                                                         }
                                                     }
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value =  e.target.value + ".";
+                                                        e.target.value = e.target.value + ".";
                                                     }
                                                     changeStudentBirthday(e)
                                                 }}
@@ -886,13 +894,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                         e.target.value = "+90 (" + e.target.value;
                                                     }
                                                     if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value =  e.target.value + ") ";
+                                                        e.target.value = e.target.value + ") ";
                                                     }
                                                     if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     changeStudentPhoneNumber(e)
                                                 }}
@@ -957,973 +965,151 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                         :
                                         null
                                 )}
-                                <Transition appear show={isOpenSuccessActive} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalActive}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailActive} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalActive}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                {/**
+                                 * Graduate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingGraduateNotification}
+                                    closeNotification={closeProcessingGraduateNotification}
+                                    title="Öğrenci Mezun Ediliyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğrenci kaydı
-                                                            silinmiş veya mezun olmuş olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessGraduateNotification}
+                                    closeNotification={closeSuccessGraduateNotification}
+                                    title="Öğrenci Mezun Edildi!"
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla gerçekleşti."
+                                />
 
-                                <Transition appear show={isOpenProcessingActive} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalActive}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <FailNotification
+                                    isOpen={isOpenFailGraduateNotification}
+                                    closeNotification={closeFailGraduateNotification}
+                                    title="Öğrenci Mezun Edilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kayıt Aktifleştirme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                {/**
+                                 * Activate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingActivateNotification}
+                                    closeNotification={closeProcessingActivateNotification}
+                                    title="Öğrenci Kaydı Aktifleştiriliyor..."
+                                />
 
-                                <Transition appear show={isOpenSuccessGraduate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalGraduate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessActivateNotification}
+                                    closeNotification={closeSuccessActivateNotification}
+                                    title="Öğrenci Kaydı Aktifleştirildi!"
+                                    description="Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Mezun İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Mezun İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailGraduate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalGraduate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <FailNotification
+                                    isOpen={isOpenFailActivateNotification}
+                                    closeNotification={closeFailActivateNotification}
+                                    title="Öğrenci Kaydı Aktifleştirilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Mezun İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğrenci
-                                                            kaydı silinmiş olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                {/**
+                                 * Passivate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingPassivateNotification}
+                                    closeNotification={closeProcessingPassivateNotification}
+                                    title="Öğrenci Kaydı Pasifleştiriliyor..."
+                                />
 
-                                <Transition appear show={isOpenProcessingGraduate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalGraduate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessPassivateNotification}
+                                    closeNotification={closeSuccessPassivateNotification}
+                                    title="Öğrenci Kaydı Pasifleştirildi!"
+                                    description="Öğrenci Kayıt Pasifleştirme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Mezun Etme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailPassivateNotification}
+                                    closeNotification={closeFailPassivateNotification}
+                                    title="Öğrenci Kaydı Pasifleştirilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                <Transition appear show={isOpenSuccessPassivate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalPassivate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                {/**
+                                 * Delete
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingDeleteNotification}
+                                    closeNotification={closeProcessingDeleteNotification}
+                                    title="Öğrenci Kaydı Siliniyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Dondurma İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessDeleteNotification}
+                                    closeNotification={closeSuccessDeleteNotification}
+                                    title="Öğrenci Kaydı Silindi!"
+                                    description="Öğrenci Kayıt Silme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailPassivate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalPassivate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <FailNotification
+                                    isOpen={isOpenFailDeleteNotification}
+                                    closeNotification={closeFailDeleteNotification}
+                                    title="Öğrenci Kaydı Silinemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Dondurma İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğrenci kaydı
-                                                            silinmiş veya öğrenci mezun olmuş olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                {/**
+                                 * Academic Info Update
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingAcademicInfoUpdateNotification}
+                                    closeNotification={closeProcessingAcademicInfoUpdateNotification}
+                                    title="Öğrenci Akademik Bilgileri Güncelleniyor..."
+                                />
 
-                                <Transition appear show={isOpenProcessingPassivate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalPassivate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessAcademicInfoUpdateNotification}
+                                    closeNotification={closeSuccessAcademicInfoUpdateNotification}
+                                    title="Öğrenci Akademik Bilgileri Güncellendi!"
+                                    description="Öğrenci Akademik Bilgi Güncelleme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kayıt Dondurma İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailAcademicInfoUpdateNotification}
+                                    closeNotification={closeFailAcademicInfoUpdateNotification}
+                                    title="Öğrenci Akademik Bilgileri Güncellenemedi!"
+                                    description="Lütfen girdiğiniz verileri kontrol ediniz.
+                                    Verilerinizi doğru girdiyseniz
+                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                <Transition appear show={isOpenSuccessDelete} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalDelete}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                {/**
+                                 * Personal Info Update
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingPersonalInfoUpdateNotification}
+                                    closeNotification={closeProcessingPersonalInfoUpdateNotification}
+                                    title="Öğrenci Kişisel Bilgileri Güncelleniyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Silme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Silme İşlemi başarıyla gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailDelete} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalDelete}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessPersonalInfoUpdateNotification}
+                                    closeNotification={closeSuccessPersonalInfoUpdateNotification}
+                                    title="Öğrenci Kişisel Bilgileri Güncellendi!"
+                                    description="Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Silme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingDelete} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalDelete}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kayıt Silme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenSuccessAcademic} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalAcademic}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Akademik Bilgi Güncellene İşlemi başarıyla
-                                                            gerçekleşti.
-
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailAcademic} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalAcademic}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingAcademic} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalAcademic}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenSuccessPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla
-                                                            gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailPersonalInfoUpdateNotification}
+                                    closeNotification={closeFailPersonalInfoUpdateNotification}
+                                    title="Öğrenci Kişisel Bilgileri Güncellenemedi!"
+                                    description="Lütfen girdiğiniz verileri kontrol ediniz.
+                                    Verilerinizi doğru girdiyseniz
+                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
                 </div>
             </div>
         </>

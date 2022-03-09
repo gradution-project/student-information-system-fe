@@ -1,13 +1,15 @@
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
-import {Dialog, Transition} from "@headlessui/react";
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
 import {
     getOfficerFacultyNumberWithContext,
     getOfficerNumberWithContext
 } from "../../../../../../../public/storage/officer";
 import UnauthorizedAccessPage from "../../../../../../401";
+import ProcessNotification from "../../../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../../../public/notifications/success";
+import FailNotification from "../../../../../../../public/notifications/fail";
 
 export async function getServerSideProps(context) {
     const officerId = getOfficerNumberWithContext(context)
@@ -78,39 +80,39 @@ export default function ExamScheduleFileSave({isPagePermissionSuccess, facultyId
         setExamScheduleFileRequest(formData);
     }
 
-    let [isOpenSaveSuccess, setIsOpenSaveSuccess] = useState(false);
+    let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
 
-    function closeSaveSuccessModal() {
-        setIsOpenSaveSuccess(false);
+    function closeSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(false);
     }
 
-    function openSaveSuccessModal() {
-        setIsOpenSaveSuccess(true);
+    function openSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(true);
     }
 
-    let [isOpenSaveFail, setIsOpenSaveFail] = useState(false);
+    let [isOpenFailSaveNotification, setIsOpenFailSaveNotification] = useState(false);
 
-    function closeSaveFailModal() {
-        setIsOpenSaveFail(false);
+    function closeFailSaveNotification() {
+        setIsOpenFailSaveNotification(false);
         router.reload();
     }
 
-    function openSaveFailModal() {
-        setIsOpenSaveFail(true);
+    function openFailSaveNotification() {
+        setIsOpenFailSaveNotification(true);
     }
 
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
 
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
     }
 
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
     }
 
     const examScheduleFileSave = async (event) => {
-        openProcessingModal();
+        openProcessingSaveNotification();
 
         event.preventDefault();
 
@@ -121,19 +123,20 @@ export default function ExamScheduleFileSave({isPagePermissionSuccess, facultyId
             });
             const saveData = await saveRes.json();
             if (saveData.success) {
-                closeProcessingModal();
-                openSaveSuccessModal();
+                closeProcessingSaveNotification();
+                openSuccessSaveNotification();
+
                 setIsFileUploaded(true);
                 setFileViewUrl(saveData.response.fileViewUrl)
                 setFileDownloadUrl(saveData.response.fileDownloadUrl)
                 setDepartmentName(saveData.response.departmentResponse.name)
             } else {
-                closeProcessingModal();
-                openSaveFailModal();
+                closeProcessingSaveNotification();
+                openFailSaveNotification();
             }
         } else {
-            closeProcessingModal();
-            openSaveFailModal();
+            closeProcessingSaveNotification();
+            openFailSaveNotification();
         }
     }
 
@@ -206,169 +209,32 @@ export default function ExamScheduleFileSave({isPagePermissionSuccess, facultyId
                 )}
                 <form className="px-4 py-5 max-w-4xl mx-auto space-y-6">
                     <div className="shadow overflow-hidden sm:rounded-md">
-                        <Transition appear show={isOpenSaveSuccess} as={Fragment}>
-                            <Dialog
-                                as="div"
-                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                onClose={closeSaveSuccessModal}
-                            >
-                                <div className="min-h-screen px-4 text-center">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Dialog.Overlay className="fixed inset-0"/>
-                                    </Transition.Child>
 
-                                    <span
-                                        className="inline-block h-screen align-middle"
-                                        aria-hidden="true"
-                                    >
-              &#8203;
-            </span>
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <div
-                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                            >
-                                                <div className="border bg-sis-success rounded-xl p-6">
-                                                    Dosya Yükleme İşlemi Başarılı!
-                                                </div>
-                                            </Dialog.Title>
-                                            <div className="mt-2">
-                                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Dosya Yükleme İşlemi başarıyla gerçekleşti.
-                                                    Mesaj penceresini kapattıktan sonra dosya listeleme
-                                                    ekranına yönlendirileceksiniz.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </Transition.Child>
-                                </div>
-                            </Dialog>
-                        </Transition>
-                        <Transition appear show={isOpenSaveFail} as={Fragment}>
-                            <Dialog
-                                as="div"
-                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                onClose={closeSaveFailModal}
-                            >
-                                <div className="min-h-screen px-4 text-center">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Dialog.Overlay className="fixed inset-0"/>
-                                    </Transition.Child>
+                        <ProcessNotification
+                            isOpen={isOpenProcessingSaveNotification}
+                            closeNotification={closeProcessingSaveNotification}
+                            title="Dosya Yükleme İsteğiniz İşleniyor..."
+                        />
 
-                                    <span
-                                        className="inline-block h-screen align-middle"
-                                        aria-hidden="true"
-                                    >
-              &#8203;
-            </span>
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <div
-                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                            >
-                                                <div className="border bg-sis-fail rounded-xl p-6">
-                                                    Dosya Yükleme İşlemi Başarısız!
-                                                </div>
-                                            </Dialog.Title>
-                                            <div className="mt-2">
-                                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Lütfen bölüm seçiminizi kontrol ediniz.
-                                                    Bölüm seçtiyseniz; bu bölüme ait sınav programı sistemde
-                                                    mevcut olabilir, tanımlı olan dosyayı sildikten sonra
-                                                    tekrar deneyerek sınav programı ekleyebilirsiniz veya
-                                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış
-                                                    olabilir, dosyayı yükleyerek yeniden deneyebilirsiniz.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </Transition.Child>
-                                </div>
-                            </Dialog>
-                        </Transition>
+                        <SuccessNotification
+                            isOpen={isOpenSuccessSaveNotification}
+                            closeNotification={closeSuccessSaveNotification}
+                            title="Dosya Yükleme İşlemi Başarılı!"
+                            description="Dosya Yükleme İşlemi başarıyla gerçekleşti.
+                            Mesaj penceresini kapattıktan sonra dosya listeleme
+                            ekranına yönlendirileceksiniz."
+                        />
 
-                        <Transition appear show={isOpenProcessing} as={Fragment}>
-                            <Dialog
-                                as="div"
-                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                onClose={closeProcessingModal}
-                            >
-                                <div className="min-h-screen px-4 text-center">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Dialog.Overlay className="fixed inset-0"/>
-                                    </Transition.Child>
-
-                                    <span
-                                        className="inline-block h-screen align-middle"
-                                        aria-hidden="true"
-                                    >
-              &#8203;
-            </span>
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <div
-                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                            >
-                                                İsteğiniz İşleniyor...
-                                            </Dialog.Title>
-                                        </div>
-                                    </Transition.Child>
-                                </div>
-                            </Dialog>
-                        </Transition>
+                        <FailNotification
+                            isOpen={isOpenFailSaveNotification}
+                            closeNotification={closeFailSaveNotification}
+                            title="Dosya Yükleme İşlemi Başarısız!"
+                            description="Lütfen bölüm seçiminizi kontrol ediniz.
+                            Bölüm seçtiyseniz; bu bölüme ait sınav programı sistemde mevcut olabilir,
+                            tanımlı olan dosyayı sildikten sonra tekrar deneyerek sınav programı ekleyebilirsiniz
+                            veya sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir,
+                            dosyayı yükleyerek yeniden deneyebilirsiniz."
+                        />
                     </div>
                 </form>
             </div>
