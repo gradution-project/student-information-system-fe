@@ -19,35 +19,35 @@ export default function OfficerForgotPassword({SIS_API_URL, SIS_FE_URL}) {
 
     const router = useRouter();
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingForgotPasswordNotification, setIsOpenProcessingForgotPasswordNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingForgotPasswordNotification() {
+        setIsOpenProcessingForgotPasswordNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingForgotPasswordNotification() {
+        setIsOpenProcessingForgotPasswordNotification(true);
     }
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+    let [isOpenSuccessForgotPasswordNotification, setIsOpenSuccessForgotPasswordNotification] = useState(false);
 
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
+    function closeSuccessForgotPasswordNotification() {
+        setIsOpenSuccessForgotPasswordNotification(false);
         router.push("/login/officer");
     }
 
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
+    function openSuccessForgotPasswordNotification() {
+        setIsOpenSuccessForgotPasswordNotification(true);
     }
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailForgotPasswordNotification, setIsOpenFailForgotPasswordNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailForgotPasswordNotification() {
+        setIsOpenFailForgotPasswordNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailForgotPasswordNotification() {
+        setIsOpenFailForgotPasswordNotification(true);
     }
 
     const [officerNumber, setOfficerNumber] = useState();
@@ -57,7 +57,7 @@ export default function OfficerForgotPassword({SIS_API_URL, SIS_FE_URL}) {
     }
 
     const officerForgotPassword = async (event) => {
-        openProcessingNotification();
+        openProcessingForgotPasswordNotification();
 
         event.preventDefault();
         const res = await fetch(`${SIS_API_URL}/officer/password-operation/forgot-password`, {
@@ -70,14 +70,14 @@ export default function OfficerForgotPassword({SIS_API_URL, SIS_FE_URL}) {
         });
         const data = await res.json();
         if (!data.success) {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingForgotPasswordNotification();
+            openFailForgotPasswordNotification();
         } else if (data.response.forgotPasswordSuccess) {
-            closeProcessingNotification();
-            openSuccessNotification();
+            closeProcessingForgotPasswordNotification();
+            openSuccessForgotPasswordNotification();
         } else {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingForgotPasswordNotification();
+            openFailForgotPasswordNotification();
         }
     }
 
@@ -147,21 +147,21 @@ export default function OfficerForgotPassword({SIS_API_URL, SIS_FE_URL}) {
 
 
                                     <ProcessNotification
-                                        isOpen={isOpenProcessingNotification}
-                                        closeNotification={closeProcessingNotification}
+                                        isOpen={isOpenProcessingForgotPasswordNotification}
+                                        closeNotification={closeProcessingForgotPasswordNotification}
                                         title="Şifremi Değiştirme Maili Gönderiliyor..."
                                     />
 
                                     <SuccessNotification
-                                        isOpen={isOpenSuccessNotification}
-                                        closeNotification={closeSuccessNotification}
+                                        isOpen={isOpenSuccessForgotPasswordNotification}
+                                        closeNotification={closeSuccessForgotPasswordNotification}
                                         title="Şifre Değiştirme İsteğiniz Başarılı!"
                                         description="Mail Adresinize gönderilen şifre ile hesabınıza giriş yapabilirsiniz."
                                     />
 
                                     <FailNotification
-                                        isOpen={isOpenFailNotification}
-                                        closeNotification={closeFailNotification}
+                                        isOpen={isOpenFailForgotPasswordNotification}
+                                        closeNotification={closeFailForgotPasswordNotification}
                                         title="Şifre Değiştirme İsteğiniz Başarısız!"
                                         description="Personel Numaranızı kontrol ediniz.
                                         Personel Numaranızı doğru girdiyseniz sistemsel bir
