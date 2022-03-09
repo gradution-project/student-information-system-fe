@@ -2,17 +2,14 @@ import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {
-    getOfficerFacultyNumberWithContext,
-    getOfficerNumberWithContext
-} from "../../../../../../../public/storage/officer";
 import UnauthorizedAccessPage from "../../../../../../401";
 import ProcessNotification from "../../../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
+import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -22,7 +19,7 @@ export async function getServerSideProps(context) {
     }
 
     const SIS_API_URL = process.env.SIS_API_URL;
-    const facultyId = getOfficerFacultyNumberWithContext(context);
+    const facultyId = SisOfficerStorage.getFacultyNumberWithContext(context);
     const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -41,7 +38,13 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function LessonScheduleFileSave({isPagePermissionSuccess, facultyId, operationUserId, SIS_API_URL, departments}) {
+export default function LessonScheduleFileSave({
+                                                   isPagePermissionSuccess,
+                                                   facultyId,
+                                                   operationUserId,
+                                                   SIS_API_URL,
+                                                   departments
+                                               }) {
 
     if (!isPagePermissionSuccess) {
         return (

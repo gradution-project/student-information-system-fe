@@ -3,14 +3,14 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {useState} from "react";
 import {useRouter} from "next/router";
 import {lessonCompulsory, lessonSemesters} from "../../../../../public/constants/lesson";
-import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../401";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -160,7 +160,7 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
                                         <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="name"
                                                    className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                               DERSİN ADI
+                                                DERSİN ADI
                                             </label>
                                             <input
                                                 onChange={changeLessonName}
@@ -172,20 +172,20 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
                                             />
                                         </div>
 
-                                            <div className="col-span-6 sm:col-span-3">
-                                                <label htmlFor="credit"
-                                                       className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                    DERSİN KREDİSİ
-                                                </label>
-                                                <input
-                                                    onChange={changeLessonCredit}
-                                                    type="text"
-                                                    name="credit"
-                                                    id="credit"
-                                                    required
-                                                    className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                />
-                                            </div>
+                                        <div className="col-span-6 sm:col-span-3">
+                                            <label htmlFor="credit"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                DERSİN KREDİSİ
+                                            </label>
+                                            <input
+                                                onChange={changeLessonCredit}
+                                                type="text"
+                                                name="credit"
+                                                id="credit"
+                                                required
+                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                            />
+                                        </div>
 
                                         <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="semester"
@@ -200,28 +200,30 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
                                             >
                                                 <option>Ders Yarıyılı Seçiniz...</option>
                                                 {lessonSemesters.map(lSemester => (
-                                                        <option key={lSemester.enum} value={lSemester.enum}>{lSemester.tr}</option>
+                                                    <option key={lSemester.enum}
+                                                            value={lSemester.enum}>{lSemester.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
 
-                                            <div className="col-span-6 sm:col-span-3">
-                                                <label htmlFor="compulsoryOrElective"
-                                                       className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                    DERS ZORUNLULUĞU
-                                                </label>
-                                                <select
-                                                    onChange={changeLessonCorE}
-                                                    id="compulsoryOrElective"
-                                                    name="compulsoryOrElective"
-                                                    className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                                >
-                                                    <option>Ders Durumunu Seçiniz...</option>
-                                                    {lessonCompulsory.map((lCompulsory) => (
-                                                        <option key={lCompulsory.enum} value={lCompulsory.enum}>{lCompulsory.tr}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                                        <div className="col-span-6 sm:col-span-3">
+                                            <label htmlFor="compulsoryOrElective"
+                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                DERS ZORUNLULUĞU
+                                            </label>
+                                            <select
+                                                onChange={changeLessonCorE}
+                                                id="compulsoryOrElective"
+                                                name="compulsoryOrElective"
+                                                className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                            >
+                                                <option>Ders Durumunu Seçiniz...</option>
+                                                {lessonCompulsory.map((lCompulsory) => (
+                                                    <option key={lCompulsory.enum}
+                                                            value={lCompulsory.enum}>{lCompulsory.tr}</option>
+                                                ))}
+                                            </select>
+                                        </div>
 
                                         <div className="col-span-6 sm:col-span-6">
                                             <label htmlFor="department"
@@ -237,7 +239,8 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, SI
                                             >
                                                 <option>Ders Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
+                                                    <option key={department.departmentId}
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>

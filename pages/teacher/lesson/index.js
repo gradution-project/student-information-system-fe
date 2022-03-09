@@ -1,10 +1,20 @@
 import SISTitle from "../../../public/components/page-titles";
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../public/constants/lesson";
+import SisTeacherStorage from "../../../public/storage/teacher/SisTeacherStorage";
+import UnauthorizedAccessPage from "../../401";
 
 export async function getServerSideProps(context) {
+    const teacherId = SisTeacherStorage.getNumberWithContext(context);
+    if (teacherId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
     const SIS_API_URL = process.env.SIS_API_URL;
-    const teacherId = context.req.cookies['teacherNumber']
     const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson/get/` + teacherId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
@@ -13,13 +23,21 @@ export async function getServerSideProps(context) {
     if (lessonsData.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 lessons: lessonsData.response
             }
         }
     }
 }
 
-export default function TeacherLessonList({lessons}) {
+export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
     return (
         <div>
             <SISTitle/>

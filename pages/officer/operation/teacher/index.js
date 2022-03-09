@@ -2,12 +2,12 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../public/constants/teacher";
-import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../401";
 
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {

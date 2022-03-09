@@ -2,9 +2,9 @@ import {LockClosedIcon} from '@heroicons/react/solid'
 import SISTitle from "../../../public/components/page-titles";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {saveOfficerData} from "../../../public/storage/officer";
 import ProcessNotification from "../../../public/notifications/process";
 import FailNotification from "../../../public/notifications/fail";
+import SisOfficerStorage from "../../../public/storage/officer/SisOfficerStorage";
 
 export async function getServerSideProps() {
     return {
@@ -70,7 +70,7 @@ export default function OfficerLogin({SIS_API_URL}) {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                await saveOfficerData(getData.response);
+                await SisOfficerStorage.saveData(getData.response);
                 closeProcessingLoginNotification();
                 await router.push("/officer");
             }

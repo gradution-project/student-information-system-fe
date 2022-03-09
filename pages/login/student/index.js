@@ -1,7 +1,7 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
 import SISTitle from "../../../public/components/page-titles";
 import {useState} from "react";
-import {saveStudentData} from "../../../public/storage/student";
+import SisStudentStorage from "../../../public/storage/student/SisStudentStorage";
 import ProcessNotification from "../../../public/notifications/process";
 import FailNotification from "../../../public/notifications/fail";
 import {useRouter} from "next/router";
@@ -68,7 +68,7 @@ export default function StudentLogin({SIS_API_URL}) {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                saveStudentData(getData.response)
+                await SisStudentStorage.saveData(getData.response);
                 closeProcessingLoginNotification();
                 await router.push("/student");
             }

@@ -2,7 +2,7 @@ import {LockClosedIcon} from '@heroicons/react/solid'
 import SISTitle from "../../../public/components/page-titles";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {saveTeacherData} from "../../../public/storage/teacher";
+import SisTeacherStorage from "../../../public/storage/teacher/SisTeacherStorage";
 import ProcessNotification from "../../../public/notifications/process";
 import FailNotification from "../../../public/notifications/fail";
 
@@ -68,7 +68,7 @@ export default function TeacherLogin({SIS_API_URL}) {
             });
             const getData = await getRes.json();
             if (getData.success) {
-                saveTeacherData(getData.response)
+                await SisTeacherStorage.saveData(getData.response)
                 closeProcessingLoginNotification();
                 await router.push("/teacher");
             }

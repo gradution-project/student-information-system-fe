@@ -3,14 +3,14 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {useState} from "react";
 import {useRouter} from "next/router";
 import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
-import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../401";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -367,7 +367,8 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Ünvan Seçiniz...</option>
                                                 {teacherDegrees.map(tDegree => (
-                                                        <option key={tDegree.enum} value={tDegree.enum}>{tDegree.tr}</option>
+                                                    <option key={tDegree.enum}
+                                                            value={tDegree.enum}>{tDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -386,7 +387,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Rol Seçiniz...</option>
                                                 {teacherRoles.map(tRole => (
-                                                        <option key={tRole.enum} value={tRole.enum}>{tRole.tr}</option>
+                                                    <option key={tRole.enum} value={tRole.enum}>{tRole.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -406,7 +407,8 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
+                                                    <option key={department.departmentId}
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
