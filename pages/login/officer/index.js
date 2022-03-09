@@ -17,24 +17,24 @@ export async function getServerSideProps() {
 
 export default function OfficerLogin({SIS_API_URL}) {
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingLoginNotification, setIsOpenProcessingLoginNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingLoginNotification() {
+        setIsOpenProcessingLoginNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingLoginNotification() {
+        setIsOpenProcessingLoginNotification(true);
     }
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailLoginNotification, setIsOpenFailLoginNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailLoginNotification() {
+        setIsOpenFailLoginNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailLoginNotification() {
+        setIsOpenFailLoginNotification(true);
     }
 
 
@@ -53,7 +53,7 @@ export default function OfficerLogin({SIS_API_URL}) {
     }
 
     const officerLogin = async (event) => {
-        openProcessingNotification();
+        openProcessingLoginNotification();
 
         event.preventDefault();
 
@@ -71,12 +71,12 @@ export default function OfficerLogin({SIS_API_URL}) {
             const getData = await getRes.json();
             if (getData.success) {
                 await saveOfficerData(getData.response);
-                closeProcessingNotification();
+                closeProcessingLoginNotification();
                 await router.push("/officer");
             }
         }
-        closeProcessingNotification();
-        openFailNotification();
+        closeProcessingLoginNotification();
+        openFailLoginNotification();
     }
 
     return (
@@ -167,14 +167,14 @@ export default function OfficerLogin({SIS_API_URL}) {
 
 
                                         <ProcessNotification
-                                            isOpen={isOpenProcessingNotification}
-                                            closeNotification={closeProcessingNotification}
+                                            isOpen={isOpenProcessingLoginNotification}
+                                            closeNotification={closeProcessingLoginNotification}
                                             title="Giriş Yapılıyor..."
                                         />
 
                                         <FailNotification
-                                            isOpen={isOpenFailNotification}
-                                            closeNotification={closeFailNotification}
+                                            isOpen={isOpenFailLoginNotification}
+                                            closeNotification={closeFailLoginNotification}
                                             title="Personel Numaranız veya Şifreniz Yanlış!"
                                             description="Personel Numaranızı veya Şifrenizi kontrol ediniz.
                                             Şifrenizi hatırlamıyorsanız şifremi unuttum ekranından sıfırlayabilirsiniz."
