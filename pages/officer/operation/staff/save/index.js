@@ -3,13 +3,13 @@ import OfficerNavbar from "../../../../../public/components/navbar/officer/offic
 import {useState} from "react";
 import {useRouter} from "next/router";
 import UnauthorizedAccessPage from "../../../../401";
-import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -330,7 +330,8 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Fakülte Seçiniz...</option>
                                                 {faculties.map((faculty) => (
-                                                        <option key={faculty.facultyId} value={faculty.facultyId}>{faculty.name}</option>
+                                                    <option key={faculty.facultyId}
+                                                            value={faculty.facultyId}>{faculty.name}</option>
                                                 ))}
                                             </select>
                                         </div>

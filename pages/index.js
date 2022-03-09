@@ -1,5 +1,5 @@
 import SISTitle from "../public/components/page-titles";
-import {getOfficerNumberWithContext} from "../public/storage/officer";
+import SisOfficerStorage from "../public/storage/officer/SisOfficerStorage";
 import {getTeacherNumberWithContext} from "../public/storage/teacher";
 import {getStudentNumberWithContext} from "../public/storage/student";
 
@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
         isTeacherLoginSuccess = false;
     }
 
-    const officerId = getOfficerNumberWithContext(context);
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     let isOfficerLoginSuccess = true;
     if (officerId === undefined) {
         isOfficerLoginSuccess = false;

@@ -2,11 +2,11 @@ import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../public/constants/student";
-import {getOfficerNumberWithContext} from "../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../401";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -111,9 +111,12 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                             {/*         alt=""/>*/}
                                                             {/*</div>*/}
                                                             <div className="ml-4">
-                                                                <div className="font-phenomenaBold text-xl text-sis-darkblue">{student.name} {student.surname}</div>
-                                                                <div className="font-phenomenaRegular text-lg text-gray-500">{student.studentId}</div>
-                                                                <div className="font-phenomenaExtraLight text-lg text-gray-600">{student.email}</div>
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.name} {student.surname}</div>
+                                                                <div
+                                                                    className="font-phenomenaRegular text-lg text-gray-500">{student.studentId}</div>
+                                                                <div
+                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>

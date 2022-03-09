@@ -3,14 +3,14 @@ import OfficerNavbar from "../../../../../../../public/components/navbar/officer
 import {useState} from "react";
 import {useRouter} from "next/router";
 import {officerStatuses} from "../../../../../../../public/constants/officer";
-import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
 import UnauthorizedAccessPage from "../../../../../../401";
 import ProcessNotification from "../../../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
+import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {

@@ -6,10 +6,10 @@ import ProcessNotification from "../../../../../../public/notifications/process"
 import SuccessNotification from "../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../public/notifications/fail";
 import UnauthorizedAccessPage from "../../../../../401";
-import {getOfficerNumberWithContext} from "../../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context);
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {

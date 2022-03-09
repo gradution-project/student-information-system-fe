@@ -2,13 +2,10 @@ import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import UnauthorizedAccessPage from "../../../../../401";
-import {
-    getOfficerFacultyNumberWithContext,
-    getOfficerNumberWithContext
-} from "../../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -18,7 +15,7 @@ export async function getServerSideProps(context) {
     }
 
     const SIS_API_URL = process.env.SIS_API_URL;
-    const facultyId = getOfficerFacultyNumberWithContext(context)
+    const facultyId = SisOfficerStorage.getFacultyNumberWithContext(context);
     const lessonScheduleFilesResponse = await fetch(`${SIS_API_URL}/lesson-schedule-file/faculty/` + facultyId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'

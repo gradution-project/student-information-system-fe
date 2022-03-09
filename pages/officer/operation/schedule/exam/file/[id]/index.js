@@ -2,14 +2,14 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
-import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../../../401";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../../../public/notifications/process";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -154,8 +154,8 @@ export default function ExamScheduleFileDetail({isPagePermissionSuccess, SIS_API
                                 closeNotification={closeFailDeleteNotification}
                                 title="Dosya Silme İşlemi Başarısız!"
                                 description="Sistemsel bir hatadan dolayı
-                                    isteğiniz sonuçlandıralamamış olabilir,
-                                    dosyayı silmeyi yeniden deneyebilirsiniz."
+                                isteğiniz sonuçlandıralamamış olabilir,
+                                dosyayı silmeyi yeniden deneyebilirsiniz."
                             />
                         </div>
                     </form>
