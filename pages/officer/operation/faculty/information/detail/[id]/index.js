@@ -226,39 +226,39 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
     }
 
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingUpdateNotification, setIsOpenProcessingUpdateNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingUpdateNotification() {
+        setIsOpenProcessingUpdateNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingUpdateNotification() {
+        setIsOpenProcessingUpdateNotification(true);
     }
 
-    let [isOpenSuccessNotification, setIsOpenSuccessNotification] = useState(false);
+    let [isOpenSuccessUpdateNotification, setIsOpenSuccessUpdateNotification] = useState(false);
 
-    function closeSuccessNotification() {
-        setIsOpenSuccessNotification(false);
+    function closeSuccessUpdateNotification() {
+        setIsOpenSuccessUpdateNotification(false);
         router.reload();
     }
 
-    function openSuccessNotification() {
-        setIsOpenSuccessNotification(true);
+    function openSuccessUpdateNotification() {
+        setIsOpenSuccessUpdateNotification(true);
     }
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailUpdateNotification, setIsOpenFailUpdateNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailUpdateNotification() {
+        setIsOpenFailUpdateNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailUpdateNotification() {
+        setIsOpenFailUpdateNotification(true);
     }
 
     const facultyUpdate = async (event) => {
-        openProcessingNotification();
+        openProcessingUpdateNotification();
 
         event.preventDefault()
         const updateRes = await fetch(`${SIS_API_URL}/faculty/update/${facultyId}`, {
@@ -275,11 +275,11 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
         });
         const updateData = await updateRes.json();
         if (updateData.success) {
-            closeProcessingNotification();
-            openSuccessNotification()
+            closeProcessingUpdateNotification();
+            openSuccessUpdateNotification();
         } else {
-            closeProcessingNotification();
-            openFailNotification();
+            closeProcessingUpdateNotification();
+            openFailUpdateNotification();
         }
     }
 
@@ -491,21 +491,21 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
                                  * Update
                                  */}
                                 <ProcessNotification
-                                    isOpen={isOpenProcessingNotification}
-                                    closeNotification={closeProcessingNotification}
+                                    isOpen={isOpenProcessingUpdateNotification}
+                                    closeNotification={closeProcessingUpdateNotification}
                                     title="Fakülte Bilgi Güncelleme İsteğiniz İşleniyor..."
                                 />
 
                                 <SuccessNotification
-                                    isOpen={isOpenSuccessNotification}
-                                    closeNotification={closeSuccessNotification}
+                                    isOpen={isOpenSuccessUpdateNotification}
+                                    closeNotification={closeSuccessUpdateNotification}
                                     title="Fakülte Bilgi Güncelleme İşlemi Başarılı!"
                                     description="Fakülte Bilgi Güncellene İşlemi başarıyla gerçekleşti."
                                 />
 
                                 <FailNotification
-                                    isOpen={isOpenFailNotification}
-                                    closeNotification={closeFailNotification}
+                                    isOpen={isOpenFailUpdateNotification}
+                                    closeNotification={closeFailUpdateNotification}
                                     title="Fakülte Bilgi Güncelleme İşlemi Başarısız!"
                                     description="Lütfen girdiğiniz verileri kontrol ediniz.
                                     Verilerinizi doğru girdiyseniz
