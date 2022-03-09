@@ -1,5 +1,5 @@
 
-export function clearCookies() {
+function clearAllCookies() {
     let cookies = document.cookie.split(";");
 
     for (let i = 0; i < cookies.length; i++) {
@@ -9,3 +9,7 @@ export function clearCookies() {
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
     }
 }
+// const SisStorage = {
+//     clearAllCookies
+// };
+// export default SisStorage;
