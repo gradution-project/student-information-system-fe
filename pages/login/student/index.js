@@ -16,24 +16,24 @@ export async function getServerSideProps() {
 
 export default function StudentLogin({SIS_API_URL}) {
 
-    let [isOpenProcessingNotification, setIsOpenProcessingNotification] = useState(false);
+    let [isOpenProcessingLoginNotification, setIsOpenProcessingLoginNotification] = useState(false);
 
-    function closeProcessingNotification() {
-        setIsOpenProcessingNotification(false);
+    function closeProcessingLoginNotification() {
+        setIsOpenProcessingLoginNotification(false);
     }
 
-    function openProcessingNotification() {
-        setIsOpenProcessingNotification(true);
+    function openProcessingLoginNotification() {
+        setIsOpenProcessingLoginNotification(true);
     }
 
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
+    let [isOpenFailLoginNotification, setIsOpenFailLoginNotification] = useState(false);
 
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
+    function closeFailLoginNotification() {
+        setIsOpenFailLoginNotification(false);
     }
 
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
+    function openFailLoginNotification() {
+        setIsOpenFailLoginNotification(true);
     }
 
     const [studentNumber, setStudentNumber] = useState();
@@ -51,7 +51,7 @@ export default function StudentLogin({SIS_API_URL}) {
     const router = useRouter();
 
     const studentLogin = async (event) => {
-        openProcessingNotification();
+        openProcessingLoginNotification();
 
         event.preventDefault();
 
@@ -69,12 +69,12 @@ export default function StudentLogin({SIS_API_URL}) {
             const getData = await getRes.json();
             if (getData.success) {
                 saveStudentData(getData.response)
-                closeProcessingNotification();
+                closeProcessingLoginNotification();
                 await router.push("/student");
             }
         }
-        closeProcessingNotification();
-        openFailNotification();
+        closeProcessingLoginNotification();
+        openFailLoginNotification();
     }
 
     return (
@@ -165,14 +165,14 @@ export default function StudentLogin({SIS_API_URL}) {
 
 
                                         <ProcessNotification
-                                            isOpen={isOpenProcessingNotification}
-                                            closeNotification={closeProcessingNotification}
+                                            isOpen={isOpenProcessingLoginNotification}
+                                            closeNotification={closeProcessingLoginNotification}
                                             title="Giriş Yapılıyor..."
                                         />
 
                                         <FailNotification
-                                            isOpen={isOpenFailNotification}
-                                            closeNotification={closeFailNotification}
+                                            isOpen={isOpenFailLoginNotification}
+                                            closeNotification={closeFailLoginNotification}
                                             title="Öğrenci Numaranız veya Şifreniz Yanlış!"
                                             description="Öğrenci Numaranızı veya Şifrenizi kontrol ediniz.
                                             Şifrenizi hatırlamıyorsanız şifremi unuttum ekranından sıfırlayabilirsiniz."
