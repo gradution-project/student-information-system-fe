@@ -1,13 +1,10 @@
 import SISTitle from "../../../../../public/components/page-titles";
 import StudentNavbar from "../../../../../public/components/navbar/student/student-navbar";
 import UnauthorizedAccessPage from "../../../../401";
-import {
-    getStudentDepartmentNumberWithContext,
-    getStudentNumberWithContext
-} from "../../../../../public/storage/student";
+import SisStudentStorage from "../../../../../public/storage/student/SisStudentStorage";
 
 export async function getServerSideProps(context) {
-    const studentId = getStudentNumberWithContext(context)
+    const studentId = SisStudentStorage.getNumberWithContext(context);
     if (studentId === undefined) {
         return {
             props: {
@@ -17,7 +14,7 @@ export async function getServerSideProps(context) {
     }
 
     const SIS_API_URL = process.env.SIS_API_URL;
-    const departmentId = getStudentDepartmentNumberWithContext(context);
+    const departmentId = SisStudentStorage.getDepartmentNumberWithContext(context);
     const lessonScheduleFileResponse = await fetch(`${SIS_API_URL}/lesson-schedule-file/department/` + departmentId, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'

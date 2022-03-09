@@ -1,10 +1,10 @@
 import SISTitle from "../public/components/page-titles";
 import SisOfficerStorage from "../public/storage/officer/SisOfficerStorage";
 import {getTeacherNumberWithContext} from "../public/storage/teacher";
-import {getStudentNumberWithContext} from "../public/storage/student";
+import SisStudentStorage from "../public/storage/student/SisStudentStorage";
 
 export async function getServerSideProps(context) {
-    const studentId = getStudentNumberWithContext(context)
+    const studentId = SisStudentStorage.getNumberWithContext(context);
     let isStudentLoginSuccess = true;
     if (studentId === undefined) {
         isStudentLoginSuccess = false;

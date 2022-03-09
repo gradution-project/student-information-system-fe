@@ -4,13 +4,13 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
 import UnauthorizedAccessPage from "../../../401";
-import {getStudentNumberWithContext} from "../../../../public/storage/student";
 import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
+import SisStudentStorage from "../../../../public/storage/student/SisStudentStorage";
 
 export async function getServerSideProps(context) {
-    const studentId = getStudentNumberWithContext(context)
+    const studentId = SisStudentStorage.getNumberWithContext(context);
     if (studentId === undefined) {
         return {
             props: {
