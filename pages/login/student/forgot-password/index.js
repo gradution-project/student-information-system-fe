@@ -148,7 +148,7 @@ export default function StudentForgotPassword({SIS_API_URL, SIS_FE_URL}) {
                                     <ProcessNotification
                                         isOpen={isOpenProcessingForgotPasswordNotification}
                                         closeNotification={closeProcessingForgotPasswordNotification}
-                                        title="İsteğiniz İşleniyor..."
+                                        title="Şifremi Değiştirme Maili Gönderiliyor..."
                                     />
 
                                     <SuccessNotification
