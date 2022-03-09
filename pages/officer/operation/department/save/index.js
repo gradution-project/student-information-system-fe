@@ -29,6 +29,7 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                operationUserId: officerId,
                 SIS_API_URL: SIS_API_URL,
                 faculties: facultyDatas.response
             }
@@ -37,7 +38,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, faculties}) {
+export default function DepartmentSave({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculties}) {
 
     if (!isPagePermissionSuccess) {
         return (
