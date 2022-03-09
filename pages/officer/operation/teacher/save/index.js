@@ -50,6 +50,16 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
 
     const router = useRouter();
 
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
+
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
+    }
+
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
+    }
+
     let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
 
     function closeSuccessSaveNotification() {
@@ -69,16 +79,6 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
 
     function openFailSaveNotification() {
         setIsOpenFailSaveNotification(true);
-    }
-
-    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
-
-    function closeProcessingSaveNotification() {
-        setIsOpenProcessingSaveNotification(false);
-    }
-
-    function openProcessingSaveNotification() {
-        setIsOpenProcessingSaveNotification(true);
     }
 
 
