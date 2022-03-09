@@ -57,6 +57,16 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
 
     const router = new useRouter();
 
+    let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
+
+    function closeProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(false);
+    }
+
+    function openProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(true);
+    }
+
     let [isOpenSuccessPersonalInfoUpdateNotification, setIsOpenSuccessPersonalInfoUpdateNotification] = useState(false);
 
     function closeSuccessPersonalInfoUpdateNotification() {
@@ -76,16 +86,6 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
 
     function openFailPersonalInfoUpdateNotification() {
         setIsOpenFailPersonalInfoUpdateNotification(true);
-    }
-
-    let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
-
-    function closeProcessingPersonalInfoUpdateNotification() {
-        setIsOpenProcessingPersonalInfoUpdateNotification(false);
-    }
-
-    function openProcessingPersonalInfoUpdateNotification() {
-        setIsOpenProcessingPersonalInfoUpdateNotification(true);
     }
 
     const [officerEmail, setOfficerEmail] = useState(personalInfoResponse.email);
