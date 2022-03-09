@@ -109,7 +109,7 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
             const data = await res.json();
             if (!data.success) {
                 closeProcessingChangePasswordNotification();
-                openFailNotiChangePasswordNotification();
+                openFailChangePasswordNotification();
             } else if (data.response.passwordChanged) {
                 closeProcessingChangePasswordNotification();
                 openSuccessChangePasswordNotification();
@@ -204,7 +204,7 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
                                         <ProcessNotification
                                             isOpen={isOpenProcessingChangePasswordNotification}
                                             closeNotification={closeProcessingChangePasswordNotification}
-                                            title="İsteğiniz İşleniyor..."
+                                            title="Şifre Değiştirme İsteğiniz İşleniyor..."
                                         />
 
                                         <SuccessNotification
