@@ -70,7 +70,8 @@ export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
             headers: {'Content-Type': 'application/json'},
             method: 'POST'
         });
-        if (!apiResult.success) {
+        const data = await apiResult.json();
+        if (!data.success) {
             closeProcessingForgotPasswordNotification();
             openFailForgotPasswordNotification();
         } else if (data.response.forgotPasswordSuccess) {
