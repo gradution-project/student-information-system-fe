@@ -52,9 +52,9 @@ export default function StudentLogin() {
         const loginData = await LoginController.studentLogin(studentNumber, password);
         if (loginData.response.loginSuccess) {
 
-            const getData = await StudentController.getStudentDetailByStudentId(studentNumber);
-            if (getData.success) {
-                await SisStudentStorage.saveData(getData.response);
+            const studentData = await StudentController.getStudentDetailByStudentId(studentNumber);
+            if (studentData.success) {
+                await SisStudentStorage.saveData(studentData.response);
                 closeProcessingLoginNotification();
                 await router.push("/student");
             }
