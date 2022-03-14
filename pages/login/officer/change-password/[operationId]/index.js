@@ -6,25 +6,21 @@ import FailNotification from "../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import PageNotFound from "../../../../404";
+import OfficerPasswordOperationController
+    from "../../../../../public/api/officer/password/OfficerPasswordOperationController";
 
 export async function getServerSideProps({query}) {
-    const SIS_API_URL = process.env.SIS_API_URL;
     const {operationId} = query;
-    const passwordOperationResponse = await fetch(`${SIS_API_URL}/officer/password-operation?operationId=${operationId}`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const passwordOperationData = await passwordOperationResponse.json();
+    const passwordOperationData = await OfficerPasswordOperationController.isPasswordChangeOperationEnabled(operationId);
     return {
         props: {
             isDataFound: passwordOperationData.success,
-            SIS_API_URL: SIS_API_URL,
             operationId: operationId
         }
     }
 }
 
-export default function OfficerChangePassword({isDataFound, SIS_API_URL, operationId}) {
+export default function OfficerChangePassword({isDataFound, operationId}) {
 
     if (!isDataFound) {
         return (
@@ -97,16 +93,7 @@ export default function OfficerChangePassword({isDataFound, SIS_API_URL, operati
         event.preventDefault();
 
         if (newPassword === newPasswordRepeat) {
-            const res = await fetch(`${SIS_API_URL}/officer/password-operation/change-password`, {
-                body: JSON.stringify({
-                    operationId: operationId,
-                    newPassword: newPassword,
-                    newPasswordRepeat: newPasswordRepeat
-                }),
-                headers: {'Content-Type': 'application/json'},
-                method: 'POST'
-            });
-            const data = await res.json();
+            const data = await OfficerPasswordOperationController.changePassword(operationId, newPassword, newPasswordRepeat);
             if (!data.success) {
                 closeProcessingChangePasswordNotification();
                 openFailChangePasswordNotification();
