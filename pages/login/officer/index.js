@@ -5,17 +5,10 @@ import {useRouter} from "next/router";
 import ProcessNotification from "../../../public/notifications/process";
 import FailNotification from "../../../public/notifications/fail";
 import SisOfficerStorage from "../../../public/storage/officer/SisOfficerStorage";
+import OfficerController from "../../../public/api/officer/OfficerController";
+import LoginController from "../../../public/api/login/LoginController";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL
-        }
-    }
-}
-
-
-export default function OfficerLogin({SIS_API_URL}) {
+export default function OfficerLogin() {
 
     let [isOpenProcessingLoginNotification, setIsOpenProcessingLoginNotification] = useState(false);
 
@@ -57,20 +50,12 @@ export default function OfficerLogin({SIS_API_URL}) {
 
         event.preventDefault();
 
-        const loginRes = await fetch(`${SIS_API_URL}/login/officer`, {
-            body: JSON.stringify({officerId: officerNumber, password: password}),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const loginData = await loginRes.json();
+        const loginData = await LoginController.officerLogin(officerNumber, password);
         if (loginData.response.loginSuccess) {
-            const getRes = await fetch(`${SIS_API_URL}/officer/` + officerNumber, {
-                headers: {'Content-Type': 'application/json'},
-                method: 'GET'
-            });
-            const getData = await getRes.json();
-            if (getData.success) {
-                await SisOfficerStorage.saveData(getData.response);
+
+            const officerData = await OfficerController.getOfficerDetailByOfficerId(officerNumber);
+            if (officerData.success) {
+                await SisOfficerStorage.saveData(officerData.response);
                 closeProcessingLoginNotification();
                 await router.push("/officer");
             }
