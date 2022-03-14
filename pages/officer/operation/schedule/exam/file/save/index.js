@@ -110,7 +110,7 @@ export default function ExamScheduleFileSave({
         setIsOpenProcessingSaveNotification(false);
     }
 
-    export function openProcessingSaveNotification() {
+    function openProcessingSaveNotification() {
         setIsOpenProcessingSaveNotification(true);
     }
 
