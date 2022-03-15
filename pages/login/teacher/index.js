@@ -5,16 +5,10 @@ import {useRouter} from "next/router";
 import SisTeacherStorage from "../../../public/storage/teacher/SisTeacherStorage";
 import ProcessNotification from "../../../public/notifications/process";
 import FailNotification from "../../../public/notifications/fail";
+import TeacherController from "../../../public/api/teacher/TeacherController";
+import LoginController from "../../../public/api/login/LoginController";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL
-        }
-    }
-}
-
-export default function TeacherLogin({SIS_API_URL}) {
+export default function TeacherLogin() {
 
     let [isOpenProcessingLoginNotification, setIsOpenProcessingLoginNotification] = useState(false);
 
@@ -55,20 +49,12 @@ export default function TeacherLogin({SIS_API_URL}) {
 
         event.preventDefault();
 
-        const loginRes = await fetch(`${SIS_API_URL}/login/teacher`, {
-            body: JSON.stringify({teacherId: teacherNumber, password: password}),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const loginData = await loginRes.json();
+        const loginData = await LoginController.teacherLogin(teacherNumber, password);
         if (loginData.response.loginSuccess) {
-            const getRes = await fetch(`${SIS_API_URL}/teacher/` + teacherNumber, {
-                headers: {'Content-Type': 'application/json'},
-                method: 'GET'
-            });
-            const getData = await getRes.json();
-            if (getData.success) {
-                await SisTeacherStorage.saveData(getData.response)
+
+            const teacherData = await TeacherController.getTeacherDetailByTeacherId(teacherNumber);
+            if (teacherData.success) {
+                await SisTeacherStorage.saveData(teacherData.response);
                 closeProcessingLoginNotification();
                 await router.push("/teacher");
             }
