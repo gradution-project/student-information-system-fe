@@ -10,9 +10,35 @@ const getOfficerDetailByOfficerId = async (officerId) => {
     return await apiResult.json();
 };
 
+const updatePersonalInfo = async (operationUserId,
+                                  personalInfoResponse,
+                                  address, email, phoneNumber) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/officer/update/personal-info/${personalInfoResponse.officerId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PUT',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            personalInfoRequest: {
+                address: address,
+                birthday: personalInfoResponse.birthday,
+                email: email,
+                name: personalInfoResponse.name,
+                phoneNumber: phoneNumber,
+                surname: personalInfoResponse.surname,
+                tcNo:personalInfoResponse.tcNo
+            }
+        }),
+    });
+    return await apiResult.json();
+};
+
 
 const OfficerController = {
-    getOfficerDetailByOfficerId
+    getOfficerDetailByOfficerId,
+    updatePersonalInfo
 };
 
 export default OfficerController;

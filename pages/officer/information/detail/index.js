@@ -7,6 +7,7 @@ import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStor
 import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
+import OfficerController from "../../../../public/api/officer/OfficerController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -18,25 +19,20 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const officerResponse = await fetch(`${SIS_API_URL}/officer/` + officerId, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const officerData = await officerResponse.json();
+    const officerData = await OfficerController.getOfficerDetailByOfficerId(officerId);
     if (officerData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                officer: officerData.response,
-                SIS_API_URL: SIS_API_URL
+                operationUserId: officerId,
+                officer: officerData.response
             }
         }
     }
 }
 
 
-export default function OfficerMyInformation({isPagePermissionSuccess, officer, SIS_API_URL}) {
+export default function OfficerMyInformation({isPagePermissionSuccess, operationUserId, officer}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -47,12 +43,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
     const {academicInfoResponse} = officer;
     const {personalInfoResponse} = officer;
 
-    const {
-        facultyResponse,
-        officerId,
-        registrationDate,
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {facultyResponse} = academicInfoResponse;
 
 
     const router = new useRouter();
@@ -94,7 +85,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
         setOfficerEmail(officerEmail);
     }
 
-    const [officerAddress, setOfficerAddress] = useState(address);
+    const [officerAddress, setOfficerAddress] = useState(academicInfoResponse.address);
     const changeOfficerAddress = event => {
         const officerAddress = event.target.value;
         setOfficerAddress(officerAddress);
@@ -111,26 +102,10 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: officerId
-                },
-                personalInfoRequest: {
-                    address: officerAddress,
-                    birthday: birthday,
-                    email: officerEmail,
-                    name: name,
-                    phoneNumber: officerPhoneNumber,
-                    surname: surname,
-                    tcNo: tcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
+        const personalInfoData = await OfficerController.updatePersonalInfo(operationUserId, personalInfoResponse,
+            officerAddress, officerEmail, officerPhoneNumber);
+
+        if (personalInfoData.success) {
             closeProcessingPersonalInfoUpdateNotification();
             openSuccessPersonalInfoUpdateNotification();
         } else {
@@ -164,7 +139,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 type="text"
                                                 name="teacher-number"
                                                 id="teacher-number"
-                                                value={officerId}
+                                                value={academicInfoResponse.officerId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -179,7 +154,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={registrationDate}
+                                                value={academicInfoResponse.registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -267,7 +242,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                defaultValue={name}
+                                                defaultValue={personalInfoResponse.name}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -282,7 +257,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                defaultValue={surname}
+                                                defaultValue={personalInfoResponse.surname}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -297,7 +272,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                defaultValue={tcNo}
+                                                defaultValue={personalInfoResponse.tcNo}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -315,7 +290,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                defaultValue={birthday}
+                                                defaultValue={personalInfoResponse.birthday}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -365,7 +340,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
-                                                defaultValue={phoneNumber}
+                                                defaultValue={personalInfoResponse.phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -381,7 +356,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, officer, 
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
+                                                defaultValue={personalInfoResponse.address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
