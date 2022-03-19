@@ -7,6 +7,9 @@ import ProcessNotification from "../../../../../../../public/notifications/proce
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
 import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
+import DepartmentController from "../../../../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../../../../public/constants/department/DepartmentStatus";
+import LessonScheduleFileController from "../../../../../../../public/api/exam-file/LessonScheduleFileController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -18,33 +21,21 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
     const facultyId = SisOfficerStorage.getFacultyNumberWithContext(context);
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
+    if (departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                facultyId: facultyId,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                departments: departmentDatas.response
+                facultyId: facultyId,
+                departments: departmentsData.response
             }
         }
     }
 }
 
-export default function LessonScheduleFileSave({
-                                                   isPagePermissionSuccess,
-                                                   facultyId,
-                                                   operationUserId,
-                                                   SIS_API_URL,
-                                                   departments
-                                               }) {
+export default function LessonScheduleFileSave({isPagePermissionSuccess, operationUserId, facultyId, departments}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -76,7 +67,6 @@ export default function LessonScheduleFileSave({
                 formData.append('document', event.target.files[key]);
             }
         }
-        formData.append('apiUrl', SIS_API_URL);
         formData.append('facultyId', facultyId);
         formData.append('departmentId', departmentId);
         formData.append('operationUserId', operationUserId);
@@ -120,19 +110,16 @@ export default function LessonScheduleFileSave({
         event.preventDefault();
 
         if (facultyId !== null && departmentId !== null) {
-            const saveRes = await fetch(`${SIS_API_URL}/lesson-schedule-file/save`, {
-                body: lessonScheduleFileRequest,
-                method: 'POST'
-            });
-            const saveData = await saveRes.json();
-            if (saveData.success) {
+
+            const lessonScheduleFileData = await LessonScheduleFileController.saveLessonScheduleFile(lessonScheduleFileRequest);
+            if (lessonScheduleFileData.success) {
                 closeProcessingSaveNotification();
                 openSuccessSaveNotification();
 
                 setIsFileUploaded(true);
-                setFileViewUrl(saveData.response.fileViewUrl)
-                setFileDownloadUrl(saveData.response.fileDownloadUrl)
-                setDepartmentName(saveData.response.departmentResponse.name)
+                setFileViewUrl(lessonScheduleFileData.response.fileViewUrl)
+                setFileDownloadUrl(lessonScheduleFileData.response.fileDownloadUrl)
+                setDepartmentName(lessonScheduleFileData.response.departmentResponse.name)
             } else {
                 closeProcessingSaveNotification();
                 openFailSaveNotification();
@@ -148,7 +135,7 @@ export default function LessonScheduleFileSave({
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 {(
                     isFileUploaded
                         ?
