@@ -1,66 +1,4 @@
-export const lessonSemesters = [
-    {
-        enum: 'FIRST',
-        tr: '1. Dönem'
-    },
-    {
-        enum: 'SECOND',
-        tr: '2. Dönem'
-    },
-    {
-        enum: 'THIRD',
-        tr: '3. Dönem'
-    },
-    {
-        enum: 'FOURTH',
-        tr: '4. Dönem'
-    },
-    {
-        enum: 'FIFTH',
-        tr: '5. Dönem'
-    },
-    {
-        enum: 'SIXTH',
-        tr: '6. Dönem'
-    },
-    {
-        value: 'SEVENTH',
-        tr: '7. Dönem'
-    },
-    {
-        enum: 'EIGHTH',
-        tr: '8. Dönem'
-    },
-    {
-        enum: 'NINTH',
-        tr: '9. Dönem'
-    },
-    {
-        enum: 'TENTH',
-        tr: '10. Dönem'
-    },
-    {
-        enum: 'ELEVENTH',
-        tr: '11. Dönem'
-    },
-    {
-        enum: 'TWELFTH',
-        tr: '12. Dönem'
-    },
-]
-
-export const lessonCompulsory = [
-    {
-        enum: 'COMPULSORY',
-        tr: 'Zorunlu'
-    },
-    {
-        enum: 'ELECTIVE',
-        tr: 'Seçmeli'
-    }
-]
-
-export const lessonStatuses = [
+const getAll = [
     {
         enum: 'ACTIVE',
         tr: 'Aktif',
@@ -86,3 +24,18 @@ export const lessonStatuses = [
             className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Silinmiş</span>
     }
 ]
+
+const ACTIVE = 'ACTIVE';
+const PASSIVE = 'PASSIVE';
+const DELETED = 'DELETED';
+const ALL = 'ALL';
+
+const DepartmentStatus = {
+    getAll,
+    ACTIVE,
+    PASSIVE,
+    DELETED,
+    ALL
+};
+
+export default DepartmentStatus;
