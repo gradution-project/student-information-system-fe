@@ -1,9 +1,10 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {departmentStatuses} from "../../../../public/constants/department";
 import UnauthorizedAccessPage from "../../../401";
 import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStorage";
+import DepartmentController from "../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../public/constants/department/DepartmentStatus";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -15,12 +16,7 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const departmentResponse = await fetch(`${SIS_API_URL}/department?status=ALL`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentsData = await departmentResponse.json();
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ALL)
     if (departmentsData.success) {
         return {
             props: {
@@ -51,7 +47,7 @@ export default function DepartmentList({isPagePermissionSuccess, departments}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         BÖLÜM LİSTESİ
@@ -128,7 +124,7 @@ export default function DepartmentList({isPagePermissionSuccess, departments}) {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {departmentStatuses.map((dStatus) => (
+                                                        {DepartmentStatus.getAll.map((dStatus) => (
                                                             department.status === dStatus.enum
                                                                 ?
                                                                 dStatus.miniComponent
