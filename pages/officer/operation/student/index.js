@@ -1,9 +1,12 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../public/constants/student";
+import StudentClassLevel from "../../../../public/constants/student/StudentClassLevel";
 import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../401";
+import StudentController from "../../../../public/api/student/StudentController";
+import StudentStatus from "../../../../public/constants/student/StudentStatus";
+import StudentDegree from "../../../../public/constants/student/StudentDegree";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -15,12 +18,7 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const studentResponse = await fetch(`${SIS_API_URL}/student?status=ALL`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const studentsData = await studentResponse.json();
+    const studentsData = await StudentController.getAllStudentsByStatus(StudentStatus.ALL);
     if (studentsData.success) {
         return {
             props: {
@@ -50,7 +48,7 @@ export default function StudentList({isPagePermissionSuccess, students}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ÖĞRENCİ LİSTESİ
@@ -121,7 +119,7 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {studentDegrees.map((sDegree) => (
+                                                        {StudentDegree.getAll.map((sDegree) => (
                                                             student.degree === sDegree.enum
                                                                 ?
                                                                 <div
@@ -130,7 +128,7 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                                 null
                                                         ))}
 
-                                                        {studentClassLevels.map((sClassLevel) => (
+                                                        {StudentClassLevel.getAll.map((sClassLevel) => (
                                                             student.classLevel === sClassLevel.enum
                                                                 ?
                                                                 <div
@@ -144,7 +142,7 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{student.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {studentStatuses.map((sStatus) => (
+                                                        {StudentStatus.getAll.map((sStatus) => (
                                                             student.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent
