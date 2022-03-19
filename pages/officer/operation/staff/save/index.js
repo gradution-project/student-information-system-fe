@@ -7,6 +7,10 @@ import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerS
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
+import FacultyController from "../../../../../public/api/faculty/FacultyController";
+import FacultyStatus from "../../../../../public/constants/faculty/FacultyStatus";
+import OfficerController from "../../../../../public/api/officer/OfficerController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -18,27 +22,19 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const SIS_FE_URL = process.env.SIS_FE_URL;
-    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const facultyDatas = await facultyResponses.json();
-    if (facultyDatas.success) {
+    const facultiesData = await FacultyController.getAllFacultiesByStatus(FacultyStatus.ACTIVE);
+    if (facultiesData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                SIS_FE_URL: SIS_FE_URL,
-                faculties: facultyDatas.response
+                faculties: facultiesData.response
             }
         }
     }
 }
 
-export default function SaveOfficer({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, faculties}) {
+export default function SaveOfficer({isPagePermissionSuccess, operationUserId, faculties}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -80,58 +76,50 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
     }
 
 
-    const [officerName, setOfficerName] = useState();
-    const changeOfficerName = event => {
-        const officerName = event.target.value;
-        setOfficerName(officerName);
+    const [name, setName] = useState();
+    const changeName = event => {
+        setName(event.target.value);
     }
 
-    const [officerSurname, setOfficerSurname] = useState();
-    const changeOfficerSurname = event => {
-        const officerSurname = event.target.value;
-        setOfficerSurname(officerSurname);
+    const [surname, setSurname] = useState();
+    const changeSurname = event => {
+        const Surname = event.target.value;
+        setSurname(Surname);
     }
 
-    const [officerTcNo, setOfficerTcNo] = useState();
-    const changeOfficerTcNo = event => {
-        const officerTcNo = event.target.value;
-        setOfficerTcNo(officerTcNo);
+    const [tcNo, setTcNo] = useState();
+    const changeTcNo = event => {
+        setTcNo(event.target.value);
     }
 
-    const [officerBirthday, setOfficerBirthday] = useState();
-    const changeOfficerBirthday = event => {
-        const officerBirthday = event.target.value;
-        setOfficerBirthday(officerBirthday);
+    const [birthday, setBirthday] = useState();
+    const changeBirthday = event => {
+        setBirthday(event.target.value);
     }
 
-    const [officerEmail, setOfficerEmail] = useState();
-    const changeOfficerEmail = event => {
-        const officerEmail = event.target.value;
-        setOfficerEmail(officerEmail);
+    const [email, setEmail] = useState();
+    const changeEmail = event => {
+        setEmail(event.target.value);
     }
 
-    const [officerAddress, setOfficerAddress] = useState();
-    const changeOfficerAddress = event => {
-        const officerAddress = event.target.value;
-        setOfficerAddress(officerAddress);
+    const [address, setAddress] = useState();
+    const changeAddress = event => {
+        setAddress(event.target.value);
     }
 
-    const [officerPhoneNumber, setOfficerPhoneNumber] = useState();
-    const changeOfficerPhoneNumber = event => {
-        const officerPhoneNumber = event.target.value;
-        setOfficerPhoneNumber(officerPhoneNumber);
+    const [personalPhoneNumber, setPhoneNumber] = useState();
+    const changePersonalPhoneNumber = event => {
+        setPhoneNumber(event.target.value);
     }
 
-    const [officerFacultyId, setOfficerFacultyId] = useState();
-    const changeOfficerFacultyId = event => {
-        const officerFacultyId = event.target.value;
-        setOfficerFacultyId(officerFacultyId);
+    const [facultyId, setFacultyId] = useState();
+    const changeFacultyId = event => {
+        setFacultyId(event.target.value);
     }
 
-    const [officerPhone, setOfficerPhone] = useState();
-    const changeOfficerPhone = event => {
-        const officerPhone = event.target.value;
-        setOfficerPhone(officerPhone);
+    const [academicPhoneNumber, setAcademicPhoneNumber] = useState();
+    const changeAcademicPhoneNumber = event => {
+        setAcademicPhoneNumber(event.target.value);
     }
 
     const officerSave = async (event) => {
@@ -139,33 +127,11 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/officer/save`, {
-            body: JSON.stringify({
+        const academicInfo = {facultyId, academicPhoneNumber}
+        const personalInfo = {name, surname, tcNo, birthday, email, address, personalPhoneNumber}
 
-                academicInfoRequest: {
-                    facultyId: officerFacultyId,
-                    phoneNumber: officerPhone
-                },
-                operationInfoRequest: {
-                    userId: operationUserId,
-                    feUrl: SIS_FE_URL
-                },
-                personalInfoRequest: {
-                    address: officerAddress,
-                    birthday: officerBirthday,
-                    email: officerEmail,
-                    name: officerName,
-                    phoneNumber: officerPhoneNumber,
-                    surname: officerSurname,
-                    tcNo: officerTcNo
-
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
+        const officerData = await OfficerController.saveOfficer(operationUserId, academicInfo, personalInfo);
+        if (officerData.success) {
             closeProcessingSaveNotification();
             openSuccessSaveNotification();
         } else {
@@ -178,7 +144,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none mt-10 sm:mt-0">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={officerSave}>
@@ -196,7 +162,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeOfficerName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -211,7 +177,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeOfficerSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -226,7 +192,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeOfficerTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -244,11 +210,26 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 DOĞUM TARİHİ
                                             </label>
                                             <input
-                                                onChange={changeOfficerBirthday}
+                                                onChange={(e) => {
+                                                    let birthdayLength = e.target.value.length;
+                                                    if (birthdayLength > 1 && birthdayLength < 3) {
+                                                        if (e.target.value <= 31) {
+                                                            e.target.value = e.target.value + ".";
+                                                        } else {
+                                                            e.target.value = "";
+                                                        }
+                                                    }
+                                                    if (birthdayLength > 4 && birthdayLength < 7) {
+                                                        e.target.value = e.target.value + ".";
+                                                    }
+                                                    changeBirthday(e)
+                                                }}
                                                 type="text"
                                                 name="birthday"
                                                 id="birthday"
                                                 required
+                                                minLength="10"
+                                                maxLength="10"
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -259,7 +240,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeOfficerEmail}
+                                                onChange={changeEmail}
                                                 type="email"
                                                 name="email-address"
                                                 id="email-address"
@@ -289,7 +270,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeOfficerPhoneNumber(e)
+                                                    changePersonalPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -307,7 +288,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeOfficerAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -322,7 +303,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                 FAKÜLTE
                                             </label>
                                             <select
-                                                onChange={changeOfficerFacultyId}
+                                                onChange={changeFacultyId}
                                                 id="facultyId"
                                                 name="faculty-id"
                                                 autoComplete="faculty-id"
@@ -356,7 +337,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeOfficerPhone(e)
+                                                    changeAcademicPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phoneNumber"
@@ -371,12 +352,7 @@ export default function SaveOfficer({isPagePermissionSuccess, operationUserId, S
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                                    >
-                                        KAYDET
-                                    </button>
+                                    {SisOperationButton.getSaveButton("KAYDET")}
                                 </div>
 
                                 <ProcessNotification
