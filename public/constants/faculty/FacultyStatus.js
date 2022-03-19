@@ -1,4 +1,4 @@
-export const facultyStatuses = [
+const getAll = [
     {
         enum: 'ACTIVE',
         tr: 'Aktif',
@@ -24,3 +24,18 @@ export const facultyStatuses = [
             className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Silinmiş</span>
     }
 ]
+
+const ACTIVE = 'ACTIVE';
+const PASSIVE = 'PASSIVE';
+const DELETED = 'DELETED';
+const ALL = 'ALL';
+
+const FacultyStatus = {
+    getAll,
+    ACTIVE,
+    PASSIVE,
+    DELETED,
+    ALL
+};
+
+export default FacultyStatus;
