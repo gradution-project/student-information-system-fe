@@ -1,9 +1,10 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {officerStatuses} from "../../../../public/constants/officer";
 import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../401";
+import OfficerController from "../../../../public/api/officer/OfficerController";
+import OfficerStatus from "../../../../public/constants/officer/OfficerStatus";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -15,12 +16,7 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const officerResponse = await fetch(`${SIS_API_URL}/officer?status=ALL`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const officersData = await officerResponse.json();
+    const officersData = await OfficerController.getAllOfficersByStatus(OfficerStatus.ALL);
     if (officersData.success) {
         return {
             props: {
@@ -50,7 +46,7 @@ export default function OfficerList({isPagePermissionSuccess, officers}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         PERSONEL LİSTESİ
@@ -119,7 +115,7 @@ export default function OfficerList({isPagePermissionSuccess, officers}) {
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{officer.facultyResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {officerStatuses.map((oStatus) => (
+                                                        {OfficerStatus.getAll.map((oStatus) => (
                                                             officer.status === oStatus.enum
                                                                 ?
                                                                 oStatus.miniComponent
@@ -128,7 +124,7 @@ export default function OfficerList({isPagePermissionSuccess, officers}) {
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/officer/operation/staff/information/detail/' + officer.officerId}
+                                                        <a href={`/officer/operation/staff/information/detail/${officer.officerId}`}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>

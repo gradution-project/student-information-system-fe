@@ -2,12 +2,17 @@ import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
+import StudentClassLevel from "../../../../../public/constants/student/StudentClassLevel";
 import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../401";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
+import StudentController from "../../../../../public/api/student/StudentController";
+import StudentDegree from "../../../../../public/constants/student/StudentDegree";
+import DepartmentController from "../../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../../public/constants/department/DepartmentStatus";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -19,28 +24,20 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const SIS_FE_URL = process.env.SIS_FE_URL;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
+    if (departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                SIS_FE_URL: SIS_FE_URL,
-                departments: departmentDatas.response
+                departments: departmentsData.response
             }
         }
     }
 }
 
 
-export default function SaveStudent({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
+export default function SaveStudent({isPagePermissionSuccess, operationUserId, departments}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -83,64 +80,55 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
     }
 
 
-    const [studentName, setStudentName] = useState();
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
+    const [name, setName] = useState();
+    const changeName = event => {
+        setName(event.target.value);
     }
 
-    const [studentSurname, setStudentSurname] = useState();
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
+    const [surname, setSurname] = useState();
+    const changeSurname = event => {
+        const Surname = event.target.value;
+        setSurname(Surname);
     }
 
-    const [studentTcNo, setStudentTcNo] = useState();
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
+    const [tcNo, setTcNo] = useState();
+    const changeTcNo = event => {
+        setTcNo(event.target.value);
     }
 
-    const [studentBirthday, setStudentBirthday] = useState();
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
+    const [birthday, setBirthday] = useState();
+    const changeBirthday = event => {
+        setBirthday(event.target.value);
     }
 
-    const [studentEmail, setStudentEmail] = useState();
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
+    const [email, setEmail] = useState();
+    const changeEmail = event => {
+        setEmail(event.target.value);
     }
 
-    const [studentClassLevel, setStudentClassLevel] = useState();
-    const changeStudentClassLevel = event => {
-        const studentClassLevel = event.target.value;
-        setStudentClassLevel(studentClassLevel);
+    const [address, setAddress] = useState();
+    const changeAddress = event => {
+        setAddress(event.target.value);
     }
 
-    const [studentAddress, setStudentAddress] = useState();
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
+    const [phoneNumber, setPhoneNumber] = useState();
+    const changePhoneNumber = event => {
+        setPhoneNumber(event.target.value);
     }
 
-    const [studentDegree, setStudentDegree] = useState();
-    const changeStudentDegree = event => {
-        const studentDegree = event.target.value;
-        setStudentDegree(studentDegree);
+    const [departmentId, setDepartmentId] = useState();
+    const changeDepartmentId = event => {
+        setDepartmentId(event.target.value);
     }
 
-    const [studentDepartmentId, setStudentDepartmentId] = useState();
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
+    const [classLevel, setClassLevel] = useState();
+    const changeClassLevel = event => {
+        setClassLevel(event.target.value);
     }
 
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
+    const [degree, setDegree] = useState();
+    const changeDegree = event => {
+        setDegree(event.target.value);
     }
 
     const studentSave = async (event) => {
@@ -148,32 +136,10 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/student/save`, {
-            body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId,
-                    classLevel: studentClassLevel,
-                },
-                operationInfoRequest: {
-                    userId: operationUserId,
-                    feUrl: SIS_FE_URL
-                },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: studentBirthday,
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
+        const academicInfo = {departmentId, classLevel, degree};
+        const personalInfo = {name, surname, tcNo, birthday, email, address, phoneNumber};
+        const studentData = await StudentController.saveStudent(operationUserId, academicInfo, personalInfo);
+        if (studentData.success) {
             closeProcessingSaveNotification();
             openSuccessSaveNotification();
         } else {
@@ -186,7 +152,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none mt-10 sm:mt-0">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
@@ -204,7 +170,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -219,7 +185,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeStudentSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -234,7 +200,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -264,7 +230,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
                                                         e.target.value = e.target.value + ".";
                                                     }
-                                                    changeStudentBirthday(e)
+                                                    changeBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -282,7 +248,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentEmail}
+                                                onChange={changeEmail}
                                                 type="email"
                                                 name="email-address"
                                                 id="email-address"
@@ -312,7 +278,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeStudentPhoneNumber(e)
+                                                    changePhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -330,7 +296,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -345,15 +311,15 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 ÜNVANI
                                             </label>
                                             <select
-                                                onChange={changeStudentDegree}
+                                                onChange={changeDegree}
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                value={studentDegree}
+                                                value={degree}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
-                                                {studentDegrees.map(sDegree => (
+                                                {StudentDegree.getAll.map(sDegree => (
                                                     <option key={sDegree.enum}
                                                             value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
@@ -366,15 +332,15 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 SINIFI
                                             </label>
                                             <select
-                                                onChange={changeStudentClassLevel}
+                                                onChange={changeClassLevel}
                                                 id="class-level"
                                                 name="class-level"
                                                 autoComplete="class-level"
-                                                value={studentClassLevel}
+                                                value={classLevel}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
-                                                {studentClassLevels.map(sClassLevel => (
+                                                {StudentClassLevel.getAll.map(sClassLevel => (
                                                     <option key={sClassLevel.enum}
                                                             value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
@@ -387,7 +353,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeStudentDepartmentId}
+                                                onChange={changeDepartmentId}
                                                 id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
@@ -404,12 +370,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                                    >
-                                        KAYDET
-                                    </button>
+                                    {SisOperationButton.getSaveButton("KAYDET")}
                                 </div>
 
                                 <ProcessNotification

@@ -1,6 +1,5 @@
 import {useRouter} from "next/router";
 import {useState} from "react";
-import {departmentPreparatoryClass, departmentStatuses} from "../../../../../../../public/constants/department";
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 import UnauthorizedAccessPage from "../../../../../../401";
@@ -9,6 +8,12 @@ import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOf
 import ProcessNotification from "../../../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
+import FacultyController from "../../../../../../../public/api/faculty/FacultyController";
+import FacultyStatus from "../../../../../../../public/constants/faculty/FacultyStatus";
+import DepartmentStatus from "../../../../../../../public/constants/department/DepartmentStatus";
+import DepartmentPreparatoryClass from "../../../../../../../public/constants/department/DepartmentPreparatoryClass";
+import DepartmentController from "../../../../../../../public/api/department/DepartmentController";
+import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -20,26 +25,16 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const {id} = context.query;
-    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentResponse = await fetch(`${SIS_API_URL}/department/` + id, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
+    const facultyDatas = await FacultyController.getAllFacultiesByStatus(FacultyStatus.ACTIVE);
 
-    const facultyDatas = await facultyResponses.json();
-    const departmentData = await departmentResponse.json();
+    const {id} = context.query;
+    const departmentData = await DepartmentController.getDepartmentByDepartmentId(id);
     if (departmentData.success && facultyDatas.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 isDataFound: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
                 faculties: facultyDatas.response,
                 department: departmentData.response
             }
@@ -59,7 +54,6 @@ export default function DepartmentDetail({
                                              isPagePermissionSuccess,
                                              isDataFound,
                                              operationUserId,
-                                             SIS_API_URL,
                                              faculties,
                                              department
                                          }) {
@@ -78,33 +72,7 @@ export default function DepartmentDetail({
 
     const router = useRouter();
 
-    const {departmentId, name, totalClassLevel, status, isTherePreparatoryClass, facultyResponse} = department;
-    const facultyName = facultyResponse.name;
-
-    const [departmentName, setDepartmentName] = useState(name);
-    const changeDepartmentName = event => {
-        const departmentName = event.target.value;
-        setDepartmentName(departmentName);
-    }
-
-    const [facultyId, setFacultyId] = useState(facultyResponse.facultyId);
-    const changeFacultyId = event => {
-        const facultyId = event.target.value;
-        setFacultyId(facultyId);
-    }
-
-    const [totalClassLevels, setTotalClassLevel] = useState(totalClassLevel);
-    const changeTotalClassLevel = event => {
-        const totalClassLevels = event.target.value;
-        setTotalClassLevel(totalClassLevels);
-    }
-
-    const [preparatoryClass, setPreparatoryClass] = useState(isTherePreparatoryClass);
-    const changePreparatoryClass = event => {
-        const preparatoryClass = event.target.value;
-        setPreparatoryClass(preparatoryClass);
-    }
-
+    const {facultyResponse} = department;
 
     let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
 
@@ -140,19 +108,10 @@ export default function DepartmentDetail({
     const departmentActivate = async (event) => {
         openProcessingActivateNotification();
 
-        event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/department/activate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                departmentId: departmentId
-            }),
-        });
-        const activateData = await activateRes.json();
-        if (activateData.success) {
+        event.preventDefault();
+
+        const departmentData = await DepartmentController.activateDepartment(operationUserId, department.departmentId);
+        if (departmentData.success) {
             closeProcessingActivateNotification();
             openSuccessActivateNotification()
         } else {
@@ -196,19 +155,10 @@ export default function DepartmentDetail({
     const departmentPassivate = async (event) => {
         openProcessingPassivateNotification();
 
-        event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/department/passivate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                departmentId: departmentId
-            }),
-        });
-        const passivateData = await passivateRes.json();
-        if (passivateData.success) {
+        event.preventDefault();
+
+        const departmentData = await DepartmentController.passivateDepartment(operationUserId, department.departmentId);
+        if (departmentData.success) {
             closeProcessingPassivateNotification();
             openSuccessPassivateNotification()
         } else {
@@ -252,19 +202,10 @@ export default function DepartmentDetail({
     const departmentDelete = async (event) => {
         openProcessingDeleteNotification();
 
-        event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/department/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                departmentId: departmentId
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
+        event.preventDefault();
+
+        const departmentData = await DepartmentController.deleteDepartment(operationUserId, department.departmentId);
+        if (departmentData.success) {
             closeProcessingDeleteNotification();
             openSuccessDeleteNotification()
         } else {
@@ -305,27 +246,39 @@ export default function DepartmentDetail({
         setIsOpenFailUpdateNotification(true);
     }
 
+    const [facultyId, setFacultyId] = useState(facultyResponse.facultyId);
+    const changeFacultyId = event => {
+        const facultyId = event.target.value;
+        setFacultyId(facultyId);
+    }
+
+    const [departmentName, setDepartmentName] = useState(department.name);
+    const changeDepartmentName = event => {
+        const departmentName = event.target.value;
+        setDepartmentName(departmentName);
+    }
+
+    const [departmentIsTherePreparatoryClass, setDepartmentIsTherePreparatoryClass] = useState(department.isTherePreparatoryClass);
+    const changePreparatoryClass = event => {
+        const departmentIsTherePreparatoryClass = event.target.value;
+        setDepartmentIsTherePreparatoryClass(departmentIsTherePreparatoryClass);
+    }
+
+    const [departmentTotalClassLevel, setDepartmentTotalClassLevel] = useState(department.totalClassLevel);
+    const changeTotalClassLevel = event => {
+        const departmentTotalClassLevel = event.target.value;
+        setDepartmentTotalClassLevel(departmentTotalClassLevel);
+    }
+
     const departmentUpdate = async (event) => {
         openProcessingUpdateNotification();
 
         event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/department/update/${departmentId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                departmentInfoRequest: {
-                    facultyId: facultyId,
-                    isTherePreparatoryClass: preparatoryClass,
-                    name: departmentName,
-                    totalClassLevel: totalClassLevels
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-        });
-        const updateData = await updateRes.json();
-        if (updateData.success) {
+
+        const departmentData = await DepartmentController.updateDepartment(operationUserId, department, facultyId,
+            departmentIsTherePreparatoryClass, departmentName, departmentTotalClassLevel);
+
+        if (departmentData.success) {
             closeProcessingUpdateNotification();
             openSuccessUpdateNotification();
         } else {
@@ -333,65 +286,57 @@ export default function DepartmentDetail({
             openFailUpdateNotification();
         }
     }
+
+    const isDepartmentPassiveOrDeleted = () => {
+        return department.status === DepartmentStatus.PASSIVE || department.status === DepartmentStatus.DELETED
+    }
+
     return (
         <>
             <div>
                 <SISTitle/>
                 <OfficerNavbar/>
-                <div className="select-none px-28 py-5 mx-auto space-y-6">
+                <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                             <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                                {name}
+                                {department.name}
                             </a>
-                            {departmentStatuses.map((departmentStatus) => (
-                                status === departmentStatus.enum
+                            {DepartmentStatus.getAll.map((dStatus) => (
+                                department.status === dStatus.enum
                                     ?
-                                    departmentStatus.component
+                                    dStatus.component
                                     :
                                     null
                             ))}
                             {(
-                                status !== 'DELETED'
+                                department.status === DepartmentStatus.DELETED
                                     ?
-                                    <button
-                                        onClick={departmentDelete}
-                                        type="submit"
-                                        className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                    >
-                                        BÖLÜMÜ SİL
-                                    </button>
-                                    :
                                     null
+                                    :
+                                    SisOperationButton.getDeleteButton(departmentDelete, "BÖLÜMÜ SİL")
                             )}
                             {(
-                                status !== 'PASSIVE' && status !== 'DELETED'
+
+                                department.status === DepartmentStatus.PASSIVE
+                                ||
+                                department.status === DepartmentStatus.DELETED
                                     ?
-                                    <button
-                                        onClick={departmentPassivate}
-                                        type="submit"
-                                        className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        BÖLÜMÜ PASİFLEŞTİR
-                                    </button>
-                                    :
                                     null
+                                    :
+                                    SisOperationButton.getPassivateButton(departmentPassivate, "BÖLÜMÜ PASİFLEŞTİR")
                             )}
                             {(
-                                status !== 'ACTIVE' && status !== 'DELETED'
+                                department.status === DepartmentStatus.ACTIVE
+                                ||
+                                department.status === DepartmentStatus.DELETED
                                     ?
-                                    <button
-                                        onClick={departmentActivate}
-                                        type="submit"
-                                        className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                    >
-                                        BÖLÜMÜ AKTİFLEŞTİR
-                                    </button>
-                                    :
                                     null
+                                    :
+                                    SisOperationButton.getActivateButton(departmentActivate, "BÖLÜMÜ AKTİFLEŞTİR")
                             )}
                         </div>
-                        <div className="select-none md:col-span-1">
+                        <div className="select-none mt-10 py-4 sm:mt-0">
                             <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
                                 <div className="shadow sm:rounded-md sm:overflow-hidden">
                                     <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -410,7 +355,7 @@ export default function DepartmentDetail({
                                                     type="text"
                                                     name="departmentId"
                                                     id="departmentId"
-                                                    defaultValue={departmentId}
+                                                    defaultValue={department.departmentId}
                                                     disabled
                                                     className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 />
@@ -426,19 +371,19 @@ export default function DepartmentDetail({
                                                     id="facultyId"
                                                     name="facultyId"
                                                     autoComplete="facultyId"
-                                                    disabled={status === "DELETED" || status === "PASSIVE"}
-                                                    className={status === "DELETED" || status === "PASSIVE"
+                                                    disabled={isDepartmentPassiveOrDeleted()}
+                                                    className={isDepartmentPassiveOrDeleted()
                                                         ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                         : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     }>
                                                     {faculties.map((faculty) => (
-                                                        facultyName === faculty.name
+                                                        facultyResponse.name === faculty.name
                                                             ?
-                                                            <option value={faculty.facultyId}
+                                                            <option key={faculty.facultyId} value={faculty.facultyId}
                                                                     selected>{faculty.name}</option>
                                                             :
-                                                            <option
-                                                                value={faculty.facultyId}>{faculty.name}</option>
+                                                            <option key={faculty.facultyId}
+                                                                    value={faculty.facultyId}>{faculty.name}</option>
 
                                                     ))}
                                                 </select>
@@ -453,9 +398,9 @@ export default function DepartmentDetail({
                                                     type="text"
                                                     name="department"
                                                     id="department"
-                                                    defaultValue={name}
-                                                    disabled={status === "DELETED" || status === "PASSIVE"}
-                                                    className={status === "DELETED" || status === "PASSIVE"
+                                                    defaultValue={department.name}
+                                                    disabled={isDepartmentPassiveOrDeleted()}
+                                                    className={isDepartmentPassiveOrDeleted()
                                                         ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                         : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     }/>
@@ -471,9 +416,9 @@ export default function DepartmentDetail({
                                                     type="text"
                                                     name="totalClassLevel"
                                                     id="totalClassLevel"
-                                                    defaultValue={totalClassLevel}
-                                                    disabled={status === "DELETED" || status === "PASSIVE"}
-                                                    className={status === "DELETED" || status === "PASSIVE"
+                                                    defaultValue={department.totalClassLevel}
+                                                    disabled={isDepartmentPassiveOrDeleted()}
+                                                    className={isDepartmentPassiveOrDeleted()
                                                         ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                         : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     }/>
@@ -489,19 +434,20 @@ export default function DepartmentDetail({
                                                     id="isTherePreparatoryLevel"
                                                     name="isTherePreparatoryLevel"
                                                     autoComplete="isTherePreparatoryLevel"
-                                                    disabled={status === "DELETED" || status === "PASSIVE"}
-                                                    className={status === "DELETED" || status === "PASSIVE"
+                                                    disabled={isDepartmentPassiveOrDeleted()}
+                                                    className={isDepartmentPassiveOrDeleted()
                                                         ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                         : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     }>
-                                                    {departmentPreparatoryClass.map(preparatoryClass => (
-                                                        isTherePreparatoryClass === preparatoryClass.value
+                                                    {DepartmentPreparatoryClass.getAll.map(dPreparatoryClass => (
+                                                        department.isTherePreparatoryClass === dPreparatoryClass.value
                                                             ?
-                                                            <option value={preparatoryClass.value}
-                                                                    selected>{preparatoryClass.tr}</option>
+                                                            <option key={dPreparatoryClass.value}
+                                                                    value={dPreparatoryClass.value}
+                                                                    selected>{dPreparatoryClass.tr}</option>
                                                             :
-                                                            <option
-                                                                value={preparatoryClass.value}>{preparatoryClass.tr}</option>
+                                                            <option key={dPreparatoryClass.value}
+                                                                    value={dPreparatoryClass.value}>{dPreparatoryClass.tr}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -520,19 +466,11 @@ export default function DepartmentDetail({
                                         </div>
                                     </div>
                                     {(
-                                        status !== 'DELETED' && status !== 'PASSIVE'
+                                        isDepartmentPassiveOrDeleted()
                                             ?
-                                            <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                                <button
-                                                    onClick={departmentUpdate}
-                                                    type="submit"
-                                                    className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                                >
-                                                    GÜNCELLE
-                                                </button>
-                                            </div>
-                                            :
                                             null
+                                            :
+                                            SisOperationButton.getUpdateButton(departmentUpdate, "GÜNCELLE")
                                     )}
 
                                     {/**

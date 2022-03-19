@@ -6,25 +6,21 @@ import PageNotFound from "../../../../404";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import StudentPasswordOperationController
+    from "../../../../../public/api/student/password/StudentPasswordOperationController";
 
 export async function getServerSideProps({query}) {
-    const SIS_API_URL = process.env.SIS_API_URL;
     const {operationId} = query;
-    const passwordOperationResponse = await fetch(`${SIS_API_URL}/student/password-operation?operationId=${operationId}`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const passwordOperationData = await passwordOperationResponse.json();
+    const passwordOperationData = await StudentPasswordOperationController.isPasswordChangeOperationEnabled(operationId);
     return {
         props: {
             isDataFound: passwordOperationData.success,
-            SIS_API_URL: SIS_API_URL,
             operationId: operationId
         }
     }
 }
 
-export default function StudentForgotPassword({isDataFound, SIS_API_URL, operationId}) {
+export default function StudentForgotPassword({isDataFound, operationId}) {
 
     if (!isDataFound) {
         return (
@@ -54,17 +50,6 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
 
     function openSuccessChangePasswordNotification() {
         setIsOpenSuccessChangePasswordNotification(true);
-    }
-
-
-    let [isOpenFailNotification, setIsOpenFailNotification] = useState(false);
-
-    function closeFailNotification() {
-        setIsOpenFailNotification(false);
-    }
-
-    function openFailNotification() {
-        setIsOpenFailNotification(true);
     }
 
 
@@ -108,16 +93,8 @@ export default function StudentForgotPassword({isDataFound, SIS_API_URL, operati
         event.preventDefault();
 
         if (newPassword === newPasswordRepeat) {
-            const res = await fetch(`${SIS_API_URL}/student/password-operation/change-password`, {
-                body: JSON.stringify({
-                    operationId: operationId,
-                    newPassword: newPassword,
-                    newPasswordRepeat: newPasswordRepeat
-                }),
-                headers: {'Content-Type': 'application/json'},
-                method: 'POST'
-            });
-            const data = await res.json();
+
+            const data = await StudentPasswordOperationController.changePassword(operationId, newPassword, newPasswordRepeat);
             if (!data.success) {
                 closeProcessingChangePasswordNotification();
                 openFailChangePasswordNotification();

@@ -2,12 +2,15 @@ import SISTitle from "../../../../public/components/page-titles";
 import StudentNavbar from "../../../../public/components/navbar/student/student-navbar";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {studentClassLevels, studentDegrees} from "../../../../public/constants/student";
 import UnauthorizedAccessPage from "../../../401";
 import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
 import SisStudentStorage from "../../../../public/storage/student/SisStudentStorage";
+import StudentController from "../../../../public/api/student/StudentController";
+import StudentClassLevel from "../../../../public/constants/student/StudentClassLevel";
+import SisOperationButton from "../../../../public/components/buttons/SisOperationButton";
+import StudentDegree from "../../../../public/constants/student/StudentDegree";
 
 export async function getServerSideProps(context) {
     const studentId = SisStudentStorage.getNumberWithContext(context);
@@ -19,24 +22,19 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const studentResponse = await fetch(`${SIS_API_URL}/student/` + studentId, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const studentData = await studentResponse.json();
+    const studentData = await StudentController.getStudentDetailByStudentId(studentId);
     if (studentData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                student: studentData.response,
-                SIS_API_URL: SIS_API_URL
+                operationUserId: studentId,
+                student: studentData.response
             }
         }
     }
 }
 
-export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_URL, student}) {
+export default function StudentMyInformation({isPagePermissionSuccess, operationUserId, student}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -44,20 +42,13 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
         )
     }
 
-    const {academicInfoResponse} = student;
-    const {personalInfoResponse} = student;
-
-    const {
-        departmentResponse,
-        studentId,
-        classLevel,
-        degree,
-        registrationDate,
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {academicInfoResponse, personalInfoResponse} = student;
+    const {name, surname, tcNo, birthday} = personalInfoResponse;
+    const {departmentResponse} = academicInfoResponse;
     const {facultyResponse} = departmentResponse;
 
     const router = new useRouter();
+
 
     let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
 
@@ -90,49 +81,33 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
         setIsOpenFailPersonalInfoUpdateNotification(true);
     }
 
-
-    const [studentEmail, setStudentEmail] = useState(personalInfoResponse.email);
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
+    const [email, setEmail] = useState(personalInfoResponse.email);
+    const changeEmail = event => {
+        const email = event.target.value;
+        setEmail(email);
     }
 
-    const [studentAddress, setStudentAddress] = useState(address);
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
+    const [phoneNumber, setPhoneNumber] = useState(personalInfoResponse.phoneNumber);
+    const changePhoneNumber = event => {
+        const phoneNumber = event.target.value;
+        setPhoneNumber(phoneNumber);
     }
 
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState(phoneNumber);
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
+    const [address, setAddress] = useState(personalInfoResponse.address);
+    const changeAddress = event => {
+        const address = event.target.value;
+        setAddress(address);
     }
 
     const studentUpdatePersonal = async (event) => {
         openProcessingPersonalInfoUpdateNotification();
 
-        event.preventDefault()
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/student/update/personal-info/${studentId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: studentId
-                },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: birthday,
-                    email: studentEmail,
-                    name: name,
-                    phoneNumber: studentPhoneNumber,
-                    surname: surname,
-                    tcNo: tcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const personalInfo = {name, surname, tcNo, birthday, email, phoneNumber, address};
+        const studentData = await StudentController.updateStudentPersonalInfo(operationUserId, studentId, personalInfo);
+        if (studentData.success) {
             closeProcessingPersonalInfoUpdateNotification();
             openSuccessPersonalInfoUpdateNotification();
         } else {
@@ -166,7 +141,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                value={studentId}
+                                                value={academicInfoResponse.studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -181,7 +156,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                value={registrationDate}
+                                                value={academicInfoResponse.registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -231,10 +206,10 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {studentDegrees.map(sDegree => (
-                                                    degree === sDegree.enum
+                                                {StudentDegree.getAll.map(sDegree => (
+                                                    academicInfoResponse.degree === sDegree.enum
                                                         ?
-                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
+                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
                                                         :
                                                         null
                                                 ))}
@@ -252,10 +227,10 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                {studentClassLevels.map(sClassLevel => (
-                                                    classLevel === sClassLevel.enum
+                                                {StudentClassLevel.getAll.map(sClassLevel => (
+                                                    academicInfoResponse.classLevel === sClassLevel.enum
                                                         ?
-                                                        <option
+                                                        <option key={sClassLevel.enum}
                                                             value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                         :
                                                         null
@@ -277,9 +252,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
                                     </div>
-
                                 </div>
                             </div>
                         </form>
@@ -314,7 +287,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                defaultValue={name}
+                                                defaultValue={personalInfoResponse.name}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -329,7 +302,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                defaultValue={surname}
+                                                defaultValue={personalInfoResponse.surname}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -344,7 +317,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                defaultValue={tcNo}
+                                                defaultValue={personalInfoResponse.tcNo}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -362,7 +335,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                defaultValue={birthday}
+                                                defaultValue={personalInfoResponse.birthday}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -374,7 +347,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentEmail}
+                                                onChange={changeEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
@@ -404,7 +377,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeStudentPhoneNumber(e)
+                                                    changePhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -412,7 +385,7 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
-                                                defaultValue={phoneNumber}
+                                                defaultValue={personalInfoResponse.phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -423,12 +396,12 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
+                                                defaultValue={personalInfoResponse.address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -504,15 +477,8 @@ export default function StudentMyInformation({isPagePermissionSuccess, SIS_API_U
                                             null
                                     )}
                                 </div>
-                                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        onClick={studentUpdatePersonal}
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                    >
-                                        GÜNCELLE
-                                    </button>
-                                </div>
+
+                                {SisOperationButton.getUpdateButton(studentUpdatePersonal, "GÜNCELLE")}
 
                                 <ProcessNotification
                                     isOpen={isOpenProcessingPersonalInfoUpdateNotification}

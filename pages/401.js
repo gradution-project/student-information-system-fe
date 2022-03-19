@@ -1,5 +1,6 @@
 import SISTitle from "../public/components/page-titles";
 import {useState} from "react";
+import SisRouter from "../public/router/SisRouter";
 
 export default function UnauthorizedAccessPage({user}) {
 
@@ -17,9 +18,9 @@ export default function UnauthorizedAccessPage({user}) {
                     </h6>
 
                     <div>
-                        <a href="javascript:history.back()" className="mr-8 px-6 py-3 text-sm font-semibold text-sis-white bg-sis-blue rounded-xl">
+                        <button onClick={SisRouter.toBackPage} className="mr-8 px-6 py-3 text-sm font-semibold text-sis-white bg-sis-blue rounded-xl">
                             Geri Dön
-                        </a>
+                        </button>
 
                         <a href={homePagePath}  className="ArrowLeftIcon px-6 py-3 text-sm font-semibold text-sis-white bg-sis-blue rounded-xl">
                            Ana Ekran

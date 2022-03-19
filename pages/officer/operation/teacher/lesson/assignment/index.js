@@ -7,6 +7,7 @@ import SuccessNotification from "../../../../../../public/notifications/success"
 import FailNotification from "../../../../../../public/notifications/fail";
 import UnauthorizedAccessPage from "../../../../../401";
 import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
+import TeacherLessonController from "../../../../../../public/api/teacher/lesson/TeacherLessonController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -18,17 +19,15 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
     return {
         props: {
             isPagePermissionSuccess: true,
-            operationUserId: officerId,
-            SIS_API_URL: SIS_API_URL
+            operationUserId: officerId
         }
     }
 }
 
-export default function LessonAssignment({isPagePermissionSuccess, operationUserId, SIS_API_URL}) {
+export default function LessonAssignment({isPagePermissionSuccess, operationUserId}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -69,17 +68,16 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
         setIsOpenFailAssignmentNotification(true);
     }
 
-
-    const [lessonNumber, setLessonNumber] = useState();
-    const changeLessonNumber = event => {
-        const lessonNumber = event.target.value;
-        setLessonNumber(lessonNumber);
+    const [lessonId, setLessonId] = useState();
+    const changeLessonId = event => {
+        const lessonId = event.target.value;
+        setLessonId(lessonId);
     }
 
-    const [teacherNumber, setTeacherNumber] = useState();
-    const changeTeacherNumber = event => {
-        const teacherNumber = event.target.value;
-        setTeacherNumber(teacherNumber);
+    const [teacherId, setTeacherId] = useState();
+    const changeTeacherId = event => {
+        const teacherId = event.target.value;
+        setTeacherId(teacherId);
     }
 
     const lessonAssignment = async (event) => {
@@ -87,21 +85,8 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/teacher/lesson/save`, {
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                teacherLessonInfoRequest: {
-                    lessonId: lessonNumber,
-                    teacherId: teacherNumber
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
+        const teacherLessonData = await TeacherLessonController.saveTeacherLesson(operationUserId, lessonId, teacherId);
+        if (teacherLessonData.success) {
             closeProcessingAssignmentNotification();
             openSuccessAssignmentNotification();
         } else {
@@ -114,7 +99,7 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none sm:mt-5">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={lessonAssignment}>
@@ -132,7 +117,7 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
                                                 ÖĞRETMEN NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherNumber}
+                                                onChange={changeTeacherId}
                                                 type="text"
                                                 name="teacher-number"
                                                 id="teacher-number"
@@ -150,7 +135,7 @@ export default function LessonAssignment({isPagePermissionSuccess, operationUser
                                                 DERS NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeLessonNumber}
+                                                onChange={changeLessonId}
                                                 type="text"
                                                 name="lesson-number"
                                                 id="lesson-number"

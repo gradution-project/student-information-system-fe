@@ -2,12 +2,12 @@ import SISTitle from "../../../../public/components/page-titles";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {teacherDegrees, teacherRoles} from "../../../../public/constants/teacher";
 import UnauthorizedAccessPage from "../../../401";
 import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
 import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
+import TeacherController from "../../../../public/api/teacher/TeacherController";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -19,24 +19,18 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const teacherResponse = await fetch(`${SIS_API_URL}/teacher/` + teacherId, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const teacherData = await teacherResponse.json();
+    const teacherData = await TeacherController.getTeacherDetailByTeacherId(teacherId);
     if (teacherData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                SIS_API_URL: SIS_API_URL,
                 teacher: teacherData.response
             }
         }
     }
 }
 
-export default function TeacherMyInformation({isPagePermissionSuccess, SIS_API_URL, teacher}) {
+export default function TeacherMyInformation({isPagePermissionSuccess, teacher}) {
 
     if (!isPagePermissionSuccess) {
         return (

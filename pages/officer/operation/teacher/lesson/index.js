@@ -1,13 +1,16 @@
 import {useRouter} from "next/router";
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
-import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../public/constants/lesson";
+import LessonSemester from "../../../../../public/constants/lesson/LessonSemester";
 import {useState} from "react";
 import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../401";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import TeacherLessonController from "../../../../../public/api/teacher/lesson/TeacherLessonController";
+import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/LessonCompulsoryOrElective";
+import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -19,24 +22,18 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const lessonsData = await lessonsResponse.json();
+    const lessonsData = await TeacherLessonController.getAllTeachersLessons();
     if (lessonsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                lessons: lessonsData.response,
-                SIS_API_URL: SIS_API_URL
+                lessons: lessonsData.response
             }
         }
     }
 }
 
-export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL, lessons}) {
+export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -86,18 +83,8 @@ export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL,
     const deleteTeacherLesson = async (lessonId, teacherId) => {
         openProcessingDeleteNotification();
 
-        const deleteRes = await fetch(`${SIS_API_URL}/teacher/lesson/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                teacherLessonInfoRequest: {
-                    lessonId: lessonId,
-                    teacherId: teacherId
-                }
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
+        const teacherLessonData = await TeacherLessonController.deleteTeacherLesson(lessonId, teacherId);
+        if (teacherLessonData.success) {
             closeProcessingDeleteNotification();
             openSuccessDeleteNotification();
         } else {
@@ -110,7 +97,7 @@ export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL,
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className=" select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ATANAN DERS LİSTESİ
@@ -166,8 +153,8 @@ export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL,
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {lessons.map((lesson) => (
-                                                <tr key={lesson.lessonResponse.lessonId}>
+                                            {lessons.map((lesson, lessonResponse) => (
+                                                <tr key={lessonResponse.lessonId}>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
                                                             <div className="ml-0.5">
@@ -185,7 +172,7 @@ export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL,
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
                                                                 <div
                                                                     className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
-                                                                {lessonSemesters.map((lSemester) => (
+                                                                {LessonSemester.getAll.map((lSemester) => (
                                                                     lesson.lessonResponse.semester === lSemester.enum
                                                                         ?
                                                                         <div
@@ -204,7 +191,7 @@ export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL,
 
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {lessonCompulsory.map((lCompulsory) => (
+                                                        {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
                                                             lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
                                                                 ?
                                                                 <div
@@ -215,7 +202,7 @@ export default function TeacherLessonList({isPagePermissionSuccess, SIS_API_URL,
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                 <span>
-                                                         {lessonStatuses.map((lStatus) => (
+                                                         {LessonStatus.getAll.map((lStatus) => (
                                                              lesson.lessonResponse.status === lStatus.enum
                                                                  ?
                                                                  lStatus.miniComponent

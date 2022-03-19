@@ -2,12 +2,16 @@ import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
 import {useState} from "react";
-import {departmentPreparatoryClass} from "../../../../../public/constants/department";
+import DepartmentStatus from "../../../../../public/constants/department/DepartmentStatus";
 import UnauthorizedAccessPage from "../../../../401";
 import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import FacultyController from "../../../../../public/api/faculty/FacultyController";
+import DepartmentController from "../../../../../public/api/department/DepartmentController";
+import DepartmentPreparatoryClass from "../../../../../public/constants/department/DepartmentPreparatoryClass";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -19,26 +23,20 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const facultyDatas = await facultyResponses.json();
-    if (facultyDatas.success) {
+    const facultiesData = await FacultyController.getAllFacultiesByStatus(DepartmentStatus.ACTIVE);
+    if (facultiesData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                faculties: facultyDatas.response
+                faculties: facultiesData.response
             }
         }
     }
 }
 
 
-export default function DepartmentSave({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculties}) {
+export default function DepartmentSave({isPagePermissionSuccess, operationUserId, faculties}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -47,12 +45,6 @@ export default function DepartmentSave({isPagePermissionSuccess, operationUserId
     }
 
     const router = useRouter();
-
-    const [preparatoryClass, setPreparatoryClass] = useState();
-    const changePreparatoryClass = event => {
-        const preparatoryClass = event.target.value;
-        setPreparatoryClass(preparatoryClass);
-    }
 
     let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
 
@@ -86,22 +78,28 @@ export default function DepartmentSave({isPagePermissionSuccess, operationUserId
     }
 
 
-    const [departmentName, setDepartmentName] = useState();
-    const changeDepartmentName = event => {
-        const departmentName = event.target.value;
-        setDepartmentName(departmentName);
-    }
-
     const [facultyId, setFacultyId] = useState();
     const changeFacultyId = event => {
         const facultyId = event.target.value;
         setFacultyId(facultyId);
     }
 
-    const [totalClassLevel, setTotalClassLevel] = useState();
+    const [departmentName, setDepartmentName] = useState();
+    const changeDepartmentName = event => {
+        const departmentName = event.target.value;
+        setDepartmentName(departmentName);
+    }
+
+    const [departmentPreparatoryClass, setDepartmentPreparatoryClass] = useState();
+    const changePreparatoryClass = event => {
+        const departmentPreparatoryClass = event.target.value;
+        setDepartmentPreparatoryClass(departmentPreparatoryClass);
+    }
+
+    const [departmentTotalClassLevel, setDepartmentTotalClassLevel] = useState();
     const changeTotalClassLevel = event => {
-        const totalClassLevel = event.target.value;
-        setTotalClassLevel(totalClassLevel);
+        const departmentTotalClassLevel = event.target.value;
+        setDepartmentTotalClassLevel(departmentTotalClassLevel);
     }
 
     const departmentSave = async (event) => {
@@ -109,23 +107,10 @@ export default function DepartmentSave({isPagePermissionSuccess, operationUserId
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/department/save`, {
-            body: JSON.stringify({
-                departmentInfoRequest: {
-                    facultyId: facultyId,
-                    isTherePreparatoryClass: preparatoryClass,
-                    name: departmentName,
-                    totalClassLevel: totalClassLevel
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
+        const departmentData = await DepartmentController.saveDepartment(operationUserId, facultyId,
+            departmentPreparatoryClass, departmentName, departmentTotalClassLevel);
+
+        if (departmentData.success) {
             closeProcessingSaveNotification();
             openSuccessSaveNotification();
         } else {
@@ -138,7 +123,7 @@ export default function DepartmentSave({isPagePermissionSuccess, operationUserId
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none md:col-span-1">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6" onSubmit={departmentSave}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
                         <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -212,7 +197,7 @@ export default function DepartmentSave({isPagePermissionSuccess, operationUserId
                                         className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
-                                        {departmentPreparatoryClass.map(preparatoryClass => (
+                                        {DepartmentPreparatoryClass.getAll.map(preparatoryClass => (
                                             <option key={preparatoryClass.value}
                                                     value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                         ))}
@@ -222,12 +207,7 @@ export default function DepartmentSave({isPagePermissionSuccess, operationUserId
                             </div>
                         </div>
                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <button
-                                type="submit"
-                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                            >
-                                KAYDET
-                            </button>
+                            {SisOperationButton.getSaveButton("KAYDET")}
                         </div>
 
                         <ProcessNotification

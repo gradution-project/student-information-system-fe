@@ -7,6 +7,7 @@ import UnauthorizedAccessPage from "../../../../../../401";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../../../public/notifications/process";
+import ExamScheduleFileController from "../../../../../../../public/api/exam-file/ExamScheduleFileController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -18,25 +19,19 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
     const {id} = context.query;
-    const examScheduleFileResponse = await fetch(`${SIS_API_URL}/exam-schedule-file/department/` + id, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const examScheduleFileData = await examScheduleFileResponse.json();
+    const examScheduleFileData = await ExamScheduleFileController.getExamScheduleFileDetailByExamScheduleFileId(id);
     if (examScheduleFileData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                SIS_API_URL: SIS_API_URL,
                 examScheduleFile: examScheduleFileData.response
             }
         }
     }
 }
 
-export default function ExamScheduleFileDetail({isPagePermissionSuccess, SIS_API_URL, examScheduleFile}) {
+export default function ExamScheduleFileDetail({isPagePermissionSuccess, examScheduleFile}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -83,12 +78,8 @@ export default function ExamScheduleFileDetail({isPagePermissionSuccess, SIS_API
 
         event.preventDefault();
 
-        const deleteRes = await fetch(`${SIS_API_URL}/exam-schedule-file/delete/department/` + examScheduleFile.departmentResponse.departmentId, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE'
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
+        const examScheduleFileData = await ExamScheduleFileController.deleteExamScheduleFile(examScheduleFile.departmentResponse.departmentId);
+        if (examScheduleFileData.success) {
             closeProcessingDeleteNotification();
             openSuccessDeleteNotification();
         } else {
@@ -102,7 +93,7 @@ export default function ExamScheduleFileDetail({isPagePermissionSuccess, SIS_API
             <SISTitle/>
             <OfficerNavbar/>
             <div className="mt-5 md:mt-0 md:col-span-2">
-                <div className="px-28 py-5 mx-auto space-y-6">
+                <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                     <div className="max-w-7xl mx-auto h-52 px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-4xl text-sis-darkblue">
                             {examScheduleFile.departmentResponse.name} Sınav Programı

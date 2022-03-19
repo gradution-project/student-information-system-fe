@@ -7,6 +7,8 @@ import UnauthorizedAccessPage from "../../../../401";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import FacultyController from "../../../../../public/api/faculty/FacultyController";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -18,17 +20,15 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
     return {
         props: {
             isPagePermissionSuccess: true,
-            operationUserId: officerId,
-            SIS_API_URL: SIS_API_URL
+            operationUserId: officerId
         }
     }
 }
 
-export default function FacultySave({isPagePermissionSuccess, operationUserId, SIS_API_URL}) {
+export default function FacultySave({isPagePermissionSuccess, operationUserId}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -37,7 +37,6 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
     }
 
     const router = useRouter();
-
 
     let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
 
@@ -82,20 +81,8 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/faculty/save`, {
-            body: JSON.stringify({
-                facultyInfoRequest: {
-                    name: facultyName
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
+        const facultyData = await FacultyController.saveFaculty(operationUserId, facultyName);
+        if (facultyData.success) {
             closeProcessingSaveNotification();
             openSuccessSaveNotification();
         } else {
@@ -108,7 +95,7 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none md:col-span-1">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6" onSubmit={facultySave}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
                         <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -132,37 +119,30 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId, S
                                         className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                     />
                                 </div>
-
-
                             </div>
                         </div>
                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <button
-                                type="submit"
-                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                            >
-                                KAYDET
-                            </button>
+                            {SisOperationButton.getSaveButton("KAYDET")}
                         </div>
 
                         <ProcessNotification
                             isOpen={isOpenProcessingSaveNotification}
                             closeNotification={closeProcessingSaveNotification}
-                            title="Bölüm Ekleme İsteğiniz İşleniyor..."
+                            title="Fakülte Ekleme İsteğiniz İşleniyor..."
                         />
 
                         <SuccessNotification
                             isOpen={isOpenSuccessSaveNotification}
                             closeNotification={closeSuccessSaveNotification}
-                            title="Bölüm Ekleme İşlemi Başarılı!"
-                            description="Bölüm Ekleme İşlemi başarıyla gerçekleşti.
-                            Mesaj penceresini kapattıktan sonra bölüm listeleme ekranına yönlendirileceksiniz."
+                            title="Fakülte Ekleme İşlemi Başarılı!"
+                            description="Fakülte Ekleme İşlemi başarıyla gerçekleşti.
+                            Mesaj penceresini kapattıktan sonra fakülte listeleme ekranına yönlendirileceksiniz."
                         />
 
                         <FailNotification
                             isOpen={isOpenFailSaveNotification}
                             closeNotification={closeFailSaveNotification}
-                            title="Bölüm Ekleme İşlemi Başarısız!"
+                            title="Fakülte Ekleme İşlemi Başarısız!"
                             description="Lütfen girdiğiniz verileri kontrol ediniz.
                             Verilerinizi doğru girdiyseniz
                             sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."

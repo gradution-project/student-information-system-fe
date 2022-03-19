@@ -5,18 +5,10 @@ import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
 import {useRouter} from "next/router";
+import TeacherPasswordOperationController
+    from "../../../../public/api/teacher/password/TeacherPasswordOperationController";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL,
-            SIS_FE_URL: process.env.SIS_FE_URL
-        }
-    }
-}
-
-
-export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
+export default function TeacherForgotPassword() {
 
     const router = useRouter();
 
@@ -62,15 +54,7 @@ export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
 
         event.preventDefault();
 
-        const apiResult = await fetch(`${SIS_API_URL}/teacher/password-operation/forgot-password`, {
-            body: JSON.stringify({
-                teacherId: teacherNumber,
-                feUrl: SIS_FE_URL
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const data = await apiResult.json();
+        const data = await TeacherPasswordOperationController.forgotPassword(teacherNumber);
         if (!data.success) {
             closeProcessingForgotPasswordNotification();
             openFailForgotPasswordNotification();
