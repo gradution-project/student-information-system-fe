@@ -8,16 +8,7 @@ import FailNotification from "../../../../public/notifications/fail";
 import StudentPasswordOperationController
     from "../../../../public/api/student/password/StudentPasswordOperationController";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL,
-            SIS_FE_URL: process.env.SIS_FE_URL
-        }
-    }
-}
-
-export default function StudentForgotPassword({SIS_API_URL, SIS_FE_URL}) {
+export default function StudentForgotPassword() {
 
     const router = useRouter();
 
