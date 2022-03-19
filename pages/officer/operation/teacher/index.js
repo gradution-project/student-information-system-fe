@@ -1,9 +1,12 @@
 import SISTitle from "../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {teacherDegrees, teacherRoles, teacherStatuses} from "../../../../public/constants/teacher";
 import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../401";
+import TeacherController from "../../../../public/api/teacher/TeacherController";
+import TeacherStatus from "../../../../public/constants/teacher/TeacherStatus";
+import TeacherRole from "../../../../public/constants/teacher/TeacherDegree";
+import TeacherDegree from "../../../../public/constants/teacher/TeacherDegree";
 
 
 export async function getServerSideProps(context) {
@@ -16,12 +19,7 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const teacherResponse = await fetch(`${SIS_API_URL}/teacher?status=ALL`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const teachersData = await teacherResponse.json();
+    const teachersData = await TeacherController.getAllTeachersByStatus(TeacherStatus.ALL);
     if (teachersData.success) {
         return {
             props: {
@@ -51,7 +49,7 @@ export default function TeacherList({isPagePermissionSuccess, teachers}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ÖĞRETMEN LİSTESİ
@@ -122,7 +120,7 @@ export default function TeacherList({isPagePermissionSuccess, teachers}) {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {teacherRoles.map((tRole) => (
+                                                        {TeacherRole.getAll.map((tRole) => (
                                                             teacher.role === tRole.enum
                                                                 ?
                                                                 <div
@@ -130,7 +128,7 @@ export default function TeacherList({isPagePermissionSuccess, teachers}) {
                                                                 :
                                                                 null
                                                         ))}
-                                                        {teacherDegrees.map((tDegree) => (
+                                                        {TeacherDegree.getAll.map((tDegree) => (
                                                             teacher.degree === tDegree.enum
                                                                 ?
                                                                 <div
@@ -146,7 +144,7 @@ export default function TeacherList({isPagePermissionSuccess, teachers}) {
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{teacher.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {teacherStatuses.map((tStatus) => (
+                                                        {TeacherStatus.getAll.map((tStatus) => (
                                                             teacher.status === tStatus.enum
                                                                 ?
                                                                 tStatus.miniComponent
