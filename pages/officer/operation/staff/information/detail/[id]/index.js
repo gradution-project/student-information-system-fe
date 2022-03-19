@@ -2,12 +2,16 @@ import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {officerStatuses} from "../../../../../../../public/constants/officer";
 import UnauthorizedAccessPage from "../../../../../../401";
 import ProcessNotification from "../../../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
 import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
+import OfficerController from "../../../../../../../public/api/officer/OfficerController";
+import FacultyController from "../../../../../../../public/api/faculty/FacultyController";
+import FacultyStatus from "../../../../../../../public/constants/faculty/FacultyStatus";
+import OfficerStatus from "../../../../../../../public/constants/officer/OfficerStatus";
+import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -19,25 +23,16 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
+    const facultiesData = await FacultyController.getAllFacultiesByStatus(FacultyStatus.ACTIVE);
+
     const {id} = context.query;
-    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const officerResponse = await fetch(`${SIS_API_URL}/officer/` + id, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const facultyDatas = await facultyResponses.json();
-    const officerData = await officerResponse.json();
-    if (officerData.success && facultyDatas.success) {
+    const officerData = await OfficerController.getOfficerDetailByOfficerId(id);
+    if (officerData.success && facultiesData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                faculties: facultyDatas.response,
+                faculties: facultiesData.response,
                 officer: officerData.response
             }
         }
@@ -45,7 +40,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function OfficerDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, faculties, officer}) {
+export default function OfficerDetail({isPagePermissionSuccess, operationUserId, faculties, officer}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -55,76 +50,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
 
     const {academicInfoResponse} = officer;
     const {personalInfoResponse} = officer;
-
-    const {
-        facultyResponse,
-        officerId,
-        registrationDate,
-        status
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, email, tcNo, birthday, address} = personalInfoResponse;
-
-    const facultyId = facultyResponse.facultyId;
-    const facultyName = facultyResponse.name;
-    const phone = academicInfoResponse.phoneNumber;
-
-
-    const [officerName, setOfficerName] = useState(name);
-    const changeOfficerName = event => {
-        const officerName = event.target.value;
-        setOfficerName(officerName);
-    }
-
-    const [officerSurname, setOfficerSurname] = useState(surname);
-    const changeOfficerSurname = event => {
-        const officerSurname = event.target.value;
-        setOfficerSurname(officerSurname);
-    }
-
-    const [officerTcNo, setOfficerTcNo] = useState(tcNo);
-    const changeOfficerTcNo = event => {
-        const officerTcNo = event.target.value;
-        setOfficerTcNo(officerTcNo);
-    }
-
-    const [officerBirthday, setOfficerBirthday] = useState(birthday);
-    const changeOfficerBirthday = event => {
-        const officerBirthday = event.target.value;
-        setOfficerBirthday(officerBirthday);
-    }
-
-    const [officerEmail, setOfficerEmail] = useState(email);
-    const changeOfficerEmail = event => {
-        const officerEmail = event.target.value;
-        setOfficerEmail(officerEmail);
-    }
-
-    const [officerAddress, setOfficerAddress] = useState(address);
-    const changeOfficerAddress = event => {
-        const officerAddress = event.target.value;
-        setOfficerAddress(officerAddress);
-    }
-
-
-    const [officerFacultyId, setOfficerFacultyId] = useState(facultyId);
-    const changeOfficerFacultyId = event => {
-        const officerFacultyId = event.target.value;
-        setOfficerFacultyId(officerFacultyId);
-    }
-
-    const [officerPhoneNumber, setOfficerPhoneNumber] = useState(phoneNumber);
-    const changeOfficerPhoneNumber = event => {
-        const officerPhoneNumber = event.target.value;
-        setOfficerPhoneNumber(officerPhoneNumber);
-    }
-
-    const [officerPhone, setOfficerPhone] = useState(phone);
-    const changeOfficerPhone = event => {
-        const officerPhone = event.target.value;
-        setOfficerPhone(officerPhone);
-    }
+    const {facultyResponse} = academicInfoResponse;
 
     const router = useRouter();
+
+
+    /**
+     * OFFICER ACTIVATE OPERATION
+     */
 
     let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
 
@@ -157,22 +90,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
         setIsOpenFailActivateNotification(true);
     }
 
-    const officerActivate = async (event) => {
+    const activateOfficer = async (event) => {
         openProcessingActivateNotification();
 
-        event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/officer/activate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                officerId: officerId
-            }),
-        });
-        const activateData = await activateRes.json();
-        if (activateData.success) {
+        event.preventDefault();
+
+        const officerId = academicInfoResponse.officerId;
+        const officerData = await OfficerController.activateOfficer(operationUserId, officerId);
+        if (officerData.success) {
             closeProcessingActivateNotification();
             openSuccessActivateNotification();
         } else {
@@ -180,6 +105,11 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
             openFailActivateNotification();
         }
     }
+
+
+    /**
+     * OFFICER PASSIVATE OPERATION
+     */
 
 
     let [isOpenProcessingPassivateNotification, setIsOpenProcessingPassivateNotification] = useState(false);
@@ -213,22 +143,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
         setIsOpenFailPassivateNotification(true);
     }
 
-    const officerPassivate = async (event) => {
+    const passivateOfficer = async (event) => {
         openProcessingPassivateNotification();
 
-        event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/officer/passivate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                officerId: officerId
-            }),
-        });
-        const passivateData = await passivateRes.json();
-        if (passivateData.success) {
+        event.preventDefault();
+
+        const officerId = academicInfoResponse.officerId;
+        const officerData = await OfficerController.passivateOfficer(operationUserId, officerId);
+        if (officerData.success) {
             closeProcessingPassivateNotification();
             openSuccessPassivateNotification();
         } else {
@@ -237,6 +159,10 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * OFFICER DELETE OPERATION
+     */
 
     let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
 
@@ -269,22 +195,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
         setIsOpenFailDeleteNotification(true);
     }
 
-    const officerDelete = async (event) => {
+    const deleteOfficer = async (event) => {
         openProcessingDeleteNotification();
 
-        event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/officer/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                officerId: officerId
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
+        event.preventDefault();
+
+        const officerId = academicInfoResponse.officerId;
+        const officerData = await OfficerController.deleteOfficer(operationUserId, officerId);
+        if (officerData.success) {
             closeProcessingDeleteNotification();
             openSuccessDeleteNotification();
         } else {
@@ -293,6 +211,10 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * OFFICER UPDATE ACADEMIC INFO OPERATION
+     */
 
     let [isOpenProcessingAcademicInfoUpdateNotification, setIsOpenProcessingAcademicInfoUpdateNotification] = useState(false);
 
@@ -319,31 +241,35 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
 
     function closeFailAcademicInfoUpdateNotification() {
         setIsOpenFailAcademicInfoUpdateNotification(false);
+        router.reload();
     }
 
     function openFailAcademicInfoUpdateNotification() {
         setIsOpenFailAcademicInfoUpdateNotification(true);
     }
 
-    const officerUpdateAcademic = async (event) => {
+    const [facultyId, setFacultyId] = useState(facultyResponse.facultyId);
+    const changeFacultyId = event => {
+        const facultyId = event.target.value;
+        setFacultyId(facultyId);
+    }
+
+    const [academicPhoneNumber, setAcademicPhoneNumber] = useState(academicInfoResponse.phoneNumber);
+    const changeAcademicPhoneNumber = event => {
+        const academicPhoneNumber = event.target.value;
+        setAcademicPhoneNumber(academicPhoneNumber);
+    }
+
+    const updateOfficerAcademicInfo = async (event) => {
         openProcessingAcademicInfoUpdateNotification();
 
-        event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/officer/update/academic-info/${officerId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                academicInfoRequest: {
-                    facultyId: officerFacultyId,
-                    phoneNumber: officerPhone,
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-        });
-        const updateAcademicData = await updateRes.json();
-        if (updateAcademicData.success) {
+        event.preventDefault();
+
+        const officerId = academicInfoResponse.officerId;
+        const phoneNumber = academicPhoneNumber;
+        const academicInfo = {facultyId, phoneNumber};
+        const academicInfoData = await OfficerController.updateOfficerAcademicInfo(operationUserId, officerId, academicInfo);
+        if (academicInfoData.success) {
             closeProcessingAcademicInfoUpdateNotification();
             openSuccessAcademicInfoUpdateNotification();
         } else {
@@ -352,6 +278,10 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * OFFICER UPDATE PERSONAL INFO OPERATION
+     */
 
     let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
 
@@ -378,37 +308,65 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
 
     function closeFailPersonalInfoUpdateNotification() {
         setIsOpenFailPersonalInfoUpdateNotification(false);
+        router.reload();
     }
 
     function openFailPersonalInfoUpdateNotification() {
         setIsOpenFailPersonalInfoUpdateNotification(true);
     }
 
-    const officerUpdatePersonal = async (event) => {
+    const [name, setName] = useState(personalInfoResponse.name);
+    const changeName = event => {
+        const name = event.target.value;
+        setName(name);
+    }
+
+    const [surname, setSurname] = useState(personalInfoResponse.surname);
+    const changeSurname = event => {
+        const surname = event.target.value;
+        setSurname(surname);
+    }
+
+    const [tcNo, setTcNo] = useState(personalInfoResponse.tcNo);
+    const changeTcNo = event => {
+        const tcNo = event.target.value;
+        setTcNo(tcNo);
+    }
+
+    const [birthday, setBirthday] = useState(personalInfoResponse.birthday);
+    const changeBirthday = event => {
+        const birthday = event.target.value;
+        setBirthday(birthday);
+    }
+
+    const [email, setEmail] = useState(personalInfoResponse.email);
+    const changeEmail = event => {
+        const email = event.target.value;
+        setEmail(email);
+    }
+
+    const [address, setAddress] = useState(personalInfoResponse.address);
+    const changeAddress = event => {
+        const address = event.target.value;
+        setAddress(address);
+    }
+
+    const [personalPhoneNumber, setPersonalPhoneNumber] = useState(personalInfoResponse.phoneNumber);
+    const changePersonalPhoneNumber = event => {
+        const personalPhoneNumber = event.target.value;
+        setPersonalPhoneNumber(personalPhoneNumber);
+    }
+
+    const updateOfficerPersonalInfo = async (event) => {
         openProcessingPersonalInfoUpdateNotification();
 
-        event.preventDefault()
+        event.preventDefault();
 
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                personalInfoRequest: {
-                    address: officerAddress,
-                    birthday: officerBirthday,
-                    email: officerEmail,
-                    name: officerName,
-                    phoneNumber: officerPhoneNumber,
-                    surname: officerSurname,
-                    tcNo: officerTcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
+        const officerId = academicInfoResponse.officerId;
+        const phoneNumber = personalPhoneNumber;
+        const personalInfo = {name, surname, tcNo, email, birthday, address, phoneNumber};
+        const personalInfoData = await OfficerController.updateOfficerPersonalInfo(operationUserId, officerId, personalInfo);
+        if (personalInfoData.success) {
             closeProcessingPersonalInfoUpdateNotification();
             openSuccessPersonalInfoUpdateNotification();
         } else {
@@ -416,67 +374,54 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
             openFailPersonalInfoUpdateNotification();
         }
     }
+
+    const isOfficerPassiveOrDeleted = () => {
+        return academicInfoResponse.status === OfficerStatus.PASSIVE || academicInfoResponse.status === OfficerStatus.DELETED
+    }
+
     return (
         <>
             <SISTitle/>
             <OfficerNavbar/>
             <div>
-                <div className="select-none px-28 py-5 mx-auto space-y-6">
+                <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                            {name} {surname}
+                            {personalInfoResponse.name} {personalInfoResponse.surname}
                         </a>
-                        {officerStatuses.map((officerStatus) => (
-                            status === officerStatus.enum
+                        {OfficerStatus.getAll.map((oStatus) => (
+                            academicInfoResponse.status === oStatus.enum
                                 ?
-                                officerStatus.component
+                                oStatus.component
                                 :
                                 null
                         ))}
                         {(
-                            status !== 'DELETED'
+                            academicInfoResponse.status === OfficerStatus.DELETED
                                 ?
-                                <button
-                                    onClick={officerDelete}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                >
-                                    KAYDI SİL
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getDeleteButton(deleteOfficer, "KAYDI SİL")
                         )}
 
                         {(
-                            status !== 'PASSIVE' && status !== 'DELETED'
+                            academicInfoResponse.status === OfficerStatus.PASSIVE || academicInfoResponse.status === OfficerStatus.DELETED
                                 ?
-                                <button
-                                    onClick={officerPassivate}
-                                    type="submit"
-                                    className="float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                >
-                                    KAYDI DONDUR
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getPassivateButton(passivateOfficer, "KAYDI DONDUR")
                         )}
 
                         {(
-                            status !== 'ACTIVE' && status !== 'DELETED'
+                            academicInfoResponse.status === OfficerStatus.ACTIVE || academicInfoResponse.status === OfficerStatus.DELETED
                                 ?
-                                <button
-                                    onClick={officerActivate}
-                                    type="submit"
-                                    className="float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                >
-                                    KAYDI AKTİFLEŞTİR
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getActivateButton(activateOfficer, "KAYDI AKTİFLEŞTİR")
                         )}
                     </div>
                     <div className="md:col-span-1">
-                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-10 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -494,7 +439,7 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 type="text"
                                                 name="officerId"
                                                 id="officerId"
-                                                defaultValue={officerId}
+                                                defaultValue={academicInfoResponse.officerId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -509,7 +454,7 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                defaultValue={registrationDate}
+                                                defaultValue={academicInfoResponse.registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -521,17 +466,17 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 FAKÜLTESİ
                                             </label>
                                             <select
-                                                onChange={changeOfficerFacultyId}
+                                                onChange={changeFacultyId}
                                                 id="faculty"
                                                 name="faculty"
                                                 autoComplete="faculty-name"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {faculties.map((faculty) => (
-                                                    facultyName === faculty.name
+                                                    facultyResponse.name === faculty.name
                                                         ?
                                                         <option value={faculty.facultyId}
                                                                 selected>{faculty.name}</option>
@@ -562,14 +507,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeOfficerPhone(e)
+                                                    changeAcademicPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phoneNumber"
                                                 id="phoneNumber"
-                                                defaultValue={phone}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={academicInfoResponse.phoneNumber}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -603,19 +548,11 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                     </div>
                                 </div>
                                 {(
-                                    status !== "DELETED" && status !== "PASSIVE"
+                                    isOfficerPassiveOrDeleted()
                                         ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={officerUpdateAcademic}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
                                         null
+                                        :
+                                        SisOperationButton.getUpdateButton(updateOfficerAcademicInfo, "GÜNCELLE")
                                 )}
                             </div>
                         </form>
@@ -629,10 +566,10 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                 </div>
             </div>
 
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
+            <div className="select-none mb-10 mt-10 sm:mt-0">
+                <div className="md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -647,13 +584,13 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeOfficerName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                defaultValue={name}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.name}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -665,13 +602,13 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeOfficerSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
-                                                defaultValue={surname}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.surname}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -683,7 +620,7 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeOfficerTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -691,9 +628,9 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 maxLength="11"
                                                 pattern="[0-9]+"
                                                 required
-                                                defaultValue={tcNo}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.tcNo}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -717,7 +654,7 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
                                                         e.target.value = e.target.value + ".";
                                                     }
-                                                    changeOfficerBirthday(e)
+                                                    changeBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -725,9 +662,9 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                defaultValue={birthday}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.birthday}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -739,14 +676,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeOfficerEmail}
+                                                onChange={changeEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -772,7 +709,7 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeOfficerPhoneNumber(e)
+                                                    changePersonalPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -780,9 +717,9 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
-                                                defaultValue={phoneNumber}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.phoneNumber}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -794,14 +731,14 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeOfficerAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.address}
+                                                disabled={isOfficerPassiveOrDeleted()}
+                                                className={isOfficerPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -820,19 +757,11 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                                     </div>
                                 </div>
                                 {(
-                                    status !== "DELETED" && status !== "PASSIVE"
+                                    isOfficerPassiveOrDeleted()
                                         ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={officerUpdatePersonal}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
                                         null
+                                        :
+                                        SisOperationButton.getUpdateButton(updateOfficerPersonalInfo, "GÜNCELLE")
                                 )}
 
 
@@ -959,7 +888,6 @@ export default function OfficerDetail({isPagePermissionSuccess, operationUserId,
                     </div>
                 </div>
             </div>
-
         </>
     )
 }
