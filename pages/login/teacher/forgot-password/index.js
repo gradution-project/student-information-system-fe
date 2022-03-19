@@ -8,17 +8,7 @@ import {useRouter} from "next/router";
 import TeacherPasswordOperationController
     from "../../../../public/api/teacher/password/TeacherPasswordOperationController";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL,
-            SIS_FE_URL: process.env.SIS_FE_URL
-        }
-    }
-}
-
-
-export default function TeacherForgotPassword({SIS_API_URL, SIS_FE_URL}) {
+export default function TeacherForgotPassword() {
 
     const router = useRouter();
 
