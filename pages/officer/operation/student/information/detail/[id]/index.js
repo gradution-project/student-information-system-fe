@@ -2,12 +2,18 @@ import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../../../../public/constants/student";
 import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../../../401";
 import ProcessNotification from "../../../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
+import DepartmentController from "../../../../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../../../../public/constants/department/DepartmentStatus";
+import StudentController from "../../../../../../../public/api/student/StudentController";
+import StudentStatus from "../../../../../../../public/constants/student/StudentStatus";
+import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
+import StudentClassLevel from "../../../../../../../public/constants/student/StudentClassLevel";
+import StudentDegree from "../../../../../../../public/constants/student/StudentDegree";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -19,25 +25,16 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
+
     const {id} = context.query;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const studentResponse = await fetch(`${SIS_API_URL}/student/` + id, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentDatas = await departmentResponses.json();
-    const studentData = await studentResponse.json();
-    if (studentData.success && departmentDatas.success) {
+    const studentData = await StudentController.getStudentDetailByStudentId(id);
+    if (studentData.success && departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                departments: departmentDatas.response,
+                departments: departmentsData.response,
                 student: studentData.response
             }
         }
@@ -45,7 +42,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments, student}) {
+export default function StudentDetail({isPagePermissionSuccess, operationUserId, departments, student}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -53,87 +50,17 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         )
     }
 
-    const {academicInfoResponse} = student;
-    const {personalInfoResponse} = student;
-
-    const {
-        departmentResponse,
-        studentId,
-        classLevel,
-        degree,
-        registrationDate,
-        status
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {academicInfoResponse, personalInfoResponse} = student;
+    const {departmentResponse} = academicInfoResponse;
     const {facultyResponse} = departmentResponse;
-
-    const facultyId = facultyResponse.facultyId;
-    const facultyName = facultyResponse.name;
-    const departmentName = departmentResponse.name;
-    const departmentId = departmentResponse.departmentId;
-
-    const [studentName, setStudentName] = useState(name);
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
-    }
-
-    const [studentSurname, setStudentSurname] = useState(surname);
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
-    }
-
-    const [studentTcNo, setStudentTcNo] = useState(tcNo);
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
-    }
-
-    const [studentBirthday, setStudentBirthday] = useState(birthday);
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
-    }
-
-    const [studentEmail, setStudentEmail] = useState(personalInfoResponse.email);
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
-    }
-
-    const [studentClassLevel, setStudentClassLevel] = useState(classLevel);
-    const changeStudentClassLevel = event => {
-        const classLevelStudent = event.target.value;
-        setStudentClassLevel(classLevelStudent);
-    }
-
-    const [studentAddress, setStudentAddress] = useState(address);
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
-    }
-
-    const [studentDegree, setStudentDegree] = useState(degree);
-    const changeStudentDegree = event => {
-        const degreeStudent = event.target.value;
-        setStudentDegree(degreeStudent);
-    }
-
-    const [studentDepartmentId, setStudentDepartmentId] = useState(departmentId);
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
-    }
-
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState(phoneNumber);
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
-    }
 
 
     const router = useRouter();
+
+
+    /**
+     * STUDENT GRADUATE OPERATION
+     */
 
     let [isOpenProcessingGraduateNotification, setIsOpenProcessingGraduateNotification] = useState(false);
 
@@ -169,19 +96,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
     const studentGraduate = async (event) => {
         openProcessingGraduateNotification();
 
-        event.preventDefault()
-        const graduateRes = await fetch(`${SIS_API_URL}/student/graduate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const graduateData = await graduateRes.json();
-        if (graduateData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.graduateStudent(operationUserId, studentId);
+        if (studentData.success) {
             closeProcessingGraduateNotification();
             openSuccessGraduateNotification();
         } else {
@@ -190,6 +109,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+    /**
+     * STUDENT ACTIVATE OPERATION
+     */
 
     let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
 
@@ -225,19 +147,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
     const studentActivate = async (event) => {
         openProcessingActivateNotification();
 
-        event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/student/activate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const activateData = await activateRes.json();
-        if (activateData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.activateStudent(operationUserId, studentId);
+        if (studentData.success) {
             closeProcessingActivateNotification();
             openSuccessActivateNotification();
         } else {
@@ -246,6 +160,10 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * STUDENT PASSIVATE OPERATION
+     */
 
     let [isOpenProcessingPassivateNotification, setIsOpenProcessingPassivateNotification] = useState(false);
 
@@ -281,19 +199,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
     const studentPassivate = async (event) => {
         openProcessingPassivateNotification();
 
-        event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/student/passivate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const passivateData = await passivateRes.json();
-        if (passivateData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.passivateStudent(operationUserId, studentId);
+        if (studentData.success) {
             closeProcessingPassivateNotification();
             openSuccessPassivateNotification();
         } else {
@@ -302,6 +212,10 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * STUDENT DELETE OPERATION
+     */
 
     let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
 
@@ -337,19 +251,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
     const studentDelete = async (event) => {
         openProcessingDeleteNotification();
 
-        event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/student/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.deleteStudent(operationUserId, studentId);
+        if (studentData.success) {
             closeProcessingDeleteNotification();
             openSuccessDeleteNotification();
         } else {
@@ -358,6 +264,10 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * STUDENT UPDATE ACADEMIC INFO OPERATION
+     */
 
     let [isOpenProcessingAcademicInfoUpdateNotification, setIsOpenProcessingAcademicInfoUpdateNotification] = useState(false);
 
@@ -390,26 +300,33 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         setIsOpenFailAcademicInfoUpdateNotification(true);
     }
 
-    const studentUpdateAcademic = async (event) => {
+    const [departmentId, setDepartmentId] = useState(departmentResponse.departmentId);
+    const changeDepartmentId = event => {
+        const departmentId = event.target.value;
+        setDepartmentId(departmentId);
+    }
+
+    const [classLevel, setClassLevel] = useState(academicInfoResponse.classLevel);
+    const changeClassLevel = event => {
+        const classLevel = event.target.value;
+        setClassLevel(classLevel);
+    }
+
+    const [degree, setDegree] = useState(academicInfoResponse.degree);
+    const changeDegree = event => {
+        const degree = event.target.value;
+        setDegree(degree);
+    }
+
+    const updateStudentAcademicInfo = async (event) => {
         openProcessingAcademicInfoUpdateNotification();
 
-        event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/student/update/academic-info/${studentId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                academicInfoRequest: {
-                    classLevel: studentClassLevel,
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-        });
-        const updateAcademicData = await updateRes.json();
-        if (updateAcademicData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const academicInfo = {departmentId, classLevel, degree};
+        const studentData = await StudentController.updateStudentAcademicInfo(operationUserId, studentId, academicInfo);
+        if (studentData.success) {
             closeProcessingAcademicInfoUpdateNotification();
             openSuccessAcademicInfoUpdateNotification();
         } else {
@@ -418,6 +335,10 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         }
     }
 
+
+    /**
+     * STUDENT UPDATE PERSONAL INFO OPERATION
+     */
 
     let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
 
@@ -450,30 +371,57 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         setIsOpenFailPersonalInfoUpdateNotification(true);
     }
 
-    const studentUpdatePersonal = async (event) => {
+    const [name, setName] = useState(departmentResponse.name);
+    const changeName = event => {
+        const name = event.target.value;
+        setName(name);
+    }
+
+    const [surname, setSurname] = useState(personalInfoResponse.surname);
+    const changeSurname = event => {
+        const surname = event.target.value;
+        setSurname(surname);
+    }
+
+    const [tcNo, setTcNo] = useState(personalInfoResponse.tcNo);
+    const changeTcNo = event => {
+        const tcNo = event.target.value;
+        setTcNo(tcNo);
+    }
+
+    const [birthday, setBirthday] = useState(personalInfoResponse.birthday);
+    const changeBirthday = event => {
+        const birthday = event.target.value;
+        setBirthday(birthday);
+    }
+
+    const [email, setEmail] = useState(personalInfoResponse.email);
+    const changeEmail = event => {
+        const email = event.target.value;
+        setEmail(email);
+    }
+
+    const [phoneNumber, setPhoneNumber] = useState(personalInfoResponse.phoneNumber);
+    const changePhoneNumber = event => {
+        const phoneNumber = event.target.value;
+        setPhoneNumber(phoneNumber);
+    }
+
+    const [address, setAddress] = useState(personalInfoResponse.address);
+    const changeAddress = event => {
+        const address = event.target.value;
+        setAddress(address);
+    }
+
+    const updateStudentPersonalInfo = async (event) => {
         openProcessingPersonalInfoUpdateNotification();
 
-        event.preventDefault()
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/student/update/personal-info/${studentId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: studentBirthday,
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const personalInfo = {name, surname, tcNo, birthday, email, phoneNumber, address};
+        const studentData = await StudentController.updateStudentPersonalInfo(operationUserId, studentId, personalInfo);
+        if (studentData.success) {
             closeProcessingPersonalInfoUpdateNotification();
             openSuccessPersonalInfoUpdateNotification();
         } else {
@@ -481,78 +429,65 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
             openFailPersonalInfoUpdateNotification();
         }
     }
+
+    const isStudentPassiveOrDeleted = () => {
+        return academicInfoResponse.status === StudentStatus.PASSIVE || academicInfoResponse.status === StudentStatus.DELETED
+    }
+
     return (
         <>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                            {name} {surname}
+                            {personalInfoResponse.name} {personalInfoResponse.surname}
                         </a>
-                        {studentStatuses.map((studentStatus) => (
-                            status === studentStatus.enum
+                        {StudentStatus.getAll.map((studentStatus) => (
+                            academicInfoResponse.status === studentStatus.enum
                                 ?
                                 studentStatus.component
                                 :
                                 null
                         ))}
                         {(
-                            status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentDelete}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                >
-                                    KAYDI SİL
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getDeleteButton(studentDelete, "KAYDI SİL")
                         )}
                         {(
-                            status !== 'PASSIVE' && status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.PASSIVE
+                            ||
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentPassivate}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                >
-                                    KAYDI DONDUR
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getPassivateButton(studentPassivate, "KAYDI DONDUR")
                         )}
                         {(
-                            status !== 'ACTIVE' && status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.ACTIVE
+                            ||
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentActivate}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                >
-                                    KAYDI AKTİFLEŞTİR
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getActivateButton(studentActivate, "KAYDI AKTİFLEŞTİR")
                         )}
                         {(
-                            status !== 'GRADUATED' && status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.GRADUATED
+                            ||
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentGraduate}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
-                                >
-                                    MEZUNİYET İŞLEMİ BAŞLAT
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getGraduateButton(studentGraduate, "MEZUNİYET İŞLEMİ BAŞLAT")
                         )}
                     </div>
                     <div className="md:col-span-1">
-                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-10 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -570,7 +505,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 type="text"
                                                 name="studentId"
                                                 id="studentId"
-                                                defaultValue={studentId}
+                                                defaultValue={academicInfoResponse.studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -585,7 +520,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                defaultValue={registrationDate}
+                                                defaultValue={academicInfoResponse.registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -601,10 +536,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 name="faculty"
                                                 autoComplete="faculty-name"
                                                 disabled
-                                                defaultValue={facultyName}
+                                                defaultValue={facultyResponse.name}
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option value={facultyId}>{facultyName}</option>
+                                                <option
+                                                    value={facultyResponse.facultyId}>{facultyResponse.name}</option>
                                             </select>
                                         </div>
 
@@ -614,17 +550,17 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeStudentDepartmentId}
+                                                onChange={changeDepartmentId}
                                                 id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departments.map((department) => (
-                                                    departmentName === department.name
+                                                    departmentResponse.name === department.name
                                                         ?
                                                         <option value={department.departmentId}
                                                                 selected>{department.name}</option>
@@ -641,21 +577,21 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 DERECESİ
                                             </label>
                                             <select
-                                                onChange={changeStudentDegree}
+                                                onChange={changeDegree}
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
-                                                {studentDegrees.map(sDegree => (
-                                                    degree === sDegree.enum
+                                                {StudentDegree.getAll.map(sDegree => (
+                                                    academicInfoResponse.degree === sDegree.enum
                                                         ?
                                                         <option value={sDegree.enum} selected>{sDegree.tr}</option>
                                                         :
-                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
+                                                        null
                                                 ))}
                                             </select>
                                         </div>
@@ -666,11 +602,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 SINIF
                                             </label>
                                             <select
-                                                onChange={changeStudentClassLevel}
+                                                onChange={changeClassLevel}
                                                 id="classLevel"
                                                 name="classLevel"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
@@ -692,8 +628,8 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 {/*                : */}
                                                 {/*                null*/}
                                                 {/*))}*/}
-                                                {studentClassLevels.map(sClassLevel => (
-                                                    classLevel === sClassLevel.enum
+                                                {StudentClassLevel.getAll.map(sClassLevel => (
+                                                    academicInfoResponse.classLevel === sClassLevel.enum
                                                         ?
                                                         <option value={sClassLevel.enum}
                                                                 selected>{sClassLevel.tr}</option>
@@ -733,19 +669,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                 </div>
 
                                 {(
-                                    status !== 'DELETED' && status !== 'GRADUTED' && status !== 'PASSIVE'
+                                    isStudentPassiveOrDeleted()
+                                    ||
+                                    academicInfoResponse.status === StudentStatus.GRADUATED
                                         ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={studentUpdateAcademic}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
                                         null
+                                        :
+                                        SisOperationButton.getUpdateButton(updateStudentAcademicInfo, "GÜNCELLE")
                                 )}
                             </div>
                         </form>
@@ -759,10 +689,10 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                 </div>
             </div>
 
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
+            <div className="select-none mb-10 mt-10 sm:mt-0">
+                <div className="md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -777,13 +707,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                defaultValue={name}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.name}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -795,13 +725,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeStudentSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
-                                                defaultValue={surname}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.surname}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -813,7 +743,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -821,9 +751,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 maxLength="11"
                                                 pattern="[0-9]+"
                                                 required
-                                                defaultValue={tcNo}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.tcNo}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -847,7 +777,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
                                                         e.target.value = e.target.value + ".";
                                                     }
-                                                    changeStudentBirthday(e)
+                                                    changeBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -855,9 +785,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                defaultValue={birthday}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.birthday}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -869,14 +799,14 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentEmail}
+                                                onChange={changeEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -902,7 +832,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeStudentPhoneNumber(e)
+                                                    changePhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -910,9 +840,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
-                                                defaultValue={phoneNumber}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.phoneNumber}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -924,14 +854,14 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.address}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -951,19 +881,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'DELETED' && status !== 'GRADUATED' && status !== 'PASSIVE'
+                                    isStudentPassiveOrDeleted()
+                                    ||
+                                    academicInfoResponse.status === StudentStatus.GRADUATED
                                         ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={studentUpdatePersonal}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
                                         null
+                                        :
+                                        SisOperationButton.getUpdateButton(updateStudentPersonalInfo, "GÜNCELLE")
                                 )}
 
                                 {/**
