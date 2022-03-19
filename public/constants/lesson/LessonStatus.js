@@ -1,4 +1,4 @@
-export const departmentStatuses = [
+const getAll = [
     {
         enum: 'ACTIVE',
         tr: 'Aktif',
@@ -25,13 +25,17 @@ export const departmentStatuses = [
     }
 ]
 
-export const departmentPreparatoryClass = [
-    {
-        value: 0,
-        tr: 'Hazırlık Sınıfı Yok'
-    },
-    {
-        value: 1,
-        tr: 'Hazırlık Sınıfı Var'
-    }
-]
+const ACTIVE = 'ACTIVE';
+const PASSIVE = 'PASSIVE';
+const DELETED = 'DELETED';
+const ALL = 'ALL';
+
+const LessonStatus = {
+    getAll,
+    ACTIVE,
+    PASSIVE,
+    DELETED,
+    ALL
+};
+
+export default LessonStatus;
