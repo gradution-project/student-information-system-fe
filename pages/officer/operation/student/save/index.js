@@ -1,14 +1,21 @@
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
-import {studentClassLevels, studentDegrees} from "../../../../../public/constants/student";
-import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import StudentClassLevel from "../../../../../public/constants/student/StudentClassLevel";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../401";
+import ProcessNotification from "../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../public/notifications/success";
+import FailNotification from "../../../../../public/notifications/fail";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
+import StudentController from "../../../../../public/api/student/StudentController";
+import StudentDegree from "../../../../../public/constants/student/StudentDegree";
+import DepartmentController from "../../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../../public/constants/department/DepartmentStatus";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -17,28 +24,20 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const SIS_FE_URL = process.env.SIS_FE_URL;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
+    if (departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                SIS_FE_URL: SIS_FE_URL,
-                departments: departmentDatas.response
+                departments: departmentsData.response
             }
         }
     }
 }
 
 
-export default function SaveStudent({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
+export default function SaveStudent({isPagePermissionSuccess, operationUserId, departments}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -46,136 +45,106 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
         )
     }
 
+
     const router = useRouter();
 
-    const [studentName, setStudentName] = useState();
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
+
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
     }
 
-    const [studentSurname, setStudentSurname] = useState();
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
     }
 
-    const [studentTcNo, setStudentTcNo] = useState();
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
+    let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
+
+    function closeSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(false);
+        router.push("/officer/operation/teacher").then(() => router.reload());
     }
 
-    const [studentBirthday, setStudentBirthday] = useState();
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
+    function openSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(true);
     }
 
-    const [studentEmail, setStudentEmail] = useState();
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
+    let [isOpenFailSaveNotification, setIsOpenFailSaveNotification] = useState(false);
+
+    function closeFailSaveNotification() {
+        setIsOpenFailSaveNotification(false);
     }
 
-    const [studentClassLevel, setStudentClassLevel] = useState();
-    const changeStudentClassLevel = event => {
-        const studentClassLevel = event.target.value;
-        setStudentClassLevel(studentClassLevel);
-    }
-
-    const [studentAddress, setStudentAddress] = useState();
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
-    }
-
-    const [studentDegree, setStudentDegree] = useState();
-    const changeStudentDegree = event => {
-        const studentDegree = event.target.value;
-        setStudentDegree(studentDegree);
-    }
-
-    const [studentDepartmentId, setStudentDepartmentId] = useState();
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
-    }
-
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState();
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
+    function openFailSaveNotification() {
+        setIsOpenFailSaveNotification(true);
     }
 
 
-    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
-
-    function closeSuccessModal() {
-        setIsOpenSuccess(false);
-        router.push("/officer/operation/student").then(() => router.reload());
+    const [name, setName] = useState();
+    const changeName = event => {
+        setName(event.target.value);
     }
 
-    function openSuccessModal() {
-        setIsOpenSuccess(true);
+    const [surname, setSurname] = useState();
+    const changeSurname = event => {
+        const Surname = event.target.value;
+        setSurname(Surname);
     }
 
-    let [isOpenFail, setIsOpenFail] = useState(false);
-
-    function closeFailModal() {
-        setIsOpenFail(false);
+    const [tcNo, setTcNo] = useState();
+    const changeTcNo = event => {
+        setTcNo(event.target.value);
     }
 
-    function openFailModal() {
-        setIsOpenFail(true);
+    const [birthday, setBirthday] = useState();
+    const changeBirthday = event => {
+        setBirthday(event.target.value);
     }
 
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
-
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
+    const [email, setEmail] = useState();
+    const changeEmail = event => {
+        setEmail(event.target.value);
     }
 
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
+    const [address, setAddress] = useState();
+    const changeAddress = event => {
+        setAddress(event.target.value);
+    }
+
+    const [phoneNumber, setPhoneNumber] = useState();
+    const changePhoneNumber = event => {
+        setPhoneNumber(event.target.value);
+    }
+
+    const [departmentId, setDepartmentId] = useState();
+    const changeDepartmentId = event => {
+        setDepartmentId(event.target.value);
+    }
+
+    const [classLevel, setClassLevel] = useState();
+    const changeClassLevel = event => {
+        setClassLevel(event.target.value);
+    }
+
+    const [degree, setDegree] = useState();
+    const changeDegree = event => {
+        setDegree(event.target.value);
     }
 
     const studentSave = async (event) => {
-        openProcessingModal();
+        openProcessingSaveNotification();
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/student/save`, {
-            body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId,
-                    classLevel: studentClassLevel,
-                },
-                operationInfoRequest: {
-                    userId: operationUserId,
-                    feUrl: SIS_FE_URL
-                },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: studentBirthday,
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
-            closeProcessingModal();
-            openSuccessModal()
+        const academicInfo = {departmentId, classLevel, degree};
+        const personalInfo = {name, surname, tcNo, birthday, email, address, phoneNumber};
+        const studentData = await StudentController.saveStudent(operationUserId, academicInfo, personalInfo);
+        if (studentData.success) {
+            closeProcessingSaveNotification();
+            openSuccessSaveNotification();
         } else {
-            closeProcessingModal();
-            openFailModal();
+            closeProcessingSaveNotification();
+            openFailSaveNotification();
         }
     }
 
@@ -183,7 +152,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none mt-10 sm:mt-0">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={studentSave}>
@@ -201,7 +170,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -216,7 +185,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeStudentSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -231,7 +200,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -261,7 +230,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
                                                         e.target.value = e.target.value + ".";
                                                     }
-                                                    changeStudentBirthday(e)
+                                                    changeBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -279,7 +248,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentEmail}
+                                                onChange={changeEmail}
                                                 type="email"
                                                 name="email-address"
                                                 id="email-address"
@@ -309,7 +278,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeStudentPhoneNumber(e)
+                                                    changePhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -327,7 +296,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -342,16 +311,17 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 ÜNVANI
                                             </label>
                                             <select
-                                                onChange={changeStudentDegree}
+                                                onChange={changeDegree}
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                value={studentDegree}
+                                                value={degree}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvanını Seçiniz...</option>
-                                                {studentDegrees.map(sDegree => (
-                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
+                                                {StudentDegree.getAll.map(sDegree => (
+                                                    <option key={sDegree.enum}
+                                                            value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -362,16 +332,17 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 SINIFI
                                             </label>
                                             <select
-                                                onChange={changeStudentClassLevel}
+                                                onChange={changeClassLevel}
                                                 id="class-level"
                                                 name="class-level"
                                                 autoComplete="class-level"
-                                                value={studentClassLevel}
+                                                value={classLevel}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Sınıfı Seçiniz...</option>
-                                                {studentClassLevels.map(sClassLevel => (
-                                                        <option key={sClassLevel.enum} value={sClassLevel.enum}>{sClassLevel.tr}</option>
+                                                {StudentClassLevel.getAll.map(sClassLevel => (
+                                                    <option key={sClassLevel.enum}
+                                                            value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -382,7 +353,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeStudentDepartmentId}
+                                                onChange={changeDepartmentId}
                                                 id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
@@ -390,7 +361,8 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                             >
                                                 <option>Bölümü Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
+                                                    <option key={department.departmentId}
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -398,182 +370,34 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, S
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                                    >
-                                        KAYDET
-                                    </button>
+                                    {SisOperationButton.getSaveButton("KAYDET")}
                                 </div>
-                                <Transition appear show={isOpenSuccess} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Ekleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFail} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingSaveNotification}
+                                    closeNotification={closeProcessingSaveNotification}
+                                    title="Öğrenci Kayıt İsteğiniz İşleniyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Ekleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessSaveNotification}
+                                    closeNotification={closeSuccessSaveNotification}
+                                    title="Öğrenci Kaydı Tamamlandı!"
+                                    description="Öğrenci Kayıt İşlemi başarıyla gerçekleşti.
+                                    Mesaj penceresini kapattıktan sonra Öğrenci Listeleme ekranına yönlendirileceksiniz."
+                                />
 
-                                <Transition appear show={isOpenProcessing} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailSaveNotification}
+                                    closeNotification={closeFailSaveNotification}
+                                    title="Öğrenci Kaydı Tamamlanamadı!"
+                                    description="Lütfen girdiğiniz verileri kontrol ediniz.
+                                    Verilerinizi doğru girdiyseniz
+                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </div>

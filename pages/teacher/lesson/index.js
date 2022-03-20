@@ -1,30 +1,46 @@
 import SISTitle from "../../../public/components/page-titles";
 import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
-import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../public/constants/lesson";
+import LessonSemester from "../../../public/constants/lesson/LessonSemester";
+import SisTeacherStorage from "../../../public/storage/teacher/SisTeacherStorage";
+import UnauthorizedAccessPage from "../../401";
+import TeacherLessonController from "../../../public/api/teacher/lesson/TeacherLessonController";
+import LessonCompulsoryOrElective from "../../../public/constants/lesson/LessonCompulsoryOrElective";
+import LessonStatus from "../../../public/constants/lesson/LessonStatus";
 
 export async function getServerSideProps(context) {
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const teacherId = context.req.cookies['teacherNumber']
-    const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson/get/` + teacherId, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const lessonsData = await lessonsResponse.json();
+    const teacherId = SisTeacherStorage.getNumberWithContext(context);
+    if (teacherId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
+    const lessonsData = await TeacherLessonController.getTeacherLessonsByTeacherId(teacherId);
     if (lessonsData.success) {
         return {
             props: {
+                isPagePermissionSuccess: true,
                 lessons: lessonsData.response
             }
         }
     }
 }
 
-export default function TeacherLessonList({lessons}) {
+export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
     return (
         <div>
             <SISTitle/>
             <TeacherNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         DERSLERİM
@@ -82,7 +98,7 @@ export default function TeacherLessonList({lessons}) {
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
                                                                 <div
                                                                     className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
-                                                                {lessonSemesters.map((lSemester) => (
+                                                                {LessonSemester.getAll.map((lSemester) => (
                                                                     lesson.lessonResponse.semester === lSemester.enum
                                                                         ?
                                                                         <div
@@ -106,7 +122,7 @@ export default function TeacherLessonList({lessons}) {
 
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {lessonCompulsory.map((lCompulsory) => (
+                                                        {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
                                                             lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
                                                                 ?
                                                                 <div
@@ -117,13 +133,13 @@ export default function TeacherLessonList({lessons}) {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                 <span>
-                                                         {lessonStatuses.map((lStatus) => (
-                                                             lesson.lessonResponse.status === lStatus.enum
-                                                                 ?
-                                                                 lStatus.miniComponent
-                                                                 :
-                                                                 null
-                                                         ))}
+                                                    {LessonStatus.getAll.map((lStatus) => (
+                                                        lesson.lessonResponse.status === lStatus.enum
+                                                            ?
+                                                            lStatus.miniComponent
+                                                            :
+                                                            null
+                                                    ))}
                                                 </span>
                                                     </td>
                                                 </tr>
