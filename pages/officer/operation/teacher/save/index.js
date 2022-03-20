@@ -1,14 +1,21 @@
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
-import {teacherDegrees, teacherRoles} from "../../../../../public/constants/teacher";
-import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../401";
+import ProcessNotification from "../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../public/notifications/success";
+import FailNotification from "../../../../../public/notifications/fail";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
+import TeacherController from "../../../../../public/api/teacher/TeacherController";
+import TeacherDegree from "../../../../../public/constants/teacher/TeacherDegree";
+import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
+import DepartmentController from "../../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../../public/constants/department/DepartmentStatus";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -17,28 +24,20 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const SIS_FE_URL = process.env.SIS_FE_URL;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentDatas = await departmentResponses.json();
-    if (departmentDatas.success) {
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
+    if (departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                SIS_FE_URL: SIS_FE_URL,
-                departments: departmentDatas.response
+                departments: departmentsData.response
             }
         }
     }
 }
 
 
-export default function SaveTeacher({isPagePermissionSuccess, operationUserId, SIS_API_URL, SIS_FE_URL, departments}) {
+export default function SaveTeacher({isPagePermissionSuccess, operationUserId, departments}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -48,148 +47,128 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
 
     const router = useRouter();
 
-    const [teacherName, setTeacherName] = useState();
-    const changeTeacherName = event => {
-        const teacherName = event.target.value;
-        setTeacherName(teacherName);
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
+
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
     }
 
-    const [teacherSurname, setTeacherSurname] = useState();
-    const changeTeacherSurname = event => {
-        const teacherSurname = event.target.value;
-        setTeacherSurname(teacherSurname);
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
     }
 
-    const [teacherTcNo, setTeacherTcNo] = useState();
-    const changeTeacherTcNo = event => {
-        const teacherTcNo = event.target.value;
-        setTeacherTcNo(teacherTcNo);
-    }
+    let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
 
-    const [teacherBirthday, setTeacherBirthday] = useState();
-    const changeTeacherBirthday = event => {
-        const teacherBirthday = event.target.value;
-        setTeacherBirthday(teacherBirthday);
-    }
-
-    const [teacherEmail, setTeacherEmail] = useState();
-    const changeTeacherEmail = event => {
-        const teacherEmail = event.target.value;
-        setTeacherEmail(teacherEmail);
-    }
-
-    const [teacherPersonalPhoneNumber, setTeacherPersonalPhoneNumber] = useState();
-    const changeTeacherPersonalPhoneNumber = event => {
-        const teacherPersonalPhoneNumber = event.target.value;
-        setTeacherPersonalPhoneNumber(teacherPersonalPhoneNumber);
-    }
-
-    const [teacherAddress, setTeacherAddress] = useState();
-    const changeTeacherAddress = event => {
-        const teacherAddress = event.target.value;
-        setTeacherAddress(teacherAddress);
-    }
-
-    const [teacherDegree, setTeacherDegree] = useState();
-    const changeTeacherDegree = event => {
-        const teacherDegree = event.target.value;
-        setTeacherDegree(teacherDegree);
-    }
-
-    const [teacherRole, setTeacherRole] = useState();
-    const changeTeacherRole = event => {
-        const teacherRole = event.target.value;
-        setTeacherRole(teacherRole);
-    }
-
-    const [teacherDepartmentId, setTeacherDepartmentId] = useState();
-    const changeTeacherDepartmentId = event => {
-        const teacherDepartmentId = event.target.value;
-        setTeacherDepartmentId(teacherDepartmentId);
-    }
-
-    const [teacherAcademicPhoneNumber, setTeacherAcademicPhoneNumber] = useState();
-    const changeTeacherAcademicPhoneNumber = event => {
-        const teacherAcademicPhoneNumber = event.target.value;
-        setTeacherAcademicPhoneNumber(teacherAcademicPhoneNumber);
-    }
-
-    const [teacherFieldOfStudy, setTeacherFieldOfStudy] = useState();
-    const changeTeacherFieldOfStudy = event => {
-        const teacherFieldOfStudy = event.target.value;
-        setTeacherFieldOfStudy(teacherFieldOfStudy);
-    }
-
-
-    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
-
-    function closeSuccessModal() {
-        setIsOpenSuccess(false);
+    function closeSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(false);
         router.push("/officer/operation/teacher").then(() => router.reload());
     }
 
-    function openSuccessModal() {
-        setIsOpenSuccess(true);
+    function openSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(true);
     }
 
-    let [isOpenFail, setIsOpenFail] = useState(false);
+    let [isOpenFailSaveNotification, setIsOpenFailSaveNotification] = useState(false);
 
-    function closeFailModal() {
-        setIsOpenFail(false);
+    function closeFailSaveNotification() {
+        setIsOpenFailSaveNotification(false);
     }
 
-    function openFailModal() {
-        setIsOpenFail(true);
+    function openFailSaveNotification() {
+        setIsOpenFailSaveNotification(true);
     }
 
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
-
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
+    const [departmentId, setDepartmentId] = useState();
+    const changeDepartmentId = event => {
+        const departmentId = event.target.value;
+        setDepartmentId(departmentId);
     }
 
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
+    const [fieldOfStudy, setFieldOfStudy] = useState();
+    const changeFieldOfStudy = event => {
+        const fieldOfStudy = event.target.value;
+        setFieldOfStudy(fieldOfStudy);
+    }
+
+    const [degree, setDegree] = useState();
+    const changeDegree = event => {
+        const degree = event.target.value;
+        setDegree(degree);
+    }
+
+    const [role, setRole] = useState();
+    const changeRole = event => {
+        const role = event.target.value;
+        setRole(role);
+    }
+
+    const [academicPhoneNumber, setAcademicPhoneNumber] = useState();
+    const changeAcademicPhoneNumber = event => {
+        const academicPhoneNumber = event.target.value;
+        setAcademicPhoneNumber(academicPhoneNumber);
+    }
+
+    const [name, setName] = useState();
+    const changeName = event => {
+        const name = event.target.value;
+        setName(name);
+    }
+
+    const [surname, setSurname] = useState();
+    const changeSurname = event => {
+        const surname = event.target.value;
+        setSurname(surname);
+    }
+
+    const [tcNo, setTcNo] = useState();
+    const changeTcNo = event => {
+        const tcNo = event.target.value;
+        setTcNo(tcNo);
+    }
+
+    const [birthday, setBirthday] = useState();
+    const changeBirthday = event => {
+        const birthday = event.target.value;
+        setBirthday(birthday);
+    }
+
+    const [email, setEmail] = useState();
+    const changeEmail = event => {
+        const email = event.target.value;
+        setEmail(email);
+    }
+
+    const [address, setAddress] = useState();
+    const changeAddress = event => {
+        const address = event.target.value;
+        setAddress(address);
+    }
+
+    const [personalPhoneNumber, setPersonalPhoneNumber] = useState();
+    const changePersonalPhoneNumber = event => {
+        const personalPhoneNumber = event.target.value;
+        setPersonalPhoneNumber(personalPhoneNumber);
     }
 
     const teacherSave = async (event) => {
-        openProcessingModal();
+        openProcessingSaveNotification();
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/teacher/save`, {
-            body: JSON.stringify({
-                academicInfoRequest: {
-                    degree: teacherDegree,
-                    departmentId: teacherDepartmentId,
-                    fieldOfStudy: teacherFieldOfStudy,
-                    phoneNumber: teacherAcademicPhoneNumber,
-                    role: teacherRole
-                },
-                operationInfoRequest: {
-                    userId: operationUserId,
-                    feUrl: SIS_FE_URL
-                },
-                personalInfoRequest: {
-                    address: teacherAddress,
-                    birthday: teacherBirthday,
-                    email: teacherEmail,
-                    name: teacherName,
-                    phoneNumber: teacherPersonalPhoneNumber,
-                    surname: teacherSurname,
-                    tcNo: teacherTcNo
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
-            closeProcessingModal();
-            openSuccessModal()
+        let phoneNumber;
+
+        phoneNumber = academicPhoneNumber;
+        const academicInfo = {departmentId, fieldOfStudy, degree, role, phoneNumber}
+
+        phoneNumber = personalPhoneNumber;
+        const personalInfo = {name, surname, tcNo, birthday, email, address, phoneNumber}
+        const teacherData = await TeacherController.saveTeacher(operationUserId, academicInfo, personalInfo);
+        if (teacherData.success) {
+            closeProcessingSaveNotification();
+            openSuccessSaveNotification();
         } else {
-            closeProcessingModal();
-            openFailModal();
+            closeProcessingSaveNotification();
+            openFailSaveNotification();
         }
     }
 
@@ -197,7 +176,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none mt-10 sm:mt-0">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
                         <form className="px-4 py-5 max-w-2xl mx-auto space-y-6" onSubmit={teacherSave}>
@@ -215,7 +194,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
@@ -230,7 +209,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeTeacherSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
@@ -245,7 +224,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeTeacherTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -275,7 +254,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
                                                         e.target.value = e.target.value + ".";
                                                     }
-                                                    changeTeacherBirthday(e)
+                                                    changeBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -293,7 +272,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherEmail}
+                                                onChange={changeEmail}
                                                 type="email"
                                                 name="email-address"
                                                 id="email-address"
@@ -323,7 +302,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherPersonalPhoneNumber(e)
+                                                    changePersonalPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -341,7 +320,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
@@ -356,16 +335,16 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 ÜNVANI
                                             </label>
                                             <select
-                                                onChange={changeTeacherDegree}
+                                                onChange={changeDegree}
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                value={teacherDegree}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Ünvan Seçiniz...</option>
-                                                {teacherDegrees.map(tDegree => (
-                                                        <option key={tDegree.enum} value={tDegree.enum}>{tDegree.tr}</option>
+                                                {TeacherDegree.getAll.map(tDegree => (
+                                                    <option key={tDegree.enum}
+                                                            value={tDegree.enum}>{tDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -376,15 +355,14 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 ROLÜ
                                             </label>
                                             <select
-                                                onChange={changeTeacherRole}
+                                                onChange={changeRole}
                                                 id="role"
                                                 name="role"
-                                                value={teacherRole}
                                                 className="form-select font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Rol Seçiniz...</option>
-                                                {teacherRoles.map(tRole => (
-                                                        <option key={tRole.enum} value={tRole.enum}>{tRole.tr}</option>
+                                                {TeacherRole.getAll.map(tRole => (
+                                                    <option key={tRole.enum} value={tRole.enum}>{tRole.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -395,16 +373,16 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeTeacherDepartmentId}
+                                                onChange={changeDepartmentId}
                                                 id="department-id"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                value={teacherDepartmentId}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option>Bölüm Seçiniz...</option>
                                                 {departments.map((department) => (
-                                                        <option key={department.departmentId} value={department.departmentId}>{department.name}</option>
+                                                    <option key={department.departmentId}
+                                                            value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -429,7 +407,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherAcademicPhoneNumber(e)
+                                                    changeAcademicPhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone"
@@ -447,7 +425,7 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                                 ÇALIŞMA ALANI
                                             </label>
                                             <input
-                                                onChange={changeTeacherFieldOfStudy}
+                                                onChange={changeFieldOfStudy}
                                                 type="text"
                                                 name="field-of-study"
                                                 id="field-of-study"
@@ -458,182 +436,34 @@ export default function SaveTeacher({isPagePermissionSuccess, operationUserId, S
                                     </div>
                                 </div>
                                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button
-                                        type="submit"
-                                        className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                                    >
-                                        KAYDET
-                                    </button>
+                                    {SisOperationButton.getSaveButton("KAYDET")}
                                 </div>
-                                <Transition appear show={isOpenSuccess} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğretmen Ekleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğretmen Ekleme İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğretmen listeleme
-                                                            ekranına yönlendirileceksiniz.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFail} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingSaveNotification}
+                                    closeNotification={closeProcessingSaveNotification}
+                                    title="Öğretmen Kayıt İsteğiniz İşleniyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğretmen Ekleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessSaveNotification}
+                                    closeNotification={closeSuccessSaveNotification}
+                                    title="Öğretmen Kaydı Tamamlandı!"
+                                    description="Öğretmen Kayıt İşlemi başarıyla gerçekleşti.
+                                    Mesaj penceresini kapattıktan sonra Öğretmen Listeleme ekranına yönlendirileceksiniz."
+                                />
 
-                                <Transition appear show={isOpenProcessing} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailSaveNotification}
+                                    closeNotification={closeFailSaveNotification}
+                                    title="Öğretmen Kaydı Tamamlanamadı!"
+                                    description="Lütfen girdiğiniz verileri kontrol ediniz.
+                                    Verilerinizi doğru girdiyseniz
+                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </div>

@@ -1,14 +1,12 @@
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {
-    getOfficerFacultyNumberWithContext,
-    getOfficerNumberWithContext
-} from "../../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../../401";
+import ExamScheduleFileController from "../../../../../../public/api/exam-file/ExamScheduleFileController";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -17,13 +15,8 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const facultyId = getOfficerFacultyNumberWithContext(context)
-    const examScheduleFilesResponse = await fetch(`${SIS_API_URL}/exam-schedule-file/faculty/` + facultyId, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const examScheduleFilesData = await examScheduleFilesResponse.json();
+    const facultyId = SisOfficerStorage.getFacultyNumberWithContext(context);
+    const examScheduleFilesData = await ExamScheduleFileController.getAllExamScheduleFilesDetailByFacultyId(facultyId);
     if (examScheduleFilesData.success) {
         return {
             props: {
@@ -53,7 +46,7 @@ export default function ExamScheduleFileList({isPagePermissionSuccess, examSched
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         SINAV PROGRAMLARI

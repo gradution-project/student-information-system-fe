@@ -1,10 +1,10 @@
 import SISTitle from "../../public/components/page-titles";
 import OfficerNavbar from "../../public/components/navbar/officer/officer-navbar";
 import UnauthorizedAccessPage from "../401";
-import {getOfficerFullName, getOfficerNumberWithContext} from "../../public/storage/officer";
+import SisOfficerStorage from "../../public/storage/officer/SisOfficerStorage";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context);
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -35,7 +35,7 @@ export default function OfficerDashboard({isPagePermissionSuccess}) {
             <div className="py-10 bg-sis-yellow rounded-3xl shadow-xl ml-80 mr-80 mt-56">
                 <div className="mb-2 select-none font-phenomenaRegular text-6xl text-center text-sis-white">
                     <div>
-                        Merhaba <a className="font-phenomenaBold">{getOfficerFullName()}</a>,
+                        Merhaba <a className="font-phenomenaBold">{SisOfficerStorage.getFullName()}</a>,
                     </div>
                     <div>
                         Öğrenci Bilgi Sistemine Hoşgeldiniz!

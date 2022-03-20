@@ -1,20 +1,35 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
 import SISTitle from "../../../public/components/page-titles";
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
-import {saveOfficerData} from "../../../public/storage/officer";
+import ProcessNotification from "../../../public/notifications/process";
+import FailNotification from "../../../public/notifications/fail";
+import SisOfficerStorage from "../../../public/storage/officer/SisOfficerStorage";
+import OfficerController from "../../../public/api/officer/OfficerController";
+import LoginController from "../../../public/api/login/LoginController";
 
-export async function getServerSideProps() {
-    return {
-        props: {
-            SIS_API_URL: process.env.SIS_API_URL
-        }
+export default function OfficerLogin() {
+
+    let [isOpenProcessingLoginNotification, setIsOpenProcessingLoginNotification] = useState(false);
+
+    function closeProcessingLoginNotification() {
+        setIsOpenProcessingLoginNotification(false);
     }
-}
 
+    function openProcessingLoginNotification() {
+        setIsOpenProcessingLoginNotification(true);
+    }
 
-export default function OfficerLogin({SIS_API_URL}) {
+    let [isOpenFailLoginNotification, setIsOpenFailLoginNotification] = useState(false);
+
+    function closeFailLoginNotification() {
+        setIsOpenFailLoginNotification(false);
+    }
+
+    function openFailLoginNotification() {
+        setIsOpenFailLoginNotification(true);
+    }
+
 
     const router = useRouter();
 
@@ -30,51 +45,23 @@ export default function OfficerLogin({SIS_API_URL}) {
         setPassword(password);
     }
 
-    let [isOpen, setIsOpen] = useState(false);
-
-    function closeModal() {
-        setIsOpen(false);
-    }
-
-    function openModal() {
-        setIsOpen(true);
-    }
-
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
-
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
-    }
-
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
-    }
-
     const officerLogin = async (event) => {
-        openProcessingModal();
+        openProcessingLoginNotification();
 
         event.preventDefault();
 
-        const loginRes = await fetch(`${SIS_API_URL}/login/officer`, {
-            body: JSON.stringify({officerId: officerNumber, password: password}),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const loginData = await loginRes.json();
+        const loginData = await LoginController.officerLogin(officerNumber, password);
         if (loginData.response.loginSuccess) {
-            const getRes = await fetch(`${SIS_API_URL}/officer/` + officerNumber, {
-                headers: {'Content-Type': 'application/json'},
-                method: 'GET'
-            });
-            const getData = await getRes.json();
-            if (getData.success) {
-                await saveOfficerData(getData.response);
-                closeProcessingModal();
+
+            const officerData = await OfficerController.getOfficerDetailByOfficerId(officerNumber);
+            if (officerData.success) {
+                await SisOfficerStorage.saveData(officerData.response);
+                closeProcessingLoginNotification();
                 await router.push("/officer");
             }
         }
-        closeProcessingModal();
-        openModal();
+        closeProcessingLoginNotification();
+        openFailLoginNotification();
     }
 
     return (
@@ -139,10 +126,9 @@ export default function OfficerLogin({SIS_API_URL}) {
                                                 />
                                             </div>
                                         </div>
-
                                     </div>
-                                    <div className="px-4 py-3 text-right sm:px-6">
 
+                                    <div className="px-4 py-3 text-right sm:px-6">
                                         <div>
                                             <button
                                                 type="submit"
@@ -164,110 +150,20 @@ export default function OfficerLogin({SIS_API_URL}) {
                                             </a>
                                         </div>
 
-                                        <Transition appear show={isOpen} as={Fragment}>
-                                            <Dialog
-                                                as="div"
-                                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                onClose={closeModal}
-                                            >
-                                                <div className="min-h-screen px-4 text-center">
-                                                    <Transition.Child
-                                                        as={Fragment}
-                                                        enter="ease-out duration-300"
-                                                        enterFrom="opacity-0"
-                                                        enterTo="opacity-100"
-                                                        leave="ease-in duration-200"
-                                                        leaveFrom="opacity-100"
-                                                        leaveTo="opacity-0"
-                                                    >
-                                                        <Dialog.Overlay className="fixed inset-0"/>
-                                                    </Transition.Child>
 
-                                                    <span
-                                                        className="inline-block h-screen align-middle"
-                                                        aria-hidden="true"
-                                                    >
-              &#8203;
-            </span>
-                                                    <Transition.Child
-                                                        as={Fragment}
-                                                        enter="ease-out duration-300"
-                                                        enterFrom="opacity-0 scale-95"
-                                                        enterTo="opacity-100 scale-100"
-                                                        leave="ease-in duration-200"
-                                                        leaveFrom="opacity-100 scale-100"
-                                                        leaveTo="opacity-0 scale-95"
-                                                    >
-                                                        <div
-                                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                            <Dialog.Title
-                                                                as="h3"
-                                                                className="text-3xl mb-4 leading-9 text-sis-white text-center font-phenomenaBold"
-                                                            >
-                                                                <div className="border bg-sis-fail rounded-xl p-6">
-                                                                    Personel Numaranız veya Şifreniz Yanlış!
-                                                                </div>
-                                                            </Dialog.Title>
-                                                            <div className="mt-2">
-                                                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                    Personel Numaranızı veya Şifrenizi kontrol ediniz.
-                                                                    Şifrenizi hatırlamıyorsanız şifremi unuttum
-                                                                    ekranından sıfırlayabilirsiniz.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </Transition.Child>
-                                                </div>
-                                            </Dialog>
-                                        </Transition>
+                                        <ProcessNotification
+                                            isOpen={isOpenProcessingLoginNotification}
+                                            closeNotification={closeProcessingLoginNotification}
+                                            title="Giriş Yapılıyor..."
+                                        />
 
-                                        <Transition appear show={isOpenProcessing} as={Fragment}>
-                                            <Dialog
-                                                as="div"
-                                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                onClose={closeProcessingModal}
-                                            >
-                                                <div className="min-h-screen px-4 text-center">
-                                                    <Transition.Child
-                                                        as={Fragment}
-                                                        enter="ease-out duration-300"
-                                                        enterFrom="opacity-0"
-                                                        enterTo="opacity-100"
-                                                        leave="ease-in duration-200"
-                                                        leaveFrom="opacity-100"
-                                                        leaveTo="opacity-0"
-                                                    >
-                                                        <Dialog.Overlay className="fixed inset-0"/>
-                                                    </Transition.Child>
-
-                                                    <span
-                                                        className="inline-block h-screen align-middle"
-                                                        aria-hidden="true"
-                                                    >
-              &#8203;
-            </span>
-                                                    <Transition.Child
-                                                        as={Fragment}
-                                                        enter="ease-out duration-300"
-                                                        enterFrom="opacity-0 scale-95"
-                                                        enterTo="opacity-100 scale-100"
-                                                        leave="ease-in duration-200"
-                                                        leaveFrom="opacity-100 scale-100"
-                                                        leaveTo="opacity-0 scale-95"
-                                                    >
-                                                        <div
-                                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                            <Dialog.Title
-                                                                as="h3"
-                                                                className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                            >
-                                                                Giriş Yapılıyor...
-                                                            </Dialog.Title>
-                                                        </div>
-                                                    </Transition.Child>
-                                                </div>
-                                            </Dialog>
-                                        </Transition>
+                                        <FailNotification
+                                            isOpen={isOpenFailLoginNotification}
+                                            closeNotification={closeFailLoginNotification}
+                                            title="Personel Numaranız veya Şifreniz Yanlış!"
+                                            description="Personel Numaranızı veya Şifrenizi kontrol ediniz.
+                                            Şifrenizi hatırlamıyorsanız şifremi unuttum ekranından sıfırlayabilirsiniz."
+                                        />
                                     </div>
                                 </div>
                             </form>

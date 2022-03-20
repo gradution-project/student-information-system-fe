@@ -2,8 +2,7 @@ import {Fragment} from 'react'
 import {Menu, Popover, Transition} from '@headlessui/react'
 import {XIcon} from '@heroicons/react/outline'
 import StudentComponent from "./student-component";
-import {clearCookies} from "../../../storage";
-import {getStudentFullName, getStudentNumber} from "../../../storage/student";
+import SisStudentStorage from "../../../storage/student/SisStudentStorage";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -55,8 +54,8 @@ export default function StudentNavbar() {
                                             <a
                                                 className={classNames(active ? 'font-phenomenaExtraBold' : '', 'font-phenomenaExtraBold block px-4 py-2 text-xl text-center text-gray-700 bg-gray-50 rounded-xl')}
                                             >
-                                                {getStudentFullName()}
-                                                <p className="font-phenomenaLight text-center text-lg">{getStudentNumber()}</p>
+                                                {SisStudentStorage.getFullName()}
+                                                <p className="font-phenomenaLight text-center text-lg">{SisStudentStorage.getNumber()}</p>
                                             </a>
                                         )}
                                     </Menu.Item>
@@ -72,7 +71,7 @@ export default function StudentNavbar() {
                                     <Menu.Item>
                                         {({active}) => (
                                             <a href='/'
-                                               onClick={clearCookies}
+                                               onClick={SisStudentStorage.clearData}
                                                className={classNames(active ? 'bg-sis-yellow text-sis-white text-lg rounded-xl' : 'rounded-xl border-sis-yellow', 'block px-4 py-2 text-lg text-center text-gray-700')}
                                             >
                                                 Çıkış Yap

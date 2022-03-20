@@ -1,14 +1,20 @@
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
 import {useRouter} from "next/router";
-import {Fragment, useState} from "react";
-import {Dialog, Transition} from "@headlessui/react";
-import {departmentPreparatoryClass} from "../../../../../public/constants/department";
+import {useState} from "react";
+import DepartmentStatus from "../../../../../public/constants/department/DepartmentStatus";
 import UnauthorizedAccessPage from "../../../../401";
-import {getOfficerNumberWithContext} from "../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
+import ProcessNotification from "../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../public/notifications/success";
+import FailNotification from "../../../../../public/notifications/fail";
+import FacultyController from "../../../../../public/api/faculty/FacultyController";
+import DepartmentController from "../../../../../public/api/department/DepartmentController";
+import DepartmentPreparatoryClass from "../../../../../public/constants/department/DepartmentPreparatoryClass";
+import SisOperationButton from "../../../../../public/components/buttons/SisOperationButton";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -17,25 +23,20 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const facultyResponses = await fetch(`${SIS_API_URL}/faculty?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const facultyDatas = await facultyResponses.json();
-    if (facultyDatas.success) {
+    const facultiesData = await FacultyController.getAllFacultiesByStatus(DepartmentStatus.ACTIVE);
+    if (facultiesData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                SIS_API_URL: SIS_API_URL,
-                faculties: facultyDatas.response
+                operationUserId: officerId,
+                faculties: facultiesData.response
             }
         }
     }
 }
 
 
-export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, faculties}) {
+export default function DepartmentSave({isPagePermissionSuccess, operationUserId, faculties}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -45,11 +46,37 @@ export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, fa
 
     const router = useRouter();
 
-    const [departmentName, setDepartmentName] = useState();
-    const changeDepartmentName = event => {
-        const departmentName = event.target.value;
-        setDepartmentName(departmentName);
+    let [isOpenSuccessSaveNotification, setIsOpenSuccessSaveNotification] = useState(false);
+
+    function closeSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(false);
+        router.push("/officer/operation/department").then(() => router.reload());
     }
+
+    function openSuccessSaveNotification() {
+        setIsOpenSuccessSaveNotification(true);
+    }
+
+    let [isOpenFailSaveNotification, setIsOpenFailSaveNotification] = useState(false);
+
+    function closeFailSaveNotification() {
+        setIsOpenFailSaveNotification(false);
+    }
+
+    function openFailSaveNotification() {
+        setIsOpenFailSaveNotification(true);
+    }
+
+    let [isOpenProcessingSaveNotification, setIsOpenProcessingSaveNotification] = useState(false);
+
+    function closeProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(false);
+    }
+
+    function openProcessingSaveNotification() {
+        setIsOpenProcessingSaveNotification(true);
+    }
+
 
     const [facultyId, setFacultyId] = useState();
     const changeFacultyId = event => {
@@ -57,76 +84,38 @@ export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, fa
         setFacultyId(facultyId);
     }
 
-    const [totalClassLevel, setTotalClassLevel] = useState();
-    const changeTotalClassLevel = event => {
-        const totalClassLevel = event.target.value;
-        setTotalClassLevel(totalClassLevel);
+    const [departmentName, setDepartmentName] = useState();
+    const changeDepartmentName = event => {
+        const departmentName = event.target.value;
+        setDepartmentName(departmentName);
     }
 
-    const [preparatoryClass, setPreparatoryClass] = useState();
+    const [departmentPreparatoryClass, setDepartmentPreparatoryClass] = useState();
     const changePreparatoryClass = event => {
-        const preparatoryClass = event.target.value;
-        setPreparatoryClass(preparatoryClass);
+        const departmentPreparatoryClass = event.target.value;
+        setDepartmentPreparatoryClass(departmentPreparatoryClass);
     }
 
-    let [isOpenSuccess, setIsOpenSuccess] = useState(false);
-
-    function closeSuccessModal() {
-        setIsOpenSuccess(false);
-        router.push("/officer/operation/department").then(() => router.reload());
-    }
-
-    function openSuccessModal() {
-        setIsOpenSuccess(true);
-    }
-
-    let [isOpenFail, setIsOpenFail] = useState(false);
-
-    function closeFailModal() {
-        setIsOpenFail(false);
-    }
-
-    function openFailModal() {
-        setIsOpenFail(true);
-    }
-
-    let [isOpenProcessing, setIsOpenProcessing] = useState(false);
-
-    function closeProcessingModal() {
-        setIsOpenProcessing(false);
-    }
-
-    function openProcessingModal() {
-        setIsOpenProcessing(true);
+    const [departmentTotalClassLevel, setDepartmentTotalClassLevel] = useState();
+    const changeTotalClassLevel = event => {
+        const departmentTotalClassLevel = event.target.value;
+        setDepartmentTotalClassLevel(departmentTotalClassLevel);
     }
 
     const departmentSave = async (event) => {
-        openProcessingModal();
+        openProcessingSaveNotification();
 
         event.preventDefault();
 
-        const saveRes = await fetch(`${SIS_API_URL}/department/save`, {
-            body: JSON.stringify({
-                departmentInfoRequest: {
-                    facultyId: facultyId,
-                    isTherePreparatoryClass: preparatoryClass,
-                    name: departmentName,
-                    totalClassLevel: totalClassLevel
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-            headers: {'Content-Type': 'application/json'},
-            method: 'POST'
-        });
-        const saveData = await saveRes.json();
-        if (saveData.success) {
-            closeProcessingModal();
-            openSuccessModal()
+        const departmentData = await DepartmentController.saveDepartment(operationUserId, facultyId,
+            departmentPreparatoryClass, departmentName, departmentTotalClassLevel);
+
+        if (departmentData.success) {
+            closeProcessingSaveNotification();
+            openSuccessSaveNotification();
         } else {
-            closeProcessingModal();
-            openFailModal();
+            closeProcessingSaveNotification();
+            openFailSaveNotification();
         }
     }
 
@@ -134,7 +123,7 @@ export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, fa
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none md:col-span-1">
+            <div className="select-none mt-10 py-4 sm:mt-0">
                 <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6" onSubmit={departmentSave}>
                     <div className="shadow sm:rounded-md sm:overflow-hidden">
                         <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -208,7 +197,7 @@ export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, fa
                                         className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                     >
                                         <option>Hazırlık Sınıfı Durumu Seçiniz...</option>
-                                        {departmentPreparatoryClass.map(preparatoryClass => (
+                                        {DepartmentPreparatoryClass.getAll.map(preparatoryClass => (
                                             <option key={preparatoryClass.value}
                                                     value={preparatoryClass.value}>{preparatoryClass.tr}</option>
                                         ))}
@@ -218,174 +207,31 @@ export default function DepartmentSave({isPagePermissionSuccess, SIS_API_URL, fa
                             </div>
                         </div>
                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <button
-                                type="submit"
-                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                            >
-                                KAYDET
-                            </button>
+                            {SisOperationButton.getSaveButton("KAYDET")}
                         </div>
 
-                        <Transition appear show={isOpenSuccess} as={Fragment}>
-                            <Dialog
-                                as="div"
-                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                onClose={closeSuccessModal}
-                            >
-                                <div className="min-h-screen px-4 text-center">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Dialog.Overlay className="fixed inset-0"/>
-                                    </Transition.Child>
+                        <ProcessNotification
+                            isOpen={isOpenProcessingSaveNotification}
+                            closeNotification={closeProcessingSaveNotification}
+                            title="Bölüm Ekleme İsteğiniz İşleniyor..."
+                        />
 
-                                    <span
-                                        className="inline-block h-screen align-middle"
-                                        aria-hidden="true"
-                                    >
-              &#8203;
-            </span>
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <div
-                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                            >
-                                                <div className="border bg-sis-success rounded-xl p-6">
-                                                    Bölüm Ekleme İşlemi Başarılı!
-                                                </div>
-                                            </Dialog.Title>
-                                            <div className="mt-2">
-                                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Bölüm Ekleme İşlemi başarıyla gerçekleşti.
-                                                    Mesaj penceresini kapattıktan sonra bölüm listeleme
-                                                    ekranına yönlendirileceksiniz.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </Transition.Child>
-                                </div>
-                            </Dialog>
-                        </Transition>
-                        <Transition appear show={isOpenFail} as={Fragment}>
-                            <Dialog
-                                as="div"
-                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                onClose={closeFailModal}
-                            >
-                                <div className="min-h-screen px-4 text-center">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Dialog.Overlay className="fixed inset-0"/>
-                                    </Transition.Child>
+                        <SuccessNotification
+                            isOpen={isOpenSuccessSaveNotification}
+                            closeNotification={closeSuccessSaveNotification}
+                            title="Bölüm Ekleme İşlemi Başarılı!"
+                            description="Bölüm Ekleme İşlemi başarıyla gerçekleşti.
+                            Mesaj penceresini kapattıktan sonra bölüm listeleme ekranına yönlendirileceksiniz."
+                        />
 
-                                    <span
-                                        className="inline-block h-screen align-middle"
-                                        aria-hidden="true"
-                                    >
-              &#8203;
-            </span>
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <div
-                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                            >
-                                                <div className="border bg-sis-fail rounded-xl p-6">
-                                                    Bölüm Ekleme İşlemi Başarısız!
-                                                </div>
-                                            </Dialog.Title>
-                                            <div className="mt-2">
-                                                <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                    Lütfen girdiğiniz verileri kontrol ediniz.
-                                                    Verilerinizi doğru girdiyseniz sistemsel bir
-                                                    hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </Transition.Child>
-                                </div>
-                            </Dialog>
-                        </Transition>
-
-                        <Transition appear show={isOpenProcessing} as={Fragment}>
-                            <Dialog
-                                as="div"
-                                className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                onClose={closeProcessingModal}
-                            >
-                                <div className="min-h-screen px-4 text-center">
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0"
-                                        enterTo="opacity-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Dialog.Overlay className="fixed inset-0"/>
-                                    </Transition.Child>
-
-                                    <span
-                                        className="inline-block h-screen align-middle"
-                                        aria-hidden="true"
-                                    >
-              &#8203;
-            </span>
-                                    <Transition.Child
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <div
-                                            className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                            <Dialog.Title
-                                                as="h3"
-                                                className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                            >
-                                                İsteğiniz İşleniyor...
-                                            </Dialog.Title>
-                                        </div>
-                                    </Transition.Child>
-                                </div>
-                            </Dialog>
-                        </Transition>
+                        <FailNotification
+                            isOpen={isOpenFailSaveNotification}
+                            closeNotification={closeFailSaveNotification}
+                            title="Bölüm Ekleme İşlemi Başarısız!"
+                            description="Lütfen girdiğiniz verileri kontrol ediniz.
+                            Verilerinizi doğru girdiyseniz
+                            sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                        />
                     </div>
                 </form>
             </div>

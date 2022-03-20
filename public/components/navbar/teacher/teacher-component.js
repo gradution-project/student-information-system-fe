@@ -9,7 +9,7 @@ import {
     ViewGridIcon,
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
-import {getTeacherRole} from "../../../storage/teacher";
+import SisTeacherStorage from "../../../storage/teacher/SisTeacherStorage";
 
 
 const lesson = [
@@ -72,7 +72,7 @@ function classNames(...classes) {
 
 export default function TeacherComponent() {
 
-    const teacherRole = getTeacherRole();
+    const teacherRole = SisTeacherStorage.getRole();
 
     return (
         <Popover.Group as="nav" className="select-none hidden md:flex space-x-10 font-phenomenaBold">
@@ -254,7 +254,7 @@ export default function TeacherComponent() {
                         )}
                     </Popover>
                     :
-                  null
+                    null
             )}
 
         </Popover.Group>

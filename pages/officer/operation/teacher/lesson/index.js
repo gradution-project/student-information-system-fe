@@ -1,28 +1,45 @@
 import {useRouter} from "next/router";
 import SISTitle from "../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
-import {lessonCompulsory, lessonSemesters, lessonStatuses} from "../../../../../public/constants/lesson";
-import {Fragment, useState} from "react";
-import {Dialog, Transition} from "@headlessui/react";
+import LessonSemester from "../../../../../public/constants/lesson/LessonSemester";
+import {useState} from "react";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
+import UnauthorizedAccessPage from "../../../../401";
+import ProcessNotification from "../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../public/notifications/success";
+import FailNotification from "../../../../../public/notifications/fail";
+import TeacherLessonController from "../../../../../public/api/teacher/lesson/TeacherLessonController";
+import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/LessonCompulsoryOrElective";
+import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
 
-export async function getServerSideProps() {
-    const SIS_API_URL = process.env.SIS_API_URL;
-    const lessonsResponse = await fetch(`${SIS_API_URL}/teacher/lesson`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const lessonsData = await lessonsResponse.json();
+export async function getServerSideProps(context) {
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
+    if (officerId === undefined) {
+        return {
+            props: {
+                isPagePermissionSuccess: false
+            }
+        }
+    }
+
+    const lessonsData = await TeacherLessonController.getAllTeachersLessons();
     if (lessonsData.success) {
         return {
             props: {
-                lessons: lessonsData.response,
-                SIS_API_URL: SIS_API_URL
+                isPagePermissionSuccess: true,
+                lessons: lessonsData.response
             }
         }
     }
 }
 
-export default function TeacherLessonList({lessons, SIS_API_URL}) {
+export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
+
+    if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="officer"/>
+        )
+    }
 
     const router = useRouter();
 
@@ -31,59 +48,48 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
         await router.push('/officer/operation/teacher/lesson/assignment');
     }
 
-    let [isOpenSuccessDelete, setIsOpenSuccessDelete] = useState(false);
+    let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
 
-    function closeSuccessModalDelete() {
-        setIsOpenSuccessDelete(false);
+    function closeProcessingDeleteNotification() {
+        setIsOpenProcessingDeleteNotification(false);
+    }
+
+    function openProcessingDeleteNotification() {
+        setIsOpenProcessingDeleteNotification(true);
+    }
+
+    let [isOpenSuccessDeleteNotification, setIsOpenSuccessDeleteNotification] = useState(false);
+
+    function closeSuccessDeleteNotification() {
+        setIsOpenSuccessDeleteNotification(false);
         router.reload();
     }
 
-    function openSuccessModalDelete() {
-        setIsOpenSuccessDelete(true);
+    function openSuccessDeleteNotification() {
+        setIsOpenSuccessDeleteNotification(true);
     }
 
-    let [isOpenFailDelete, setIsOpenFailDelete] = useState(false);
+    let [isOpenFailDeleteNotification, setIsOpenFailDeleteNotification] = useState(false);
 
-    function closeFailModalDelete() {
-        setIsOpenFailDelete(false);
+    function closeFailDeleteNotification() {
+        setIsOpenFailDeleteNotification(false);
     }
 
-    function openFailModalDelete() {
-        setIsOpenFailDelete(true);
-    }
-
-    let [isOpenProcessingDelete, setIsOpenProcessingDelete] = useState(false);
-
-    function closeProcessingModalDelete() {
-        setIsOpenProcessingDelete(false);
-    }
-
-    function openProcessingModalDelete() {
-        setIsOpenProcessingDelete(true);
+    function openFailDeleteNotification() {
+        setIsOpenFailDeleteNotification(true);
     }
 
 
-    const lessonDelete = async (event) => {
-        openProcessingModalDelete();
+    const deleteTeacherLesson = async (lessonId, teacherId) => {
+        openProcessingDeleteNotification();
 
-        event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/teacher/lesson/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                teacherLessonInfoRequest: {
-                    lessonId: 0,
-                    teacherId: 0
-                }
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
-            closeProcessingModalDelete();
-            openSuccessModalDelete()
+        const teacherLessonData = await TeacherLessonController.deleteTeacherLesson(lessonId, teacherId);
+        if (teacherLessonData.success) {
+            closeProcessingDeleteNotification();
+            openSuccessDeleteNotification();
         } else {
-            closeProcessingModalDelete();
-            openFailModalDelete();
+            closeProcessingDeleteNotification();
+            openFailDeleteNotification();
         }
     }
 
@@ -91,7 +97,7 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className=" select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ATANAN DERS LİSTESİ
@@ -144,59 +150,59 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                 >
                                                     STATÜSÜ
                                                 </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                    {lessons.map((lesson) => (
-                                        <tr key={lesson.lessonResponse.lessonId}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div className="ml-0.5">
+                                            </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                            {lessons.map((lesson, lessonResponse) => (
+                                                <tr key={lessonResponse.lessonId}>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-0.5">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherInfoResponse.name} {lesson.teacherInfoResponse.surname}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-0.5">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
+                                                                {LessonSemester.getAll.map((lSemester) => (
+                                                                    lesson.lessonResponse.semester === lSemester.enum
+                                                                        ?
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                        :
+                                                                        null
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.teacherInfoResponse.name} {lesson.teacherInfoResponse.surname}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
                                                         <div
-                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.teacherInfoResponse.teacherId}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center">
-                                                    <div className="ml-0.5">
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
-                                                        <div
-                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
-                                                        {lessonSemesters.map((lSemester) => (
-                                                            lesson.lessonResponse.semester === lSemester.enum
+                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
+                                                            lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
                                                                 ?
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
                                                                 :
                                                                 null
                                                         ))}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div
-                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
-                                                <div
-                                                    className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
-
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {lessonCompulsory.map((lCompulsory) => (
-                                                    lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
-                                                        ?
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
-                                                        :
-                                                        null
-                                                ))}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                 <span>
-                                                         {lessonStatuses.map((lStatus) => (
+                                                         {LessonStatus.getAll.map((lStatus) => (
                                                              lesson.lessonResponse.status === lStatus.enum
                                                                  ?
                                                                  lStatus.miniComponent
@@ -204,174 +210,38 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                                                                  null
                                                          ))}
                                                 </span>
-                                            </td>
-                                        {/*       <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                   <a onClick={lessonDelete}
-                                                      className='text-sis-fail'>
-                                                       SİL
-                                                   </a>
-                                               </td> */}
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                            <Transition appear show={isOpenSuccessDelete} as={Fragment}>
-                                                <Dialog
-                                                    as="div"
-                                                    className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                    onClose={closeSuccessModalDelete}
-                                                >
-                                                    <div className="min-h-screen px-4 text-center">
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0"
-                                                            enterTo="opacity-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100"
-                                                            leaveTo="opacity-0"
-                                                        >
-                                                            <Dialog.Overlay className="fixed inset-0"/>
-                                                        </Transition.Child>
+                                                    </td>
+                                                    <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                        <button
+                                                            onClick={() => deleteTeacherLesson(lesson.lessonResponse.lessonId, lesson.teacherInfoResponse.teacherId)}
+                                                            className='text-sis-fail'>
+                                                            SİL
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
 
-                                                        <span
-                                                            className="inline-block h-screen align-middle"
-                                                            aria-hidden="true"
-                                                        >
-              &#8203;
-            </span>
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0 scale-95"
-                                                            enterTo="opacity-100 scale-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100 scale-100"
-                                                            leaveTo="opacity-0 scale-95"
-                                                        >
-                                                            <div
-                                                                className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                                <Dialog.Title
-                                                                    as="h3"
-                                                                    className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                                >
-                                                                    <div className="border bg-sis-success rounded-xl p-6">
-                                                                        Atanan Ders Silme İşlemi Başarılı!
-                                                                    </div>
-                                                                </Dialog.Title>
-                                                                <div className="mt-2">
-                                                                    <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                        Atanan Ders Silme İşlemi başarıyla gerçekleşti.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </Transition.Child>
-                                                    </div>
-                                                </Dialog>
-                                            </Transition>
-                                            <Transition appear show={isOpenFailDelete} as={Fragment}>
-                                                <Dialog
-                                                    as="div"
-                                                    className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                    onClose={closeFailModalDelete}
-                                                >
-                                                    <div className="min-h-screen px-4 text-center">
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0"
-                                                            enterTo="opacity-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100"
-                                                            leaveTo="opacity-0"
-                                                        >
-                                                            <Dialog.Overlay className="fixed inset-0"/>
-                                                        </Transition.Child>
+                                            <ProcessNotification
+                                                isOpen={isOpenProcessingDeleteNotification}
+                                                closeNotification={closeProcessingDeleteNotification}
+                                                title="Atanan Ders Kaydı Siliniyor..."
+                                            />
 
-                                                        <span
-                                                            className="inline-block h-screen align-middle"
-                                                            aria-hidden="true"
-                                                        >
-              &#8203;
-            </span>
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0 scale-95"
-                                                            enterTo="opacity-100 scale-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100 scale-100"
-                                                            leaveTo="opacity-0 scale-95"
-                                                        >
-                                                            <div
-                                                                className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                                <Dialog.Title
-                                                                    as="h3"
-                                                                    className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                                >
-                                                                    <div className="border bg-sis-fail rounded-xl p-6">
-                                                                        Atanan Ders Silme İşlemi Başarısız!
-                                                                    </div>
-                                                                </Dialog.Title>
-                                                                <div className="mt-2">
-                                                                    <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                                        Lütfen girdiğiniz verileri kontrol ediniz.
-                                                                        Verilerinizi doğru girdiyseniz sistemsel bir
-                                                                        hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </Transition.Child>
-                                                    </div>
-                                                </Dialog>
-                                            </Transition>
+                                            <SuccessNotification
+                                                isOpen={isOpenSuccessDeleteNotification}
+                                                closeNotification={closeSuccessDeleteNotification}
+                                                title="Atanan Ders Kaydı Silindi!"
+                                                description="Atanan Ders Kayıt Silme İşlemi başarıyla gerçekleşti."
+                                            />
 
-                                            <Transition appear show={isOpenProcessingDelete} as={Fragment}>
-                                                <Dialog
-                                                    as="div"
-                                                    className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                                    onClose={closeProcessingModalDelete}
-                                                >
-                                                    <div className="min-h-screen px-4 text-center">
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0"
-                                                            enterTo="opacity-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100"
-                                                            leaveTo="opacity-0"
-                                                        >
-                                                            <Dialog.Overlay className="fixed inset-0"/>
-                                                        </Transition.Child>
-
-                                                        <span
-                                                            className="inline-block h-screen align-middle"
-                                                            aria-hidden="true"
-                                                        >
-              &#8203;
-            </span>
-                                                        <Transition.Child
-                                                            as={Fragment}
-                                                            enter="ease-out duration-300"
-                                                            enterFrom="opacity-0 scale-95"
-                                                            enterTo="opacity-100 scale-100"
-                                                            leave="ease-in duration-200"
-                                                            leaveFrom="opacity-100 scale-100"
-                                                            leaveTo="opacity-0 scale-95"
-                                                        >
-                                                            <div
-                                                                className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                                <Dialog.Title
-                                                                    as="h3"
-                                                                    className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                                >
-                                                                    Atanan Ders Silme İsteğiniz İşleniyor...
-                                                                </Dialog.Title>
-                                                            </div>
-                                                        </Transition.Child>
-                                                    </div>
-                                                </Dialog>
-                                            </Transition>
+                                            <FailNotification
+                                                isOpen={isOpenFailDeleteNotification}
+                                                closeNotification={closeFailDeleteNotification}
+                                                title="Atanan Ders Kaydı Silinemedi!"
+                                                description="Sistemsel bir hatadan dolayı
+                                                isteğiniz sonuçlandıralamamış olabilir."
+                                            />
                                         </table>
                                     </div>
                                 </div>
@@ -382,6 +252,5 @@ export default function TeacherLessonList({lessons, SIS_API_URL}) {
                 )}
             </div>
         </div>
-
     )
 }

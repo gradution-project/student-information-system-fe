@@ -1,14 +1,22 @@
 import SISTitle from "../../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../../public/components/navbar/officer/officer-navbar";
-import {Fragment, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/router";
-import {Dialog, Transition} from "@headlessui/react";
-import {studentClassLevels, studentDegrees, studentStatuses} from "../../../../../../../public/constants/student";
-import {getOfficerNumberWithContext} from "../../../../../../../public/storage/officer";
+import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../../../401";
+import ProcessNotification from "../../../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../../../public/notifications/success";
+import FailNotification from "../../../../../../../public/notifications/fail";
+import DepartmentController from "../../../../../../../public/api/department/DepartmentController";
+import DepartmentStatus from "../../../../../../../public/constants/department/DepartmentStatus";
+import StudentController from "../../../../../../../public/api/student/StudentController";
+import StudentStatus from "../../../../../../../public/constants/student/StudentStatus";
+import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
+import StudentClassLevel from "../../../../../../../public/constants/student/StudentClassLevel";
+import StudentDegree from "../../../../../../../public/constants/student/StudentDegree";
 
 export async function getServerSideProps(context) {
-    const officerId = getOfficerNumberWithContext(context)
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
     if (officerId === undefined) {
         return {
             props: {
@@ -17,25 +25,16 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const SIS_API_URL = process.env.SIS_API_URL;
+    const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
+
     const {id} = context.query;
-    const departmentResponses = await fetch(`${SIS_API_URL}/department?status=ACTIVE`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const studentResponse = await fetch(`${SIS_API_URL}/student/` + id, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
-    });
-    const departmentDatas = await departmentResponses.json();
-    const studentData = await studentResponse.json();
-    if (studentData.success && departmentDatas.success) {
+    const studentData = await StudentController.getStudentDetailByStudentId(id);
+    if (studentData.success && departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 operationUserId: officerId,
-                SIS_API_URL: SIS_API_URL,
-                departments: departmentDatas.response,
+                departments: departmentsData.response,
                 student: studentData.response
             }
         }
@@ -43,7 +42,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, operationUserId, SIS_API_URL, departments, student}) {
+export default function StudentDetail({isPagePermissionSuccess, operationUserId, departments, student}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -51,501 +50,444 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         )
     }
 
-    const {academicInfoResponse} = student;
-    const {personalInfoResponse} = student;
-
-    const {
-        departmentResponse,
-        studentId,
-        classLevel,
-        degree,
-        registrationDate,
-        status
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {academicInfoResponse, personalInfoResponse} = student;
+    const {departmentResponse} = academicInfoResponse;
     const {facultyResponse} = departmentResponse;
-
-    const facultyId = facultyResponse.facultyId;
-    const facultyName = facultyResponse.name;
-    const departmentName = departmentResponse.name;
-    const departmentId = departmentResponse.departmentId;
-
-    const [studentName, setStudentName] = useState(name);
-    const changeStudentName = event => {
-        const studentName = event.target.value;
-        setStudentName(studentName);
-    }
-
-    const [studentSurname, setStudentSurname] = useState(surname);
-    const changeStudentSurname = event => {
-        const studentSurname = event.target.value;
-        setStudentSurname(studentSurname);
-    }
-
-    const [studentTcNo, setStudentTcNo] = useState(tcNo);
-    const changeStudentTcNo = event => {
-        const studentTcNo = event.target.value;
-        setStudentTcNo(studentTcNo);
-    }
-
-    const [studentBirthday, setStudentBirthday] = useState(birthday);
-    const changeStudentBirthday = event => {
-        const studentBirthday = event.target.value;
-        setStudentBirthday(studentBirthday);
-    }
-
-    const [studentEmail, setStudentEmail] = useState(personalInfoResponse.email);
-    const changeStudentEmail = event => {
-        const studentEmail = event.target.value;
-        setStudentEmail(studentEmail);
-    }
-
-    const [studentClassLevel, setStudentClassLevel] = useState(classLevel);
-    const changeStudentClassLevel = event => {
-        const classLevelStudent = event.target.value;
-        setStudentClassLevel(classLevelStudent);
-    }
-
-    const [studentAddress, setStudentAddress] = useState(address);
-    const changeStudentAddress = event => {
-        const studentAddress = event.target.value;
-        setStudentAddress(studentAddress);
-    }
-
-    const [studentDegree, setStudentDegree] = useState(degree);
-    const changeStudentDegree = event => {
-        const degreeStudent = event.target.value;
-        setStudentDegree(degreeStudent);
-    }
-
-    const [studentDepartmentId, setStudentDepartmentId] = useState(departmentId);
-    const changeStudentDepartmentId = event => {
-        const studentDepartmentId = event.target.value;
-        setStudentDepartmentId(studentDepartmentId);
-    }
-
-    const [studentPhoneNumber, setStudentPhoneNumber] = useState(phoneNumber);
-    const changeStudentPhoneNumber = event => {
-        const studentPhoneNumber = event.target.value;
-        setStudentPhoneNumber(studentPhoneNumber);
-    }
 
 
     const router = useRouter();
 
-    let [isOpenSuccessActive, setIsOpenSuccessActive] = useState(false);
 
-    function closeSuccessModalActive() {
-        setIsOpenSuccessActive(false);
-        router.reload();
+    /**
+     * STUDENT GRADUATE OPERATION
+     */
+
+    let [isOpenProcessingGraduateNotification, setIsOpenProcessingGraduateNotification] = useState(false);
+
+    function closeProcessingGraduateNotification() {
+        setIsOpenProcessingGraduateNotification(false);
     }
 
-    function openSuccessModalActive() {
-        setIsOpenSuccessActive(true);
+    function openProcessingGraduateNotification() {
+        setIsOpenProcessingGraduateNotification(true);
     }
 
-    let [isOpenFailActive, setIsOpenFailActive] = useState(false);
+    let [isOpenSuccessGraduateNotification, setIsOpenSuccessGraduateNotification] = useState(false);
 
-    function closeFailModalActive() {
-        setIsOpenFailActive(false);
-    }
-
-    function openFailModalActive() {
-        setIsOpenFailActive(true);
-    }
-
-    let [isOpenProcessingActive, setIsOpenProcessingActive] = useState(false);
-
-    function closeProcessingModalActive() {
-        setIsOpenProcessingActive(false);
-    }
-
-    function openProcessingModalActive() {
-        setIsOpenProcessingActive(true);
-    }
-
-    let [isOpenSuccessGraduate, setIsOpenSuccessGraduate] = useState(false);
-
-    function closeSuccessModalGraduate() {
-        setIsOpenSuccessGraduate(false);
+    function closeSuccessGraduateNotification() {
+        setIsOpenSuccessGraduateNotification(false);
         router.push("/officer/operation/student").then(() => router.reload());
     }
 
-    function openSuccessModalGraduate() {
-        setIsOpenSuccessGraduate(true);
+    function openSuccessGraduateNotification() {
+        setIsOpenSuccessGraduateNotification(true);
     }
 
-    let [isOpenFailGraduate, setIsOpenFailGraduate] = useState(false);
+    let [isOpenFailGraduateNotification, setIsOpenFailGraduateNotification] = useState(false);
 
-    function closeFailModalGraduate() {
-        setIsOpenFailGraduate(false);
+    function closeFailGraduateNotification() {
+        setIsOpenFailGraduateNotification(false);
     }
 
-    function openFailModalGraduate() {
-        setIsOpenFailGraduate(true);
+    function openFailGraduateNotification() {
+        setIsOpenFailGraduateNotification(true);
     }
-
-    let [isOpenProcessingGraduate, setIsOpenProcessingGraduate] = useState(false);
-
-    function closeProcessingModalGraduate() {
-        setIsOpenProcessingGraduate(false);
-    }
-
-    function openProcessingModalGraduate() {
-        setIsOpenProcessingGraduate(true);
-    }
-
-    let [isOpenSuccessPassivate, setIsOpenSuccessPassivate] = useState(false);
-
-    function closeSuccessModalPassivate() {
-        setIsOpenSuccessPassivate(false);
-        router.reload();
-    }
-
-    function openSuccessModalPassivate() {
-        setIsOpenSuccessPassivate(true);
-    }
-
-    let [isOpenFailPassivate, setIsOpenFailPassivate] = useState(false);
-
-    function closeFailModalPassivate() {
-        setIsOpenFailPassivate(false);
-    }
-
-    function openFailModalPassivate() {
-        setIsOpenFailPassivate(true);
-    }
-
-    let [isOpenProcessingPassivate, setIsOpenProcessingPassivate] = useState(false);
-
-    function closeProcessingModalPassivate() {
-        setIsOpenProcessingPassivate(false);
-    }
-
-    function openProcessingModalPassivate() {
-        setIsOpenProcessingPassivate(true);
-    }
-
-    let [isOpenSuccessDelete, setIsOpenSuccessDelete] = useState(false);
-
-    function closeSuccessModalDelete() {
-        setIsOpenSuccessDelete(false);
-        router.reload();
-    }
-
-    function openSuccessModalDelete() {
-        setIsOpenSuccessDelete(true);
-    }
-
-    let [isOpenFailDelete, setIsOpenFailDelete] = useState(false);
-
-    function closeFailModalDelete() {
-        setIsOpenFailDelete(false);
-    }
-
-    function openFailModalDelete() {
-        setIsOpenFailDelete(true);
-    }
-
-    let [isOpenProcessingDelete, setIsOpenProcessingDelete] = useState(false);
-
-    function closeProcessingModalDelete() {
-        setIsOpenProcessingDelete(false);
-    }
-
-    function openProcessingModalDelete() {
-        setIsOpenProcessingDelete(true);
-    }
-
-    let [isOpenSuccessAcademic, setIsOpenSuccessAcademic] = useState(false);
-
-    function closeSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(false);
-        router.reload();
-    }
-
-    function openSuccessModalAcademic() {
-        setIsOpenSuccessAcademic(true);
-    }
-
-    let [isOpenFailAcademic, setIsOpenFailAcademic] = useState(false);
-
-    function closeFailModalAcademic() {
-        setIsOpenFailAcademic(false);
-    }
-
-    function openFailModalAcademic() {
-        setIsOpenFailAcademic(true);
-    }
-
-    let [isOpenProcessingAcademic, setIsOpenProcessingAcademic] = useState(false);
-
-    function closeProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(false);
-    }
-
-    function openProcessingModalAcademic() {
-        setIsOpenProcessingAcademic(true);
-    }
-
-    let [isOpenSuccessPersonal, setIsOpenSuccessPersonal] = useState(false);
-
-    function closeSuccessModalPersonal() {
-        setIsOpenSuccessPersonal(false);
-        router.reload();
-    }
-
-    function openSuccessModalPersonal() {
-        setIsOpenSuccessPersonal(true);
-    }
-
-    let [isOpenFailPersonal, setIsOpenFailPersonal] = useState(false);
-
-    function closeFailModalPersonal() {
-        setIsOpenFailPersonal(false);
-    }
-
-    function openFailModalPersonal() {
-        setIsOpenFailPersonal(true);
-    }
-
-    let [isOpenProcessingPersonal, setIsOpenProcessingPersonal] = useState(false);
-
-    function closeProcessingModalPersonal() {
-        setIsOpenProcessingPersonal(false);
-    }
-
-    function openProcessingModalPersonal() {
-        setIsOpenProcessingPersonal(true);
-    }
-
 
     const studentGraduate = async (event) => {
-        openProcessingModalGraduate();
+        openProcessingGraduateNotification();
 
-        event.preventDefault()
-        const graduateRes = await fetch(`${SIS_API_URL}/student/graduate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const graduateData = await graduateRes.json();
-        if (graduateData.success) {
-            closeProcessingModalGraduate();
-            openSuccessModalGraduate()
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.graduateStudent(operationUserId, studentId);
+        if (studentData.success) {
+            closeProcessingGraduateNotification();
+            openSuccessGraduateNotification();
         } else {
-            closeProcessingModalGraduate();
-            openFailModalGraduate();
+            closeProcessingGraduateNotification();
+            openFailGraduateNotification();
         }
+    }
+
+    /**
+     * STUDENT ACTIVATE OPERATION
+     */
+
+    let [isOpenProcessingActivateNotification, setIsOpenProcessingActivateNotification] = useState(false);
+
+    function closeProcessingActivateNotification() {
+        setIsOpenProcessingActivateNotification(false);
+    }
+
+    function openProcessingActivateNotification() {
+        setIsOpenProcessingActivateNotification(true);
+    }
+
+    let [isOpenSuccessActivateNotification, setIsOpenSuccessActivateNotification] = useState(false);
+
+    function closeSuccessActivateNotification() {
+        setIsOpenSuccessActivateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessActivateNotification() {
+        setIsOpenSuccessActivateNotification(true);
+    }
+
+    let [isOpenFailActivateNotification, setIsOpenFailActivateNotification] = useState(false);
+
+    function closeFailActivateNotification() {
+        setIsOpenFailActivateNotification(false);
+    }
+
+    function openFailActivateNotification() {
+        setIsOpenFailActivateNotification(true);
     }
 
     const studentActivate = async (event) => {
-        openProcessingModalActive();
+        openProcessingActivateNotification();
 
-        event.preventDefault()
-        const activateRes = await fetch(`${SIS_API_URL}/student/activate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const activateData = await activateRes.json();
-        if (activateData.success) {
-            closeProcessingModalActive();
-            openSuccessModalActive()
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.activateStudent(operationUserId, studentId);
+        if (studentData.success) {
+            closeProcessingActivateNotification();
+            openSuccessActivateNotification();
         } else {
-            closeProcessingModalActive();
-            openFailModalActive();
+            closeProcessingActivateNotification();
+            openFailActivateNotification();
         }
+    }
+
+
+    /**
+     * STUDENT PASSIVATE OPERATION
+     */
+
+    let [isOpenProcessingPassivateNotification, setIsOpenProcessingPassivateNotification] = useState(false);
+
+    function closeProcessingPassivateNotification() {
+        setIsOpenProcessingPassivateNotification(false);
+    }
+
+    function openProcessingPassivateNotification() {
+        setIsOpenProcessingPassivateNotification(true);
+    }
+
+    let [isOpenSuccessPassivateNotification, setIsOpenSuccessPassivateNotification] = useState(false);
+
+    function closeSuccessPassivateNotification() {
+        setIsOpenSuccessPassivateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessPassivateNotification() {
+        setIsOpenSuccessPassivateNotification(true);
+    }
+
+    let [isOpenFailPassivateNotification, setIsOpenFailPassivateNotification] = useState(false);
+
+    function closeFailPassivateNotification() {
+        setIsOpenFailPassivateNotification(false);
+    }
+
+    function openFailPassivateNotification() {
+        setIsOpenFailPassivateNotification(true);
     }
 
     const studentPassivate = async (event) => {
-        openProcessingModalPassivate();
+        openProcessingPassivateNotification();
 
-        event.preventDefault()
-        const passivateRes = await fetch(`${SIS_API_URL}/student/passivate`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PATCH',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const passivateData = await passivateRes.json();
-        if (passivateData.success) {
-            closeProcessingModalPassivate();
-            openSuccessModalPassivate()
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.passivateStudent(operationUserId, studentId);
+        if (studentData.success) {
+            closeProcessingPassivateNotification();
+            openSuccessPassivateNotification();
         } else {
-            closeProcessingModalPassivate();
-            openFailModalPassivate();
+            closeProcessingPassivateNotification();
+            openFailPassivateNotification();
         }
+    }
+
+
+    /**
+     * STUDENT DELETE OPERATION
+     */
+
+    let [isOpenProcessingDeleteNotification, setIsOpenProcessingDeleteNotification] = useState(false);
+
+    function closeProcessingDeleteNotification() {
+        setIsOpenProcessingDeleteNotification(false);
+    }
+
+    function openProcessingDeleteNotification() {
+        setIsOpenProcessingDeleteNotification(true);
+    }
+
+    let [isOpenSuccessDeleteNotification, setIsOpenSuccessDeleteNotification] = useState(false);
+
+    function closeSuccessDeleteNotification() {
+        setIsOpenSuccessDeleteNotification(false);
+        router.reload();
+    }
+
+    function openSuccessDeleteNotification() {
+        setIsOpenSuccessDeleteNotification(true);
+    }
+
+    let [isOpenFailDeleteNotification, setIsOpenFailDeleteNotification] = useState(false);
+
+    function closeFailDeleteNotification() {
+        setIsOpenFailDeleteNotification(false);
+    }
+
+    function openFailDeleteNotification() {
+        setIsOpenFailDeleteNotification(true);
     }
 
     const studentDelete = async (event) => {
-        openProcessingModalDelete();
+        openProcessingDeleteNotification();
 
-        event.preventDefault()
-        const deleteRes = await fetch(`${SIS_API_URL}/student/delete`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'DELETE',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                studentId: studentId
-            }),
-        });
-        const deleteData = await deleteRes.json();
-        if (deleteData.success) {
-            closeProcessingModalDelete();
-            openSuccessModalDelete()
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const studentData = await StudentController.deleteStudent(operationUserId, studentId);
+        if (studentData.success) {
+            closeProcessingDeleteNotification();
+            openSuccessDeleteNotification();
         } else {
-            closeProcessingModalDelete();
-            openFailModalDelete();
+            closeProcessingDeleteNotification();
+            openFailDeleteNotification();
         }
     }
 
-    const studentUpdateAcademic = async (event) => {
-        openProcessingModalAcademic();
-        event.preventDefault()
-        const updateRes = await fetch(`${SIS_API_URL}/student/update/academic-info/${studentId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                academicInfoRequest: {
-                    classLevel: studentClassLevel,
-                    degree: studentDegree,
-                    departmentId: studentDepartmentId
-                },
-                operationInfoRequest: {
-                    userId: operationUserId
-                }
-            }),
-        });
-        const updateAcademicData = await updateRes.json();
-        if (updateAcademicData.success) {
-            closeProcessingModalAcademic();
-            openSuccessModalAcademic()
+
+    /**
+     * STUDENT UPDATE ACADEMIC INFO OPERATION
+     */
+
+    let [isOpenProcessingAcademicInfoUpdateNotification, setIsOpenProcessingAcademicInfoUpdateNotification] = useState(false);
+
+    function closeProcessingAcademicInfoUpdateNotification() {
+        setIsOpenProcessingAcademicInfoUpdateNotification(false);
+    }
+
+    function openProcessingAcademicInfoUpdateNotification() {
+        setIsOpenProcessingAcademicInfoUpdateNotification(true);
+    }
+
+    let [isOpenSuccessAcademicInfoUpdateNotification, setIsOpenSuccessAcademicInfoUpdateNotification] = useState(false);
+
+    function closeSuccessAcademicInfoUpdateNotification() {
+        setIsOpenSuccessAcademicInfoUpdateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessAcademicInfoUpdateNotification() {
+        setIsOpenSuccessAcademicInfoUpdateNotification(true);
+    }
+
+    let [isOpenFailAcademicInfoUpdateNotification, setIsOpenFailAcademicInfoUpdateNotification] = useState(false);
+
+    function closeFailAcademicInfoUpdateNotification() {
+        setIsOpenFailAcademicInfoUpdateNotification(false);
+    }
+
+    function openFailAcademicInfoUpdateNotification() {
+        setIsOpenFailAcademicInfoUpdateNotification(true);
+    }
+
+    const [departmentId, setDepartmentId] = useState(departmentResponse.departmentId);
+    const changeDepartmentId = event => {
+        const departmentId = event.target.value;
+        setDepartmentId(departmentId);
+    }
+
+    const [classLevel, setClassLevel] = useState(academicInfoResponse.classLevel);
+    const changeClassLevel = event => {
+        const classLevel = event.target.value;
+        setClassLevel(classLevel);
+    }
+
+    const [degree, setDegree] = useState(academicInfoResponse.degree);
+    const changeDegree = event => {
+        const degree = event.target.value;
+        setDegree(degree);
+    }
+
+    const updateStudentAcademicInfo = async (event) => {
+        openProcessingAcademicInfoUpdateNotification();
+
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const academicInfo = {departmentId, classLevel, degree};
+        const studentData = await StudentController.updateStudentAcademicInfo(operationUserId, studentId, academicInfo);
+        if (studentData.success) {
+            closeProcessingAcademicInfoUpdateNotification();
+            openSuccessAcademicInfoUpdateNotification();
         } else {
-            closeProcessingModalAcademic();
-            openFailModalAcademic();
+            closeProcessingAcademicInfoUpdateNotification();
+            openFailAcademicInfoUpdateNotification();
         }
     }
 
-    const studentUpdatePersonal = async (event) => {
-        openProcessingModalPersonal();
 
-        event.preventDefault()
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/student/update/personal-info/${studentId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: operationUserId
-                },
-                personalInfoRequest: {
-                    address: studentAddress,
-                    birthday: studentBirthday,
-                    email: studentEmail,
-                    name: studentName,
-                    phoneNumber: studentPhoneNumber,
-                    surname: studentSurname,
-                    tcNo: studentTcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
-            closeProcessingModalPersonal();
-            openSuccessModalPersonal()
+    /**
+     * STUDENT UPDATE PERSONAL INFO OPERATION
+     */
+
+    let [isOpenProcessingPersonalInfoUpdateNotification, setIsOpenProcessingPersonalInfoUpdateNotification] = useState(false);
+
+    function closeProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(false);
+    }
+
+    function openProcessingPersonalInfoUpdateNotification() {
+        setIsOpenProcessingPersonalInfoUpdateNotification(true);
+    }
+
+    let [isOpenSuccessPersonalInfoUpdateNotification, setIsOpenSuccessPersonalInfoUpdateNotification] = useState(false);
+
+    function closeSuccessPersonalInfoUpdateNotification() {
+        setIsOpenSuccessPersonalInfoUpdateNotification(false);
+        router.reload();
+    }
+
+    function openSuccessPersonalInfoUpdateNotification() {
+        setIsOpenSuccessPersonalInfoUpdateNotification(true);
+    }
+
+    let [isOpenFailPersonalInfoUpdateNotification, setIsOpenFailPersonalInfoUpdateNotification] = useState(false);
+
+    function closeFailPersonalInfoUpdateNotification() {
+        setIsOpenFailPersonalInfoUpdateNotification(false);
+    }
+
+    function openFailPersonalInfoUpdateNotification() {
+        setIsOpenFailPersonalInfoUpdateNotification(true);
+    }
+
+    const [name, setName] = useState(departmentResponse.name);
+    const changeName = event => {
+        const name = event.target.value;
+        setName(name);
+    }
+
+    const [surname, setSurname] = useState(personalInfoResponse.surname);
+    const changeSurname = event => {
+        const surname = event.target.value;
+        setSurname(surname);
+    }
+
+    const [tcNo, setTcNo] = useState(personalInfoResponse.tcNo);
+    const changeTcNo = event => {
+        const tcNo = event.target.value;
+        setTcNo(tcNo);
+    }
+
+    const [birthday, setBirthday] = useState(personalInfoResponse.birthday);
+    const changeBirthday = event => {
+        const birthday = event.target.value;
+        setBirthday(birthday);
+    }
+
+    const [email, setEmail] = useState(personalInfoResponse.email);
+    const changeEmail = event => {
+        const email = event.target.value;
+        setEmail(email);
+    }
+
+    const [phoneNumber, setPhoneNumber] = useState(personalInfoResponse.phoneNumber);
+    const changePhoneNumber = event => {
+        const phoneNumber = event.target.value;
+        setPhoneNumber(phoneNumber);
+    }
+
+    const [address, setAddress] = useState(personalInfoResponse.address);
+    const changeAddress = event => {
+        const address = event.target.value;
+        setAddress(address);
+    }
+
+    const updateStudentPersonalInfo = async (event) => {
+        openProcessingPersonalInfoUpdateNotification();
+
+        event.preventDefault();
+
+        const studentId = academicInfoResponse.studentId;
+        const personalInfo = {name, surname, tcNo, birthday, email, phoneNumber, address};
+        const studentData = await StudentController.updateStudentPersonalInfo(operationUserId, studentId, personalInfo);
+        if (studentData.success) {
+            closeProcessingPersonalInfoUpdateNotification();
+            openSuccessPersonalInfoUpdateNotification();
         } else {
-            closeProcessingModalPersonal();
-            openFailModalPersonal();
+            closeProcessingPersonalInfoUpdateNotification();
+            openFailPersonalInfoUpdateNotification();
         }
     }
+
+    const isStudentPassiveOrDeleted = () => {
+        return academicInfoResponse.status === StudentStatus.PASSIVE || academicInfoResponse.status === StudentStatus.DELETED
+    }
+
     return (
         <>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="select-none px-28 py-5 mx-auto space-y-6">
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                            {name} {surname}
+                            {personalInfoResponse.name} {personalInfoResponse.surname}
                         </a>
-                        {studentStatuses.map((studentStatus) => (
-                            status === studentStatus.enum
+                        {StudentStatus.getAll.map((studentStatus) => (
+                            academicInfoResponse.status === studentStatus.enum
                                 ?
                                 studentStatus.component
                                 :
                                 null
                         ))}
                         {(
-                            status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentDelete}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-red-600 hover:bg-sis-darkblue"
-                                >
-                                    KAYDI SİL
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getDeleteButton(studentDelete, "KAYDI SİL")
                         )}
                         {(
-                            status !== 'PASSIVE' && status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.PASSIVE
+                            ||
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentPassivate}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                >
-                                    KAYDI DONDUR
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getPassivateButton(studentPassivate, "KAYDI DONDUR")
                         )}
                         {(
-                            status !== 'ACTIVE' && status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.ACTIVE
+                            ||
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentActivate}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold ml-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                >
-                                    KAYDI AKTİFLEŞTİR
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getActivateButton(studentActivate, "KAYDI AKTİFLEŞTİR")
                         )}
                         {(
-                            status !== 'GRADUATED' && status !== 'DELETED'
+                            academicInfoResponse.status === StudentStatus.GRADUATED
+                            ||
+                            academicInfoResponse.status === StudentStatus.DELETED
                                 ?
-                                <button
-                                    onClick={studentGraduate}
-                                    type="submit"
-                                    className="block float-right font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl text-sis-white rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
-                                >
-                                    MEZUNİYET İŞLEMİ BAŞLAT
-                                </button>
-                                :
                                 null
+                                :
+                                SisOperationButton.getGraduateButton(studentGraduate, "MEZUNİYET İŞLEMİ BAŞLAT")
                         )}
                     </div>
                     <div className="md:col-span-1">
-                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-10 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -563,7 +505,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 type="text"
                                                 name="studentId"
                                                 id="studentId"
-                                                defaultValue={studentId}
+                                                defaultValue={academicInfoResponse.studentId}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -578,7 +520,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 type="text"
                                                 name="registration-date"
                                                 id="registration-date"
-                                                defaultValue={registrationDate}
+                                                defaultValue={academicInfoResponse.registrationDate}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -594,10 +536,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 name="faculty"
                                                 autoComplete="faculty-name"
                                                 disabled
-                                                defaultValue={facultyName}
+                                                defaultValue={facultyResponse.name}
                                                 className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
-                                                <option value={facultyId}>{facultyName}</option>
+                                                <option
+                                                    value={facultyResponse.facultyId}>{facultyResponse.name}</option>
                                             </select>
                                         </div>
 
@@ -607,17 +550,17 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 BÖLÜMÜ
                                             </label>
                                             <select
-                                                onChange={changeStudentDepartmentId}
+                                                onChange={changeDepartmentId}
                                                 id="departmentId"
                                                 name="department-id"
                                                 autoComplete="department-id"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departments.map((department) => (
-                                                    departmentName === department.name
+                                                    departmentResponse.name === department.name
                                                         ?
                                                         <option value={department.departmentId}
                                                                 selected>{department.name}</option>
@@ -634,21 +577,21 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 DERECESİ
                                             </label>
                                             <select
-                                                onChange={changeStudentDegree}
+                                                onChange={changeDegree}
                                                 id="degree"
                                                 name="degree"
                                                 autoComplete="degree"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
-                                                {studentDegrees.map(sDegree => (
-                                                    degree === sDegree.enum
+                                                {StudentDegree.getAll.map(sDegree => (
+                                                    academicInfoResponse.degree === sDegree.enum
                                                         ?
                                                         <option value={sDegree.enum} selected>{sDegree.tr}</option>
                                                         :
-                                                        <option value={sDegree.enum}>{sDegree.tr}</option>
+                                                        null
                                                 ))}
                                             </select>
                                         </div>
@@ -659,11 +602,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 SINIF
                                             </label>
                                             <select
-                                                onChange={changeStudentClassLevel}
+                                                onChange={changeClassLevel}
                                                 id="classLevel"
                                                 name="classLevel"
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
@@ -685,10 +628,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 {/*                : */}
                                                 {/*                null*/}
                                                 {/*))}*/}
-                                                {studentClassLevels.map(sClassLevel => (
-                                                    classLevel === sClassLevel.enum
+                                                {StudentClassLevel.getAll.map(sClassLevel => (
+                                                    academicInfoResponse.classLevel === sClassLevel.enum
                                                         ?
-                                                        <option value={sClassLevel.enum} selected>{sClassLevel.tr}</option>
+                                                        <option value={sClassLevel.enum}
+                                                                selected>{sClassLevel.tr}</option>
                                                         :
                                                         <option value={sClassLevel.enum}>{sClassLevel.tr}</option>
                                                 ))}
@@ -725,19 +669,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                 </div>
 
                                 {(
-                                    status !== 'DELETED' && status !== 'GRADUTED' && status !== 'PASSIVE'
+                                    isStudentPassiveOrDeleted()
+                                    ||
+                                    academicInfoResponse.status === StudentStatus.GRADUATED
                                         ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={studentUpdateAcademic}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
                                         null
+                                        :
+                                        SisOperationButton.getUpdateButton(updateStudentAcademicInfo, "GÜNCELLE")
                                 )}
                             </div>
                         </form>
@@ -751,10 +689,10 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                 </div>
             </div>
 
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
+            <div className="select-none mb-10 mt-10 sm:mt-0">
+                <div className="md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -769,13 +707,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 ADI
                                             </label>
                                             <input
-                                                onChange={changeStudentName}
+                                                onChange={changeName}
                                                 type="text"
                                                 name="name"
                                                 id="name"
-                                                defaultValue={name}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.name}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -787,13 +725,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 SOYADI
                                             </label>
                                             <input
-                                                onChange={changeStudentSurname}
+                                                onChange={changeSurname}
                                                 type="text"
                                                 name="surname"
                                                 id="surname"
-                                                defaultValue={surname}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.surname}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -805,7 +743,7 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 T.C. KİMLİK NUMARASI
                                             </label>
                                             <input
-                                                onChange={changeStudentTcNo}
+                                                onChange={changeTcNo}
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
@@ -813,9 +751,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 maxLength="11"
                                                 pattern="[0-9]+"
                                                 required
-                                                defaultValue={tcNo}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.tcNo}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -831,15 +769,15 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                     let birthdayLength = e.target.value.length;
                                                     if (birthdayLength > 1 && birthdayLength < 3) {
                                                         if (e.target.value <= 31) {
-                                                            e.target.value =  e.target.value + ".";
+                                                            e.target.value = e.target.value + ".";
                                                         } else {
                                                             e.target.value = "";
                                                         }
                                                     }
                                                     if (birthdayLength > 4 && birthdayLength < 7) {
-                                                        e.target.value =  e.target.value + ".";
+                                                        e.target.value = e.target.value + ".";
                                                     }
-                                                    changeStudentBirthday(e)
+                                                    changeBirthday(e)
                                                 }}
                                                 type="text"
                                                 name="birthday"
@@ -847,9 +785,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                defaultValue={birthday}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.birthday}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -861,14 +799,14 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentEmail}
+                                                onChange={changeEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
                                                 autoComplete="email"
                                                 defaultValue={personalInfoResponse.email}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -886,15 +824,15 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                         e.target.value = "+90 (" + e.target.value;
                                                     }
                                                     if (pNumberLength > 7 && pNumberLength < 10) {
-                                                        e.target.value =  e.target.value + ") ";
+                                                        e.target.value = e.target.value + ") ";
                                                     }
                                                     if (pNumberLength > 12 && pNumberLength < 15) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
-                                                        e.target.value =  e.target.value + " ";
+                                                        e.target.value = e.target.value + " ";
                                                     }
-                                                    changeStudentPhoneNumber(e)
+                                                    changePhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -902,9 +840,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
-                                                defaultValue={phoneNumber}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.phoneNumber}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -916,14 +854,14 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeStudentAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
-                                                disabled={status === "DELETED" || status === "PASSIVE"}
-                                                className={status === "DELETED" || status === "PASSIVE"
+                                                defaultValue={personalInfoResponse.address}
+                                                disabled={isStudentPassiveOrDeleted()}
+                                                className={isStudentPassiveOrDeleted()
                                                     ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                     : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 }/>
@@ -943,987 +881,159 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                     </div>
                                 </div>
                                 {(
-                                    status !== 'DELETED' && status !== 'GRADUATED' && status !== 'PASSIVE'
+                                    isStudentPassiveOrDeleted()
+                                    ||
+                                    academicInfoResponse.status === StudentStatus.GRADUATED
                                         ?
-                                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <button
-                                                onClick={studentUpdatePersonal}
-                                                type="submit"
-                                                className=" font-phenomenaBold inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-yellow hover:bg-sis-darkblue"
-                                            >
-                                                GÜNCELLE
-                                            </button>
-                                        </div>
-                                        :
                                         null
+                                        :
+                                        SisOperationButton.getUpdateButton(updateStudentPersonalInfo, "GÜNCELLE")
                                 )}
-                                <Transition appear show={isOpenSuccessActive} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalActive}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailActive} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalActive}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                {/**
+                                 * Graduate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingGraduateNotification}
+                                    closeNotification={closeProcessingGraduateNotification}
+                                    title="Öğrenci Mezun Ediliyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Aktifleştirme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğrenci kaydı
-                                                            silinmiş veya mezun olmuş olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessGraduateNotification}
+                                    closeNotification={closeSuccessGraduateNotification}
+                                    title="Öğrenci Mezun Edildi!"
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla gerçekleşti."
+                                />
 
-                                <Transition appear show={isOpenProcessingActive} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalActive}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <FailNotification
+                                    isOpen={isOpenFailGraduateNotification}
+                                    closeNotification={closeFailGraduateNotification}
+                                    title="Öğrenci Mezun Edilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kayıt Aktifleştirme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                {/**
+                                 * Activate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingActivateNotification}
+                                    closeNotification={closeProcessingActivateNotification}
+                                    title="Öğrenci Kaydı Aktifleştiriliyor..."
+                                />
 
-                                <Transition appear show={isOpenSuccessGraduate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalGraduate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessActivateNotification}
+                                    closeNotification={closeSuccessActivateNotification}
+                                    title="Öğrenci Kaydı Aktifleştirildi!"
+                                    description="Öğrenci Kayıt Aktifleştirme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Mezun İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Mezun İşlemi başarıyla gerçekleşti.
-                                                            Mesaj penceresini kapattıktan sonra öğrenci listeleme
-                                                            ekranına yönlendirileceksiniz.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailGraduate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalGraduate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <FailNotification
+                                    isOpen={isOpenFailActivateNotification}
+                                    closeNotification={closeFailActivateNotification}
+                                    title="Öğrenci Kaydı Aktifleştirilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Mezun İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğrenci
-                                                            kaydı silinmiş olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                {/**
+                                 * Passivate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingPassivateNotification}
+                                    closeNotification={closeProcessingPassivateNotification}
+                                    title="Öğrenci Kaydı Pasifleştiriliyor..."
+                                />
 
-                                <Transition appear show={isOpenProcessingGraduate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalGraduate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessPassivateNotification}
+                                    closeNotification={closeSuccessPassivateNotification}
+                                    title="Öğrenci Kaydı Pasifleştirildi!"
+                                    description="Öğrenci Kayıt Pasifleştirme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Mezun Etme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailPassivateNotification}
+                                    closeNotification={closeFailPassivateNotification}
+                                    title="Öğrenci Kaydı Pasifleştirilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                <Transition appear show={isOpenSuccessPassivate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalPassivate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                {/**
+                                 * Delete
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingDeleteNotification}
+                                    closeNotification={closeProcessingDeleteNotification}
+                                    title="Öğrenci Kaydı Siliniyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Dondurma İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Dondurma İşlemi başarıyla gerçekleşti.
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessDeleteNotification}
+                                    closeNotification={closeSuccessDeleteNotification}
+                                    title="Öğrenci Kaydı Silindi!"
+                                    description="Öğrenci Kayıt Silme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailPassivate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalPassivate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <FailNotification
+                                    isOpen={isOpenFailDeleteNotification}
+                                    closeNotification={closeFailDeleteNotification}
+                                    title="Öğrenci Kaydı Silinemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Dondurma İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz öğrenci kaydı
-                                                            silinmiş veya öğrenci mezun olmuş olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                {/**
+                                 * Academic Info Update
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingAcademicInfoUpdateNotification}
+                                    closeNotification={closeProcessingAcademicInfoUpdateNotification}
+                                    title="Öğrenci Akademik Bilgileri Güncelleniyor..."
+                                />
 
-                                <Transition appear show={isOpenProcessingPassivate} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalPassivate}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessAcademicInfoUpdateNotification}
+                                    closeNotification={closeSuccessAcademicInfoUpdateNotification}
+                                    title="Öğrenci Akademik Bilgileri Güncellendi!"
+                                    description="Öğrenci Akademik Bilgi Güncelleme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kayıt Dondurma İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailAcademicInfoUpdateNotification}
+                                    closeNotification={closeFailAcademicInfoUpdateNotification}
+                                    title="Öğrenci Akademik Bilgileri Güncellenemedi!"
+                                    description="Lütfen girdiğiniz verileri kontrol ediniz.
+                                    Verilerinizi doğru girdiyseniz
+                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
 
-                                <Transition appear show={isOpenSuccessDelete} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalDelete}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                {/**
+                                 * Personal Info Update
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingPersonalInfoUpdateNotification}
+                                    closeNotification={closeProcessingPersonalInfoUpdateNotification}
+                                    title="Öğrenci Kişisel Bilgileri Güncelleniyor..."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kayıt Silme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kayıt Silme İşlemi başarıyla gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailDelete} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalDelete}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessPersonalInfoUpdateNotification}
+                                    closeNotification={closeSuccessPersonalInfoUpdateNotification}
+                                    title="Öğrenci Kişisel Bilgileri Güncellendi!"
+                                    description="Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla gerçekleşti."
+                                />
 
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kayıt Silme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingDelete} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalDelete}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kayıt Silme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenSuccessAcademic} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalAcademic}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Akademik Bilgi Güncellene İşlemi başarıyla
-                                                            gerçekleşti.
-
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailAcademic} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalAcademic}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Akademik Bilgi Güncelleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingAcademic} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalAcademic}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Akademik Bilgi Güncelleme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenSuccessPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeSuccessModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-success rounded-xl p-6">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarılı!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi başarıyla
-                                                            gerçekleşti.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-                                <Transition appear show={isOpenFailPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeFailModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl mb-4 font-medium leading-9 text-sis-white text-center font-phenomenaBold"
-                                                    >
-                                                        <div className="border bg-sis-fail rounded-xl p-6">
-                                                            Öğrenci Kişisel Bilgi Güncelleme İşlemi Başarısız!
-                                                        </div>
-                                                    </Dialog.Title>
-                                                    <div className="mt-2">
-                                                        <p className="text-xl text-gray-400 text-center font-phenomenaRegular">
-                                                            Lütfen girdiğiniz verileri kontrol ediniz.
-                                                            Verilerinizi doğru girdiyseniz sistemsel bir
-                                                            hatadan dolayı isteğiniz sonuçlandıralamamış olabilir.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
-
-                                <Transition appear show={isOpenProcessingPersonal} as={Fragment}>
-                                    <Dialog
-                                        as="div"
-                                        className="fixed inset-0 z-10 overflow-y-auto bg-black bg-opacity-60"
-                                        onClose={closeProcessingModalPersonal}
-                                    >
-                                        <div className="min-h-screen px-4 text-center">
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0"
-                                                enterTo="opacity-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100"
-                                                leaveTo="opacity-0"
-                                            >
-                                                <Dialog.Overlay className="fixed inset-0"/>
-                                            </Transition.Child>
-
-                                            <span
-                                                className="inline-block h-screen align-middle"
-                                                aria-hidden="true"
-                                            >
-              &#8203;
-            </span>
-                                            <Transition.Child
-                                                as={Fragment}
-                                                enter="ease-out duration-300"
-                                                enterFrom="opacity-0 scale-95"
-                                                enterTo="opacity-100 scale-100"
-                                                leave="ease-in duration-200"
-                                                leaveFrom="opacity-100 scale-100"
-                                                leaveTo="opacity-0 scale-95"
-                                            >
-                                                <div
-                                                    className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                                                    <Dialog.Title
-                                                        as="h3"
-                                                        className="text-3xl font-medium leading-9 text-sis-yellow text-center font-phenomenaBold"
-                                                    >
-                                                        Öğrenci Kişisel Bilgi Güncelleme İsteğiniz İşleniyor...
-                                                    </Dialog.Title>
-                                                </div>
-                                            </Transition.Child>
-                                        </div>
-                                    </Dialog>
-                                </Transition>
+                                <FailNotification
+                                    isOpen={isOpenFailPersonalInfoUpdateNotification}
+                                    closeNotification={closeFailPersonalInfoUpdateNotification}
+                                    title="Öğrenci Kişisel Bilgileri Güncellenemedi!"
+                                    description="Lütfen girdiğiniz verileri kontrol ediniz.
+                                    Verilerinizi doğru girdiyseniz
+                                    sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
                 </div>
             </div>
         </>

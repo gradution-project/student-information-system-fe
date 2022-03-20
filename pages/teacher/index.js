@@ -1,10 +1,10 @@
 import TeacherNavbar from "../../public/components/navbar/teacher/teacher-navbar";
 import SISTitle from "../../public/components/page-titles";
 import UnauthorizedAccessPage from "../401";
-import {getTeacherFullName, getTeacherNumberWithContext} from "../../public/storage/teacher";
+import SisTeacherStorage from "../../public/storage/teacher/SisTeacherStorage";
 
 export async function getServerSideProps(context) {
-    const teacherId = getTeacherNumberWithContext(context);
+    const teacherId = SisTeacherStorage.getNumberWithContext(context);
     if (teacherId === undefined) {
         return {
             props: {
@@ -35,7 +35,7 @@ export default function TeacherDashboard({isPagePermissionSuccess}) {
             <div className="py-10 bg-sis-yellow rounded-3xl shadow-xl ml-80 mr-80 mt-56">
                 <div className="mb-2 select-none font-phenomenaRegular text-6xl text-center text-sis-white">
                     <div>
-                        Merhaba <a className="font-phenomenaBold">{getTeacherFullName()}</a>,
+                        Merhaba <a className="font-phenomenaBold">{SisTeacherStorage.getFullName()}</a>,
                     </div>
                     <div>
                         Öğrenci Bilgi Sistemine Hoşgeldiniz!
