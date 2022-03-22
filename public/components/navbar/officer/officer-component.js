@@ -1,6 +1,7 @@
 import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
 import {
+    AdjustmentsIcon,
     BookmarkAltIcon,
     BriefcaseIcon,
     CalendarIcon,
@@ -30,6 +31,12 @@ const university = [
         href: '/officer/operation/lesson',
         icon: CalendarIcon,
     },
+    {
+        name: 'Üniversite Ekran Yönetimi',
+        description: "",
+        href: '/officer/operation/university/feature-toggle',
+        icon: AdjustmentsIcon,
+    }
 ]
 
 const officer = [
