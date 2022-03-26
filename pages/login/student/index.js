@@ -50,7 +50,7 @@ export default function StudentLogin() {
         event.preventDefault();
 
         const loginData = await LoginController.studentLogin(studentNumber, password);
-        if (loginData.response.loginSuccess) {
+        if (loginData.success && loginData.response.loginSuccess) {
 
             const studentData = await StudentController.getStudentDetailByStudentId(studentNumber);
             if (studentData.success) {

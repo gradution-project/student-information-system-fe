@@ -50,7 +50,7 @@ export default function TeacherLogin() {
         event.preventDefault();
 
         const loginData = await LoginController.teacherLogin(teacherNumber, password);
-        if (loginData.response.loginSuccess) {
+        if (loginData.success && loginData.response.loginSuccess) {
 
             const teacherData = await TeacherController.getTeacherDetailByTeacherId(teacherNumber);
             if (teacherData.success) {
