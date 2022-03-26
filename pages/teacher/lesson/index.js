@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
+export default function TeacherLessonsList({isPagePermissionSuccess, lessons}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -132,16 +132,30 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                                                         ))}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                <span>
-                                                    {LessonStatus.getAll.map((lStatus) => (
-                                                        lesson.lessonResponse.status === lStatus.enum
-                                                            ?
-                                                            lStatus.miniComponent
-                                                            :
-                                                            null
-                                                    ))}
-                                                </span>
+                                                        <span>
+                                                            {LessonStatus.getAll.map((lStatus) => (
+                                                                lesson.lessonResponse.status === lStatus.enum
+                                                                    ?
+                                                                    lStatus.miniComponent
+                                                                    :
+                                                                    null
+                                                            ))}
+                                                        </span>
                                                     </td>
+                                                    {(
+                                                        lesson.lessonResponse.status === LessonStatus.ACTIVE
+                                                            ?
+                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                                <a href={`/teacher/lesson/note/${lesson.lessonResponse.lessonId}`}
+                                                                   className='text-sis-yellow'>
+                                                                    NOT İŞLEMLERİ
+                                                                </a>
+                                                            </td>
+                                                            :
+
+                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
+                                                            </td>
+                                                    )}
                                                 </tr>
                                             ))}
                                             </tbody>
