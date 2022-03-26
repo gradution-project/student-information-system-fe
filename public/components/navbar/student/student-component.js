@@ -96,7 +96,7 @@ export default function StudentComponent() {
                 )}
             </Popover>
 
-            <a href="/student/notes"
+            <a href="/student/lesson/notes"
                className="text-xl font-medium text-gray-500 hover:text-sis-yellow">
                 NOTLARIM
             </a>
