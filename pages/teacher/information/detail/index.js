@@ -8,6 +8,8 @@ import ProcessNotification from "../../../../public/notifications/process";
 import SuccessNotification from "../../../../public/notifications/success";
 import FailNotification from "../../../../public/notifications/fail";
 import TeacherController from "../../../../public/api/teacher/TeacherController";
+import TeacherDegree from "../../../../public/constants/teacher/TeacherDegree";
+import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -24,13 +26,14 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                operationUserId: teacherId,
                 teacher: teacherData.response
             }
         }
     }
 }
 
-export default function TeacherMyInformation({isPagePermissionSuccess, teacher}) {
+export default function TeacherMyInformation({isPagePermissionSuccess, operationUserId, teacher}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -38,18 +41,8 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
         )
     }
 
-    const {academicInfoResponse} = teacher;
-    const {personalInfoResponse} = teacher;
-
-    const {
-        departmentResponse,
-        teacherId,
-        degree,
-        role,
-        registrationDate,
-        fieldOfStudy
-    } = academicInfoResponse;
-    const {name, surname, phoneNumber, tcNo, birthday, address} = personalInfoResponse;
+    const {academicInfoResponse, personalInfoResponse} = teacher;
+    const {departmentResponse} = academicInfoResponse;
     const {facultyResponse} = departmentResponse;
 
     const router = new useRouter();
@@ -86,22 +79,19 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
     }
 
 
-    const [teacherEmail, setTeacherEmail] = useState(personalInfoResponse.email);
-    const changeTeacherEmail = event => {
-        const teacherEmail = event.target.value;
-        setTeacherEmail(teacherEmail);
+    const [email, setEmail] = useState(personalInfoResponse.email);
+    const changeEmail = event => {
+        setEmail(event.target.value);
     }
 
-    const [teacherAddress, setTeacherAddress] = useState(address);
-    const changeTeacherAddress = event => {
-        const teacherAddress = event.target.value;
-        setTeacherAddress(teacherAddress);
+    const [address, setAddress] = useState(personalInfoResponse.address);
+    const changeAddress = event => {
+        setAddress(event.target.value);
     }
 
-    const [teacherPhoneNumber, setTeacherPhoneNumber] = useState(personalInfoResponse.phoneNumber);
-    const changeTeacherPhoneNumber = event => {
-        const teacherPhoneNumber = event.target.value;
-        setTeacherPhoneNumber(teacherPhoneNumber);
+    const [phoneNumber, setPhoneNumber] = useState(personalInfoResponse.phoneNumber);
+    const changePhoneNumber = event => {
+        setPhoneNumber(event.target.value);
     }
 
     const teacherUpdatePersonal = async (event) => {
@@ -109,26 +99,14 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
 
         event.preventDefault()
 
-        const updatePersonalRes = await fetch(`${SIS_API_URL}/teacher/update/personal-info/${teacherId}`, {
-            headers: {'Content-Type': 'application/json'},
-            method: 'PUT',
-            body: JSON.stringify({
-                operationInfoRequest: {
-                    userId: teacherId
-                },
-                personalInfoRequest: {
-                    address: teacherAddress,
-                    birthday: birthday,
-                    email: teacherEmail,
-                    name: name,
-                    phoneNumber: teacherPhoneNumber,
-                    surname: surname,
-                    tcNo: tcNo
-                }
-            }),
-        });
-        const updatePersonalData = await updatePersonalRes.json();
-        if (updatePersonalData.success) {
+        const teacherId = academicInfoResponse.teacherId;
+        const name = personalInfoResponse.name;
+        const surname = personalInfoResponse.surname;
+        const tcNo = personalInfoResponse.tcNo;
+        const birthday = personalInfoResponse.birthday;
+        const personalInfo = {name, surname, tcNo, birthday, email, phoneNumber, address};
+        const personalInfoData = await TeacherController.updateTeacherPersonalInfo(operationUserId, teacherId, personalInfo);
+        if (personalInfoData.success) {
             closeProcessingPersonalInfoUpdateNotification();
             openSuccessPersonalInfoUpdateNotification();
         } else {
@@ -142,173 +120,169 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
             <SISTitle/>
             <TeacherNavbar/>
             <div>
-                <div className="select-none mt-5 md:mt-0 md:col-span-2">
-                    <div className="md:col-span-1">
-                        <form className="mt-5 px-4 max-w-3xl mx-auto space-y-6">
-                            <div className="shadow sm:rounded-md sm:overflow-hidden">
-                                <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                    <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
-                                        <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
-                                            AKADEMİK BİLGİLERİM
-                                        </h3>
+                <div className="select-none md:col-span-1">
+                    <form className="mt-10 mb-4 max-w-3xl mx-auto space-y-6">
+                        <div className="shadow sm:rounded-md sm:overflow-hidden">
+                            <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                                <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
+                                    <h3 className="py-8 font-phenomenaExtraBold leading-6 text-sis-darkblue text-center text-3xl">
+                                        AKADEMİK BİLGİLERİM
+                                    </h3>
+                                </div>
+                                <div className="grid grid-cols-6 gap-6">
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="teacher-number"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            ÖĞRETMEN NUMARASI
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="teacher-number"
+                                            id="teacher-number"
+                                            value={academicInfoResponse.teacherId}
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                        />
                                     </div>
-                                    <div className="grid grid-cols-6 gap-6">
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="teacher-number"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÖĞRETMEN NUMARASI
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="teacher-number"
-                                                id="teacher-number"
-                                                value={teacherId}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="registration-date"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                KAYIT TARİHİ
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="registration-date"
-                                                id="registration-date"
-                                                value={registrationDate}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="faculty"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                FAKÜLTE ADI
-                                            </label>
-                                            <select
-                                                id="faculty"
-                                                name="faculty"
-                                                autoComplete="faculty-name"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>{facultyResponse.name}</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="department"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                BÖLÜM ADI
-                                            </label>
-                                            <select
-                                                id="department"
-                                                name="department"
-                                                autoComplete="department-name"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                <option>{departmentResponse.name}</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÜNVANI
-                                            </label>
-                                            <select
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                {teacherDegrees.map(tDegree => (
-                                                    degree === tDegree.enum
-                                                        ?
-                                                        <option value={tDegree.enum}>{tDegree.tr}</option>
-                                                        :
-                                                        null
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="degree"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ROLÜ
-                                            </label>
-                                            <select
-                                                id="degree"
-                                                name="degree"
-                                                autoComplete="degree"
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
-                                            >
-                                                {teacherRoles.map(tRole => (
-                                                    role === tRole.enum
-                                                        ?
-                                                        <option value={tRole.enum}>{tRole.tr}</option>
-                                                        :
-                                                        null
-                                                ))}
-                                            </select>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="field-of-study"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                ÇALIŞMA ALANI
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="field-of-study"
-                                                id="field-of-study"
-                                                value={fieldOfStudy}
-                                                disabled
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="phone"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                DAHİLİ TELEFON
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="phone"
-                                                id="phone"
-                                                disabled
-                                                value={academicInfoResponse.phoneNumber}
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="email-address"
-                                                   className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                E-MAİL ADRESİ
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="email-address"
-                                                id="email-address"
-                                                disabled
-                                                value={academicInfoResponse.email}
-                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                            />
-                                        </div>
-
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="registration-date"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            KAYIT TARİHİ
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="registration-date"
+                                            id="registration-date"
+                                            value={academicInfoResponse.registrationDate}
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                        />
                                     </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="faculty"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            FAKÜLTE ADI
+                                        </label>
+                                        <select
+                                            id="faculty"
+                                            name="faculty"
+                                            autoComplete="faculty-name"
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                        >
+                                            <option>{facultyResponse.name}</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="department"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            BÖLÜM ADI
+                                        </label>
+                                        <select
+                                            id="department"
+                                            name="department"
+                                            autoComplete="department-name"
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                        >
+                                            <option>{departmentResponse.name}</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="degree"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            ÜNVANI
+                                        </label>
+                                        <select
+                                            id="degree"
+                                            name="degree"
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                        >
+                                            {TeacherDegree.getAll.map(tDegree => (
+                                                academicInfoResponse.degree === tDegree.enum
+                                                    ?
+                                                    <option value={tDegree.enum}>{tDegree.tr}</option>
+                                                    :
+                                                    null
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="degree"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            ROLÜ
+                                        </label>
+                                        <select
+                                            id="role"
+                                            name="role"
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                        >
+                                            {TeacherRole.getAll.map(tRole => (
+                                                academicInfoResponse.role === tRole.enum
+                                                    ?
+                                                    <option value={tRole.enum}>{tRole.tr}</option>
+                                                    :
+                                                    null
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="field-of-study"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            ÇALIŞMA ALANI
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="field-of-study"
+                                            id="field-of-study"
+                                            value={academicInfoResponse.fieldOfStudy}
+                                            disabled
+                                            className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                        />
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="phone"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            DAHİLİ TELEFON
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="phone"
+                                            id="phone"
+                                            disabled
+                                            value={academicInfoResponse.phoneNumber}
+                                            className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                        />
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="email-address"
+                                               className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                            E-MAİL ADRESİ
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="email-address"
+                                            id="email-address"
+                                            disabled
+                                            value={academicInfoResponse.email}
+                                            className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                        />
+                                    </div>
+
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -318,10 +292,10 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                 </div>
             </div>
 
-            <div className="select-none mt-10 sm:mt-0">
-                <div className="mt-5 md:mt-0 md:col-span-2">
+            <div className="select-none mb-10 mt-10 sm:mt-0">
+                <div className="md:mt-0 md:col-span-2">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                        <form className="px-4 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-4 max-w-3xl mx-auto space-y-6">
                             <div className="shadow overflow-hidden sm:rounded-md">
                                 <div className="px-4 py-5 bg-white sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -340,7 +314,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
-                                                defaultValue={name}
+                                                defaultValue={personalInfoResponse.name}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -355,7 +329,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 type="text"
                                                 name="last-name"
                                                 id="last-name"
-                                                defaultValue={surname}
+                                                defaultValue={personalInfoResponse.surname}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -370,7 +344,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 type="text"
                                                 name="tc-no"
                                                 id="tc-no"
-                                                defaultValue={tcNo}
+                                                defaultValue={personalInfoResponse.tcNo}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -388,7 +362,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 required
                                                 minLength="10"
                                                 maxLength="10"
-                                                defaultValue={birthday}
+                                                defaultValue={personalInfoResponse.birthday}
                                                 disabled
                                                 className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
@@ -400,7 +374,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 E-MAİL ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherEmail}
+                                                onChange={changeEmail}
                                                 type="text"
                                                 name="email-address"
                                                 id="email-address"
@@ -430,7 +404,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                     if (pNumberLength > 15 && pNumberLength < 18) {
                                                         e.target.value = e.target.value + " ";
                                                     }
-                                                    changeTeacherPhoneNumber(e)
+                                                    changePhoneNumber(e)
                                                 }}
                                                 type="text"
                                                 name="phone-number"
@@ -438,7 +412,7 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 required
                                                 minLength="19"
                                                 maxLength="19"
-                                                defaultValue={phoneNumber}
+                                                defaultValue={personalInfoResponse.phoneNumber}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
@@ -449,12 +423,12 @@ export default function TeacherMyInformation({isPagePermissionSuccess, teacher})
                                                 EV ADRESİ
                                             </label>
                                             <input
-                                                onChange={changeTeacherAddress}
+                                                onChange={changeAddress}
                                                 type="text"
                                                 name="home-address"
                                                 id="home-address"
                                                 autoComplete="home-address"
-                                                defaultValue={address}
+                                                defaultValue={personalInfoResponse.address}
                                                 className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
