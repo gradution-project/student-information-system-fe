@@ -51,7 +51,7 @@ export default function OfficerLogin() {
         event.preventDefault();
 
         const loginData = await LoginController.officerLogin(officerNumber, password);
-        if (loginData.response.loginSuccess) {
+        if (loginData.success && loginData.response.loginSuccess) {
 
             const officerData = await OfficerController.getOfficerDetailByOfficerId(officerNumber);
             if (officerData.success) {
