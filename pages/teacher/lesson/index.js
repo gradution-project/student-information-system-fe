@@ -6,6 +6,8 @@ import UnauthorizedAccessPage from "../../401";
 import TeacherLessonController from "../../../public/api/teacher/lesson/TeacherLessonController";
 import LessonCompulsoryOrElective from "../../../public/constants/lesson/LessonCompulsoryOrElective";
 import LessonStatus from "../../../public/constants/lesson/LessonStatus";
+import FeatureToggleController from "../../../public/api/university/FeatureToggleController";
+import FeatureToggleName from "../../../public/constants/university/FeatureToggleName";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -17,18 +19,21 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const noteOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.NOTE_OPERATIONS);
+
     const lessonsData = await TeacherLessonController.getTeacherLessonsByTeacherId(teacherId);
     if (lessonsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isNoteOperationsFeatureToggleEnabled: noteOperationsToggleData.response.isFeatureToggleEnabled,
                 lessons: lessonsData.response
             }
         }
     }
 }
 
-export default function TeacherLessonsList({isPagePermissionSuccess, lessons}) {
+export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOperationsFeatureToggleEnabled, lessons}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -144,6 +149,8 @@ export default function TeacherLessonsList({isPagePermissionSuccess, lessons}) {
                                                     </td>
                                                     {(
                                                         lesson.lessonResponse.status === LessonStatus.ACTIVE
+                                                            &&
+                                                        isNoteOperationsFeatureToggleEnabled
                                                             ?
                                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
                                                                 <a href={`/teacher/lesson/note/${lesson.lessonResponse.lessonId}`}
