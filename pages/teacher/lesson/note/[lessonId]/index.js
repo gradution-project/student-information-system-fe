@@ -9,6 +9,9 @@ import {useRouter} from "next/router";
 import ProcessNotification from "../../../../../public/notifications/process";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import FeatureToggleController from "../../../../../public/api/university/FeatureToggleController";
+import FeatureToggleName from "../../../../../public/constants/university/FeatureToggleName";
+import PageNotFound from "../../../../404";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -20,15 +23,21 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const noteOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.NOTE_OPERATIONS);
+    const midtermNoteToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.MIDTERM_NOTE_OPERATIONS);
+    const finalNoteToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.FINAL_NOTE_OPERATIONS);
+    const resitNoteToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.RESIT_NOTE_OPERATIONS);
+
     const {lessonId} = context.query;
     const studentsLessonNotesData = await StudentLessonNoteController.getAllStudentsLessonNotesByLessonId(lessonId);
     if (studentsLessonNotesData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                isMidtermNoteFeatureToggleEnabled: false, // TODO: Midterm Note Feature Toggle Controls
-                isFinalNoteFeatureToggleEnabled: false, // TODO: Final Note Feature Toggle Controls
-                isResitNoteFeatureToggleEnabled: false, // TODO: Resit Note Feature Toggle Controls
+                isNoteOperationsFeatureToggleEnabled: noteOperationsToggleData.response.isFeatureToggleEnabled,
+                isMidtermNoteFeatureToggleEnabled: midtermNoteToggleData.response.isFeatureToggleEnabled,
+                isFinalNoteFeatureToggleEnabled: finalNoteToggleData.response.isFeatureToggleEnabled,
+                isResitNoteFeatureToggleEnabled: resitNoteToggleData.response.isFeatureToggleEnabled,
                 operationUserId: teacherId,
                 studentsLessonNotes: studentsLessonNotesData.response
             }
@@ -39,6 +48,7 @@ export async function getServerSideProps(context) {
 export default function TeacherLessonNotesList({
                                                    isPagePermissionSuccess,
                                                    operationUserId,
+                                                   isNoteOperationsFeatureToggleEnabled,
                                                    isMidtermNoteFeatureToggleEnabled,
                                                    isFinalNoteFeatureToggleEnabled,
                                                    isResitNoteFeatureToggleEnabled,
@@ -48,6 +58,12 @@ export default function TeacherLessonNotesList({
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
+    if (!isNoteOperationsFeatureToggleEnabled) {
+        return (
+            <PageNotFound user="teacher"/>
         )
     }
 

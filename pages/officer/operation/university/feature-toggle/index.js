@@ -67,13 +67,13 @@ export default function FeatureToggleList({isPagePermissionSuccess, operationUse
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    OTOMATİK ETKİNLEŞTİRİLME TARİHİ
+                                                    BAŞLAMA TARİHİ
                                                 </th>
                                                 <th
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    STATÜSÜ
+                                                    BİTİŞ TARİHİ
                                                 </th>
                                             </tr>
                                             </thead>
@@ -101,7 +101,17 @@ export default function FeatureToggleList({isPagePermissionSuccess, operationUse
                                                             <div className="ml-4">
                                                                 <div
                                                                     className="font-phenomenaLight text-xl text-sis-darkblue">
-                                                                    {featureToggle.date}
+                                                                    {featureToggle.startDate}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-2 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="ml-4">
+                                                                <div
+                                                                    className="font-phenomenaLight text-xl text-sis-darkblue">
+                                                                    {featureToggle.endDate}
                                                                 </div>
                                                             </div>
                                                         </div>
