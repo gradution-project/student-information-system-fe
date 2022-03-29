@@ -136,15 +136,25 @@ const deleteStudent = async (operationUserId, studentId) => {
 
 const graduateStudent = async (operationUserId, studentId) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/student/graduate`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/save`, {
         headers: {'Content-Type': 'application/json'},
-        method: 'PATCH',
+        method: 'POST',
         body: JSON.stringify({
-            operationInfoRequest: {
-                userId: operationUserId
-            },
+        operationInfoRequest: {
+            feUrl: "",
+            userId: operationUserId
+         },
             studentId: studentId
+
         }),
+    });
+    return await apiResult.json();
+};
+
+const getAllStudentGraduationsByStatus = async (status) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/get?status=${status}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
     });
     return await apiResult.json();
 };
@@ -158,7 +168,8 @@ const StudentController = {
     activateStudent,
     passivateStudent,
     deleteStudent,
-    graduateStudent
+    graduateStudent,
+    getAllStudentGraduationsByStatus
 };
 
 export default StudentController;
