@@ -183,7 +183,7 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
                     <button
                         onClick={saveRegistrationLesson}
                         type="submit"
-                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
+                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                     >
                         DANIŞMAN'IN ONAYINA GÖNDER
                     </button>
@@ -343,7 +343,6 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
-
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (

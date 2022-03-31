@@ -72,12 +72,6 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    BÖLÜM ADI
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="select-none px-6 py-3 tracking-wider"
-                                                >
                                                     STATÜSÜ
                                                 </th>
                                             </tr>
@@ -104,6 +98,8 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{registration.studentInfoResponse.departmentResponse.name}</div>
                                                         {StudentDegree.getAll.map((sDegree) => (
                                                             registration.studentInfoResponse.degree === sDegree.enum
                                                                 ?
@@ -123,10 +119,6 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
                                                         ))}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{registration.studentInfoResponse.departmentResponse.name}</div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                         {RegistrationStatus.getAll.map((sStatus) => (
                                                             registration.status === sStatus.enum
                                                                 ?
@@ -136,7 +128,7 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={`/teacher/lesson/registration/${registration.registrationId}`}
+                                                        <a href={'/teacher/lesson/registration/' + registration.registrationId}
                                                            className='text-sis-yellow'>
                                                            DETAY
                                                         </a>

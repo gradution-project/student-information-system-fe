@@ -1,3 +1,4 @@
+
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
@@ -29,9 +30,19 @@ const getAllLessonRegistrationByStatus = async (status) => {
     return await apiResult.json();
 };
 
+const getAllStudentsLessonRegistrationByRegistrationId = async (registrationId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get/${registrationId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    return await apiResult.json();
+};
+
+
 const StudentLessonRegistrationController = {
     saveStudentLessonRegistration,
-    getAllLessonRegistrationByStatus
+    getAllLessonRegistrationByStatus,
+    getAllStudentsLessonRegistrationByRegistrationId
 };
 
 export default StudentLessonRegistrationController;
