@@ -14,6 +14,7 @@ import {useState} from "react";
 import PageNotFound from "../../../404";
 import FailNotification from "../../../../public/notifications/fail";
 import SuccessNotification from "../../../../public/notifications/success";
+import StudentLessonRegistrationController from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -77,6 +78,26 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
         setIsOpenFailChooseLessonNotification(true);
     }
 
+    let [isOpenSuccessRegistrationLessonNotification, setIsOpenSuccessRegistrationLessonNotification] = useState(false);
+
+    function closeSuccessRegistrationLessonNotification() {
+        setIsOpenSuccessRegistrationLessonNotification(false);
+    }
+
+    function openSuccessRegistrationLessonNotification() {
+        setIsOpenSuccessRegistrationLessonNotification(true);
+    }
+
+    let [isOpenFailRegistrationLessonNotification, setIsOpenFailRegistrationLessonNotification] = useState(false);
+
+    function closeFailRegistrationLessonNotification() {
+        setIsOpenFailRegistrationLessonNotification(false);
+    }
+
+    function openFailRegistrationLessonNotification() {
+        setIsOpenFailRegistrationLessonNotification(true);
+    }
+
     const [studentLessons] = useState([])
     const [studentLessonIds] = useState([])
     const insertLesson = async (lesson) => {
@@ -94,8 +115,22 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
             studentLessons.push(lesson)
             openSuccessChooseLessonNotification()
         }
-        console.log(studentLessonIds)
     }
+
+    const saveRegistrationLesson = async (event) => {
+        event.preventDefault();
+        const studentId = SisStudentStorage.getNumber();
+        const operationUserId = SisStudentStorage.getNumber();
+        const studentData = await StudentLessonRegistrationController.saveStudentLessonRegistration(operationUserId, studentLessonIds, studentId);
+        if (studentData.success) {
+            closeSuccessRegistrationLessonNotification()
+            openSuccessRegistrationLessonNotification()
+        } else {
+            closeFailRegistrationLessonNotification()
+            openFailRegistrationLessonNotification();
+        }
+    }
+
 
     let [lessonsBySemesters] = useState({
         First: [],
@@ -146,6 +181,7 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
                         DERS KAYIT
                     </a>
                     <button
+                        onClick={saveRegistrationLesson}
                         type="submit"
                         className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
                     >
@@ -354,6 +390,19 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
                     closeNotification={closeFailChooseLessonNotification}
                     title="Bu Dersi Zaten Seçtiniz!"
                     description="Bu Ders seçtiğiniz ders listesinde mevcut, lütfen farklı bir ders seçmeyi deneyiniz."
+                />
+
+                <SuccessNotification
+                    isOpen={isOpenSuccessRegistrationLessonNotification}
+                    closeNotification={closeSuccessRegistrationLessonNotification}
+                    title="Ders Kaydınız Başarıyla Oluşturuldu!"
+                    description="Ders Kaydınız Danışman Onayına Gönderildi"
+                />
+
+                <FailNotification
+                    isOpen={isOpenFailRegistrationLessonNotification}
+                    closeNotification={closeFailRegistrationLessonNotification}
+                    title="Ders Kaydınız Oluşturulamadı!"
                 />
             </div>
         </div>
