@@ -21,11 +21,17 @@ const saveStudentLessonRegistration = async (operationUserId, lessonIds, student
     return await apiResult.json();
 };
 
-
-
+const getAllLessonRegistrationByStatus = async (status) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get?status=${status}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    return await apiResult.json();
+};
 
 const StudentLessonRegistrationController = {
-    saveStudentLessonRegistration
+    saveStudentLessonRegistration,
+    getAllLessonRegistrationByStatus
 };
 
 export default StudentLessonRegistrationController;
