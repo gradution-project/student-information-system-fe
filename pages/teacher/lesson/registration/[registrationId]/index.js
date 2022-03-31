@@ -6,10 +6,13 @@ import FeatureToggleController from "../../../../../public/api/university/Featur
 import FeatureToggleName from "../../../../../public/constants/university/FeatureToggleName";
 import PageNotFound from "../../../../404";
 import StudentLessonRegistrationController from "../../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
-import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 import LessonSemester from "../../../../../public/constants/lesson/LessonSemester";
 import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/LessonCompulsoryOrElective";
 import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
+import {useState} from "react";
+import {useRouter} from "next/router";
+import SuccessNotification from "../../../../../public/notifications/success";
+import FailNotification from "../../../../../public/notifications/fail";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -30,7 +33,7 @@ export async function getServerSideProps(context) {
                 lessonRegistrations: studentsLessonRegistrationData.response,
                 isPagePermissionSuccess: true,
                 isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
-                operationUserId: teacherId
+                operationUserId: teacherId,
             }
         }
     }
@@ -55,7 +58,80 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
+    const registrationId = lessonRegistrations.registrationId
 
+    const router = useRouter()
+
+    /**
+     * LESSON REGISTRATION APPROVED OPERATION
+     */
+
+    let [isOpenSuccessApprovedNotification, setIsOpenSuccessApprovedNotification] = useState(false);
+
+    function closeSuccessApprovedNotification() {
+        setIsOpenSuccessApprovedNotification(false);
+        router.reload();
+    }
+
+    function openSuccessApprovedNotification() {
+        setIsOpenSuccessApprovedNotification(true);
+    }
+
+    let [isOpenFailApprovedNotification, setIsOpenFailApprovedNotification] = useState(false);
+
+    function closeFailApprovedNotification() {
+        setIsOpenFailApprovedNotification(false);
+    }
+
+    function openFailApprovedNotification() {
+        setIsOpenFailApprovedNotification(true);
+    }
+
+    const approvedLessonRegistration = async (event) => {
+        event.preventDefault();
+
+        const lessonRegistrationData = await StudentLessonRegistrationController.approvedLessonRegistration(operationUserId, registrationId);
+        if (lessonRegistrationData.success) {
+            openSuccessApprovedNotification();
+        } else {
+            openFailApprovedNotification();
+        }
+    }
+
+    /**
+     * LESSON REGISTRATION REJECTED OPERATION
+     */
+    let [isOpenSuccessRejectedNotification, setIsOpenSuccessRejectedNotification] = useState(false);
+
+    function closeSuccessRejectedNotification() {
+        setIsOpenSuccessRejectedNotification(false);
+        router.reload();
+    }
+
+    function openSuccessRejectedNotification() {
+        setIsOpenSuccessRejectedNotification(true);
+    }
+
+    let [isOpenFailRejectedNotification, setIsOpenFailRejectedNotification] = useState(false);
+
+    function closeFailRejectedNotification() {
+        setIsOpenFailRejectedNotification(false);
+    }
+
+    function openFailRejectedNotification() {
+        setIsOpenFailRejectedNotification(true);
+    }
+
+    const rejectedLessonRegistration = async (event) => {
+        event.preventDefault();
+
+        const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
+        if (lessonRegistrationData.success) {
+            openSuccessRejectedNotification();
+        } else {
+            openFailRejectedNotification();
+        }
+    }
 
     return (
         <div>
@@ -67,12 +143,14 @@ export default function StudentLessonRegistrationsList({
                         {lessonRegistrations.studentInfoResponse.name} {lessonRegistrations.studentInfoResponse.surname}
                     </a>
                     <button
+                        onClick={rejectedLessonRegistration}
                         type="submit"
                         className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
                     >
                         DERS KAYDINI REDDET
                     </button>
                     <button
+                        onClick={approvedLessonRegistration}
                         type="submit"
                         className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                     >
@@ -123,6 +201,8 @@ export default function StudentLessonRegistrationsList({
                                                             <div className="ml-4">
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonRegistration.name}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonRegistration.lessonId}</div>
                                                                 {LessonSemester.getAll.map((lSemester) => (
                                                                     studentLessonRegistration.semester === lSemester.enum
                                                                         ?
@@ -170,6 +250,41 @@ export default function StudentLessonRegistrationsList({
                         :
                         null
                 )}
+                {/**
+                 * Approved
+                 */}
+
+                <SuccessNotification
+                    isOpen={isOpenSuccessApprovedNotification}
+                    closeNotification={closeSuccessApprovedNotification}
+                    title="Öğrenci Ders Kaydı Onaylandı!"
+                    description="Öğrenci Ders Kaydı Onaylama İşlemi başarıyla gerçekleşti."
+                />
+
+                <FailNotification
+                    isOpen={isOpenFailApprovedNotification}
+                    closeNotification={closeFailApprovedNotification}
+                    title="Öğrenci Ders Kaydı Onaylanamadı!"
+                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                />
+
+                {/**
+                 * Rejected
+                 */}
+
+                <SuccessNotification
+                    isOpen={isOpenSuccessRejectedNotification}
+                    closeNotification={closeSuccessRejectedNotification}
+                    title="Öğrenci Ders Kaydı Reddedildi!"
+                    description="Öğrenci Ders Kaydı Reddetme İşlemi başarıyla gerçekleşti."
+                />
+
+                <FailNotification
+                    isOpen={isOpenFailRejectedNotification}
+                    closeNotification={closeFailRejectedNotification}
+                    title="Öğrenci Ders Kaydı Reddedilemedi!"
+                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                />
             </div>
         </div>
     )

@@ -38,11 +38,44 @@ const getAllStudentsLessonRegistrationByRegistrationId = async (registrationId) 
     return await apiResult.json();
 };
 
+const approvedLessonRegistration = async (operationUserId, registrationId) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/approve`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                feUrl: "",
+                userId: operationUserId
+            },
+            registrationId: registrationId
+        }),
+    });
+    return await apiResult.json();
+};
+
+const rejectedLessonRegistration = async (operationUserId, registrationId) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/reject`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                feUrl: "",
+                userId: operationUserId
+            },
+            registrationId: registrationId
+        }),
+    });
+    return await apiResult.json();
+};
 
 const StudentLessonRegistrationController = {
     saveStudentLessonRegistration,
     getAllLessonRegistrationByStatus,
-    getAllStudentsLessonRegistrationByRegistrationId
+    getAllStudentsLessonRegistrationByRegistrationId,
+    approvedLessonRegistration,
+    rejectedLessonRegistration
 };
 
 export default StudentLessonRegistrationController;
