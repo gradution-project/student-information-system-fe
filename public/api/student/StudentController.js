@@ -149,6 +149,14 @@ const graduateStudent = async (operationUserId, studentId) => {
     return await apiResult.json();
 };
 
+const getAllStudentLessonsById = async (studentId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/get/${studentId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    return await apiResult.json();
+};
+
 const StudentController = {
     getAllStudentsByStatus,
     getStudentDetailByStudentId,
@@ -158,7 +166,8 @@ const StudentController = {
     activateStudent,
     passivateStudent,
     deleteStudent,
-    graduateStudent
+    graduateStudent,
+    getAllStudentLessonsById
 };
 
 export default StudentController;

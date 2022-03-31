@@ -13,7 +13,7 @@ const lessonOperations = [
     {
         name: 'Derslerim',
         description: '',
-        href: '/student/lessons',
+        href: '/student/lesson',
         icon: ViewListIcon
     }
 ]
