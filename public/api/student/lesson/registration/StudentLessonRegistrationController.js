@@ -10,7 +10,7 @@ const saveStudentLessonRegistration = async (operationUserId, lessonIds, student
         method: 'POST',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
+                feUrl: SIS_FE_URL,
                 userId: operationUserId
             },
             studentLessonRegistrationInfoRequest: {
@@ -45,7 +45,7 @@ const approvedLessonRegistration = async (operationUserId, registrationId) => {
         method: 'PATCH',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
+                feUrl: SIS_FE_URL,
                 userId: operationUserId
             },
             registrationId: registrationId
@@ -61,7 +61,7 @@ const rejectedLessonRegistration = async (operationUserId, registrationId) => {
         method: 'PATCH',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
+                feUrl: SIS_FE_URL,
                 userId: operationUserId
             },
             registrationId: registrationId

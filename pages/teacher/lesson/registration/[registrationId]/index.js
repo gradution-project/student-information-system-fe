@@ -13,6 +13,7 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
+import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -44,7 +45,7 @@ export default function StudentLessonRegistrationsList({
                                                            isPagePermissionSuccess,
                                                            operationUserId,
                                                            isRegistrationOperationsFeatureToggleEnabled,
-                                                           }) {
+                                                       }) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -142,20 +143,39 @@ export default function StudentLessonRegistrationsList({
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         {lessonRegistrations.studentInfoResponse.name} {lessonRegistrations.studentInfoResponse.surname}
                     </a>
-                    <button
-                        onClick={rejectedLessonRegistration}
-                        type="submit"
-                        className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
-                    >
-                        DERS KAYDINI REDDET
-                    </button>
-                    <button
-                        onClick={approvedLessonRegistration}
-                        type="submit"
-                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                    >
-                        DERS KAYDINI ONAYLA
-                    </button>
+                    {RegistrationStatus.getAll.map((rStatus) => (
+                        lessonRegistrations.status === rStatus.enum
+                            ?
+                            rStatus.component
+                            :
+                            null
+                    ))}
+                    {(
+                        isRegistrationOperationsFeatureToggleEnabled && lessonRegistrations.status !== RegistrationStatus.WAITING
+                            ?
+                            null
+                            :
+                            <button
+                                onClick={rejectedLessonRegistration}
+                                type="submit"
+                                className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
+                            >
+                                DERS KAYDINI REDDET
+                            </button>
+                    )}
+                    {(
+                        isRegistrationOperationsFeatureToggleEnabled && lessonRegistrations.status !== RegistrationStatus.WAITING
+                            ?
+                            null
+                            :
+                            <button
+                                onClick={approvedLessonRegistration}
+                                type="submit"
+                                className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                            >
+                                DERS KAYDINI ONAYLA
+                            </button>
+                    )}
                 </div>
                 {(
                     lessonRegistrations.length !== 0

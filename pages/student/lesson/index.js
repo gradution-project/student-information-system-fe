@@ -1,37 +1,33 @@
 import SISTitle from "../../../public/components/page-titles";
-import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 import LessonSemester from "../../../public/constants/lesson/LessonSemester";
 import UnauthorizedAccessPage from "../../401";
 import LessonCompulsoryOrElective from "../../../public/constants/lesson/LessonCompulsoryOrElective";
-import LessonStatus from "../../../public/constants/lesson/LessonStatus";
 import SisStudentStorage from "../../../public/storage/student/SisStudentStorage";
-import StudentStatus from "../../../public/constants/student/StudentStatus";
-import StudentController from "../../../public/api/student/StudentController";
 import StudentNavbar from "../../../public/components/navbar/student/student-navbar";
+import StudentLessonController from "../../../public/api/student/lesson/StudentLessonController";
 
 export async function getServerSideProps(context) {
     const studentId = SisStudentStorage.getNumberWithContext(context);
     if (studentId === undefined) {
         return {
             props: {
-                isPagePermissionSuccess: false
+                isPagePermissionSuccess: false,
             }
         }
     }
+    const lessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
 
-    const lessonsData = await StudentController.getAllStudentLessonsById(studentId);
     if (lessonsData.success) {
         return {
             props: {
-                isPagePermissionSuccess: true,
-                lessons: lessonsData.response
+                lessons: lessonsData.response,
+                isPagePermissionSuccess: true
             }
         }
     }
 }
 
 export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
-
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
@@ -42,15 +38,16 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
         <div>
             <SISTitle/>
             <StudentNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        DERSLERİM
-                    </a>
-                </div>
-                {(
-                    lessons.length !== 0
-                        ?
+
+            {(
+                lessons.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                DERSLERİM
+                            </a>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -135,10 +132,15 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div
+                        className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                            Henüz Ders Kaydınız Yapılmadı!
+                        </a>
+                    </div>
+            )}
         </div>
     )
 }

@@ -14,7 +14,8 @@ import {useState} from "react";
 import PageNotFound from "../../../404";
 import FailNotification from "../../../../public/notifications/fail";
 import SuccessNotification from "../../../../public/notifications/success";
-import StudentLessonRegistrationController from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
+import StudentLessonRegistrationController
+    from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -44,7 +45,11 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function StudentLessonRegistration({isPagePermissionSuccess, isLessonRegistrationOperationsFeatureToggleEnabled, lessons}) {
+export default function StudentLessonRegistration({
+                                                      isPagePermissionSuccess,
+                                                      isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                      lessons
+                                                  }) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -102,14 +107,16 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
     const [studentLessonIds] = useState([])
     const insertLesson = async (lesson) => {
         let isIdExistInCurrentList = false;
-        {(
-            studentLessonIds.map((studentLessonId) => {
-                if (studentLessonId === lesson.lessonId) {
-                    isIdExistInCurrentList = true
-                    openFailChooseLessonNotification()
-                }
-            })
-        )}
+        {
+            (
+                studentLessonIds.map((studentLessonId) => {
+                    if (studentLessonId === lesson.lessonId) {
+                        isIdExistInCurrentList = true
+                        openFailChooseLessonNotification()
+                    }
+                })
+            )
+        }
         if (!isIdExistInCurrentList) {
             studentLessonIds.push(lesson.lessonId)
             studentLessons.push(lesson)
@@ -402,6 +409,7 @@ export default function StudentLessonRegistration({isPagePermissionSuccess, isLe
                     isOpen={isOpenFailRegistrationLessonNotification}
                     closeNotification={closeFailRegistrationLessonNotification}
                     title="Ders Kaydınız Oluşturulamadı!"
+                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />
             </div>
         </div>
