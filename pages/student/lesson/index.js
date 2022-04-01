@@ -15,12 +15,12 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    const lessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
+    const studentLessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
 
-    if (lessonsData.success) {
+    if (studentLessonsData.success) {
         return {
             props: {
-                lessons: lessonsData.response,
+                lessons: studentLessonsData.response,
                 isPagePermissionSuccess: true
             }
         }
