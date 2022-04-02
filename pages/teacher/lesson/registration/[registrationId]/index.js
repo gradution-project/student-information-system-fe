@@ -14,6 +14,7 @@ import {useRouter} from "next/router";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
+import ProcessNotification from "../../../../../public/notifications/process";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -25,6 +26,7 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
     const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
     const {registrationId} = context.query;
     const studentsLessonRegistrationData = await StudentLessonRegistrationController.getAllStudentsLessonRegistrationByRegistrationId(registrationId);
@@ -35,6 +37,7 @@ export async function getServerSideProps(context) {
                 isPagePermissionSuccess: true,
                 isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
                 operationUserId: teacherId,
+                teacherRole: teacherRole
             }
         }
     }
@@ -45,6 +48,7 @@ export default function StudentLessonRegistrationsList({
                                                            isPagePermissionSuccess,
                                                            operationUserId,
                                                            isRegistrationOperationsFeatureToggleEnabled,
+                                                           teacherRole
                                                        }) {
 
     if (!isPagePermissionSuccess) {
@@ -59,6 +63,12 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
+    if (teacherRole !== 'ADVISOR'){
+        return (
+            <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
     const registrationId = lessonRegistrations.registrationId
 
     const router = useRouter()
@@ -66,6 +76,16 @@ export default function StudentLessonRegistrationsList({
     /**
      * LESSON REGISTRATION APPROVED OPERATION
      */
+
+    let [isOpenProcessingApprovedNotification, setIsOpenProcessingApprovedNotification] = useState(false);
+
+    function closeProcessingApprovedNotification() {
+        setIsOpenProcessingApprovedNotification(false);
+    }
+
+    function openProcessingApprovedNotification() {
+        setIsOpenProcessingApprovedNotification(true);
+    }
 
     let [isOpenSuccessApprovedNotification, setIsOpenSuccessApprovedNotification] = useState(false);
 
@@ -89,12 +109,17 @@ export default function StudentLessonRegistrationsList({
     }
 
     const approvedLessonRegistration = async (event) => {
+        openProcessingApprovedNotification();
+
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.approvedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
+            closeSuccessApprovedNotification();
             openSuccessApprovedNotification();
+
         } else {
+            closeFailApprovedNotification();
             openFailApprovedNotification();
         }
     }
@@ -102,6 +127,16 @@ export default function StudentLessonRegistrationsList({
     /**
      * LESSON REGISTRATION REJECTED OPERATION
      */
+    let [isOpenProcessingRejectedNotification, setIsOpenProcessingRejectedNotification] = useState(false);
+
+    function closeProcessingRejectedNotification() {
+        setIsOpenProcessingRejectedNotification(false);
+    }
+
+    function openProcessingRejectedNotification() {
+        setIsOpenProcessingRejectedNotification(true);
+    }
+
     let [isOpenSuccessRejectedNotification, setIsOpenSuccessRejectedNotification] = useState(false);
 
     function closeSuccessRejectedNotification() {
@@ -124,12 +159,16 @@ export default function StudentLessonRegistrationsList({
     }
 
     const rejectedLessonRegistration = async (event) => {
+        openProcessingRejectedNotification();
+
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
+            closeSuccessRejectedNotification();
             openSuccessRejectedNotification();
         } else {
+            closeFailRejectedNotification();
             openFailRejectedNotification();
         }
     }
@@ -273,6 +312,11 @@ export default function StudentLessonRegistrationsList({
                 {/**
                  * Approved
                  */}
+                <ProcessNotification
+                    isOpen={isOpenProcessingApprovedNotification}
+                    closeNotification={closeProcessingApprovedNotification}
+                    title="Öğrenci Ders Kayıt Onay İsteğiniz İşleniyor..."
+                />
 
                 <SuccessNotification
                     isOpen={isOpenSuccessApprovedNotification}
@@ -291,6 +335,11 @@ export default function StudentLessonRegistrationsList({
                 {/**
                  * Rejected
                  */}
+                <ProcessNotification
+                    isOpen={isOpenProcessingRejectedNotification}
+                    closeNotification={closeProcessingRejectedNotification}
+                    title="Öğrenci Ders Kayıt Reddetme İsteğiniz İşleniyor..."
+                />
 
                 <SuccessNotification
                     isOpen={isOpenSuccessRejectedNotification}

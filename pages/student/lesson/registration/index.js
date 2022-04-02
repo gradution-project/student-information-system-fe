@@ -16,6 +16,7 @@ import FailNotification from "../../../../public/notifications/fail";
 import SuccessNotification from "../../../../public/notifications/success";
 import StudentLessonRegistrationController
     from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
+import ProcessNotification from "../../../../public/notifications/process";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -83,6 +84,16 @@ export default function StudentLessonRegistration({
         setIsOpenFailChooseLessonNotification(true);
     }
 
+    let [isOpenProcessingRegistrationNotification, setIsOpenProcessingRegistrationNotification] = useState(false);
+
+    function closeProcessingRegistrationNotification() {
+        setIsOpenProcessingRegistrationNotification(false);
+    }
+
+    function openProcessingRegistrationNotification() {
+        setIsOpenProcessingRegistrationNotification(true);
+    }
+
     let [isOpenSuccessRegistrationLessonNotification, setIsOpenSuccessRegistrationLessonNotification] = useState(false);
 
     function closeSuccessRegistrationLessonNotification() {
@@ -125,6 +136,8 @@ export default function StudentLessonRegistration({
     }
 
     const saveRegistrationLesson = async (event) => {
+        openProcessingRegistrationNotification();
+
         event.preventDefault();
         const studentId = SisStudentStorage.getNumber();
         const operationUserId = SisStudentStorage.getNumber();
@@ -396,6 +409,12 @@ export default function StudentLessonRegistration({
                     closeNotification={closeFailChooseLessonNotification}
                     title="Bu Dersi Zaten Seçtiniz!"
                     description="Bu Ders seçtiğiniz ders listesinde mevcut, lütfen farklı bir ders seçmeyi deneyiniz."
+                />
+
+                <ProcessNotification
+                    isOpen={isOpenProcessingRegistrationNotification}
+                    closeNotification={closeProcessingRegistrationNotification}
+                    title="Ders Kaydınızı Danışman Onayına Gönderme İsteğiniz İşleniyor..."
                 />
 
                 <SuccessNotification

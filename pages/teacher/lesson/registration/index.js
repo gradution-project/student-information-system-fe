@@ -17,20 +17,28 @@ export async function getServerSideProps(context) {
         }
     }
 
+    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
     const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(RegistrationStatus.ALL);
     if (studentRegistrationData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                registrations: studentRegistrationData.response
+                registrations: studentRegistrationData.response,
+                teacherRole: teacherRole
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations}) {
+export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations, teacherRole}) {
 
     if (!isPagePermissionSuccess) {
+        return (
+            <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
+    if (teacherRole !== 'ADVISOR'){
         return (
             <UnauthorizedAccessPage user="teacher"/>
         )
