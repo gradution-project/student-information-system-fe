@@ -25,7 +25,7 @@ const otherTransactions = [
         name: 'Ders Kayıt İşlemleri',
         description: '',
         href: '/teacher/lesson/registration',
-        roles: [TeacherRole.ADVISOR, TeacherRole.HEAD_OF_DEPARTMENT],
+        roles: [TeacherRole.ADVISOR],
         icon: CalendarIcon,
     },
     {

@@ -15,10 +15,12 @@ import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 import ProcessNotification from "../../../../../public/notifications/process";
+import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
-    if (teacherId === undefined) {
+    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
+    if (teacherId === undefined || teacherRole !== TeacherRole.ADVISOR) {
         return {
             props: {
                 isPagePermissionSuccess: false
@@ -26,7 +28,6 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
     const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
     const {registrationId} = context.query;
     const studentsLessonRegistrationData = await StudentLessonRegistrationController.getAllStudentsLessonRegistrationByRegistrationId(registrationId);
@@ -37,7 +38,6 @@ export async function getServerSideProps(context) {
                 isPagePermissionSuccess: true,
                 isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
                 operationUserId: teacherId,
-                teacherRole: teacherRole
             }
         }
     }
@@ -48,10 +48,9 @@ export default function StudentLessonRegistrationsList({
                                                            isPagePermissionSuccess,
                                                            operationUserId,
                                                            isRegistrationOperationsFeatureToggleEnabled,
-                                                           teacherRole
                                                        }) {
 
-    if (!isPagePermissionSuccess || teacherRole !== 'ADVISOR') {
+    if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="teacher"/>
         )

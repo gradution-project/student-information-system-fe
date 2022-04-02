@@ -6,33 +6,32 @@ import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStor
 import StudentLessonRegistrationController from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 import RegistrationStatus from "../../../../public/constants/lesson/registration/RegistrationStatus";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
+import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
-    if (teacherId === undefined) {
+    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
+    if (teacherId === undefined || teacherRole !== TeacherRole.ADVISOR) {
         return {
             props: {
                 isPagePermissionSuccess: false
             }
         }
     }
-
-    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
     const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(RegistrationStatus.ALL);
     if (studentRegistrationData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                registrations: studentRegistrationData.response,
-                teacherRole: teacherRole
+                registrations: studentRegistrationData.response
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations, teacherRole}) {
+export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations}) {
 
-    if (!isPagePermissionSuccess || teacherRole !== 'ADVISOR') {
+    if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="teacher"/>
         )
