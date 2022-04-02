@@ -15,8 +15,8 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    const studentLessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
 
+    const studentLessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
     if (studentLessonsData.success) {
         return {
             props: {
@@ -26,19 +26,16 @@ export async function getServerSideProps(context) {
         }
     }
 }
-
 export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
         )
     }
-
     return (
         <div>
             <SISTitle/>
             <StudentNavbar/>
-
             {(
                 lessons.length !== 0
                     ?
@@ -138,6 +135,7 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                         className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
                             Henüz Ders Kaydınız Yapılmadı!
+
                         </a>
                     </div>
             )}

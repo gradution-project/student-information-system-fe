@@ -51,7 +51,7 @@ export default function StudentLessonRegistrationsList({
                                                            teacherRole
                                                        }) {
 
-    if (!isPagePermissionSuccess) {
+    if (!isPagePermissionSuccess || teacherRole !== 'ADVISOR') {
         return (
             <UnauthorizedAccessPage user="teacher"/>
         )
@@ -63,11 +63,6 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
-    if (teacherRole !== 'ADVISOR'){
-        return (
-            <UnauthorizedAccessPage user="teacher"/>
-        )
-    }
 
     const registrationId = lessonRegistrations.registrationId
 

@@ -32,13 +32,7 @@ export async function getServerSideProps(context) {
 
 export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations, teacherRole}) {
 
-    if (!isPagePermissionSuccess) {
-        return (
-            <UnauthorizedAccessPage user="teacher"/>
-        )
-    }
-
-    if (teacherRole !== 'ADVISOR'){
+    if (!isPagePermissionSuccess || teacherRole !== 'ADVISOR') {
         return (
             <UnauthorizedAccessPage user="teacher"/>
         )
