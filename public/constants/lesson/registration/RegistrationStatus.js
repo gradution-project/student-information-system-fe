@@ -1,11 +1,11 @@
 const getAll = [
     {
         enum: 'WAITING',
-        tr: 'Beklemede',
+        tr: 'Onay Bekleniyor',
         miniComponent: <span
-            className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">Beklemede</span>,
+            className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-yellow font-phenomenaBold text-lg text-sis-white ">Onay Bekleniyor</span>,
         component: <span
-            className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">Beklemede</span>
+            className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-yellow font-phenomenaBold text-2xl text-sis-white ">Onay Bekleniyor</span>
     },
     {
         enum: 'APPROVED',
