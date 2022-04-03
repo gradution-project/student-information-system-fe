@@ -184,7 +184,7 @@ export default function StudentLessonRegistrationsList({
                             null
                     ))}
                     {(
-                        isRegistrationOperationsFeatureToggleEnabled && lessonRegistrations.status !== RegistrationStatus.WAITING
+                      lessonRegistrations.status !== RegistrationStatus.WAITING
                             ?
                             null
                             :
@@ -197,7 +197,7 @@ export default function StudentLessonRegistrationsList({
                             </button>
                     )}
                     {(
-                        isRegistrationOperationsFeatureToggleEnabled && lessonRegistrations.status !== RegistrationStatus.WAITING
+                       lessonRegistrations.status !== RegistrationStatus.WAITING
                             ?
                             null
                             :
