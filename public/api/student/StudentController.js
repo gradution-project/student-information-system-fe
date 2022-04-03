@@ -158,7 +158,7 @@ const StudentController = {
     activateStudent,
     passivateStudent,
     deleteStudent,
-    graduateStudent,
+    graduateStudent
 };
 
 export default StudentController;
