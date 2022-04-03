@@ -219,8 +219,7 @@ export default function FacultyDetail({isPagePermissionSuccess, operationUserId,
 
     const [facultyName, setFacultyName] = useState(faculty.name);
     const changeFacultyName = event => {
-        const facultyName = event.target.value;
-        setFacultyName(facultyName);
+        setFacultyName(event.target.value.toLocaleUpperCase('tr-TR'));
     }
 
     const facultyUpdate = async (event) => {
