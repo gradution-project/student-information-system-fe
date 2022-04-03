@@ -121,7 +121,7 @@ export default function OfficerMyInformation({isPagePermissionSuccess, operation
             <SISTitle/>
             <OfficerNavbar/>
             <div>
-                <div className="md:col-span-1">
+                <div className="select-none md:col-span-1">
                     <form className="mt-10 mb-4 max-w-3xl mx-auto space-y-6">
                         <div className="shadow sm:rounded-md sm:overflow-hidden">
                             <div className="px-4 py-5 bg-white space-y-6 sm:p-6">

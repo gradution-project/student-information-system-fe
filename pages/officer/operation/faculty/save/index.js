@@ -72,8 +72,7 @@ export default function FacultySave({isPagePermissionSuccess, operationUserId}) 
 
     const [facultyName, setFacultyName] = useState();
     const changeFacultyName = event => {
-        const facultyName = event.target.value;
-        setFacultyName(facultyName);
+        setFacultyName(event.target.value.toLocaleUpperCase('tr-TR'));
     }
 
     const facultySave = async (event) => {

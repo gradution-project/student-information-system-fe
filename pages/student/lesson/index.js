@@ -1,59 +1,50 @@
 import SISTitle from "../../../public/components/page-titles";
-import TeacherNavbar from "../../../public/components/navbar/teacher/teacher-navbar";
 import LessonSemester from "../../../public/constants/lesson/LessonSemester";
-import SisTeacherStorage from "../../../public/storage/teacher/SisTeacherStorage";
 import UnauthorizedAccessPage from "../../401";
-import TeacherLessonController from "../../../public/api/teacher/lesson/TeacherLessonController";
 import LessonCompulsoryOrElective from "../../../public/constants/lesson/LessonCompulsoryOrElective";
-import LessonStatus from "../../../public/constants/lesson/LessonStatus";
-import FeatureToggleController from "../../../public/api/university/FeatureToggleController";
-import FeatureToggleName from "../../../public/constants/university/FeatureToggleName";
+import SisStudentStorage from "../../../public/storage/student/SisStudentStorage";
+import StudentNavbar from "../../../public/components/navbar/student/student-navbar";
+import StudentLessonController from "../../../public/api/student/lesson/StudentLessonController";
 
 export async function getServerSideProps(context) {
-    const teacherId = SisTeacherStorage.getNumberWithContext(context);
-    if (teacherId === undefined) {
+    const studentId = SisStudentStorage.getNumberWithContext(context);
+    if (studentId === undefined) {
         return {
             props: {
-                isPagePermissionSuccess: false
+                isPagePermissionSuccess: false,
             }
         }
     }
 
-    const noteOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.NOTE_OPERATIONS);
-
-    const lessonsData = await TeacherLessonController.getTeacherLessonsByTeacherId(teacherId);
-    if (lessonsData.success) {
+    const studentLessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
+    if (studentLessonsData.success) {
         return {
             props: {
-                isPagePermissionSuccess: true,
-                isNoteOperationsFeatureToggleEnabled: noteOperationsToggleData.response.isFeatureToggleEnabled,
-                lessons: lessonsData.response
+                lessons: studentLessonsData.response,
+                isPagePermissionSuccess: true
             }
         }
     }
 }
-
-export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOperationsFeatureToggleEnabled, lessons}) {
-
+export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
     if (!isPagePermissionSuccess) {
         return (
-            <UnauthorizedAccessPage user="teacher"/>
+            <UnauthorizedAccessPage user="student"/>
         )
     }
-
     return (
         <div>
             <SISTitle/>
-            <TeacherNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        DERSLERİM
-                    </a>
-                </div>
-                {(
-                    lessons.length !== 0
-                        ?
+            <StudentNavbar/>
+            {(
+                lessons.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                DERSLERİM
+                            </a>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -85,26 +76,20 @@ export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOpera
                                                 >
                                                     DERS DURUMU
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="select-none px-6 py-3 tracking-wider"
-                                                >
-                                                    STATÜSÜ
-                                                </th>
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {lessons.map((lesson) => (
-                                                <tr key={lesson.lessonResponse.lessonId}>
+                                            {lessons.lessonsResponses.map((lesson) => (
+                                                <tr key={lesson.lessonId}>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
                                                             <div className="ml-0.5">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.name}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name}</div>
                                                                 <div
-                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonResponse.lessonId}</div>
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
                                                                 {LessonSemester.getAll.map((lSemester) => (
-                                                                    lesson.lessonResponse.semester === lSemester.enum
+                                                                    lesson.semester === lSemester.enum
                                                                         ?
                                                                         <div
                                                                             className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
@@ -116,19 +101,19 @@ export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOpera
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.facultyResponse.name}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.departmentResponse.facultyResponse.name}</div>
 
                                                         <div
-                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.lessonResponse.departmentResponse.name}</div>
+                                                            className="font-phenomenaRegular text-xl text-sis-darkblue">{lesson.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
 
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
-                                                            lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
+                                                            lesson.compulsoryOrElective === lCompulsory.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
@@ -136,33 +121,6 @@ export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOpera
                                                                 null
                                                         ))}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span>
-                                                            {LessonStatus.getAll.map((lStatus) => (
-                                                                lesson.lessonResponse.status === lStatus.enum
-                                                                    ?
-                                                                    lStatus.miniComponent
-                                                                    :
-                                                                    null
-                                                            ))}
-                                                        </span>
-                                                    </td>
-                                                    {(
-                                                        lesson.lessonResponse.status === LessonStatus.ACTIVE
-                                                            &&
-                                                        isNoteOperationsFeatureToggleEnabled
-                                                            ?
-                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                                <a href={`/teacher/lesson/note/${lesson.lessonResponse.lessonId}`}
-                                                                   className='text-sis-yellow'>
-                                                                    NOT İŞLEMLERİ
-                                                                </a>
-                                                            </td>
-                                                            :
-
-                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                            </td>
-                                                    )}
                                                 </tr>
                                             ))}
                                             </tbody>
@@ -171,10 +129,16 @@ export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOpera
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div
+                        className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                            Henüz Ders Kaydınız Yapılmadı!
+
+                        </a>
+                    </div>
+            )}
         </div>
     )
 }
