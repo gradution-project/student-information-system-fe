@@ -5,7 +5,8 @@ import TeacherNavbar from "../../../../../public/components/navbar/teacher/teach
 import FeatureToggleController from "../../../../../public/api/university/FeatureToggleController";
 import FeatureToggleName from "../../../../../public/constants/university/FeatureToggleName";
 import PageNotFound from "../../../../404";
-import StudentLessonRegistrationController from "../../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
+import StudentLessonRegistrationController
+    from "../../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 import LessonSemester from "../../../../../public/constants/lesson/LessonSemester";
 import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/LessonCompulsoryOrElective";
 import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
@@ -35,15 +36,24 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 lessonRegistrations: studentsLessonRegistrationData.response,
+                isDataFound: true,
                 isPagePermissionSuccess: true,
                 isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
                 operationUserId: teacherId,
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
 export default function StudentLessonRegistrationsList({
+                                                           isDataFound,
                                                            lessonRegistrations,
                                                            isPagePermissionSuccess,
                                                            operationUserId,
@@ -53,6 +63,12 @@ export default function StudentLessonRegistrationsList({
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 

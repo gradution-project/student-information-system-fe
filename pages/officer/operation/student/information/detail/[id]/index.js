@@ -14,6 +14,7 @@ import StudentStatus from "../../../../../../../public/constants/student/Student
 import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
 import StudentClassLevel from "../../../../../../../public/constants/student/StudentClassLevel";
 import StudentDegree from "../../../../../../../public/constants/student/StudentDegree";
+import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -33,20 +34,34 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 operationUserId: officerId,
                 departments: departmentsData.response,
                 student: studentData.response
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, operationUserId, departments, student}) {
+export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student}) {
 
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 
