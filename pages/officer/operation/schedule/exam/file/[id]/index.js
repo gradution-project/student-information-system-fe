@@ -8,6 +8,7 @@ import SuccessNotification from "../../../../../../../public/notifications/succe
 import FailNotification from "../../../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../../../public/notifications/process";
 import ExamScheduleFileController from "../../../../../../../public/api/exam-file/ExamScheduleFileController";
+import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -25,17 +26,31 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 examScheduleFile: examScheduleFileData.response
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
-export default function ExamScheduleFileDetail({isPagePermissionSuccess, examScheduleFile}) {
+export default function ExamScheduleFileDetail({isPagePermissionSuccess, isDataFound, examScheduleFile}) {
 
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 
