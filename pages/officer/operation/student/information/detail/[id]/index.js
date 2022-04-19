@@ -589,9 +589,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 {StudentDegree.getAll.map(sDegree => (
                                                     academicInfoResponse.degree === sDegree.enum
                                                         ?
-                                                        <option value={sDegree.enum} selected>{sDegree.tr}</option>
+                                                        <option key={sDegree.enum} value={sDegree.enum} selected>{sDegree.tr}</option>
                                                         :
-                                                        null
+                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
