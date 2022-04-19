@@ -14,6 +14,7 @@ import TeacherStatus from "../../../../../../../public/constants/teacher/Teacher
 import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
 import TeacherDegree from "../../../../../../../public/constants/teacher/TeacherDegree";
 import TeacherRole from "../../../../../../../public/constants/teacher/TeacherRole";
+import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -33,20 +34,34 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 operationUserId: officerId,
                 departments: departmentsData.response,
                 teacher: teacherData.response
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
 
-export default function TeacherDetail({isPagePermissionSuccess, operationUserId, departments, teacher}) {
+export default function TeacherDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, teacher}) {
 
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 
