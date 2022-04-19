@@ -1,6 +1,5 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
 const getAllLessonRegistrationByStatus = async (status) => {
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get?status=${status}`, {
@@ -26,7 +25,6 @@ const saveStudentLessonRegistration = async (operationUserId, lessonIds, student
         method: 'POST',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             studentLessonRegistrationInfoRequest: {
@@ -46,7 +44,6 @@ const approvedLessonRegistration = async (operationUserId, registrationId) => {
         method: 'PATCH',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             registrationId: registrationId
@@ -62,7 +59,6 @@ const rejectedLessonRegistration = async (operationUserId, registrationId) => {
         method: 'PATCH',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             registrationId: registrationId

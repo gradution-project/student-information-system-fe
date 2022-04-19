@@ -1,6 +1,5 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
 const isPasswordChangeOperationEnabled = async (operationId) => {
     const apiResult = await fetch(`${SIS_API_URL}/officer/password-operation?operationId=${operationId}`, {
@@ -26,8 +25,7 @@ const changePassword = async (operationId, newPassword, newPasswordRepeat) => {
 const forgotPassword = async (officerId) => {
     const apiResult = await fetch(`${SIS_API_URL}/officer/password-operation/forgot-password`, {
         body: JSON.stringify({
-            officerId: officerId,
-            feUrl: SIS_FE_URL
+            officerId: officerId
         }),
         headers: {'Content-Type': 'application/json'},
         method: 'POST'
