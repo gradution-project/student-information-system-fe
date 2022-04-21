@@ -32,14 +32,19 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
 
-    const lessonsData = await LessonController.getAllLessonsByStatus(LessonStatus.ACTIVE);
+    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+
+    const lessonsData = await LessonController.getAllLessonsByStatus(LessonStatus.ACTIVE)
     if (lessonsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                isLessonRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
+                isFirstLessonRegistrationOperationsFeatureToggleEnabled: firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
+                isSecondLessonRegistrationOperationsFeatureToggleEnabled: secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
                 lessons: lessonsData.response
             }
         }
@@ -48,7 +53,8 @@ export async function getServerSideProps(context) {
 
 export default function StudentLessonRegistration({
                                                       isPagePermissionSuccess,
-                                                      isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                      isFirstLessonRegistrationOperationsFeatureToggleEnabled,
+                                                      isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                                                       lessons
                                                   }) {
 
@@ -58,7 +64,7 @@ export default function StudentLessonRegistration({
         )
     }
 
-    if (!isLessonRegistrationOperationsFeatureToggleEnabled) {
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
         return (
             <PageNotFound user="student"/>
         )
@@ -168,25 +174,51 @@ export default function StudentLessonRegistration({
         &&
         lessonsBySemesters.Fourth.length === 0
             ?
-            lessons.map((lesson) => (
-                lesson.semester === LessonSemester.FIRST || lesson.semester === LessonSemester.SECOND
-                    ?
-                    lessonsBySemesters.First.push(lesson)
-                    :
-                    lesson.semester === LessonSemester.THIRD || lesson.semester === LessonSemester.FOURTH
+            isFirstLessonRegistrationOperationsFeatureToggleEnabled
+                ?
+                lessons.map((lesson) => (
+                    lesson.semester === LessonSemester.FIRST
                         ?
-                        lessonsBySemesters.Second.push(lesson)
+                        lessonsBySemesters.First.push(lesson)
                         :
-                        lesson.semester === LessonSemester.FIFTH || lesson.semester === LessonSemester.SIXTH
+                        lesson.semester === LessonSemester.THIRD
                             ?
-                            lessonsBySemesters.Third.push(lesson)
+                            lessonsBySemesters.Second.push(lesson)
                             :
-                            lesson.semester === LessonSemester.SEVENTH || lesson.semester === LessonSemester.EIGHTH
+                            lesson.semester === LessonSemester.FIFTH
                                 ?
-                                lessonsBySemesters.Fourth.push(lesson)
+                                lessonsBySemesters.Third.push(lesson)
                                 :
-                                null
-            ))
+                                lesson.semester === LessonSemester.SEVENTH
+                                    ?
+                                    lessonsBySemesters.Fourth.push(lesson)
+                                    :
+                                    null
+                ))
+                :
+                isSecondLessonRegistrationOperationsFeatureToggleEnabled
+                    ?
+                    lessons.map((lesson) => (
+                        lesson.semester === LessonSemester.SECOND
+                            ?
+                            lessonsBySemesters.First.push(lesson)
+                            :
+                            lesson.semester === LessonSemester.FOURTH
+                                ?
+                                lessonsBySemesters.Second.push(lesson)
+                                :
+                                lesson.semester === LessonSemester.SIXTH
+                                    ?
+                                    lessonsBySemesters.Third.push(lesson)
+                                    :
+                                    lesson.semester === LessonSemester.EIGHTH
+                                        ?
+                                        lessonsBySemesters.Fourth.push(lesson)
+                                        :
+                                        null
+                    ))
+                    :
+                    null
             :
             null
     }
