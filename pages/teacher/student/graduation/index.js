@@ -7,10 +7,12 @@ import StudentClassLevel from "../../../../public/constants/student/StudentClass
 import StudentGraduatedStatus from "../../../../public/constants/student/graduated/StudentGraduatedStatus";
 import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
+import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
 
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
+    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
     if (teacherId === undefined) {
         return {
             props: {
@@ -18,13 +20,25 @@ export async function getServerSideProps(context) {
             }
         }
     }
-
-    const studentsData = await StudentController.getAllStudentGraduationsByStatus(StudentStatus.ALL);
-    if (studentsData.success) {
-        return {
-            props: {
-                isPagePermissionSuccess: true,
-                students: studentsData.response
+    if (teacherRole === TeacherRole.ADVISOR){
+        const studentsData = await StudentController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.WAITING);
+        if (studentsData.success) {
+            return {
+                props: {
+                    isPagePermissionSuccess: true,
+                    students: studentsData.response
+                }
+            }
+        }
+    }
+    else  if (teacherRole === TeacherRole.HEAD_OF_DEPARTMENT){
+        const studentData = await StudentController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.APPROVED);
+        if (studentData.success) {
+            return {
+                props: {
+                    isPagePermissionSuccess: true,
+                    students: studentData.response
+                }
             }
         }
     }
@@ -86,8 +100,6 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
                                             {students.map((student) => (
-                                                (student.status === 'WAITING'
-                                                ?
                                                 <tr key={student.studentId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         {/*<td className="px-6 py-4 whitespace-nowrap">*/}
@@ -140,15 +152,12 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={""}
+                                                        <a href={'/teacher/student/graduation/information/detail/' + student.graduationId}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>
                                                     </td>
                                                 </tr>
-                                                    :
-                                                    null
-                                                )
                                             ))}
                                             </tbody>
                                         </table>

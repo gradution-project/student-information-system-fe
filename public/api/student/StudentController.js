@@ -17,6 +17,15 @@ const getStudentDetailByStudentId = async (studentId) => {
     return await apiResult.json();
 };
 
+const getAllStudentGraduationsByStatus = async (status) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/get?status=${status}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    return await apiResult.json();
+};
+
+
 const saveStudent = async (operationUserId, academicInfo, personalInfo) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/save`, {
@@ -145,14 +154,6 @@ const graduateStudent = async (operationUserId, studentId) => {
             studentId: studentId
 
         }),
-    });
-    return await apiResult.json();
-};
-
-const getAllStudentGraduationsByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/get?status=${status}`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET'
     });
     return await apiResult.json();
 };

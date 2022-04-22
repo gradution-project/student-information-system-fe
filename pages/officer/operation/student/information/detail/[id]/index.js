@@ -911,20 +911,20 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
                                 <ProcessNotification
                                     isOpen={isOpenProcessingGraduateNotification}
                                     closeNotification={closeProcessingGraduateNotification}
-                                    title="Öğrenci Mezun Ediliyor..."
+                                    title="Öğrenci Mezuniyet İşlemi Başlatılıyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessGraduateNotification}
                                     closeNotification={closeSuccessGraduateNotification}
-                                    title="Öğrenci Mezun Edildi!"
-                                    description="Öğrenci Mezuniyet İşlemi başarıyla gerçekleşti."
+                                    title="Öğrenci Mezuniyet İşlemi Başlatıldı!"
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla işleme koyuldu."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailGraduateNotification}
                                     closeNotification={closeFailGraduateNotification}
-                                    title="Öğrenci Mezun Edilemedi!"
+                                    title="Öğrenci Mezuniyet İşlemi Başlatılamadı!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
 
