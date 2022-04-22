@@ -10,13 +10,13 @@ const schedules = [
         name: 'Ders Programı',
         description: "",
         href: '/teacher/schedule/lesson/file',
-        icon: CalendarIcon,
+        icon: CalendarIcon
     },
     {
         name: 'Sınav Programı',
         description: "",
         href: '/teacher/schedule/exam/file',
-        icon: ViewGridIcon,
+        icon: ViewGridIcon
     }
 ]
 
@@ -24,16 +24,16 @@ const otherTransactions = [
     {
         name: 'Ders Kayıt İşlemleri',
         description: '',
-        href: '/student/transcript',
-        roles: [TeacherRole.ADVISOR, TeacherRole.HEAD_OF_DEPARTMENT],
-        icon: CalendarIcon,
+        href: '/teacher/lesson/registration',
+        roles: [TeacherRole.ADVISOR],
+        icon: CalendarIcon
     },
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
         href: '/teacher/student/graduation',
         roles: [TeacherRole.ADVISOR, TeacherRole.HEAD_OF_DEPARTMENT],
-        icon: DocumentReportIcon,
+        icon: DocumentReportIcon
     }
 ]
 

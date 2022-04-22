@@ -27,7 +27,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function StudentLessonsNotesList({isPagePermissionSuccess, studentLessonsNotes}) {
-
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
@@ -38,15 +37,15 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
         <div>
             <SISTitle/>
             <StudentNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        NOTLARIM
-                    </a>
-                </div>
-                {(
-                    studentLessonsNotes.length !== 0
-                        ?
+            {(
+                studentLessonsNotes.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                NOTLARIM
+                            </a>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -104,8 +103,10 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
                                                             <div className="ml-4">
-                                                                <div className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonNotes.teacherResponse.name} {studentLessonNotes.teacherResponse.surname}</div>
-                                                                <div className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonNotes.teacherResponse.teacherId}</div>
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonNotes.teacherResponse.name} {studentLessonNotes.teacherResponse.surname}</div>
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonNotes.teacherResponse.teacherId}</div>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -170,10 +171,15 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div
+                        className="max-w-7xl mt-8 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                            Ders Kaydınız Yapılmadığı için Notlarınızı Görüntüleyemiyorsunuz!
+                        </a>
+                    </div>
+            )}
         </div>
     )
 }

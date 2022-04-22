@@ -8,6 +8,7 @@ import SuccessNotification from "../../../../../../../public/notifications/succe
 import FailNotification from "../../../../../../../public/notifications/fail";
 import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 import LessonScheduleFileController from "../../../../../../../public/api/exam-file/LessonScheduleFileController";
+import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -25,17 +26,31 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 lessonScheduleFile: lessonScheduleFileData.response
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
-export default function LessonScheduleFileDetail({isPagePermissionSuccess, lessonScheduleFile}) {
+export default function LessonScheduleFileDetail({isPagePermissionSuccess, isDataFound, lessonScheduleFile}) {
 
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 

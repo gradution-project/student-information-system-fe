@@ -34,6 +34,7 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 isNoteOperationsFeatureToggleEnabled: noteOperationsToggleData.response.isFeatureToggleEnabled,
                 isMidtermNoteFeatureToggleEnabled: midtermNoteToggleData.response.isFeatureToggleEnabled,
                 isFinalNoteFeatureToggleEnabled: finalNoteToggleData.response.isFeatureToggleEnabled,
@@ -42,11 +43,19 @@ export async function getServerSideProps(context) {
                 studentsLessonNotes: studentsLessonNotesData.response
             }
         }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
+            }
+        }
     }
 }
 
 export default function TeacherLessonNotesList({
                                                    isPagePermissionSuccess,
+                                                   isDataFound,
                                                    operationUserId,
                                                    isNoteOperationsFeatureToggleEnabled,
                                                    isMidtermNoteFeatureToggleEnabled,
@@ -58,6 +67,12 @@ export default function TeacherLessonNotesList({
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 
