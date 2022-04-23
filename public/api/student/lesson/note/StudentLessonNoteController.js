@@ -17,7 +17,7 @@ const getAllStudentLessonsNotesByStudentId = async (studentId) => {
     return await apiResult.json();
 };
 
-const updateStudentLessonMidtermNote = async (operationUserId, id, midtermNote) => {
+const updateStudentLessonMidtermNote = async (operationUserId, midtermNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/midterm`, {
         headers: {'Content-Type': 'application/json'},
@@ -26,14 +26,13 @@ const updateStudentLessonMidtermNote = async (operationUserId, id, midtermNote) 
             operationInfoRequest: {
                 userId: operationUserId
             },
-            id: id,
-            midtermNote: midtermNote
+            midtermNoteIdsAndNotes: midtermNoteIdsAndNotes
         })
     });
     return await apiResult.json();
 };
 
-const updateStudentLessonFinalNote = async (operationUserId, id, finalNote) => {
+const updateStudentLessonFinalNote = async (operationUserId, finalNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/final`, {
         headers: {'Content-Type': 'application/json'},
@@ -42,14 +41,13 @@ const updateStudentLessonFinalNote = async (operationUserId, id, finalNote) => {
             operationInfoRequest: {
                 userId: operationUserId
             },
-            id: id,
-            finalNote: finalNote
+            finalNoteIdsAndNotes: finalNoteIdsAndNotes
         })
     });
     return await apiResult.json();
 };
 
-const updateStudentLessonResitNote = async (operationUserId, id, resitNote) => {
+const updateStudentLessonResitNote = async (operationUserId, resitNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/resit`, {
         headers: {'Content-Type': 'application/json'},
@@ -58,8 +56,7 @@ const updateStudentLessonResitNote = async (operationUserId, id, resitNote) => {
             operationInfoRequest: {
                 userId: operationUserId
             },
-            id: id,
-            resitNote: resitNote
+            resitNoteIdsAndNotes: resitNoteIdsAndNotes
         })
     });
     return await apiResult.json();
