@@ -7,9 +7,9 @@ const getAll = [
     },
     {
         enum: 'APPROVED',
-        tr: 'Kabul Edildi',
-        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">Kabul Edildi</span>,
-        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">Kabul Edildi</span>
+        tr: 'Kesinleştirildi',
+        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">Kesinleştirildi</span>,
+        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">Kesinleştirildi</span>
     },
     {
         enum: 'CONFIRMED',

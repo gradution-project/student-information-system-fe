@@ -1,5 +1,4 @@
 import StudentController from "../../../../public/api/student/StudentController";
-import StudentStatus from "../../../../public/constants/student/StudentStatus";
 import UnauthorizedAccessPage from "../../../401";
 import SISTitle from "../../../../public/components/page-titles";
 import StudentDegree from "../../../../public/constants/student/StudentDegree";
@@ -152,7 +151,7 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/teacher/student/graduation/information/detail/' + student.graduationId}
+                                                        <a href={'/teacher/student/graduation/' + student.graduationId}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>
