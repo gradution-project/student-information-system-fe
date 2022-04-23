@@ -478,22 +478,23 @@ export default function TeacherLessonNotesList({
                                             <ProcessNotification
                                                 isOpen={isOpenProcessingMidtermNoteUpdateNotification}
                                                 closeNotification={closeProcessingMidtermNoteUpdateNotification}
-                                                title="Vize Notu Güncelleniyor..."
+                                                title="Vize Notları Kaydediliyor..."
                                             />
 
                                             <SuccessNotification
                                                 isOpen={isOpenSuccessMidtermNoteUpdateNotification}
                                                 closeNotification={closeSuccessMidtermNoteUpdateNotification}
-                                                title="Vize Notu Güncellendi!"
-                                                description="Öğrencinin Vize Notu başarıyla güncellendi."
+                                                title="Vize Notları Kaydedildi!"
+                                                description="Öğrencilere ait Vize Notları başarıyla kaydedildi."
                                             />
 
                                             <FailNotification
                                                 isOpen={isOpenFailMidtermNoteUpdateNotification}
                                                 closeNotification={closeFailMidtermNoteUpdateNotification}
-                                                title="Vize Notu Güncellenemedi!"
-                                                description="Öğrencinin Bütünleme Notunu 0 ile 100 arasında giriniz,
-                                                notu doğru girdiyseniz sistemsel bir hatadan dolayı güncellenmemiş olabilir."
+                                                title="Vize Notları Kaydedilemedi!"
+                                                description="Tüm Öğrenciler için 0 ile 100 arasında olacak şekilde
+                                                Vize Notu girişi yapmanız gerekmektedir, notları doğru girdiyseniz
+                                                sistemsel bir hatadan dolayı kaydedilmemiş olabilir."
                                             />
 
 
@@ -503,22 +504,23 @@ export default function TeacherLessonNotesList({
                                             <ProcessNotification
                                                 isOpen={isOpenProcessingFinalNoteUpdateNotification}
                                                 closeNotification={closeProcessingFinalNoteUpdateNotification}
-                                                title="Final Notu Güncelleniyor..."
+                                                title="Final Notları Kaydediliyor..."
                                             />
 
                                             <SuccessNotification
                                                 isOpen={isOpenSuccessFinalNoteUpdateNotification}
                                                 closeNotification={closeSuccessFinalNoteUpdateNotification}
-                                                title="Final Notu Güncellendi!"
-                                                description="Öğrencinin Final Notu başarıyla güncellendi."
+                                                title="Final Notları Kaydedildi!"
+                                                description="Öğrencilere ait Final Notları başarıyla kaydedildi."
                                             />
 
                                             <FailNotification
                                                 isOpen={isOpenFailFinalNoteUpdateNotification}
                                                 closeNotification={closeFailFinalNoteUpdateNotification}
-                                                title="Final Notu Güncellenemedi!"
-                                                description="Öğrencinin Bütünleme Notunu 0 ile 100 arasında giriniz,
-                                                notu doğru girdiyseniz sistemsel bir hatadan dolayı güncellenmemiş olabilir."
+                                                title="Final Notları Kaydedilemedi!"
+                                                description="Tüm Öğrenciler için 0 ile 100 arasında olacak şekilde
+                                                Final Notu girişi yapmanız gerekmektedir, notları doğru girdiyseniz
+                                                sistemsel bir hatadan dolayı kaydedilmemiş olabilir."
                                             />
 
 
@@ -528,22 +530,23 @@ export default function TeacherLessonNotesList({
                                             <ProcessNotification
                                                 isOpen={isOpenProcessingResitNoteUpdateNotification}
                                                 closeNotification={closeProcessingResitNoteUpdateNotification}
-                                                title="Bütünleme Notu Güncelleniyor..."
+                                                title="Bütünleme Notları Kaydediliyor..."
                                             />
 
                                             <SuccessNotification
                                                 isOpen={isOpenSuccessResitNoteUpdateNotification}
                                                 closeNotification={closeSuccessResitNoteUpdateNotification}
-                                                title="Bütünleme Notu Güncellendi!"
-                                                description="Öğrencinin Bütünleme Notu başarıyla güncellendi."
+                                                title="Bütünleme Notları Kaydedildi!"
+                                                description="Öğrencilere ait Bütünleme Notları başarıyla kaydedildi."
                                             />
 
                                             <FailNotification
                                                 isOpen={isOpenFailResitNoteUpdateNotification}
                                                 closeNotification={closeFailResitNoteUpdateNotification}
-                                                title="Bütünleme Notu Güncellenemedi!"
-                                                description="Öğrencinin Bütünleme Notunu 0 ile 100 arasında giriniz,
-                                                notu doğru girdiyseniz sistemsel bir hatadan dolayı güncellenmemiş olabilir."
+                                                title="Bütünleme Notları Kaydedilemedi!"
+                                                description="Tüm Öğrenciler için 0 ile 100 arasında olacak şekilde
+                                                Bütünleme Notu girişi yapmanız gerekmektedir, notları doğru girdiyseniz
+                                                sistemsel bir hatadan dolayı kaydedilmemiş olabilir."
                                             />
                                         </table>
                                     </div>
