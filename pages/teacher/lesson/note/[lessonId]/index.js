@@ -121,15 +121,17 @@ export default function TeacherLessonNotesList({
         setIsOpenFailMidtermNoteUpdateNotification(true);
     }
 
-    const [midtermNote, setMidtermNote] = useState();
-    const changeMidtermNote = event => {
-        setMidtermNote(event.target.value);
+    const midtermNoteIdsAndNotes = new Map();
+    const setMidtermNoteToMap = async (lessonNoteId, midtermNote) => {
+        if (!(midtermNote < 0 || midtermNote > 100)) {
+            midtermNoteIdsAndNotes.set(lessonNoteId, midtermNote)
+        }
     }
 
-    const updateStudentMidtermNote = async (id) => {
+    const updateStudentsMidtermNotes = async () => {
         openProcessingMidtermNoteUpdateNotification();
 
-        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonMidtermNote(operationUserId, id, midtermNote);
+        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonMidtermNote(operationUserId, Object.fromEntries(midtermNoteIdsAndNotes));
         if (studentLessonNotesData.success) {
             closeProcessingMidtermNoteUpdateNotification();
             openSuccessMidtermNoteUpdateNotification();
@@ -169,33 +171,29 @@ export default function TeacherLessonNotesList({
 
     function closeFailFinalNoteUpdateNotification() {
         setIsOpenFailFinalNoteUpdateNotification(false);
-        router.reload();
     }
 
     function openFailFinalNoteUpdateNotification() {
         setIsOpenFailFinalNoteUpdateNotification(true);
     }
 
-    const [finalNote, setFinalNote] = useState();
-    const changeFinalNote = event => {
-        setFinalNote(event.target.value);
+    const finalNoteIdsAndNotes = new Map();
+    const setFinalNoteToMap = async (lessonNoteId, finalNote) => {
+        if (!(finalNote < 0 || finalNote > 100)) {
+            finalNoteIdsAndNotes.set(lessonNoteId, finalNote)
+        }
     }
 
-    const updateStudentFinalNote = async (id) => {
+    const updateStudentsFinalNotes = async () => {
         openProcessingFinalNoteUpdateNotification();
 
-        if (finalNote <= 100) {
-            const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonFinalNote(operationUserId, id, finalNote);
-            if (studentLessonNotesData.success) {
-                closeProcessingFinalNoteUpdateNotification();
-                openSuccessFinalNoteUpdateNotification();
-            } else {
-                closeProcessingFinalNoteUpdateNotification();
-                openFailFinalNoteUpdateNotification();
-            }
+        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonFinalNote(operationUserId, Object.fromEntries(finalNoteIdsAndNotes));
+        if (studentLessonNotesData.success) {
+            closeProcessingFinalNoteUpdateNotification()
+            openSuccessFinalNoteUpdateNotification()
         } else {
-            closeProcessingFinalNoteUpdateNotification();
-            openFailFinalNoteUpdateNotification();
+            closeProcessingFinalNoteUpdateNotification()
+            openFailFinalNoteUpdateNotification()
         }
     }
 
@@ -229,22 +227,24 @@ export default function TeacherLessonNotesList({
 
     function closeFailResitNoteUpdateNotification() {
         setIsOpenFailResitNoteUpdateNotification(false);
-        router.reload();
     }
 
     function openFailResitNoteUpdateNotification() {
         setIsOpenFailResitNoteUpdateNotification(true);
     }
 
-    const [resitNote, setResitNote] = useState();
-    const changeResitNote = event => {
-        setResitNote(event.target.value);
+    const resitNoteIdsAndNotes = new Map();
+    const setResitNoteToMap = async (lessonNoteId, resitNote) => {
+        if (!(resitNote < 0 || resitNote > 100)) {
+            resitNoteIdsAndNotes.set(lessonNoteId, resitNote)
+            console.log(resitNoteIdsAndNotes)
+        }
     }
 
-    const updateStudentResitNote = async (id) => {
+    const updateStudentsResitNotes = async () => {
         openProcessingResitNoteUpdateNotification();
 
-        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonResitNote(operationUserId, id, resitNote);
+        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonResitNote(operationUserId, Object.fromEntries(resitNoteIdsAndNotes));
         if (studentLessonNotesData.success) {
             closeProcessingResitNoteUpdateNotification();
             openSuccessResitNoteUpdateNotification();
@@ -263,6 +263,42 @@ export default function TeacherLessonNotesList({
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         ÖĞRENCİ NOT LİSTESİ
                     </a>
+                    {(
+                        !isMidtermNoteFeatureToggleEnabled
+                            ?
+                            null
+                            :
+                            <button
+                                onClick={updateStudentsMidtermNotes}
+                                className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                            >
+                                NOTLARI KAYDET
+                            </button>
+                    )}
+                    {(
+                        !isFinalNoteFeatureToggleEnabled
+                            ?
+                            null
+                            :
+                            <button
+                                onClick={updateStudentsFinalNotes}
+                                className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                            >
+                                NOTLARI KAYDET
+                            </button>
+                    )}
+                    {(
+                        !isResitNoteFeatureToggleEnabled
+                            ?
+                            null
+                            :
+                            <button
+                                onClick={updateStudentsResitNotes}
+                                className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                            >
+                                NOTLARI KAYDET
+                            </button>
+                    )}
                 </div>
                 {(
                     studentsLessonNotes.length !== 0
@@ -337,7 +373,10 @@ export default function TeacherLessonNotesList({
                                                                 if (e.target.value >= 100) {
                                                                     e.target.value = "100"
                                                                 }
-                                                                changeMidtermNote(e)
+                                                                if (e.target.value <= 0) {
+                                                                    e.target.value = "0"
+                                                                }
+                                                                setMidtermNoteToMap(studentLessonNotes.id, e.target.value)
                                                             }}
                                                             disabled={!isMidtermNoteFeatureToggleEnabled}
                                                             className={isMidtermNoteFeatureToggleEnabled
@@ -359,7 +398,10 @@ export default function TeacherLessonNotesList({
                                                                 if (e.target.value >= 100) {
                                                                     e.target.value = "100"
                                                                 }
-                                                                changeFinalNote(e)
+                                                                if (e.target.value <= 0) {
+                                                                    e.target.value = "0"
+                                                                }
+                                                                setFinalNoteToMap(studentLessonNotes.id, e.target.value)
                                                             }}
                                                             disabled={!isFinalNoteFeatureToggleEnabled}
                                                             className={isFinalNoteFeatureToggleEnabled
@@ -370,8 +412,8 @@ export default function TeacherLessonNotesList({
                                                     </td>
                                                     {(
                                                         studentLessonNotes.status === LessonNoteStatus.PASSED
-                                                            &&
-                                                            studentLessonNotes.resitNote === null
+                                                        &&
+                                                        studentLessonNotes.resitNote === null
                                                             ?
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                             </td>
@@ -388,7 +430,10 @@ export default function TeacherLessonNotesList({
                                                                         if (e.target.value >= 100) {
                                                                             e.target.value = "100"
                                                                         }
-                                                                        changeResitNote(e)
+                                                                        if (e.target.value <= 0) {
+                                                                            e.target.value = "0"
+                                                                        }
+                                                                        setResitNoteToMap(studentLessonNotes.id, e.target.value)
                                                                     }}
                                                                     disabled={!isResitNoteFeatureToggleEnabled}
                                                                     className={isResitNoteFeatureToggleEnabled
@@ -417,45 +462,6 @@ export default function TeacherLessonNotesList({
                                                             ))}
                                                         </span>
                                                     </td>
-                                                    {(
-                                                        isMidtermNoteFeatureToggleEnabled
-                                                            ?
-                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                                <button
-                                                                    onClick={() => updateStudentMidtermNote(studentLessonNotes.id)}
-                                                                    className='text-sis-yellow'>
-                                                                    GÜNCELLE
-                                                                </button>
-                                                            </td>
-                                                            :
-                                                            null
-                                                    )}
-                                                    {(
-                                                        isFinalNoteFeatureToggleEnabled
-                                                            ?
-                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                                <button
-                                                                    onClick={() => updateStudentFinalNote(studentLessonNotes.id)}
-                                                                    className='text-sis-yellow'>
-                                                                    GÜNCELLE
-                                                                </button>
-                                                            </td>
-                                                            :
-                                                            null
-                                                    )}
-                                                    {(
-                                                        isResitNoteFeatureToggleEnabled
-                                                            ?
-                                                            <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                                <button
-                                                                    onClick={() => updateStudentResitNote(studentLessonNotes.id)}
-                                                                    className='text-sis-yellow'>
-                                                                    GÜNCELLE
-                                                                </button>
-                                                            </td>
-                                                            :
-                                                            null
-                                                    )}
                                                 </tr>
                                             ))}
                                             </tbody>
