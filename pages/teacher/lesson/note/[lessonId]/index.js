@@ -131,7 +131,9 @@ export default function TeacherLessonNotesList({
     const updateStudentsMidtermNotes = async () => {
         openProcessingMidtermNoteUpdateNotification();
 
-        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonMidtermNote(operationUserId, Object.fromEntries(midtermNoteIdsAndNotes));
+        const studentLessonNotesData = await StudentLessonNoteController
+            .updateStudentsLessonMidtermNotes(operationUserId, Object.fromEntries(midtermNoteIdsAndNotes));
+
         if (studentLessonNotesData.success) {
             closeProcessingMidtermNoteUpdateNotification();
             openSuccessMidtermNoteUpdateNotification();
@@ -187,7 +189,9 @@ export default function TeacherLessonNotesList({
     const updateStudentsFinalNotes = async () => {
         openProcessingFinalNoteUpdateNotification();
 
-        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonFinalNote(operationUserId, Object.fromEntries(finalNoteIdsAndNotes));
+        const studentLessonNotesData = await StudentLessonNoteController
+            .updateStudentsLessonFinalNotes(operationUserId, Object.fromEntries(finalNoteIdsAndNotes));
+
         if (studentLessonNotesData.success) {
             closeProcessingFinalNoteUpdateNotification()
             openSuccessFinalNoteUpdateNotification()
@@ -244,7 +248,9 @@ export default function TeacherLessonNotesList({
     const updateStudentsResitNotes = async () => {
         openProcessingResitNoteUpdateNotification();
 
-        const studentLessonNotesData = await StudentLessonNoteController.updateStudentLessonResitNote(operationUserId, Object.fromEntries(resitNoteIdsAndNotes));
+        const studentLessonNotesData = await StudentLessonNoteController
+            .updateStudentsLessonResitNotes(operationUserId, Object.fromEntries(resitNoteIdsAndNotes));
+
         if (studentLessonNotesData.success) {
             closeProcessingResitNoteUpdateNotification();
             openSuccessResitNoteUpdateNotification();
