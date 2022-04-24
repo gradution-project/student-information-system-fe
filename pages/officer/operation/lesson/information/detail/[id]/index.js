@@ -264,20 +264,17 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
 
     const [departmentId, setDepartmentId] = useState(departmentResponse.departmentId);
     const changeDepartmentId = event => {
-        const departmentId = event.target.value;
-        setDepartmentId(departmentId);
+        setDepartmentId(event.target.value);
     }
 
     const [name, setName] = useState(lesson.name);
     const changeName = event => {
-        const name = event.target.value;
-        setName(name);
+        setName(event.target.value);
     }
 
     const [credit, setCredit] = useState(lesson.credit);
     const changeCredit = event => {
-        const credit = event.target.value;
-        setCredit(credit);
+        setCredit(event.target.value);
     }
 
     const [theoreticalHours, setTheoreticalHours] = useState();
@@ -292,14 +289,12 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
 
     const [compulsoryOrElective, setCompulsoryOrElective] = useState(lesson.compulsoryOrElective);
     const changeCompulsoryOrElective = event => {
-        const compulsoryOrElective = event.target.value;
-        setCompulsoryOrElective(compulsoryOrElective);
+        setCompulsoryOrElective(event.target.value);
     }
 
     const [semester, setSemester] = useState(lesson.semester);
     const changeSemester = event => {
-        const semester = event.target.value;
-        setSemester(semester);
+        setSemester(event.target.value);
     }
 
     const lessonUpdate = async (event) => {
