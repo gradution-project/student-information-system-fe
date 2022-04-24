@@ -12,6 +12,7 @@ import FailNotification from "../../../../../public/notifications/fail";
 import FeatureToggleController from "../../../../../public/api/university/FeatureToggleController";
 import FeatureToggleName from "../../../../../public/constants/university/FeatureToggleName";
 import PageNotFound from "../../../../404";
+import LessonNoteState from "../../../../../public/constants/lesson/note/LessonNoteState";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -114,7 +115,6 @@ export default function TeacherLessonNotesList({
 
     function closeFailMidtermNoteUpdateNotification() {
         setIsOpenFailMidtermNoteUpdateNotification(false);
-        router.reload();
     }
 
     function openFailMidtermNoteUpdateNotification() {
@@ -143,6 +143,85 @@ export default function TeacherLessonNotesList({
         }
     }
 
+    /**
+     * STUDENT RESIT NOTE CONFIRM OPERATION
+     */
+
+    let [isOpenProcessingMidtermNoteConfirmNotification, setIsOpenProcessingMidtermNoteConfirmNotification] = useState(false);
+
+    function closeProcessingMidtermNoteConfirmNotification() {
+        setIsOpenProcessingMidtermNoteConfirmNotification(false);
+    }
+
+    function openProcessingMidtermNoteConfirmNotification() {
+        setIsOpenProcessingMidtermNoteConfirmNotification(true);
+    }
+
+    let [isOpenSuccessMidtermNoteConfirmNotification, setIsOpenSuccessMidtermNoteConfirmNotification] = useState(false);
+
+    function closeSuccessMidtermNoteConfirmNotification() {
+        setIsOpenSuccessMidtermNoteConfirmNotification(false);
+        router.reload();
+    }
+
+    function openSuccessMidtermNoteConfirmNotification() {
+        setIsOpenSuccessMidtermNoteConfirmNotification(true);
+    }
+
+    let [isOpenFailMidtermNoteConfirmNotification, setIsOpenFailMidtermNoteConfirmNotification] = useState(false);
+
+    function closeFailMidtermNoteConfirmNotification() {
+        setIsOpenFailMidtermNoteConfirmNotification(false);
+    }
+
+    function openFailMidtermNoteConfirmNotification() {
+        setIsOpenFailMidtermNoteConfirmNotification(true);
+    }
+
+
+    const [lessonMidtermNoteIds] = useState([])
+    {
+        isMidtermNoteFeatureToggleEnabled
+            ?
+            studentsLessonNotes.map((studentLessonNotes) => (
+                studentLessonNotes.midtermNoteState === LessonNoteState.CONFIRMED
+                    ?
+                    null
+                    :
+                    lessonMidtermNoteIds.push(studentLessonNotes.id)
+            ))
+            :
+            null
+    }
+
+    const confirmStudentsMidtermNotes = async () => {
+        openProcessingMidtermNoteConfirmNotification();
+
+        let notEnteredLessonNotesCount = 0
+        studentsLessonNotes.map((studentLessonNotes) => (
+            studentLessonNotes.midtermNoteState === LessonNoteState.NOT_ENTERED
+                ?
+                notEnteredLessonNotesCount += 1
+                :
+                null
+        ))
+        if (notEnteredLessonNotesCount === 0) {
+            const studentLessonNotesData = await StudentLessonNoteController
+                .confirmStudentsLessonMidtermNotes(operationUserId, lessonMidtermNoteIds);
+
+            if (studentLessonNotesData.success) {
+                closeProcessingMidtermNoteConfirmNotification();
+                openSuccessMidtermNoteConfirmNotification();
+            } else {
+                closeProcessingMidtermNoteConfirmNotification();
+                openFailMidtermNoteConfirmNotification();
+            }
+        } else {
+            closeProcessingMidtermNoteConfirmNotification();
+            openFailMidtermNoteConfirmNotification();
+        }
+
+    }
 
     /**
      * STUDENT FINAL NOTE UPDATE OPERATION
@@ -201,9 +280,88 @@ export default function TeacherLessonNotesList({
         }
     }
 
+    /**
+     * STUDENT FINAL NOTE CONFIRM OPERATION
+     */
+
+    let [isOpenProcessingFinalNoteConfirmNotification, setIsOpenProcessingFinalNoteConfirmNotification] = useState(false);
+
+    function closeProcessingFinalNoteConfirmNotification() {
+        setIsOpenProcessingFinalNoteConfirmNotification(false);
+    }
+
+    function openProcessingFinalNoteConfirmNotification() {
+        setIsOpenProcessingFinalNoteConfirmNotification(true);
+    }
+
+    let [isOpenSuccessFinalNoteConfirmNotification, setIsOpenSuccessFinalNoteConfirmNotification] = useState(false);
+
+    function closeSuccessFinalNoteConfirmNotification() {
+        setIsOpenSuccessFinalNoteConfirmNotification(false);
+        router.reload();
+    }
+
+    function openSuccessFinalNoteConfirmNotification() {
+        setIsOpenSuccessFinalNoteConfirmNotification(true);
+    }
+
+    let [isOpenFailFinalNoteConfirmNotification, setIsOpenFailFinalNoteConfirmNotification] = useState(false);
+
+    function closeFailFinalNoteConfirmNotification() {
+        setIsOpenFailFinalNoteConfirmNotification(false);
+    }
+
+    function openFailFinalNoteConfirmNotification() {
+        setIsOpenFailFinalNoteConfirmNotification(true);
+    }
+
+
+    const [lessonFinalNoteIds] = useState([])
+    {
+        isFinalNoteFeatureToggleEnabled
+            ?
+            studentsLessonNotes.map((studentLessonNotes) => (
+                studentLessonNotes.finalNoteState === LessonNoteState.CONFIRMED
+                    ?
+                    null
+                    :
+                    lessonFinalNoteIds.push(studentLessonNotes.id)
+            ))
+            :
+            null
+    }
+
+    const confirmStudentsFinalNotes = async () => {
+        openProcessingFinalNoteConfirmNotification();
+
+        let notEnteredLessonNotesCount = 0
+        studentsLessonNotes.map((studentLessonNotes) => (
+            studentLessonNotes.finalNoteState === LessonNoteState.NOT_ENTERED
+                ?
+                notEnteredLessonNotesCount += 1
+                :
+                null
+        ))
+        if (notEnteredLessonNotesCount === 0) {
+            const studentLessonNotesData = await StudentLessonNoteController
+                .confirmStudentsLessonFinalNotes(operationUserId, lessonFinalNoteIds);
+
+            if (studentLessonNotesData.success) {
+                closeProcessingFinalNoteConfirmNotification();
+                openSuccessFinalNoteConfirmNotification();
+            } else {
+                closeProcessingFinalNoteConfirmNotification();
+                openFailFinalNoteConfirmNotification();
+            }
+        } else {
+            closeProcessingFinalNoteConfirmNotification();
+            openFailFinalNoteConfirmNotification();
+        }
+    }
+
 
     /**
-     * STUDENT FINAL NOTE UPDATE OPERATION
+     * STUDENT RESIT NOTE UPDATE OPERATION
      */
 
     let [isOpenProcessingResitNoteUpdateNotification, setIsOpenProcessingResitNoteUpdateNotification] = useState(false);
@@ -241,22 +399,123 @@ export default function TeacherLessonNotesList({
     const setResitNoteToMap = async (lessonNoteId, resitNote) => {
         if (!(resitNote < 0 || resitNote > 100)) {
             resitNoteIdsAndNotes.set(lessonNoteId, resitNote)
-            console.log(resitNoteIdsAndNotes)
         }
     }
 
     const updateStudentsResitNotes = async () => {
         openProcessingResitNoteUpdateNotification();
 
-        const studentLessonNotesData = await StudentLessonNoteController
-            .updateStudentsLessonResitNotes(operationUserId, Object.fromEntries(resitNoteIdsAndNotes));
+        if (resitNoteIdsAndNotes.size > 0) {
+            const studentLessonNotesData = await StudentLessonNoteController
+                .updateStudentsLessonResitNotes(operationUserId, Object.fromEntries(resitNoteIdsAndNotes));
 
-        if (studentLessonNotesData.success) {
-            closeProcessingResitNoteUpdateNotification();
-            openSuccessResitNoteUpdateNotification();
+            if (studentLessonNotesData.success) {
+                closeProcessingResitNoteUpdateNotification();
+                openSuccessResitNoteUpdateNotification();
+            } else {
+                closeProcessingResitNoteUpdateNotification();
+                openFailResitNoteUpdateNotification();
+            }
         } else {
             closeProcessingResitNoteUpdateNotification();
             openFailResitNoteUpdateNotification();
+        }
+    }
+
+    /**
+     * STUDENT RESIT NOTE CONFIRM OPERATION
+     */
+
+    let [isOpenProcessingResitNoteConfirmNotification, setIsOpenProcessingResitNoteConfirmNotification] = useState(false);
+
+    function closeProcessingResitNoteConfirmNotification() {
+        setIsOpenProcessingResitNoteConfirmNotification(false);
+    }
+
+    function openProcessingResitNoteConfirmNotification() {
+        setIsOpenProcessingResitNoteConfirmNotification(true);
+    }
+
+    let [isOpenSuccessResitNoteConfirmNotification, setIsOpenSuccessResitNoteConfirmNotification] = useState(false);
+
+    function closeSuccessResitNoteConfirmNotification() {
+        setIsOpenSuccessResitNoteConfirmNotification(false);
+        router.reload();
+    }
+
+    function openSuccessResitNoteConfirmNotification() {
+        setIsOpenSuccessResitNoteConfirmNotification(true);
+    }
+
+    let [isOpenFailResitNoteConfirmNotification, setIsOpenFailResitNoteConfirmNotification] = useState(false);
+
+    function closeFailResitNoteConfirmNotification() {
+        setIsOpenFailResitNoteConfirmNotification(false);
+    }
+
+    function openFailResitNoteConfirmNotification() {
+        setIsOpenFailResitNoteConfirmNotification(true);
+    }
+
+
+    const [lessonResitNoteIds] = useState([])
+    {
+        isResitNoteFeatureToggleEnabled
+            ?
+            studentsLessonNotes.map((studentLessonNotes) => (
+                studentLessonNotes.resitNoteState === LessonNoteState.CONFIRMED
+                ||
+                (
+                    studentLessonNotes.resitNoteState === LessonNoteState.NOT_ENTERED
+                    &&
+                    studentLessonNotes.status === LessonNoteStatus.PASSED
+                )
+                    ?
+                    null
+                    :
+                    lessonResitNoteIds.push(studentLessonNotes.id)
+            ))
+            :
+            null
+    }
+
+    const confirmStudentsResitNotes = async () => {
+        openProcessingResitNoteConfirmNotification();
+
+        let notEnteredLessonNotesCount = 0
+        studentsLessonNotes.map((studentLessonNotes) => (
+            (
+                studentLessonNotes.resitNoteState === LessonNoteState.NOT_ENTERED
+                &&
+                studentLessonNotes.status === LessonNoteStatus.UNFINALISED
+            )
+            ||
+            (
+                studentLessonNotes.resitNoteState === LessonNoteState.UNCONFIRMED
+                &&
+                studentLessonNotes.status === LessonNoteStatus.UNFINALISED
+            )
+                ?
+                notEnteredLessonNotesCount += 1
+                :
+                null
+        ))
+
+        if (notEnteredLessonNotesCount === 0) {
+            const studentLessonNotesData = await StudentLessonNoteController
+                .confirmStudentsLessonResitNotes(operationUserId, lessonResitNoteIds);
+
+            if (studentLessonNotesData.success) {
+                closeProcessingResitNoteConfirmNotification();
+                openSuccessResitNoteConfirmNotification();
+            } else {
+                closeProcessingResitNoteConfirmNotification();
+                openFailResitNoteConfirmNotification();
+            }
+            closeProcessingResitNoteConfirmNotification();
+        } else {
+            closeProcessingResitNoteConfirmNotification();
+            openFailResitNoteConfirmNotification();
         }
     }
 
@@ -274,36 +533,96 @@ export default function TeacherLessonNotesList({
                             ?
                             null
                             :
-                            <button
-                                onClick={updateStudentsMidtermNotes}
-                                className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                            >
-                                NOTLARI KAYDET
-                            </button>
+                            lessonMidtermNoteIds.length === 0
+                                ?
+                                null
+                                :
+                                <button
+                                    onClick={updateStudentsMidtermNotes}
+                                    className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                >
+                                    VİZE NOTLARI KAYDET
+                                </button>
+                    )}
+                    {(
+                        !isMidtermNoteFeatureToggleEnabled
+                            ?
+                            null
+                            :
+                            lessonMidtermNoteIds.length === 0
+                                ?
+                                null
+                                :
+                                <button
+                                    onClick={confirmStudentsMidtermNotes}
+                                    className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                >
+                                    VİZE NOTLARI KESİNLEŞTİR
+                                </button>
                     )}
                     {(
                         !isFinalNoteFeatureToggleEnabled
                             ?
                             null
                             :
-                            <button
-                                onClick={updateStudentsFinalNotes}
-                                className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                            >
-                                NOTLARI KAYDET
-                            </button>
+                            lessonFinalNoteIds.length === 0
+                                ?
+                                null
+                                :
+                                <button
+                                    onClick={updateStudentsFinalNotes}
+                                    className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                >
+                                    FİNAL NOTLARI KAYDET
+                                </button>
+                    )}
+                    {(
+                        !isFinalNoteFeatureToggleEnabled
+                            ?
+                            null
+                            :
+                            lessonFinalNoteIds.length === 0
+                                ?
+                                null
+                                :
+                                <button
+                                    onClick={confirmStudentsFinalNotes}
+                                    className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                >
+                                    FİNAL NOTLARI KESİNLEŞTİR
+                                </button>
                     )}
                     {(
                         !isResitNoteFeatureToggleEnabled
                             ?
                             null
                             :
-                            <button
-                                onClick={updateStudentsResitNotes}
-                                className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                            >
-                                NOTLARI KAYDET
-                            </button>
+                            lessonResitNoteIds.length === 0
+                                ?
+                                null
+                                :
+                                <button
+                                    onClick={updateStudentsResitNotes}
+                                    className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                                >
+                                    BÜTÜNLEME NOTLARI KAYDET
+                                </button>
+                    )}
+                    {(
+                        !isResitNoteFeatureToggleEnabled
+                            ?
+                            null
+                            :
+                            lessonResitNoteIds.length === 0
+                                ?
+                                null
+                                :
+                                <button
+                                    onClick={confirmStudentsResitNotes}
+                                    className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-blue hover:bg-sis-darkblue"
+                                >
+                                    BÜTÜNLEME NOTLARI KESİNLEŞTİR
+                                </button>
                     )}
                 </div>
                 {(
@@ -384,42 +703,58 @@ export default function TeacherLessonNotesList({
                                                                 }
                                                                 setMidtermNoteToMap(studentLessonNotes.id, e.target.value)
                                                             }}
-                                                            disabled={!isMidtermNoteFeatureToggleEnabled}
-                                                            className={isMidtermNoteFeatureToggleEnabled
-                                                                ? "text-center w-20 font-phenomenaRegular text-sis-yellow focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-sis-yellow rounded-md"
-                                                                : "text-center w-20 font-phenomenaRegular text-gray-400 focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                            }
-                                                        />
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <input
-                                                            type="number"
-                                                            max={100}
-                                                            min={0}
-                                                            required
-                                                            name="final-note"
-                                                            id="final-note"
-                                                            defaultValue={studentLessonNotes.finalNote}
-                                                            onChange={(e) => {
-                                                                if (e.target.value >= 100) {
-                                                                    e.target.value = "100"
-                                                                }
-                                                                if (e.target.value <= 0) {
-                                                                    e.target.value = "0"
-                                                                }
-                                                                setFinalNoteToMap(studentLessonNotes.id, e.target.value)
-                                                            }}
-                                                            disabled={!isFinalNoteFeatureToggleEnabled}
-                                                            className={isFinalNoteFeatureToggleEnabled
+                                                            disabled={!isMidtermNoteFeatureToggleEnabled || studentLessonNotes.midtermNoteState === LessonNoteState.CONFIRMED}
+                                                            className={isMidtermNoteFeatureToggleEnabled && studentLessonNotes.midtermNoteState !== LessonNoteState.CONFIRMED
                                                                 ? "text-center w-20 font-phenomenaRegular text-sis-yellow focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-sis-yellow rounded-md"
                                                                 : "text-center w-20 font-phenomenaRegular text-gray-400 focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                             }
                                                         />
                                                     </td>
                                                     {(
-                                                        studentLessonNotes.status === LessonNoteStatus.PASSED
-                                                        &&
-                                                        studentLessonNotes.resitNote === null
+                                                        studentLessonNotes.midtermNoteState === LessonNoteState.CONFIRMED
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <input
+                                                                    type="number"
+                                                                    max={100}
+                                                                    min={0}
+                                                                    required
+                                                                    name="final-note"
+                                                                    id="final-note"
+                                                                    defaultValue={studentLessonNotes.finalNote}
+                                                                    onChange={(e) => {
+                                                                        if (e.target.value >= 100) {
+                                                                            e.target.value = "100"
+                                                                        }
+                                                                        if (e.target.value <= 0) {
+                                                                            e.target.value = "0"
+                                                                        }
+                                                                        setFinalNoteToMap(studentLessonNotes.id, e.target.value)
+                                                                    }}
+                                                                    disabled={!isFinalNoteFeatureToggleEnabled || studentLessonNotes.finalNoteState === LessonNoteState.CONFIRMED}
+                                                                    className={isFinalNoteFeatureToggleEnabled && studentLessonNotes.finalNoteState !== LessonNoteState.CONFIRMED
+                                                                        ? "text-center w-20 font-phenomenaRegular text-sis-yellow focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-sis-yellow rounded-md"
+                                                                        : "text-center w-20 font-phenomenaRegular text-gray-400 focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+
+                                                    )}
+                                                    {(
+                                                        (
+                                                            studentLessonNotes.finalNoteState !== LessonNoteState.CONFIRMED
+                                                            &&
+                                                            studentLessonNotes.resitNoteState === LessonNoteState.NOT_ENTERED
+                                                        )
+                                                        ||
+                                                        (
+                                                            studentLessonNotes.resitNoteState === LessonNoteState.NOT_ENTERED
+                                                            &&
+                                                            studentLessonNotes.status === LessonNoteStatus.PASSED
+                                                        )
                                                             ?
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                             </td>
@@ -441,8 +776,8 @@ export default function TeacherLessonNotesList({
                                                                         }
                                                                         setResitNoteToMap(studentLessonNotes.id, e.target.value)
                                                                     }}
-                                                                    disabled={!isResitNoteFeatureToggleEnabled}
-                                                                    className={isResitNoteFeatureToggleEnabled
+                                                                    disabled={!isResitNoteFeatureToggleEnabled || studentLessonNotes.resitNoteState === LessonNoteState.CONFIRMED}
+                                                                    className={isResitNoteFeatureToggleEnabled && studentLessonNotes.resitNoteState !== LessonNoteState.CONFIRMED
                                                                         ? "text-center w-20 font-phenomenaRegular text-sis-yellow focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-sis-yellow rounded-md"
                                                                         : "text-center w-20 font-phenomenaRegular text-gray-400 focus:ring-sis-yellow focus:border-sis-yellow shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                                     }
@@ -493,8 +828,35 @@ export default function TeacherLessonNotesList({
                                                 closeNotification={closeFailMidtermNoteUpdateNotification}
                                                 title="Vize Notları Kaydedilemedi!"
                                                 description="Tüm Öğrenciler için 0 ile 100 arasında olacak şekilde
-                                                Vize Notu girişi yapmanız gerekmektedir, notları doğru girdiyseniz
+                                                Vize Notu girişi yapmanız gerekmektedir. Tüm Notları doğru girdiyseniz;
+                                                herhangi bir not değişikliği yapmadığınızdan veya
                                                 sistemsel bir hatadan dolayı kaydedilmemiş olabilir."
+                                            />
+
+                                            {/**
+                                             * Midterm Note Confirm Notifications
+                                             */}
+                                            <ProcessNotification
+                                                isOpen={isOpenProcessingMidtermNoteConfirmNotification}
+                                                closeNotification={closeProcessingMidtermNoteConfirmNotification}
+                                                title="Vize Notları Kesinleştiriliyor..."
+                                            />
+
+                                            <SuccessNotification
+                                                isOpen={isOpenSuccessMidtermNoteConfirmNotification}
+                                                closeNotification={closeSuccessMidtermNoteConfirmNotification}
+                                                title="Vize Notları Kesinleştirildi!"
+                                                description="Öğrencilere ait Vize Notları başarıyla kesinleştirildi.
+                                                Notlar kesinleştirildiği için herhangi bir not değişikliği yapamazsınız."
+                                            />
+
+                                            <FailNotification
+                                                isOpen={isOpenFailMidtermNoteConfirmNotification}
+                                                closeNotification={closeFailMidtermNoteConfirmNotification}
+                                                title="Vize Notları Kesinleştirilemedi!"
+                                                description="Tüm öğrenciler için Vize Notu Girişi yapmanız gerekmektedir.
+                                                Tüm öğrenciler için Not Girişlerini yaptıysanız,
+                                                sistemsel bir hatadan dolayı kesinleştirilememiş olabilir."
                                             />
 
 
@@ -519,8 +881,35 @@ export default function TeacherLessonNotesList({
                                                 closeNotification={closeFailFinalNoteUpdateNotification}
                                                 title="Final Notları Kaydedilemedi!"
                                                 description="Tüm Öğrenciler için 0 ile 100 arasında olacak şekilde
-                                                Final Notu girişi yapmanız gerekmektedir, notları doğru girdiyseniz
+                                                Final Notu girişi yapmanız gerekmektedir. Tüm Notları doğru girdiyseniz;
+                                                herhangi bir not değişikliği yapmadığınızdan veya
                                                 sistemsel bir hatadan dolayı kaydedilmemiş olabilir."
+                                            />
+
+                                            {/**
+                                             * Final Note Confirm Notifications
+                                             */}
+                                            <ProcessNotification
+                                                isOpen={isOpenProcessingFinalNoteConfirmNotification}
+                                                closeNotification={closeProcessingFinalNoteConfirmNotification}
+                                                title="Final Notları Kesinleştiriliyor..."
+                                            />
+
+                                            <SuccessNotification
+                                                isOpen={isOpenSuccessFinalNoteConfirmNotification}
+                                                closeNotification={closeSuccessFinalNoteConfirmNotification}
+                                                title="Final Notları Kesinleştirildi!"
+                                                description="Öğrencilere ait Final Notları başarıyla kesinleştirildi.
+                                                Notlar kesinleştirildiği için herhangi bir not değişikliği yapamazsınız."
+                                            />
+
+                                            <FailNotification
+                                                isOpen={isOpenFailFinalNoteConfirmNotification}
+                                                closeNotification={closeFailFinalNoteConfirmNotification}
+                                                title="Final Notları Kesinleştirilemedi!"
+                                                description="Tüm öğrenciler için Final Notu Girişi yapmanız gerekmektedir.
+                                                Tüm öğrenciler için Not Girişlerini yaptıysanız,
+                                                sistemsel bir hatadan dolayı kesinleştirilememiş olabilir."
                                             />
 
 
@@ -545,8 +934,35 @@ export default function TeacherLessonNotesList({
                                                 closeNotification={closeFailResitNoteUpdateNotification}
                                                 title="Bütünleme Notları Kaydedilemedi!"
                                                 description="Tüm Öğrenciler için 0 ile 100 arasında olacak şekilde
-                                                Bütünleme Notu girişi yapmanız gerekmektedir, notları doğru girdiyseniz
+                                                Bütünleme Notu girişi yapmanız gerekmektedir. Tüm Notları doğru girdiyseniz;
+                                                herhangi bir not değişikliği yapmadığınızdan veya
                                                 sistemsel bir hatadan dolayı kaydedilmemiş olabilir."
+                                            />
+
+                                            {/**
+                                             * Resit Note Confirm Notifications
+                                             */}
+                                            <ProcessNotification
+                                                isOpen={isOpenProcessingResitNoteConfirmNotification}
+                                                closeNotification={closeProcessingResitNoteConfirmNotification}
+                                                title="Bütünleme Notları Kesinleştiriliyor..."
+                                            />
+
+                                            <SuccessNotification
+                                                isOpen={isOpenSuccessResitNoteConfirmNotification}
+                                                closeNotification={closeSuccessResitNoteConfirmNotification}
+                                                title="Bütünleme Notları Kesinleştirildi!"
+                                                description="Öğrencilere ait Bütünleme Notları başarıyla kesinleştirildi.
+                                                Notlar kesinleştirildiği için herhangi bir not değişikliği yapamazsınız."
+                                            />
+
+                                            <FailNotification
+                                                isOpen={isOpenFailResitNoteConfirmNotification}
+                                                closeNotification={closeFailResitNoteConfirmNotification}
+                                                title="Bütünleme Notları Kesinleştirilemedi!"
+                                                description="Tüm öğrenciler için Bütünleme Notu Girişi yapmanız gerekmektedir.
+                                                Tüm öğrenciler için Not Girişlerini yaptıysanız,
+                                                sistemsel bir hatadan dolayı kesinleştirilememiş olabilir."
                                             />
                                         </table>
                                     </div>
