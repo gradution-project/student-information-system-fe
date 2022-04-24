@@ -83,6 +83,18 @@ export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOpera
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    TEORİ
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    UYGULAMA
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     DERS DURUMU
                                                 </th>
                                                 <th
@@ -126,6 +138,30 @@ export default function TeacherLessonsList({isPagePermissionSuccess, isNoteOpera
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.credit}</div>
 
                                                     </td>
+                                                    {
+                                                        lesson.lessonResponse.theoreticalHours !== 0
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.theoreticalHours} Saat
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+                                                    }
+                                                    {
+                                                        lesson.lessonResponse.practiceHours !== 0
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.lessonResponse.practiceHours} Saat
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+                                                    }
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
                                                             lesson.lessonResponse.compulsoryOrElective === lCompulsory.enum
