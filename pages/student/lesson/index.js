@@ -26,6 +26,7 @@ export async function getServerSideProps(context) {
         }
     }
 }
+
 export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
     if (!isPagePermissionSuccess) {
         return (
@@ -74,6 +75,18 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    TEORİ
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    UYGULAMA
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     DERS DURUMU
                                                 </th>
                                             </tr>
@@ -109,8 +122,31 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
-
                                                     </td>
+                                                    {
+                                                        lesson.theoreticalHours !== 0
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.theoreticalHours} Saat
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+                                                    }
+                                                    {
+                                                        lesson.practiceHours !== 0
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.practiceHours} Saat
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+                                                    }
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
                                                             lesson.compulsoryOrElective === lCompulsory.enum

@@ -26,6 +26,8 @@ const saveLesson = async (operationUserId, lessonInfo) => {
             lessonInfoRequest: {
                 compulsoryOrElective: lessonInfo.compulsoryOrElective,
                 credit: lessonInfo.credit,
+                theoreticalHours: lessonInfo.theoreticalHours,
+                practiceHours: lessonInfo.practiceHours,
                 departmentId: lessonInfo.departmentId,
                 name: lessonInfo.name,
                 semester: lessonInfo.semester
@@ -48,6 +50,8 @@ const updateLesson = async (operationUserId, lessonId, lessonInfo) => {
             lessonInfoRequest: {
                 compulsoryOrElective: lessonInfo.compulsoryOrElective,
                 credit: lessonInfo.credit,
+                theoreticalHours: lessonInfo.theoreticalHours,
+                practiceHours: lessonInfo.practiceHours,
                 departmentId: lessonInfo.departmentId,
                 name: lessonInfo.name,
                 semester: lessonInfo.semester

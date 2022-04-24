@@ -17,7 +17,7 @@ const getAllStudentLessonsNotesByStudentId = async (studentId) => {
     return await apiResult.json();
 };
 
-const updateStudentLessonMidtermNote = async (operationUserId, id, midtermNote) => {
+const updateStudentsLessonMidtermNotes = async (operationUserId, midtermNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/midterm`, {
         headers: {'Content-Type': 'application/json'},
@@ -26,14 +26,28 @@ const updateStudentLessonMidtermNote = async (operationUserId, id, midtermNote) 
             operationInfoRequest: {
                 userId: operationUserId
             },
-            id: id,
-            midtermNote: midtermNote
+            midtermNoteIdsAndNotes: midtermNoteIdsAndNotes
         })
     });
     return await apiResult.json();
 };
 
-const updateStudentLessonFinalNote = async (operationUserId, id, finalNote) => {
+const confirmStudentsLessonMidtermNotes = async (operationUserId, lessonNoteIds) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/midterm/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            lessonNoteIds: lessonNoteIds
+        })
+    });
+    return await apiResult.json();
+};
+
+const updateStudentsLessonFinalNotes = async (operationUserId, finalNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/final`, {
         headers: {'Content-Type': 'application/json'},
@@ -42,14 +56,28 @@ const updateStudentLessonFinalNote = async (operationUserId, id, finalNote) => {
             operationInfoRequest: {
                 userId: operationUserId
             },
-            id: id,
-            finalNote: finalNote
+            finalNoteIdsAndNotes: finalNoteIdsAndNotes
         })
     });
     return await apiResult.json();
 };
 
-const updateStudentLessonResitNote = async (operationUserId, id, resitNote) => {
+const confirmStudentsLessonFinalNotes = async (operationUserId, lessonNoteIds) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/final/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            lessonNoteIds: lessonNoteIds
+        })
+    });
+    return await apiResult.json();
+};
+
+const updateStudentsLessonResitNotes = async (operationUserId, resitNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/resit`, {
         headers: {'Content-Type': 'application/json'},
@@ -58,8 +86,22 @@ const updateStudentLessonResitNote = async (operationUserId, id, resitNote) => {
             operationInfoRequest: {
                 userId: operationUserId
             },
-            id: id,
-            resitNote: resitNote
+            resitNoteIdsAndNotes: resitNoteIdsAndNotes
+        })
+    });
+    return await apiResult.json();
+};
+
+const confirmStudentsLessonResitNotes = async (operationUserId, lessonNoteIds) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/resit/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            lessonNoteIds: lessonNoteIds
         })
     });
     return await apiResult.json();
@@ -69,9 +111,12 @@ const updateStudentLessonResitNote = async (operationUserId, id, resitNote) => {
 const StudentLessonNoteController = {
     getAllStudentsLessonNotesByLessonId,
     getAllStudentLessonsNotesByStudentId,
-    updateStudentLessonMidtermNote,
-    updateStudentLessonFinalNote,
-    updateStudentLessonResitNote
+    updateStudentsLessonMidtermNotes,
+    confirmStudentsLessonMidtermNotes,
+    updateStudentsLessonFinalNotes,
+    confirmStudentsLessonFinalNotes,
+    updateStudentsLessonResitNotes,
+    confirmStudentsLessonResitNotes
 };
 
 export default StudentLessonNoteController;
