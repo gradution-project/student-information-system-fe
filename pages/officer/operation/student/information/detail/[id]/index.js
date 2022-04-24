@@ -15,6 +15,7 @@ import SisOperationButton from "../../../../../../../public/components/buttons/S
 import StudentClassLevel from "../../../../../../../public/constants/student/StudentClassLevel";
 import StudentDegree from "../../../../../../../public/constants/student/StudentDegree";
 import PageNotFound from "../../../../../../404";
+import StudentGraduationController from "../../../../../../../public/api/student/graduation/StudentGraduationController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -29,15 +30,17 @@ export async function getServerSideProps(context) {
     const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
 
     const {id} = context.query;
+    const isStudentGraduationEnabled = await  StudentGraduationController.isStudentGraduationEnabled(id);
     const studentData = await StudentController.getStudentDetailByStudentId(id);
-    if (studentData.success && departmentsData.success) {
+    if (studentData.success && departmentsData.success && isStudentGraduationEnabled.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 isDataFound: true,
                 operationUserId: officerId,
                 departments: departmentsData.response,
-                student: studentData.response
+                student: studentData.response,
+                isStudentGraduationEnabled: isStudentGraduationEnabled.response
             }
         }
     } else {
@@ -51,7 +54,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student}) {
+export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student, isStudentGraduationEnabled}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -114,7 +117,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
         event.preventDefault();
 
         const studentId = academicInfoResponse.studentId;
-        const studentData = await StudentController.graduateStudent(operationUserId, studentId);
+        const studentData = await StudentGraduationController.graduateStudent(operationUserId, studentId);
         if (studentData.success) {
             closeProcessingGraduateNotification();
             openSuccessGraduateNotification();
@@ -492,9 +495,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
                                 SisOperationButton.getActivateButton(studentActivate, "KAYDI AKTİFLEŞTİR")
                         )}
                         {(
-                            academicInfoResponse.status === StudentStatus.GRADUATED
-                            ||
-                            academicInfoResponse.status === StudentStatus.DELETED
+                            !isStudentGraduationEnabled
                                 ?
                                 null
                                 :

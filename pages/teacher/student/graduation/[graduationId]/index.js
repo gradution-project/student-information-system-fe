@@ -15,6 +15,7 @@ import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../public/notifications/process";
+import StudentGraduationController from "../../../../../public/api/student/graduation/StudentGraduationController";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -29,7 +30,7 @@ export async function getServerSideProps(context) {
     const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
 
     const {graduationId} = context.query;
-    const studentData = await StudentController.getStudentGraduationDetailByGraduationId(graduationId);
+    const studentData = await StudentGraduationController.getStudentGraduationDetailByGraduationId(graduationId);
     if (studentData.success && departmentsData.success) {
         return {
             props: {
@@ -115,7 +116,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
             event.preventDefault();
 
             const {graduationId} = studentGraduation;
-             const studentData = await StudentController.approveStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.approveStudentGraduation(graduationId, operationUserId);
              if (studentData.success) {
                  closeProcessingApprovedGraduateNotification();
                  openSuccessApprovedGraduateNotification();
@@ -166,7 +167,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
              event.preventDefault();
 
              const {graduationId} = studentGraduation;
-             const studentData = await StudentController.confirmStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.confirmStudentGraduation(graduationId, operationUserId);
              if (studentData.success) {
                  closeProcessingConfirmGraduateNotification();
                  openSuccessConfirmGraduateNotification();
@@ -218,7 +219,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
              event.preventDefault();
 
              const {graduationId} = studentGraduation;
-             const studentData = await StudentController.rejectStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.rejectStudentGraduation(graduationId, operationUserId);
              if (studentData.success) {
                  closeProcessingRejectedGraduateNotification();
                  openSuccessRejectedGraduateNotification();
@@ -269,7 +270,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
              event.preventDefault();
 
              const {graduationId} = studentGraduation;
-             const studentData = await StudentController.unConfirmStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.unConfirmStudentGraduation(graduationId, operationUserId);
              if (studentData.success) {
                  closeProcessingUnConfirmGraduateNotification();
                  openSuccessUnConfirmGraduateNotification();

@@ -71,7 +71,7 @@ const student = [
         icon: DocumentReportIcon,
     },
     {
-        name: 'Mezuniyet İşlemleri',
+        name: 'Mezun Olacak Öğrenciler',
         description: '',
         href: '/officer/operation/student/graduation',
         icon: BookmarkAltIcon,

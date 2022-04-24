@@ -1,65 +1,50 @@
-import StudentController from "../../../../public/api/student/StudentController";
-import UnauthorizedAccessPage from "../../../401";
-import SISTitle from "../../../../public/components/page-titles";
-import StudentDegree from "../../../../public/constants/student/StudentDegree";
-import StudentClassLevel from "../../../../public/constants/student/StudentClassLevel";
-import StudentGraduatedStatus from "../../../../public/constants/student/graduated/StudentGraduatedStatus";
-import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
-import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
-import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
-import StudentGraduationController from "../../../../public/api/student/graduation/StudentGraduationController";
+import StudentStatus from "../../../../../public/constants/student/StudentStatus";
+import StudentController from "../../../../../public/api/student/StudentController";
+import SisOfficerStorage from "../../../../../public/storage/officer/SisOfficerStorage";
+import UnauthorizedAccessPage from "../../../../401";
+import SISTitle from "../../../../../public/components/page-titles";
+import OfficerNavbar from "../../../../../public/components/navbar/officer/officer-navbar";
+import StudentDegree from "../../../../../public/constants/student/StudentDegree";
+import StudentClassLevel from "../../../../../public/constants/student/StudentClassLevel";
 
 
 export async function getServerSideProps(context) {
-    const teacherId = SisTeacherStorage.getNumberWithContext(context);
-    const teacherRole = SisTeacherStorage.getRoleWithContext(context);
-    if (teacherId === undefined) {
+    const officerId = SisOfficerStorage.getNumberWithContext(context);
+    if (officerId === undefined) {
         return {
             props: {
                 isPagePermissionSuccess: false
             }
         }
     }
-    if (teacherRole === TeacherRole.ADVISOR){
-        const studentsData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.WAITING);
-        if (studentsData.success) {
-            return {
-                props: {
-                    isPagePermissionSuccess: true,
-                    students: studentsData.response
-                }
-            }
-        }
-    }
-    else  if (teacherRole === TeacherRole.HEAD_OF_DEPARTMENT){
-        const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.APPROVED);
-        if (studentData.success) {
-            return {
-                props: {
-                    isPagePermissionSuccess: true,
-                    students: studentData.response
-                }
+
+    const studentsData = await StudentController.getAllStudentsByStatus(StudentStatus.GRADUATED);
+    if (studentsData.success) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                students: studentsData.response
             }
         }
     }
 }
 
-export default function StudentGraduationList({isPagePermissionSuccess, students}) {
+export default function StudentList({isPagePermissionSuccess, students}) {
 
     if (!isPagePermissionSuccess) {
         return (
-            <UnauthorizedAccessPage user="teacher"/>
+            <UnauthorizedAccessPage user="officer"/>
         )
     }
 
     return (
         <div>
             <SISTitle/>
-            <TeacherNavbar/>
+            <OfficerNavbar/>
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        MEZUN OLACAK ÖĞRENCİ LİSTESİ
+                       MEZUN OLAN ÖĞRENCİLERİN LİSTESİ
                     </a>
                 </div>
                 {(
@@ -111,17 +96,17 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                             {/*</div>*/}
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.name} {student.studentInfoResponse.surname}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.name} {student.surname}</div>
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-gray-500">{student.studentInfoResponse.studentId}</div>
+                                                                    className="font-phenomenaRegular text-lg text-gray-500">{student.studentId}</div>
                                                                 <div
-                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.studentInfoResponse.email}</div>
+                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {StudentDegree.getAll.map((sDegree) => (
-                                                            student.studentInfoResponse.degree === sDegree.enum
+                                                            student.degree === sDegree.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{sDegree.tr}</div>
@@ -130,7 +115,7 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                         ))}
 
                                                         {StudentClassLevel.getAll.map((sClassLevel) => (
-                                                            student.studentInfoResponse.classLevel === sClassLevel.enum
+                                                            student.classLevel === sClassLevel.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaRegular text-xl text-sis-darkblue">{sClassLevel.tr}</div>
@@ -140,22 +125,16 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.departmentResponse.name}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{student.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {StudentGraduatedStatus.getAll.map((sStatus) => (
+                                                        {StudentStatus.getAll.map((sStatus) => (
                                                             student.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent
                                                                 :
                                                                 null
                                                         ))}
-                                                    </td>
-                                                    <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/teacher/student/graduation/' + student.graduationId}
-                                                           className='text-sis-yellow'>
-                                                            DETAY
-                                                        </a>
                                                     </td>
                                                 </tr>
                                             ))}
