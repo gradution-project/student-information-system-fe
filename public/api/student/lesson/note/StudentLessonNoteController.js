@@ -17,7 +17,7 @@ const getAllStudentLessonsNotesByStudentId = async (studentId) => {
     return await apiResult.json();
 };
 
-const updateStudentLessonMidtermNote = async (operationUserId, midtermNoteIdsAndNotes) => {
+const updateStudentsLessonMidtermNotes = async (operationUserId, midtermNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/midterm`, {
         headers: {'Content-Type': 'application/json'},
@@ -32,7 +32,22 @@ const updateStudentLessonMidtermNote = async (operationUserId, midtermNoteIdsAnd
     return await apiResult.json();
 };
 
-const updateStudentLessonFinalNote = async (operationUserId, finalNoteIdsAndNotes) => {
+const confirmStudentsLessonMidtermNotes = async (operationUserId, lessonNoteIds) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/midterm/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            lessonNoteIds: lessonNoteIds
+        })
+    });
+    return await apiResult.json();
+};
+
+const updateStudentsLessonFinalNotes = async (operationUserId, finalNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/final`, {
         headers: {'Content-Type': 'application/json'},
@@ -47,7 +62,22 @@ const updateStudentLessonFinalNote = async (operationUserId, finalNoteIdsAndNote
     return await apiResult.json();
 };
 
-const updateStudentLessonResitNote = async (operationUserId, resitNoteIdsAndNotes) => {
+const confirmStudentsLessonFinalNotes = async (operationUserId, lessonNoteIds) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/final/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            lessonNoteIds: lessonNoteIds
+        })
+    });
+    return await apiResult.json();
+};
+
+const updateStudentsLessonResitNotes = async (operationUserId, resitNoteIdsAndNotes) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/resit`, {
         headers: {'Content-Type': 'application/json'},
@@ -62,13 +92,31 @@ const updateStudentLessonResitNote = async (operationUserId, resitNoteIdsAndNote
     return await apiResult.json();
 };
 
+const confirmStudentsLessonResitNotes = async (operationUserId, lessonNoteIds) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/resit/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            lessonNoteIds: lessonNoteIds
+        })
+    });
+    return await apiResult.json();
+};
+
 
 const StudentLessonNoteController = {
     getAllStudentsLessonNotesByLessonId,
     getAllStudentLessonsNotesByStudentId,
-    updateStudentLessonMidtermNote,
-    updateStudentLessonFinalNote,
-    updateStudentLessonResitNote
+    updateStudentsLessonMidtermNotes,
+    confirmStudentsLessonMidtermNotes,
+    updateStudentsLessonFinalNotes,
+    confirmStudentsLessonFinalNotes,
+    updateStudentsLessonResitNotes,
+    confirmStudentsLessonResitNotes
 };
 
 export default StudentLessonNoteController;
