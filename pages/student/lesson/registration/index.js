@@ -308,7 +308,21 @@ export default function StudentLessonRegistration({
                                                                 :
                                                                 null
                                                         ))}
-                                                        <li> {lesson.credit} Kredi</li>
+                                                        <li> {lesson.credit} Kredi </li>
+                                                        {
+                                                            lesson.theoreticalHours !== 0
+                                                                ?
+                                                                <li> - {lesson.theoreticalHours} Saat Teori </li>
+                                                                :
+                                                                null
+                                                        }
+                                                        {
+                                                            lesson.practiceHours !== 0
+                                                                ?
+                                                                <li> - {lesson.practiceHours} Saat Uygulama</li>
+                                                                :
+                                                                null
+                                                        }
                                                         {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
                                                             lesson.compulsoryOrElective === lCompulsory.enum
                                                                 ?
@@ -360,6 +374,18 @@ export default function StudentLessonRegistration({
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    TEORİ
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
+                                                    UYGULAMA
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     DERS DURUMU
                                                 </th>
                                                 <th
@@ -396,6 +422,30 @@ export default function StudentLessonRegistration({
                                                         <div
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
                                                     </td>
+                                                    {
+                                                        lesson.theoreticalHours !== 0
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.theoreticalHours} Saat
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+                                                    }
+                                                    {
+                                                        lesson.practiceHours !== 0
+                                                            ?
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.practiceHours} Saat
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                            </td>
+                                                    }
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
                                                             lesson.compulsoryOrElective === lCompulsory.enum
