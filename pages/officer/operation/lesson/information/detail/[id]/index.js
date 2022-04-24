@@ -280,6 +280,16 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
         setCredit(credit);
     }
 
+    const [theoreticalHours, setTheoreticalHours] = useState();
+    const changeTheoreticalHours = event => {
+        setTheoreticalHours(event.target.value);
+    }
+
+    const [practiceHours, setPracticeHours] = useState();
+    const changePracticeHours = event => {
+        setPracticeHours(event.target.value);
+    }
+
     const [compulsoryOrElective, setCompulsoryOrElective] = useState(lesson.compulsoryOrElective);
     const changeCompulsoryOrElective = event => {
         const compulsoryOrElective = event.target.value;
@@ -298,7 +308,7 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
         event.preventDefault();
 
         const lessonId = lesson.lessonId;
-        const lessonInfo = {departmentId, name, credit, compulsoryOrElective, semester};
+        const lessonInfo = {departmentId, name, credit, theoreticalHours, practiceHours, compulsoryOrElective, semester};
         const lessonData = await LessonController.updateLesson(operationUserId, lessonId, lessonInfo);
         if (lessonData.success) {
             closeProcessingUpdateNotification();
@@ -363,25 +373,11 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
                                             </h3>
                                         </div>
                                         <div className="grid grid-cols-6 gap-6">
-                                            <div className="sm:col-span-3">
-                                                <label htmlFor="lessonId"
-                                                       className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                    DERS NUMARASI
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="lessonId"
-                                                    id="lessonId"
-                                                    defaultValue={lesson.lessonId}
-                                                    disabled
-                                                    className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                />
-                                            </div>
 
-                                            <div className="sm:col-span-3">
+                                            <div className="sm:col-span-6">
                                                 <label htmlFor="faculty"
                                                        className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                    FAKÜLTE ADI
+                                                    FAKÜLTE
                                                 </label>
                                                 <select
                                                     id="faculty"
@@ -395,10 +391,10 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
                                                 </select>
                                             </div>
 
-                                            <div className="sm:col-span-3">
+                                            <div className="sm:col-span-6">
                                                 <label htmlFor="department"
                                                        className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
-                                                    BÖLÜMÜ
+                                                    BÖLÜM
                                                 </label>
                                                 <select
                                                     onChange={changeDepartmentId}
@@ -423,8 +419,22 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
                                                 </select>
                                             </div>
 
+                                            <div className="sm:col-span-1">
+                                                <label htmlFor="lessonId"
+                                                       className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                    DERS KODU
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="lessonId"
+                                                    id="lessonId"
+                                                    defaultValue={lesson.lessonId}
+                                                    disabled
+                                                    className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                />
+                                            </div>
 
-                                            <div className="col-span-6 sm:col-span-3">
+                                            <div className="col-span-6 sm:col-span-5">
                                                 <label htmlFor="name"
                                                        className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                     DERSİN ADI
@@ -443,23 +453,91 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
                                                     }/>
                                             </div>
 
-                                            <div className="col-span-6 sm:col-span-3">
+                                            <div className="col-span-6 sm:col-span-2">
                                                 <label htmlFor="credit"
                                                        className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                     DERSİN KREDİSİ
                                                 </label>
                                                 <input
-                                                    onChange={changeCredit}
-                                                    type="text"
+                                                    onChange={(e) => {
+                                                        if (e.target.value.length > 2) {
+                                                            e.target.value = "99"
+                                                        }
+                                                        if (e.target.value >= 99) {
+                                                            e.target.value = "99"
+                                                        }
+                                                        if (e.target.value <= 0) {
+                                                            e.target.value = "0"
+                                                        }
+                                                        changeCredit(e)
+                                                    }}
+                                                    type="number"
+                                                    min={100}
+                                                    min={0}
                                                     name="credit"
                                                     id="credit"
-                                                    required
                                                     defaultValue={lesson.credit}
-                                                    disabled={isLessonPassiveOrDeleted()}
-                                                    className={isLessonPassiveOrDeleted()
-                                                        ? "font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                        : "font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
-                                                    }/>
+                                                    required
+                                                    className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                />
+                                            </div>
+
+                                            <div className="col-span-6 sm:col-span-2">
+                                                <label htmlFor="credit"
+                                                       className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                    TEORİK DERS SAATİ
+                                                </label>
+                                                <input
+                                                    onChange={(e) => {
+                                                        if (e.target.value.length > 2) {
+                                                            e.target.value = "99"
+                                                        }
+                                                        if (e.target.value >= 99) {
+                                                            e.target.value = "99"
+                                                        }
+                                                        if (e.target.value <= 0) {
+                                                            e.target.value = "0"
+                                                        }
+                                                        changeTheoreticalHours(e)
+                                                    }}
+                                                    type="number"
+                                                    min={100}
+                                                    min={0}
+                                                    name="theoreticalHours"
+                                                    id="theoreticalHours"
+                                                    defaultValue={lesson.theoreticalHours}
+                                                    required
+                                                    className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                />
+                                            </div>
+
+                                            <div className="col-span-6 sm:col-span-2">
+                                                <label htmlFor="credit"
+                                                       className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
+                                                    UYGULAMA DERS SAATİ
+                                                </label>
+                                                <input
+                                                    onChange={(e) => {
+                                                        if (e.target.value.length > 2) {
+                                                            e.target.value = "99"
+                                                        }
+                                                        if (e.target.value >= 99) {
+                                                            e.target.value = "99"
+                                                        }
+                                                        if (e.target.value <= 0) {
+                                                            e.target.value = "0"
+                                                        }
+                                                        changePracticeHours(e)
+                                                    }}
+                                                    type="number"
+                                                    min={100}
+                                                    min={0}
+                                                    name="practiceHours"
+                                                    id="practiceHours"
+                                                    defaultValue={lesson.practiceHours}
+                                                    required
+                                                    className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                />
                                             </div>
 
                                             <div className="col-span-6 sm:col-span-3">
