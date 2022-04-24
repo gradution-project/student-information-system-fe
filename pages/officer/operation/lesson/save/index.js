@@ -80,20 +80,17 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, de
 
     const [departmentId, setDepartmentId] = useState();
     const changeDepartmentId = event => {
-        const departmentId = event.target.value;
-        setDepartmentId(departmentId);
+        setDepartmentId(event.target.value);
     }
 
     const [name, setName] = useState();
     const changeName = event => {
-        const name = event.target.value;
-        setName(name);
+        setName(event.target.value);
     }
 
     const [credit, setCredit] = useState();
     const changeCredit = event => {
-        const credit = event.target.value;
-        setCredit(credit);
+        setCredit(event.target.value);
     }
 
     const [theoreticalHours, setTheoreticalHours] = useState();
@@ -108,14 +105,12 @@ export default function SaveLesson({isPagePermissionSuccess, operationUserId, de
 
     const [compulsoryOrElective, setCompulsoryOrElective] = useState();
     const changeCompulsoryOrElective = event => {
-        const compulsoryOrElective = event.target.value;
-        setCompulsoryOrElective(compulsoryOrElective);
+        setCompulsoryOrElective(event.target.value);
     }
 
     const [semester, setSemester] = useState();
     const changeSemester = event => {
-        const semester = event.target.value;
-        setSemester(semester);
+        setSemester(event.target.value);
     }
 
     const lessonSave = async (event) => {
