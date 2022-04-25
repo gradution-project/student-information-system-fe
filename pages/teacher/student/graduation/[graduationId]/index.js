@@ -93,7 +93,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessApprovedGraduateNotification() {
             setIsOpenSuccessApprovedGraduateNotification(false);
-             router.reload();
+             router.push("/teacher/student/graduation").then(() => router.reload());
         }
 
          function openSuccessApprovedGraduateNotification() {
@@ -144,7 +144,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessConfirmGraduateNotification() {
              setIsOpenSuccessConfirmGraduateNotification(false);
-             router.reload();
+             router.push("/teacher/student/graduation").then(() => router.reload());
          }
 
          function openSuccessConfirmGraduateNotification() {
@@ -196,7 +196,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessRejectedGraduateNotification() {
              setIsOpenSuccessRejectedGraduateNotification(false);
-             router.reload();
+             router.push("/teacher/student/graduation").then(() => router.reload());
          }
 
          function openSuccessRejectedGraduateNotification() {
@@ -247,7 +247,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessUnConfirmGraduateNotification() {
              setIsOpenSuccessUnConfirmGraduateNotification(false);
-             router.reload();
+             router.push("/teacher/student/graduation").then(() => router.reload());
          }
 
          function openSuccessUnConfirmGraduateNotification() {
