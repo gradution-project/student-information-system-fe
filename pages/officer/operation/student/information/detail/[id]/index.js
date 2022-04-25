@@ -30,9 +30,9 @@ export async function getServerSideProps(context) {
     const departmentsData = await DepartmentController.getAllDepartmentsByStatus(DepartmentStatus.ACTIVE);
 
     const {id} = context.query;
-    const isStudentGraduationEnabled = await  StudentGraduationController.isStudentGraduationEnabled(id);
     const studentData = await StudentController.getStudentDetailByStudentId(id);
-    if (studentData.success && departmentsData.success && isStudentGraduationEnabled.success) {
+    const isStudentGraduationEnabledData = await  StudentGraduationController.isStudentGraduationEnabled(id);
+    if (studentData.success && departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
@@ -40,7 +40,7 @@ export async function getServerSideProps(context) {
                 operationUserId: officerId,
                 departments: departmentsData.response,
                 student: studentData.response,
-                isStudentGraduationEnabled: isStudentGraduationEnabled.response
+                isStudentsGraduationEnabled: isStudentGraduationEnabledData.success
             }
         }
     } else {
@@ -54,8 +54,8 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student, isStudentGraduationEnabled}) {
-
+export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student, isStudentsGraduationEnabled}) {
+    console.log(isStudentsGraduationEnabled)
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
@@ -111,7 +111,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
         setIsOpenFailGraduateNotification(true);
     }
 
-    const studentGraduate = async (event) => {
+    const startGraduationOperation = async (event) => {
         openProcessingGraduateNotification();
 
         event.preventDefault();
@@ -495,11 +495,11 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
                                 SisOperationButton.getActivateButton(studentActivate, "KAYDI AKTİFLEŞTİR")
                         )}
                         {(
-                            !isStudentGraduationEnabled
+                           !isStudentsGraduationEnabled
                                 ?
-                                null
+                               null
                                 :
-                                SisOperationButton.getGraduateButton(studentGraduate, "MEZUNİYET İŞLEMİ BAŞLAT")
+                               SisOperationButton.getGraduateButton(startGraduationOperation, "MEZUNİYET İŞLEMİ BAŞLAT")
                         )}
                     </div>
                     <div className="md:col-span-1">

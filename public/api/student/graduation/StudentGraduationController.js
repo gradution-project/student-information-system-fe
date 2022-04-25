@@ -1,16 +1,6 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
-
-const isStudentGraduationEnabled = async (studentId) => {
-
-    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/enabled/${studentId}`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'GET',
-    });
-    return await apiResult.json();
-};
-
 const getAllStudentGraduationsByStatus = async (status) => {
     const apiResult = await fetch(`${SIS_API_URL}/student/graduation/get?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
@@ -23,6 +13,15 @@ const getStudentGraduationDetailByGraduationId = async (graduationId) => {
     const apiResult = await fetch(`${SIS_API_URL}/student/graduation/get/${graduationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
+    });
+    return await apiResult.json();
+};
+
+const isStudentGraduationEnabled = async (studentId) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/enabled/${studentId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET',
     });
     return await apiResult.json();
 };

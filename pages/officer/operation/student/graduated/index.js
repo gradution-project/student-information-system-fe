@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function StudentList({isPagePermissionSuccess, students}) {
+export default function StudentGraduatedList({isPagePermissionSuccess, students}) {
 
     if (!isPagePermissionSuccess) {
         return (
