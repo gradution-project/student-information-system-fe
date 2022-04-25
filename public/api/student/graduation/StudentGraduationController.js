@@ -33,7 +33,6 @@ const graduateStudent = async (operationUserId, studentId) => {
         method: 'POST',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             studentId: studentId
