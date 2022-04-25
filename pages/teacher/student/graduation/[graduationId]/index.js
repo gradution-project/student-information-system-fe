@@ -52,7 +52,7 @@ export async function getServerSideProps(context) {
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, studentGraduation}) {
+export default function StudentGraduationDetail({isPagePermissionSuccess, isDataFound, operationUserId, studentGraduation}) {
 
     if (!isPagePermissionSuccess) {
         return (

@@ -1,11 +1,12 @@
-import StudentStatus from "../../../../../../public/constants/student/StudentStatus";
-import StudentController from "../../../../../../public/api/student/StudentController";
 import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
+import StudentGraduationController from "../../../../../../public/api/student/graduation/StudentGraduationController";
+import StudentGraduatedStatus from "../../../../../../public/constants/student/graduated/StudentGraduatedStatus";
 import UnauthorizedAccessPage from "../../../../../401";
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
 import StudentDegree from "../../../../../../public/constants/student/StudentDegree";
 import StudentClassLevel from "../../../../../../public/constants/student/StudentClassLevel";
+import {useRouter} from "next/router";
 
 
 export async function getServerSideProps(context) {
@@ -17,24 +18,31 @@ export async function getServerSideProps(context) {
             }
         }
     }
-
-    const studentsData = await StudentController.getAllStudentsByStatus(StudentStatus.GRADUATED);
-    if (studentsData.success) {
+    const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.ALL);
+    if (studentData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                students: studentsData.response
+                students: studentData.response
             }
         }
     }
 }
 
-export default function StudentList({isPagePermissionSuccess, students}) {
+
+export default function StudentGraduationList({isPagePermissionSuccess, students}) {
 
     if (!isPagePermissionSuccess) {
         return (
-            <UnauthorizedAccessPage user="officer"/>
+            <UnauthorizedAccessPage user="teacher"/>
         )
+    }
+
+    const router = useRouter();
+
+    const pushSavePage = async (event) => {
+        event.preventDefault();
+        await router.push('/officer/operation/student/graduated');
     }
 
     return (
@@ -44,8 +52,15 @@ export default function StudentList({isPagePermissionSuccess, students}) {
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                       MEZUN OLAN ÖĞRENCİLERİN LİSTESİ
+                        MEZUNİYET İŞLEM LİSTESİ
                     </a>
+                    <button
+                        type="submit"
+                        onClick={pushSavePage}
+                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
+                    >
+                        MEZUN OLAN ÖĞRENCİLER
+                    </button>
                 </div>
                 {(
                     students.length !== 0
@@ -96,17 +111,17 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                             {/*</div>*/}
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.name} {student.surname}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.name} {student.studentInfoResponse.surname}</div>
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-gray-500">{student.studentId}</div>
+                                                                    className="font-phenomenaRegular text-lg text-gray-500">{student.studentInfoResponse.studentId}</div>
                                                                 <div
-                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.email}</div>
+                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.studentInfoResponse.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {StudentDegree.getAll.map((sDegree) => (
-                                                            student.degree === sDegree.enum
+                                                            student.studentInfoResponse.degree === sDegree.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{sDegree.tr}</div>
@@ -115,7 +130,7 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                         ))}
 
                                                         {StudentClassLevel.getAll.map((sClassLevel) => (
-                                                            student.classLevel === sClassLevel.enum
+                                                            student.studentInfoResponse.classLevel === sClassLevel.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaRegular text-xl text-sis-darkblue">{sClassLevel.tr}</div>
@@ -125,10 +140,10 @@ export default function StudentList({isPagePermissionSuccess, students}) {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{student.departmentResponse.name}</div>
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {StudentStatus.getAll.map((sStatus) => (
+                                                        {StudentGraduatedStatus.getAll.map((sStatus) => (
                                                             student.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent
