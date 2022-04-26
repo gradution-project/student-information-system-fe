@@ -919,7 +919,8 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
                                     isOpen={isOpenSuccessGraduateNotification}
                                     closeNotification={closeSuccessGraduateNotification}
                                     title="Öğrenci Mezuniyet İşlemi Başlatıldı!"
-                                    description="Öğrenci Mezuniyet İşlemi başarıyla işleme koyuldu."
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla başlatıldı.
+                                                 Mezuniyet İşlemleri ekranından takip edebilirsiniz."
                                 />
 
                                 <FailNotification

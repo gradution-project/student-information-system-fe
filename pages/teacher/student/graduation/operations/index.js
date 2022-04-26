@@ -151,7 +151,7 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/teacher/student/graduation/' + student.graduationId}
+                                                        <a href={'/teacher/student/graduation/operations/' + student.graduationId}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>
