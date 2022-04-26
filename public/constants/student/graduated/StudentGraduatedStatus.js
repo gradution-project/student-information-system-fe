@@ -7,21 +7,21 @@ const getAll = [
     },
     {
         enum: 'APPROVED',
-        tr: 'Kesinleştirildi',
-        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">Kesinleştirildi</span>,
-        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">Kesinleştirildi</span>
-    },
-    {
-        enum: 'CONFIRMED',
         tr: 'Onaylandı',
         miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">Onaylandı</span>,
         component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">Onaylandı</span>
     },
     {
         enum: 'REJECTED',
-        tr: 'Red Edildi',
-        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">Red Edildi</span>,
-        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Red Edildi</span>
+        tr: 'Reddedildi',
+        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">Reddedildi</span>,
+        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Reddedildi</span>
+    },
+    {
+        enum: 'CONFIRMED',
+        tr: 'Kesinleştirildi',
+        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-success font-phenomenaBold text-lg text-sis-white ">Kesinleştirildi</span>,
+        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-success font-phenomenaBold text-2xl text-sis-white ">Kesinleştirildi</span>
     },
     {
         enum: 'UNCONFIRMED',
@@ -33,8 +33,8 @@ const getAll = [
 
 const WAITING = 'WAITING';
 const APPROVED = 'APPROVED';
-const CONFIRMED = 'CONFIRMED';
 const REJECTED = 'REJECTED';
+const CONFIRMED = 'CONFIRMED';
 const UNCONFIRMED = 'UNCONFIRMED';
 const ALL = 'ALL';
 
@@ -42,8 +42,8 @@ const StudentGraduatedStatus = {
     getAll,
     WAITING,
     APPROVED,
-    CONFIRMED,
     REJECTED,
+    CONFIRMED,
     UNCONFIRMED,
     ALL
 };
