@@ -55,7 +55,6 @@ export async function getServerSideProps(context) {
 
 
 export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student, isStudentsGraduationEnabled}) {
-    console.log(isStudentsGraduationEnabled)
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
