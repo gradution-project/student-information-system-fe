@@ -105,10 +105,10 @@ const unConfirmStudentGraduation = async (operationUserId, graduationId) => {
 
 
 const StudentGraduationController = {
-    saveStudentGraduation,
-    isStudentGraduationEnabled,
     getAllStudentGraduationsByStatus,
     getStudentGraduationDetailByGraduationId,
+    isStudentGraduationEnabled,
+    saveStudentGraduation,
     approveStudentGraduation,
     rejectStudentGraduation,
     confirmStudentGraduation,
