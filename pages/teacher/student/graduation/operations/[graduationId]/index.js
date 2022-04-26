@@ -75,7 +75,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
 
      /**
-          * STUDENT GRADUATE APPROVED
+          * STUDENT APPROVED GRADUATE OPERATION
          */
 
         let [isOpenProcessingApprovedGraduateNotification, setIsOpenProcessingApprovedGraduateNotification] = useState(false);
@@ -92,7 +92,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessApprovedGraduateNotification() {
             setIsOpenSuccessApprovedGraduateNotification(false);
-             router.push("/teacher/student/graduation").then(() => router.reload());
+             router.push("/teacher/student/graduation/operations").then(() => router.reload());
         }
 
          function openSuccessApprovedGraduateNotification() {
@@ -125,7 +125,59 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
              }
          }
 
-         /**
+    /**
+     * STUDENT REJECT GRADUATE OPERATION
+     */
+
+    let [isOpenProcessingRejectedGraduateNotification, setIsOpenProcessingRejectedGraduateNotification] = useState(false);
+
+    function closeProcessingRejectedGraduateNotification() {
+        setIsOpenProcessingRejectedGraduateNotification(false);
+    }
+
+    function openProcessingRejectedGraduateNotification() {
+        setIsOpenProcessingRejectedGraduateNotification(true);
+    }
+
+    let [isOpenSuccessRejectedGraduateNotification, setIsOpenSuccessRejectedGraduateNotification] = useState(false);
+
+    function closeSuccessRejectedGraduateNotification() {
+        setIsOpenSuccessRejectedGraduateNotification(false);
+        router.push("/teacher/student/graduation/operations").then(() => router.reload());
+    }
+
+    function openSuccessRejectedGraduateNotification() {
+        setIsOpenSuccessRejectedGraduateNotification(true);
+    }
+
+    let [isOpenFailRejectedGraduateNotification, setIsOpenFailRejectedGraduateNotification] = useState(false);
+
+    function closeFailRejectedGraduateNotification() {
+        setIsOpenFailRejectedGraduateNotification(false);
+    }
+
+    function openFailRejectedGraduateNotification() {
+        setIsOpenFailRejectedGraduateNotification(true);
+    }
+
+    const studentRejectGraduate = async (event) => {
+        openProcessingRejectedGraduateNotification();
+
+        event.preventDefault();
+
+        const {graduationId} = studentGraduation;
+        const studentData = await StudentGraduationController.rejectStudentGraduation(graduationId, operationUserId);
+        if (studentData.success) {
+            closeProcessingRejectedGraduateNotification();
+            openSuccessRejectedGraduateNotification();
+        } else {
+            closeProcessingRejectedGraduateNotification();
+            openFailRejectedGraduateNotification();
+        }
+    }
+
+
+          /**
           * STUDENT CONFIRM GRADUATE OPERATION
           */
 
@@ -143,7 +195,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessConfirmGraduateNotification() {
              setIsOpenSuccessConfirmGraduateNotification(false);
-             router.push("/teacher/student/graduation").then(() => router.reload());
+             router.push("/teacher/student/graduation/operations").then(() => router.reload());
          }
 
          function openSuccessConfirmGraduateNotification() {
@@ -176,58 +228,6 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
              }
          }
 
-
-         /**
-          * STUDENT PASSIVATE OPERATION
-       */
-
-         let [isOpenProcessingRejectedGraduateNotification, setIsOpenProcessingRejectedGraduateNotification] = useState(false);
-
-         function closeProcessingRejectedGraduateNotification() {
-             setIsOpenProcessingRejectedGraduateNotification(false);
-         }
-
-         function openProcessingRejectedGraduateNotification() {
-             setIsOpenProcessingRejectedGraduateNotification(true);
-         }
-
-         let [isOpenSuccessRejectedGraduateNotification, setIsOpenSuccessRejectedGraduateNotification] = useState(false);
-
-         function closeSuccessRejectedGraduateNotification() {
-             setIsOpenSuccessRejectedGraduateNotification(false);
-             router.push("/teacher/student/graduation").then(() => router.reload());
-         }
-
-         function openSuccessRejectedGraduateNotification() {
-             setIsOpenSuccessRejectedGraduateNotification(true);
-         }
-
-         let [isOpenFailRejectedGraduateNotification, setIsOpenFailRejectedGraduateNotification] = useState(false);
-
-         function closeFailRejectedGraduateNotification() {
-             setIsOpenFailRejectedGraduateNotification(false);
-         }
-
-         function openFailRejectedGraduateNotification() {
-             setIsOpenFailRejectedGraduateNotification(true);
-         }
-
-         const studentRejectGraduate = async (event) => {
-             openProcessingRejectedGraduateNotification();
-
-             event.preventDefault();
-
-             const {graduationId} = studentGraduation;
-             const studentData = await StudentGraduationController.rejectStudentGraduation(graduationId, operationUserId);
-             if (studentData.success) {
-                 closeProcessingRejectedGraduateNotification();
-                 openSuccessRejectedGraduateNotification();
-             } else {
-                 closeProcessingRejectedGraduateNotification();
-                 openFailRejectedGraduateNotification();
-            }
-         }
-
         /**
          * STUDENT UNCONFIRM GRADUATE OPERATION
          */
@@ -246,7 +246,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
          function closeSuccessUnConfirmGraduateNotification() {
              setIsOpenSuccessUnConfirmGraduateNotification(false);
-             router.push("/teacher/student/graduation").then(() => router.reload());
+             router.push("/teacher/student/graduation/operations").then(() => router.reload());
          }
 
          function openSuccessUnConfirmGraduateNotification() {
@@ -527,42 +527,19 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                 <ProcessNotification
                                     isOpen={isOpenProcessingApprovedGraduateNotification}
                                     closeNotification={closeProcessingApprovedGraduateNotification}
-                                    title="Öğrenci Mezuniyet İşlemi Kesinleştiriliyor..."
+                                    title="Öğrenci Mezuniyet İşlemi Onaylanıyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessApprovedGraduateNotification}
                                     closeNotification={closeSuccessApprovedGraduateNotification}
-                                    title="Öğrenci Mezuniyet İşlemi Kesinleştirildi!"
-                                    description="Öğrenci Mezuniyet İşlemi başarıyla Kesinleştirildi."
+                                    title="Öğrenci Mezuniyet İşlemi Onaylandı!"
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla Oanylandı."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailApprovedGraduateNotification}
                                     closeNotification={closeFailApprovedGraduateNotification}
-                                    title="Öğrenci Mezuniyet İşlemi Kesinleştirilemedi!"
-                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
-                                />
-
-                                {/**
-                                 * Confirm Graduate
-                                 */}
-                                <ProcessNotification
-                                    isOpen={isOpenProcessingConfirmGraduateNotification}
-                                    closeNotification={closeProcessingConfirmGraduateNotification}
-                                    title="Öğrenci Mezuniyet İşlemi Onaylanıyor..."
-                                />
-
-                                <SuccessNotification
-                                    isOpen={isOpenSuccessConfirmGraduateNotification}
-                                    closeNotification={closeSuccessConfirmGraduateNotification}
-                                    title="Öğrenci Mezuniyet İşlemi Onaylandı!"
-                                    description="Öğrenci Mezuniyet İşlemi başarıyla Onaylandı."
-                                />
-
-                                <FailNotification
-                                    isOpen={isOpenFailConfirmGraduateNotification}
-                                    closeNotification={closeFailConfirmGraduateNotification}
                                     title="Öğrenci Mezuniyet İşlemi Onaylanamadı!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
@@ -589,6 +566,30 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                     title="Öğrenci Mezuniyet İşlemi Reddedilemedi!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
+
+                                {/**
+                                 * Confirm Graduate
+                                 */}
+                                <ProcessNotification
+                                    isOpen={isOpenProcessingConfirmGraduateNotification}
+                                    closeNotification={closeProcessingConfirmGraduateNotification}
+                                    title="Öğrenci Mezuniyet İşlemi Kesinleştiriliyor..."
+                                />
+
+                                <SuccessNotification
+                                    isOpen={isOpenSuccessConfirmGraduateNotification}
+                                    closeNotification={closeSuccessConfirmGraduateNotification}
+                                    title="Öğrenci Mezuniyet İşlemi Kesinleştirildi!"
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla Kesinleştirildi."
+                                />
+
+                                <FailNotification
+                                    isOpen={isOpenFailConfirmGraduateNotification}
+                                    closeNotification={closeFailConfirmGraduateNotification}
+                                    title="Öğrenci Mezuniyet İşlemi Kesinleştirilemedi!"
+                                    description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                                />
+
 
                                 {/**
                                  * UnConfirm Graduate
