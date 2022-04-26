@@ -58,7 +58,7 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        MEZUN OLACAK ÖĞRENCİ LİSTESİ
+                        MEZUNİYET KAYIT LİSTESİ
                     </a>
                 </div>
                 {(

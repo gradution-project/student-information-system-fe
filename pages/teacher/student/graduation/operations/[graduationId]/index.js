@@ -365,7 +365,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 id="studentId"
                                                 defaultValue={studentInfoResponse.studentId}
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -380,7 +380,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 id="name"
                                                 defaultValue={studentInfoResponse.name}
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 />
                                         </div>
 
@@ -395,7 +395,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 id="surname"
                                                 disabled
                                                 defaultValue={studentInfoResponse.surname}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                                 />
                                         </div>
 
@@ -411,7 +411,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 id="registration-date"
                                                 defaultValue={studentInfoResponse.registrationDate}
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
 
@@ -426,7 +426,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 autoComplete="faculty-name"
                                                 disabled
                                                 defaultValue={facultyResponse.name}
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 <option
                                                     value={facultyResponse.facultyId}>{facultyResponse.name}</option>
@@ -443,7 +443,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 name="department-id"
                                                 autoComplete="department-id"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 >
                                                 <option value={departmentResponse.departmentId}>{departmentResponse.name}</option>
                                             </select>
@@ -459,7 +459,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 name="degree"
                                                 autoComplete="degree"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                             >
                                                 {StudentDegree.getAll.map((sDegree) => (
                                                     studentInfoResponse.degree === sDegree.enum
@@ -481,7 +481,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 id="classLevel"
                                                 name="classLevel"
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                                className="font-phenomenaRegular text-gray-500 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 >
                                                 {StudentClassLevel.getAll.map((sClassLevel) => (
                                                     studentInfoResponse.classLevel === sClassLevel.enum
@@ -504,21 +504,9 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                                 id="email-address"
                                                 defaultValue={studentInfoResponse.email}
                                                 disabled
-                                                className="font-phenomenaRegular text-gray-700 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
+                                                className="font-phenomenaRegular text-gray-400 mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md"
                                             />
                                         </div>
-
-                                        {(
-                                            studentGraduation.modifiedDate !== null
-                                                ?
-                                                <div className="sm:col-span-6">
-                                                    <a className="font-phenomenaRegular text-sis-blue text-xl">
-                                                        Son Düzenlenme Tarihi : {studentGraduation.modifiedDate}
-                                                    </a>
-                                                </div>
-                                                :
-                                                null
-                                        )}
                                     </div>
                                 </div>
                                 {/**
