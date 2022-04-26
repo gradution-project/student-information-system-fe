@@ -345,7 +345,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
 
                     </div>
                     <div className="md:col-span-1">
-                        <form className="mt-10 max-w-3xl mx-auto space-y-6">
+                        <form className="mt-8 max-w-3xl mx-auto space-y-6">
                             <div className="shadow sm:rounded-md sm:overflow-hidden">
                                 <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                     <div className="mb-6 px-4 sm:px-0 bg-gray-50 rounded-xl">
@@ -616,12 +616,6 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-
-            <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                    <div className="border-t border-gray-200"/>
                 </div>
             </div>
         </>
