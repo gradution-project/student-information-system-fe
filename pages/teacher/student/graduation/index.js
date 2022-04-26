@@ -3,7 +3,7 @@ import UnauthorizedAccessPage from "../../../401";
 import SISTitle from "../../../../public/components/page-titles";
 import StudentDegree from "../../../../public/constants/student/StudentDegree";
 import StudentClassLevel from "../../../../public/constants/student/StudentClassLevel";
-import StudentGraduatedStatus from "../../../../public/constants/student/graduated/StudentGraduatedStatus";
+import StudentGraduationStatus from "../../../../public/constants/student/graduated/StudentGraduationStatus";
 import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
 import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
@@ -21,7 +21,7 @@ export async function getServerSideProps(context) {
         }
     }
     if (teacherRole === TeacherRole.ADVISOR){
-        const studentsData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.WAITING);
+        const studentsData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.WAITING);
         if (studentsData.success) {
             return {
                 props: {
@@ -32,7 +32,7 @@ export async function getServerSideProps(context) {
         }
     }
     else  if (teacherRole === TeacherRole.HEAD_OF_DEPARTMENT){
-        const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.APPROVED);
+        const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.APPROVED);
         if (studentData.success) {
             return {
                 props: {
@@ -143,7 +143,7 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {StudentGraduatedStatus.getAll.map((sStatus) => (
+                                                        {StudentGraduationStatus.getAll.map((sStatus) => (
                                                             student.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent

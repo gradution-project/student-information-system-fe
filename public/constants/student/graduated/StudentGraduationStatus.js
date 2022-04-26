@@ -25,9 +25,9 @@ const getAll = [
     },
     {
         enum: 'UNCONFIRMED',
-        tr: 'Onaylanmadı',
-        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">Onaylanmadı</span>,
-        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Onaylanmadı</span>
+        tr: 'Kesinleştirilmedi',
+        miniComponent: <span className="select-none px-2 inline-flex leading-7 rounded-full bg-sis-fail font-phenomenaBold text-lg text-sis-white ">Kesinleştirilmedi</span>,
+        component: <span className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-fail font-phenomenaBold text-2xl text-sis-white ">Kesinleştirilmedi</span>
     }
 ]
 
@@ -38,7 +38,7 @@ const CONFIRMED = 'CONFIRMED';
 const UNCONFIRMED = 'UNCONFIRMED';
 const ALL = 'ALL';
 
-const StudentGraduatedStatus = {
+const StudentGraduationStatus = {
     getAll,
     WAITING,
     APPROVED,
@@ -48,4 +48,4 @@ const StudentGraduatedStatus = {
     ALL
 };
 
-export default StudentGraduatedStatus;
+export default StudentGraduationStatus;

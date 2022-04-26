@@ -6,7 +6,7 @@ import DepartmentStatus from "../../../../../public/constants/department/Departm
 import StudentController from "../../../../../public/api/student/StudentController";
 import PageNotFound from "../../../../404";
 import SisTeacherStorage from "../../../../../public/storage/teacher/SisTeacherStorage";
-import StudentGraduatedStatus from "../../../../../public/constants/student/graduated/StudentGraduatedStatus";
+import StudentGraduationStatus from "../../../../../public/constants/student/graduated/StudentGraduationStatus";
 import StudentClassLevel from "../../../../../public/constants/student/StudentClassLevel";
 import StudentDegree from "../../../../../public/constants/student/StudentDegree";
 import TeacherNavbar from "../../../../../public/components/navbar/teacher/teacher-navbar";
@@ -291,7 +291,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                         <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                             {studentInfoResponse.name} {studentInfoResponse.surname}
                         </a>
-                        {StudentGraduatedStatus.getAll.map((studentStatus) => (
+                        {StudentGraduationStatus.getAll.map((studentStatus) => (
                             studentGraduation.status === studentStatus.enum
                                 ?
                                 studentStatus.component
@@ -327,7 +327,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                     type="submit"
                                     className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    MEZUNİYET İŞLEMİNİ KESİNLEŞTİR
+                                    MEZUNİYET İŞLEMİNİ ONAYLA
                                 </button>
                         )}
                         {(
@@ -340,7 +340,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
                                     type="submit"
                                     className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                                 >
-                                    MEZUNİYET İŞLEMİNİ ONAYLA
+                                    MEZUNİYET İŞLEMİNİ KESİNLEŞTİR
                                 </button>
                         )}
 

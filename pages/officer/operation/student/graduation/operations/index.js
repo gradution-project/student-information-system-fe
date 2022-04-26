@@ -1,6 +1,6 @@
 import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
 import StudentGraduationController from "../../../../../../public/api/student/graduation/StudentGraduationController";
-import StudentGraduatedStatus from "../../../../../../public/constants/student/graduated/StudentGraduatedStatus";
+import StudentGraduationStatus from "../../../../../../public/constants/student/graduated/StudentGraduationStatus";
 import UnauthorizedAccessPage from "../../../../../401";
 import SISTitle from "../../../../../../public/components/page-titles";
 import OfficerNavbar from "../../../../../../public/components/navbar/officer/officer-navbar";
@@ -18,7 +18,7 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduatedStatus.ALL);
+    const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.ALL);
     if (studentData.success) {
         return {
             props: {
@@ -143,7 +143,7 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                                             className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.departmentResponse.name}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {StudentGraduatedStatus.getAll.map((sStatus) => (
+                                                        {StudentGraduationStatus.getAll.map((sStatus) => (
                                                             student.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent
