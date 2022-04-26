@@ -24,10 +24,18 @@ export async function getServerSideProps(context) {
                 isPagePermissionSuccess: true
             }
         }
+    }else {
+        return {
+            props: {
+                lessons: studentLessonsData.success,
+                isPagePermissionSuccess: true
+            }
+        }
     }
 }
 
 export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
+    console.log(lessons)
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
@@ -38,7 +46,7 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
             <SISTitle/>
             <StudentNavbar/>
             {(
-                lessons.length !== 0
+                lessons.length !== 0 && lessons.lessonsResponses
                     ?
                     <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                         <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
@@ -168,10 +176,9 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                     </div>
                     :
                     <div
-                        className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                        className="max-w-7xl mt-20 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
                             Henüz Ders Kaydınız Yapılmadı!
-
                         </a>
                     </div>
             )}
