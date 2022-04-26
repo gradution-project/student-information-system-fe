@@ -18,12 +18,12 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.ALL);
-    if (studentData.success) {
+    const studentsData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.ALL);
+    if (studentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                students: studentData.response
+                students: studentsData.response
             }
         }
     }
