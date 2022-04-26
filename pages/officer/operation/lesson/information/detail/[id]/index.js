@@ -277,12 +277,12 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
         setCredit(event.target.value);
     }
 
-    const [theoreticalHours, setTheoreticalHours] = useState();
+    const [theoreticalHours, setTheoreticalHours] = useState(lesson.theoreticalHours);
     const changeTheoreticalHours = event => {
         setTheoreticalHours(event.target.value);
     }
 
-    const [practiceHours, setPracticeHours] = useState();
+    const [practiceHours, setPracticeHours] = useState(lesson.practiceHours);
     const changePracticeHours = event => {
         setPracticeHours(event.target.value);
     }
