@@ -115,7 +115,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
             event.preventDefault();
 
             const {graduationId} = studentGraduation;
-             const studentData = await StudentGraduationController.approveStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.approveStudentGraduation(operationUserId, graduationId);
              if (studentData.success) {
                  closeProcessingApprovedGraduateNotification();
                  openSuccessApprovedGraduateNotification();
@@ -166,7 +166,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
         event.preventDefault();
 
         const {graduationId} = studentGraduation;
-        const studentData = await StudentGraduationController.rejectStudentGraduation(graduationId, operationUserId);
+        const studentData = await StudentGraduationController.rejectStudentGraduation(operationUserId, graduationId);
         if (studentData.success) {
             closeProcessingRejectedGraduateNotification();
             openSuccessRejectedGraduateNotification();
@@ -218,7 +218,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
              event.preventDefault();
 
              const {graduationId} = studentGraduation;
-             const studentData = await StudentGraduationController.confirmStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.confirmStudentGraduation(operationUserId, graduationId);
              if (studentData.success) {
                  closeProcessingConfirmGraduateNotification();
                  openSuccessConfirmGraduateNotification();
@@ -269,7 +269,7 @@ export default function StudentGraduationDetail({isPagePermissionSuccess, isData
              event.preventDefault();
 
              const {graduationId} = studentGraduation;
-             const studentData = await StudentGraduationController.unConfirmStudentGraduation(graduationId, operationUserId);
+             const studentData = await StudentGraduationController.unConfirmStudentGraduation(operationUserId, graduationId);
              if (studentData.success) {
                  closeProcessingUnConfirmGraduateNotification();
                  openSuccessUnConfirmGraduateNotification();

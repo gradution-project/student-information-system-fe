@@ -26,7 +26,7 @@ const isStudentGraduationEnabled = async (studentId) => {
     return await apiResult.json();
 };
 
-const graduateStudent = async (operationUserId, studentId) => {
+const saveStudentGraduation = async (operationUserId, studentId) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/graduation/save`, {
         headers: {'Content-Type': 'application/json'},
@@ -42,61 +42,62 @@ const graduateStudent = async (operationUserId, studentId) => {
     return await apiResult.json();
 };
 
-const approveStudentGraduation = async (graduationId, operationUserId) => {
+const approveStudentGraduation = async (operationUserId, graduationId) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/graduation/approve`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PATCH',
         body: JSON.stringify({
-            graduationId: graduationId,
             operationInfoRequest: {
                 userId: operationUserId
-            }
+            },
+            graduationId: graduationId
+
         }),
     });
     return await apiResult.json();
 };
 
-const confirmStudentGraduation = async (graduationId, operationUserId) => {
-
-    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/confirm`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'PATCH',
-        body: JSON.stringify({
-            graduationId: graduationId,
-            operationInfoRequest: {
-                userId: operationUserId
-            }
-        }),
-    });
-    return await apiResult.json();
-};
-
-const rejectStudentGraduation = async (graduationId, operationUserId) => {
+const rejectStudentGraduation = async (operationUserId, graduationId) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/graduation/reject`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PATCH',
         body: JSON.stringify({
-            graduationId: graduationId,
             operationInfoRequest: {
                 userId: operationUserId
-            }
+            },
+            graduationId: graduationId
         }),
     });
     return await apiResult.json();
 };
 
-const unConfirmStudentGraduation = async (graduationId, operationUserId) => {
+const confirmStudentGraduation = async (operationUserId, graduationId) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/graduation/confirm`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PATCH',
+        body: JSON.stringify({
+            operationInfoRequest: {
+                userId: operationUserId
+            },
+            graduationId: graduationId
+        }),
+    });
+    return await apiResult.json();
+};
+
+const unConfirmStudentGraduation = async (operationUserId, graduationId) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/graduation/unconfirm`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PATCH',
         body: JSON.stringify({
-            graduationId: graduationId,
             operationInfoRequest: {
                 userId: operationUserId
-            }
+            },
+            graduationId: graduationId
         }),
     });
     return await apiResult.json();
@@ -104,14 +105,15 @@ const unConfirmStudentGraduation = async (graduationId, operationUserId) => {
 
 
 const StudentGraduationController = {
-    graduateStudent,
+    saveStudentGraduation,
+    isStudentGraduationEnabled,
     getAllStudentGraduationsByStatus,
     getStudentGraduationDetailByGraduationId,
     approveStudentGraduation,
-    confirmStudentGraduation,
     rejectStudentGraduation,
-    unConfirmStudentGraduation,
-    isStudentGraduationEnabled
+    confirmStudentGraduation,
+    unConfirmStudentGraduation
+
 };
 
 export default StudentGraduationController;

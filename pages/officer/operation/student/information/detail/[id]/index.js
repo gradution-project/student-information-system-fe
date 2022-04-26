@@ -116,7 +116,7 @@ export default function StudentDetail({isPagePermissionSuccess, isDataFound, ope
         event.preventDefault();
 
         const studentId = academicInfoResponse.studentId;
-        const studentData = await StudentGraduationController.graduateStudent(operationUserId, studentId);
+        const studentData = await StudentGraduationController.saveStudentGraduation(operationUserId, studentId);
         if (studentData.success) {
             closeProcessingGraduateNotification();
             openSuccessGraduateNotification();
