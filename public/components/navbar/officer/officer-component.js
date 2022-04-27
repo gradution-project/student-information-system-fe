@@ -73,7 +73,7 @@ const student = [
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
-        href: '/officer/operation/student/graduation',
+        href: '/officer/operation/student/graduation/operations',
         icon: BookmarkAltIcon,
     }
 ]
