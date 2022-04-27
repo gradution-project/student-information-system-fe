@@ -19,24 +19,18 @@ export async function getServerSideProps(context) {
             }
         }
     }
+    let studentGraduationStatus;
     if (teacherRole === TeacherRole.ADVISOR) {
-        const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.WAITING)
-        if (studentData.success) {
-            return {
-                props: {
-                    isPagePermissionSuccess: true,
-                    students: studentData.response
-                }
-            }
-        }
+        studentGraduationStatus = StudentGraduationStatus.WAITING;
     } else if (teacherRole === TeacherRole.HEAD_OF_DEPARTMENT) {
-        const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(StudentGraduationStatus.APPROVED)
-        if (studentData.success) {
-            return {
-                props: {
-                    isPagePermissionSuccess: true,
-                    students: studentData.response
-                }
+       studentGraduationStatus = StudentGraduationStatus.APPROVED;
+    }
+    const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(studentGraduationStatus);
+    if (studentData.success) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                students: studentData.response
             }
         }
     }
