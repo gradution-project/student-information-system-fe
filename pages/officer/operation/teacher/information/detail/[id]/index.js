@@ -529,14 +529,11 @@ export default function TeacherDetail({isPagePermissionSuccess, isDataFound, ope
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departments.map((department) => (
-                                                    departmentResponse.departmentId === department.name
+                                                    departmentResponse.departmentId === department.departmentId
                                                         ?
-                                                        <option key={department.departmentId}
-                                                                value={department.departmentId}
-                                                                selected>{department.name}</option>
+                                                        <option key={department.departmentId} value={department.departmentId} selected>{department.name}</option>
                                                         :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>

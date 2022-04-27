@@ -31,7 +31,7 @@ const otherTransactions = [
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
-        href: '/student/transcript',
+        href: '/teacher/student/graduation/operations',
         roles: [TeacherRole.ADVISOR, TeacherRole.HEAD_OF_DEPARTMENT],
         icon: DocumentReportIcon
     }
