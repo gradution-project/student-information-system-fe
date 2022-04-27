@@ -23,6 +23,13 @@ export async function getServerSideProps(context) {
                 studentLessonsNotes: studentLessonsNotesData.response
             }
         }
+    }else{
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                studentLessonsNotes: studentLessonsNotesData.success
+            }
+        }
     }
 }
 
@@ -38,7 +45,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
             <SISTitle/>
             <StudentNavbar/>
             {(
-                studentLessonsNotes.length !== 0
+                studentLessonsNotes.length !== 0 && studentLessonsNotes
                     ?
                     <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                         <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
@@ -174,7 +181,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                     </div>
                     :
                     <div
-                        className="max-w-7xl mt-8 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                        className="max-w-7xl mt-5 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
                             Ders Kaydınız Yapılmadığı için Notlarınızı Görüntüleyemiyorsunuz!
                         </a>
