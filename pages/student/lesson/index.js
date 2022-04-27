@@ -176,7 +176,7 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                     </div>
                     :
                     <div
-                        className="max-w-7xl mt-20 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                        className="max-w-7xl mt-4 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                         <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
                             Henüz Ders Kaydınız Yapılmadı!
                         </a>
