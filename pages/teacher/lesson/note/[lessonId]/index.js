@@ -669,7 +669,7 @@ export default function TeacherLessonNotesList({
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    STATÜSÜ
+                                                    DURUMU
                                                 </th>
                                             </tr>
                                             </thead>
