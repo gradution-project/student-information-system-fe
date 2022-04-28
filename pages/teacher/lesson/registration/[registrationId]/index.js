@@ -14,9 +14,10 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
-import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 import ProcessNotification from "../../../../../public/notifications/process";
 import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
+import StudentLessonRegistrationStatus
+    from "../../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -29,9 +30,9 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
+    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS);
     const {registrationId} = context.query;
-    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getAllStudentsLessonRegistrationByRegistrationId(registrationId);
+    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getStudentLessonRegistrationByRegistrationId(registrationId);
     if (studentsLessonRegistrationData.success) {
         return {
             props: {
@@ -175,8 +176,8 @@ export default function StudentLessonRegistrationsList({
 
         const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessRejectedNotification();
             openSuccessRejectedNotification();
+            closeSuccessRejectedNotification();
         } else {
             closeFailRejectedNotification();
             openFailRejectedNotification();
@@ -192,7 +193,7 @@ export default function StudentLessonRegistrationsList({
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         {lessonRegistrations.studentInfoResponse.name} {lessonRegistrations.studentInfoResponse.surname}
                     </a>
-                    {RegistrationStatus.getAll.map((rStatus) => (
+                    {StudentLessonRegistrationStatus.getAll.map((rStatus) => (
                         lessonRegistrations.status === rStatus.enum
                             ?
                             rStatus.component
@@ -200,7 +201,7 @@ export default function StudentLessonRegistrationsList({
                             null
                     ))}
                     {(
-                      lessonRegistrations.status !== RegistrationStatus.WAITING
+                      lessonRegistrations.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
@@ -213,7 +214,7 @@ export default function StudentLessonRegistrationsList({
                             </button>
                     )}
                     {(
-                       lessonRegistrations.status !== RegistrationStatus.WAITING
+                       lessonRegistrations.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
