@@ -12,11 +12,11 @@ import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/L
 import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
 import {useState} from "react";
 import {useRouter} from "next/router";
+import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
+import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
-import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 import ProcessNotification from "../../../../../public/notifications/process";
-import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -29,9 +29,9 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
+    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS);
     const {registrationId} = context.query;
-    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getAllStudentsLessonRegistrationByRegistrationId(registrationId);
+    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getStudentLessonRegistrationByRegistrationId(registrationId);
     if (studentsLessonRegistrationData.success) {
         return {
             props: {
@@ -94,7 +94,7 @@ export default function StudentLessonRegistrationsList({
     }
 
     function openProcessingApprovedNotification() {
-        setIsOpenProcessingApprovedNotification(true);
+        setIsOpenProcessingRejectedNotification(true);
     }
 
     let [isOpenSuccessApprovedNotification, setIsOpenSuccessApprovedNotification] = useState(false);
@@ -118,16 +118,15 @@ export default function StudentLessonRegistrationsList({
         setIsOpenFailApprovedNotification(true);
     }
 
-    const approvedLessonRegistration = async (event) => {
+    const approvedStudentLessonRegistration = async (event) => {
         openProcessingApprovedNotification();
 
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.approvedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessApprovedNotification();
             openSuccessApprovedNotification();
-
+            closeSuccessApprovedNotification();
         } else {
             closeFailApprovedNotification();
             openFailApprovedNotification();
@@ -168,7 +167,7 @@ export default function StudentLessonRegistrationsList({
         setIsOpenFailRejectedNotification(true);
     }
 
-    const rejectedLessonRegistration = async (event) => {
+    const rejectedStudentLessonRegistration = async (event) => {
         openProcessingRejectedNotification();
 
         event.preventDefault();
@@ -200,12 +199,12 @@ export default function StudentLessonRegistrationsList({
                             null
                     ))}
                     {(
-                      lessonRegistrations.status !== RegistrationStatus.WAITING
+                        lessonRegistrations.status !== RegistrationStatus.WAITING
                             ?
                             null
                             :
                             <button
-                                onClick={rejectedLessonRegistration}
+                                onClick={rejectedStudentLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
                             >
@@ -213,12 +212,12 @@ export default function StudentLessonRegistrationsList({
                             </button>
                     )}
                     {(
-                       lessonRegistrations.status !== RegistrationStatus.WAITING
+                        lessonRegistrations.status !== RegistrationStatus.WAITING
                             ?
                             null
                             :
                             <button
-                                onClick={approvedLessonRegistration}
+                                onClick={approvedStudentLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                             >
@@ -341,7 +340,6 @@ export default function StudentLessonRegistrationsList({
                     title="Öğrenci Ders Kaydı Onaylanamadı!"
                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />
-
                 {/**
                  * Rejected
                  */}

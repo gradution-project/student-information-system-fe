@@ -2,15 +2,15 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllLessonRegistrationByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
     return await apiResult.json();
 };
 
-const getAllStudentsLessonRegistrationByRegistrationId = async (registrationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get/${registrationId}`, {
+const getStudentLessonRegistrationByRegistrationId = async (registrationId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/detail/${registrationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -69,7 +69,7 @@ const rejectedLessonRegistration = async (operationUserId, registrationId) => {
 
 const StudentLessonRegistrationController = {
     getAllLessonRegistrationByStatus,
-    getAllStudentsLessonRegistrationByRegistrationId,
+    getStudentLessonRegistrationByRegistrationId,
     saveStudentLessonRegistration,
     approvedLessonRegistration,
     rejectedLessonRegistration
