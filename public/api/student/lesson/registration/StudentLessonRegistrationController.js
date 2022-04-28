@@ -17,6 +17,13 @@ const getAllStudentsLessonRegistrationByRegistrationId = async (registrationId) 
     return await apiResult.json();
 };
 
+const isStudentLessonRegistrationApprovedRegistrationId = async (registrationId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/approved/${registrationId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    return await apiResult.json();
+};
 
 const saveStudentLessonRegistration = async (operationUserId, lessonIds, studentId) => {
 
@@ -70,6 +77,7 @@ const rejectedLessonRegistration = async (operationUserId, registrationId) => {
 const StudentLessonRegistrationController = {
     getAllLessonRegistrationByStatus,
     getAllStudentsLessonRegistrationByRegistrationId,
+    isStudentLessonRegistrationApprovedRegistrationId,
     saveStudentLessonRegistration,
     approvedLessonRegistration,
     rejectedLessonRegistration

@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
     if (studentId === undefined) {
         return {
             props: {
-                isPagePermissionSuccess: false
+                isPagePermissionSuccess: false,
             }
         }
     }
@@ -38,11 +38,14 @@ export async function getServerSideProps(context) {
     const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
         .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
 
+    const {registrationId} = context.query;
+    const isStudentLessonRegistrationData = await StudentLessonRegistrationController.isStudentLessonRegistrationApprovedRegistrationId(registrationId)
     const lessonsData = await LessonController.getAllLessonsByStatus(LessonStatus.ACTIVE)
     if (lessonsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isStudentLessonRegistration: isStudentLessonRegistrationData.success,
                 isFirstLessonRegistrationOperationsFeatureToggleEnabled: firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
                 isSecondLessonRegistrationOperationsFeatureToggleEnabled: secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
                 lessons: lessonsData.response
@@ -53,6 +56,7 @@ export async function getServerSideProps(context) {
 
 export default function StudentLessonRegistration({
                                                       isPagePermissionSuccess,
+                                                      isStudentLessonRegistration,
                                                       isFirstLessonRegistrationOperationsFeatureToggleEnabled,
                                                       isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                                                       lessons
@@ -68,6 +72,21 @@ export default function StudentLessonRegistration({
         return (
             <PageNotFound user="student"/>
         )
+    }
+
+    let [isOpenSuccessLessonNotification, setIsOpenSuccessLessonNotification] = useState(false);
+
+    function closeSuccessLessonNotification() {
+        setIsOpenSuccessLessonNotification(false);
+    }
+
+    function openSuccessLessonNotification() {
+        setIsOpenSuccessLessonNotification(true);
+    }
+
+    if (isStudentLessonRegistration){
+        closeSuccessLessonNotification();
+        openSuccessLessonNotification();
     }
 
     let [isOpenSuccessChooseLessonNotification, setIsOpenSuccessChooseLessonNotification] = useState(false);
@@ -478,6 +497,14 @@ export default function StudentLessonRegistration({
                         :
                         null
                 )}
+
+                <SuccessNotification
+                    isOpen={isOpenSuccessLessonNotification}
+                    closeNotification={closeSuccessLessonNotification}
+                    title="Ders Kaydınız Bulunmaktadır!"
+                    description="Onaylanmamış Ders Kaydınız Bulunmaktadır.
+                                 Tekrar ders Kaydı Yapamazsınız."
+                />
 
                 <SuccessNotification
                     isOpen={isOpenSuccessChooseLessonNotification}
