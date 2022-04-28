@@ -10,7 +10,7 @@ const getAllLessonRegistrationByStatus = async (status) => {
 };
 
 const getStudentLessonRegistrationByRegistrationId = async (registrationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/detail/${registrationId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/${registrationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -18,7 +18,7 @@ const getStudentLessonRegistrationByRegistrationId = async (registrationId) => {
 };
 
 const getStudentLessonRegistrationIdByStudentId = async (studentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/id/${studentId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/${studentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
