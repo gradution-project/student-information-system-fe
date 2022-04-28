@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllLessonRegistrationByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -10,7 +10,7 @@ const getAllLessonRegistrationByStatus = async (status) => {
 };
 
 const getAllStudentsLessonRegistrationByRegistrationId = async (registrationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get/${registrationId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/${registrationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
