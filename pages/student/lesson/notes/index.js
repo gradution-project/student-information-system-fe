@@ -173,11 +173,15 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                         </div>
                     </div>
                     :
-                    <div
-                        className="max-w-7xl mt-5 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
-                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
-                            Ders Kaydınız Yapılmadığı için Notlarınızı Görüntüleyemiyorsunuz!
-                        </a>
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Ders Kaydınız Yapılmadığı için Notlarınızı Görüntüleyemiyorsunuz!
+                                </a>
+                            </div>
+                        </div>
                     </div>
             )}
         </div>
