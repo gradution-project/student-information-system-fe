@@ -16,17 +16,16 @@ export async function getServerSideProps(context) {
     }
 
     const studentLessonsNotesData = await StudentLessonNoteController.getAllStudentLessonsNotesByStudentId(studentId);
-    if (studentLessonsNotesData.success) {
-        return {
-            props: {
-                isPagePermissionSuccess: true,
-                studentLessonsNotes: studentLessonsNotesData.response
-            }
+    return {
+        props: {
+            isPagePermissionSuccess: true,
+            studentLessonsNotesData: studentLessonsNotesData
         }
     }
+
 }
 
-export default function StudentLessonsNotesList({isPagePermissionSuccess, studentLessonsNotes}) {
+export default function StudentLessonsNotesList({isPagePermissionSuccess, studentLessonsNotesData}) {
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
@@ -38,7 +37,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
             <SISTitle/>
             <StudentNavbar/>
             {(
-                studentLessonsNotes.length !== 0
+                studentLessonsNotesData.success
                     ?
                     <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                         <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
@@ -98,7 +97,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {studentLessonsNotes.map((studentLessonNotes) => (
+                                            {studentLessonsNotesData.response.map((studentLessonNotes) => (
                                                 <tr key={studentLessonNotes.id}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
