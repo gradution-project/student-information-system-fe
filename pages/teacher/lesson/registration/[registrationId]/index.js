@@ -29,7 +29,11 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS);
+    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+
     const {registrationId} = context.query;
     const studentsLessonRegistrationData = await StudentLessonRegistrationController.getStudentLessonRegistrationByRegistrationId(registrationId);
     if (studentsLessonRegistrationData.success) {
@@ -38,8 +42,9 @@ export async function getServerSideProps(context) {
                 lessonRegistrations: studentsLessonRegistrationData.response,
                 isDataFound: true,
                 isPagePermissionSuccess: true,
-                isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
-                operationUserId: teacherId,
+                isFirstLessonRegistrationOperationsFeatureToggleEnabled: firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
+                isSecondLessonRegistrationOperationsFeatureToggleEnabled: secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
+                operationUserId: teacherId
             }
         }
     } else {
@@ -57,7 +62,8 @@ export default function StudentLessonRegistrationsList({
                                                            lessonRegistrations,
                                                            isPagePermissionSuccess,
                                                            operationUserId,
-                                                           isRegistrationOperationsFeatureToggleEnabled,
+                                                           isFirstLessonRegistrationOperationsFeatureToggleEnabled,
+                                                           isSecondLessonRegistrationOperationsFeatureToggleEnabled
                                                        }) {
 
     if (!isPagePermissionSuccess) {
@@ -72,7 +78,7 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
-    if (!isRegistrationOperationsFeatureToggleEnabled) {
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
         return (
             <PageNotFound user="teacher"/>
         )
