@@ -78,7 +78,7 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
-    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
         return (
             <PageNotFound user="teacher"/>
         )
