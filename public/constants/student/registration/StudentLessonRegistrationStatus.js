@@ -30,7 +30,7 @@ const APPROVED = 'APPROVED';
 const REJECTED = 'REJECTED';
 const ALL = 'ALL';
 
-const RegistrationStatus = {
+const StudentLessonRegistrationStatus = {
     getAll,
     WAITING,
     APPROVED,
@@ -38,4 +38,4 @@ const RegistrationStatus = {
     ALL
 };
 
-export default RegistrationStatus;
+export default StudentLessonRegistrationStatus;
