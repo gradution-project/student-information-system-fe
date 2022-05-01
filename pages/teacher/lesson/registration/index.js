@@ -3,9 +3,11 @@ import StudentClassLevel from "../../../../public/constants/student/StudentClass
 import UnauthorizedAccessPage from "../../../401";
 import StudentDegree from "../../../../public/constants/student/StudentDegree";
 import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
-import StudentLessonRegistrationController from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
 import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
+import FeatureToggleController from "../../../../public/api/university/FeatureToggleController";
+import FeatureToggleName from "../../../../public/constants/university/FeatureToggleName";
+import PageNotFound from "../../../404";
 import StudentLessonRegistrationStatus
     from "../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
 
@@ -19,18 +21,40 @@ export async function getServerSideProps(context) {
             }
         }
     }
-    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(StudentLessonRegistrationStatus.ALL);
+
+    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+
+    const isFirstLessonRegistrationOperationsFeatureToggleEnabled = firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    const isSecondLessonRegistrationOperationsFeatureToggleEnabled = secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: false
+            }
+        }
+    }
+
+    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(RegistrationStatus.ALL);
     if (studentRegistrationData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
                 registrations: studentRegistrationData.response
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations}) {
+export default function StudentLessonRegistrationList({
+                                                          isPagePermissionSuccess,
+                                                          isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                          registrations
+}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -38,19 +62,26 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
         )
     }
 
+    if (!isLessonRegistrationOperationsFeatureToggleEnabled) {
+        return (
+            <PageNotFound user="teacher"/>
+        )
+    }
+
     return (
         <div>
             <SISTitle/>
             <TeacherNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        DERS KAYDI OLUŞTURAN ÖĞRENCİLERİN LİSTESİ
-                    </a>
-                </div>
-                {(
-                    registrations.length !== 0
-                        ?
+            {(
+                registrations.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                DERS KAYDI OLUŞTURAN ÖĞRENCİLERİN LİSTESİ
+                            </a>
+                        </div>
+
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -132,7 +163,7 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
                                                         <a href={'/teacher/lesson/registration/' + registration.registrationId}
                                                            className='text-sis-yellow'>
-                                                           DETAY
+                                                            DETAY
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -143,10 +174,19 @@ export default function StudentLessonRegistrationList({isPagePermissionSuccess, 
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Henüz Ders Kaydı Oluşturan Öğrenci Bulunmamaktadır!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+            )}
         </div>
     )
 }
