@@ -17,17 +17,16 @@ export async function getServerSideProps(context) {
     }
 
     const studentLessonsData = await StudentLessonController.getAllStudentLessonsByStudentId(studentId);
-    if (studentLessonsData.success) {
-        return {
-            props: {
-                lessons: studentLessonsData.response,
-                isPagePermissionSuccess: true
-            }
+    return {
+        props: {
+            studentLessonsData: studentLessonsData,
+            isPagePermissionSuccess: true
         }
     }
+
 }
 
-export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
+export default function StudentLessonsList({isPagePermissionSuccess, studentLessonsData}) {
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
@@ -38,7 +37,7 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
             <SISTitle/>
             <StudentNavbar/>
             {(
-                lessons.length !== 0
+                studentLessonsData.success
                     ?
                     <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                         <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
@@ -92,7 +91,7 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {lessons.lessonsResponses.map((lesson) => (
+                                            {studentLessonsData.response.lessonsResponses.map((lesson) => (
                                                 <tr key={lesson.lessonId}>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
@@ -167,13 +166,17 @@ export default function StudentLessonsList({isPagePermissionSuccess, lessons}) {
                         </div>
                     </div>
                     :
-                    <div
-                        className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
-                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
-                            Henüz Ders Kaydınız Yapılmadı!
-
-                        </a>
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Henüz Ders Kaydınız Yapılmadı!
+                                </a>
+                            </div>
+                        </div>
                     </div>
+
             )}
         </div>
     )

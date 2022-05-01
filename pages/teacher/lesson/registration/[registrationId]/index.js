@@ -12,11 +12,12 @@ import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/L
 import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
 import {useState} from "react";
 import {useRouter} from "next/router";
-import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
-import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../public/notifications/process";
+import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
+import StudentLessonRegistrationStatus
+    from "../../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -34,36 +35,46 @@ export async function getServerSideProps(context) {
     const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
         .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
 
+    const isFirstLessonRegistrationOperationsFeatureToggleEnabled = firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    const isSecondLessonRegistrationOperationsFeatureToggleEnabled = secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: false
+            }
+        }
+    }
+
     const {registrationId} = context.query;
     const studentsLessonRegistrationData = await StudentLessonRegistrationController.getStudentLessonRegistrationByRegistrationId(registrationId);
     if (studentsLessonRegistrationData.success) {
         return {
             props: {
-                lessonRegistrations: studentsLessonRegistrationData.response,
-                isDataFound: true,
                 isPagePermissionSuccess: true,
-                isFirstLessonRegistrationOperationsFeatureToggleEnabled: firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
-                isSecondLessonRegistrationOperationsFeatureToggleEnabled: secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
-                operationUserId: teacherId
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
+                isDataFound: true,
+                operationUserId: teacherId,
+                studentsLessonRegistrationsData: studentsLessonRegistrationData.response
             }
         }
     } else {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
                 isDataFound: false
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationsList({
-                                                           isDataFound,
-                                                           lessonRegistrations,
+export default function StudentLessonRegistrationDetail({
                                                            isPagePermissionSuccess,
+                                                           isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                           isDataFound,
                                                            operationUserId,
-                                                           isFirstLessonRegistrationOperationsFeatureToggleEnabled,
-                                                           isSecondLessonRegistrationOperationsFeatureToggleEnabled
+                                                           studentsLessonRegistrationsData
                                                        }) {
 
     if (!isPagePermissionSuccess) {
@@ -72,20 +83,14 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
-    if (!isDataFound) {
-        return (
-            <PageNotFound user="/officer"/>
-        )
-    }
-
-    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+    if (!isLessonRegistrationOperationsFeatureToggleEnabled || !isDataFound) {
         return (
             <PageNotFound user="teacher"/>
         )
     }
 
 
-    const registrationId = lessonRegistrations.registrationId
+    const registrationId = studentsLessonRegistrationsData.registrationId
 
     const router = useRouter()
 
@@ -100,7 +105,7 @@ export default function StudentLessonRegistrationsList({
     }
 
     function openProcessingApprovedNotification() {
-        setIsOpenProcessingRejectedNotification(true);
+        setIsOpenProcessingApprovedNotification(true);
     }
 
     let [isOpenSuccessApprovedNotification, setIsOpenSuccessApprovedNotification] = useState(false);
@@ -124,7 +129,7 @@ export default function StudentLessonRegistrationsList({
         setIsOpenFailApprovedNotification(true);
     }
 
-    const approvedStudentLessonRegistration = async (event) => {
+    const approveLessonRegistration = async (event) => {
         openProcessingApprovedNotification();
 
         event.preventDefault();
@@ -173,15 +178,15 @@ export default function StudentLessonRegistrationsList({
         setIsOpenFailRejectedNotification(true);
     }
 
-    const rejectedStudentLessonRegistration = async (event) => {
+    const rejectLessonRegistration = async (event) => {
         openProcessingRejectedNotification();
 
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessRejectedNotification();
             openSuccessRejectedNotification();
+            closeSuccessRejectedNotification();
         } else {
             closeFailRejectedNotification();
             openFailRejectedNotification();
@@ -195,22 +200,22 @@ export default function StudentLessonRegistrationsList({
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        {lessonRegistrations.studentInfoResponse.name} {lessonRegistrations.studentInfoResponse.surname}
+                        {studentsLessonRegistrationsData.studentInfoResponse.name} {studentsLessonRegistrationsData.studentInfoResponse.surname}
                     </a>
-                    {RegistrationStatus.getAll.map((rStatus) => (
-                        lessonRegistrations.status === rStatus.enum
+                    {StudentLessonRegistrationStatus.getAll.map((rStatus) => (
+                        studentsLessonRegistrationsData.status === rStatus.enum
                             ?
                             rStatus.component
                             :
                             null
                     ))}
                     {(
-                        lessonRegistrations.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
                             <button
-                                onClick={rejectedStudentLessonRegistration}
+                                onClick={rejectLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
                             >
@@ -218,12 +223,12 @@ export default function StudentLessonRegistrationsList({
                             </button>
                     )}
                     {(
-                        lessonRegistrations.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
                             <button
-                                onClick={approvedStudentLessonRegistration}
+                                onClick={approveLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                             >
@@ -232,7 +237,7 @@ export default function StudentLessonRegistrationsList({
                     )}
                 </div>
                 {(
-                    lessonRegistrations.length !== 0
+                    studentsLessonRegistrationsData.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -268,7 +273,7 @@ export default function StudentLessonRegistrationsList({
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {lessonRegistrations.lessonResponses.map((studentLessonRegistration) => (
+                                            {studentsLessonRegistrationsData.lessonResponses.map((studentLessonRegistration) => (
                                                 <tr key={studentLessonRegistration.registrationId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
@@ -324,6 +329,7 @@ export default function StudentLessonRegistrationsList({
                         :
                         null
                 )}
+
                 {/**
                  * Approved
                  */}
@@ -346,6 +352,7 @@ export default function StudentLessonRegistrationsList({
                     title="Öğrenci Ders Kaydı Onaylanamadı!"
                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />
+
                 {/**
                  * Rejected
                  */}
