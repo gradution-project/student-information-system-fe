@@ -14,9 +14,10 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
-import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 import ProcessNotification from "../../../../../public/notifications/process";
 import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
+import StudentLessonRegistrationStatus
+    from "../../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -185,8 +186,8 @@ export default function StudentLessonRegistrationDetail({
 
         const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessRejectedNotification();
             openSuccessRejectedNotification();
+            closeSuccessRejectedNotification();
         } else {
             closeFailRejectedNotification();
             openFailRejectedNotification();
@@ -202,7 +203,7 @@ export default function StudentLessonRegistrationDetail({
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
                         {studentsLessonRegistrationsData.studentInfoResponse.name} {studentsLessonRegistrationsData.studentInfoResponse.surname}
                     </a>
-                    {RegistrationStatus.getAll.map((rStatus) => (
+                    {StudentLessonRegistrationStatus.getAll.map((rStatus) => (
                         studentsLessonRegistrationsData.status === rStatus.enum
                             ?
                             rStatus.component
@@ -210,7 +211,7 @@ export default function StudentLessonRegistrationDetail({
                             null
                     ))}
                     {(
-                        studentsLessonRegistrationsData.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
@@ -223,7 +224,7 @@ export default function StudentLessonRegistrationDetail({
                             </button>
                     )}
                     {(
-                        studentsLessonRegistrationsData.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :

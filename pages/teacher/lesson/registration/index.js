@@ -3,14 +3,15 @@ import StudentClassLevel from "../../../../public/constants/student/StudentClass
 import UnauthorizedAccessPage from "../../../401";
 import StudentDegree from "../../../../public/constants/student/StudentDegree";
 import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
-import StudentLessonRegistrationController
-    from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
-import RegistrationStatus from "../../../../public/constants/lesson/registration/RegistrationStatus";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
 import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
 import FeatureToggleController from "../../../../public/api/university/FeatureToggleController";
 import FeatureToggleName from "../../../../public/constants/university/FeatureToggleName";
 import PageNotFound from "../../../404";
+import StudentLessonRegistrationStatus
+    from "../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
+import StudentLessonRegistrationController
+    from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -39,7 +40,7 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(RegistrationStatus.ALL);
+    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(StudentLessonRegistrationStatus.ALL);
     if (studentRegistrationData.success) {
         return {
             props: {
@@ -153,7 +154,7 @@ export default function StudentLessonRegistrationList({
                                                         ))}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {RegistrationStatus.getAll.map((sStatus) => (
+                                                        {StudentLessonRegistrationStatus.getAll.map((sStatus) => (
                                                             registration.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent
