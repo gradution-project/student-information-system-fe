@@ -1,6 +1,5 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
 const getAllFacultiesByStatus = async (status) => {
     const apiResult = await fetch(`${SIS_API_URL}/faculty?status=${status}`, {

@@ -1,7 +1,5 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
-
 
 const getAllOfficersByStatus = async (status) => {
     const apiResult = await fetch(`${SIS_API_URL}/officer?status=${status}`, {
@@ -24,8 +22,7 @@ const saveOfficer = async (operationUserId, academicInfo, personalInfo) => {
     const apiResult = await fetch(`${SIS_API_URL}/officer/save`, {
         body: JSON.stringify({
             operationInfoRequest: {
-                userId: operationUserId,
-                feUrl: SIS_FE_URL
+                userId: operationUserId
             },
             academicInfoRequest: {
                 facultyId: academicInfo.facultyId,

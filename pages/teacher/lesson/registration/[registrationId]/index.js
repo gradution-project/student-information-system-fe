@@ -5,7 +5,8 @@ import TeacherNavbar from "../../../../../public/components/navbar/teacher/teach
 import FeatureToggleController from "../../../../../public/api/university/FeatureToggleController";
 import FeatureToggleName from "../../../../../public/constants/university/FeatureToggleName";
 import PageNotFound from "../../../../404";
-import StudentLessonRegistrationController from "../../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
+import StudentLessonRegistrationController
+    from "../../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 import LessonSemester from "../../../../../public/constants/lesson/LessonSemester";
 import LessonCompulsoryOrElective from "../../../../../public/constants/lesson/LessonCompulsoryOrElective";
 import LessonStatus from "../../../../../public/constants/lesson/LessonStatus";
@@ -13,9 +14,10 @@ import {useState} from "react";
 import {useRouter} from "next/router";
 import SuccessNotification from "../../../../../public/notifications/success";
 import FailNotification from "../../../../../public/notifications/fail";
-import RegistrationStatus from "../../../../../public/constants/lesson/registration/RegistrationStatus";
 import ProcessNotification from "../../../../../public/notifications/process";
 import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
+import StudentLessonRegistrationStatus
+    from "../../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -28,26 +30,51 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
+    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+
+    const isFirstLessonRegistrationOperationsFeatureToggleEnabled = firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    const isSecondLessonRegistrationOperationsFeatureToggleEnabled = secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: false
+            }
+        }
+    }
+
     const {registrationId} = context.query;
-    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getAllStudentsLessonRegistrationByRegistrationId(registrationId);
+    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getStudentLessonRegistrationByRegistrationId(registrationId);
     if (studentsLessonRegistrationData.success) {
         return {
             props: {
-                lessonRegistrations: studentsLessonRegistrationData.response,
                 isPagePermissionSuccess: true,
-                isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
+                isDataFound: true,
                 operationUserId: teacherId,
+                studentsLessonRegistrationsData: studentsLessonRegistrationData.response
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
+                isDataFound: false
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationsList({
-                                                           lessonRegistrations,
+export default function StudentLessonRegistrationDetail({
                                                            isPagePermissionSuccess,
+                                                           isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                           isDataFound,
                                                            operationUserId,
-                                                           isRegistrationOperationsFeatureToggleEnabled,
+                                                           studentsLessonRegistrationsData
                                                        }) {
 
     if (!isPagePermissionSuccess) {
@@ -56,114 +83,114 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
-    if (!isRegistrationOperationsFeatureToggleEnabled) {
+    if (!isLessonRegistrationOperationsFeatureToggleEnabled || !isDataFound) {
         return (
             <PageNotFound user="teacher"/>
         )
     }
 
 
-    const registrationId = lessonRegistrations.registrationId
+    const registrationId = studentsLessonRegistrationsData.registrationId
 
     const router = useRouter()
 
     /**
-     * LESSON REGISTRATION APPROVED OPERATION
+     * LESSON REGISTRATION APPROVE OPERATION
      */
 
-    let [isOpenProcessingApprovedNotification, setIsOpenProcessingApprovedNotification] = useState(false);
+    let [isOpenProcessingApproveNotification, setIsOpenProcessingApproveNotification] = useState(false);
 
-    function closeProcessingApprovedNotification() {
-        setIsOpenProcessingApprovedNotification(false);
+    function closeProcessingApproveNotification() {
+        setIsOpenProcessingApproveNotification(false);
     }
 
-    function openProcessingApprovedNotification() {
-        setIsOpenProcessingApprovedNotification(true);
+    function openProcessingApproveNotification() {
+        setIsOpenProcessingApproveNotification(true);
     }
 
-    let [isOpenSuccessApprovedNotification, setIsOpenSuccessApprovedNotification] = useState(false);
+    let [isOpenSuccessApproveNotification, setIsOpenSuccessApproveNotification] = useState(false);
 
-    function closeSuccessApprovedNotification() {
-        setIsOpenSuccessApprovedNotification(false);
+    function closeSuccessApproveNotification() {
+        setIsOpenSuccessApproveNotification(false);
         router.reload();
     }
 
-    function openSuccessApprovedNotification() {
-        setIsOpenSuccessApprovedNotification(true);
+    function openSuccessApproveNotification() {
+        setIsOpenSuccessApproveNotification(true);
     }
 
-    let [isOpenFailApprovedNotification, setIsOpenFailApprovedNotification] = useState(false);
+    let [isOpenFailApproveNotification, setIsOpenFailApproveNotification] = useState(false);
 
-    function closeFailApprovedNotification() {
-        setIsOpenFailApprovedNotification(false);
+    function closeFailApproveNotification() {
+        setIsOpenFailApproveNotification(false);
     }
 
-    function openFailApprovedNotification() {
-        setIsOpenFailApprovedNotification(true);
+    function openFailApproveNotification() {
+        setIsOpenFailApproveNotification(true);
     }
-
-    const approvedLessonRegistration = async (event) => {
-        openProcessingApprovedNotification();
+    const approveLessonRegistration = async (event) => {
+        openProcessingApproveNotification();
 
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.approvedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessApprovedNotification();
-            openSuccessApprovedNotification();
+            closeProcessingApproveNotification();
+            openSuccessApproveNotification();
 
         } else {
-            closeFailApprovedNotification();
-            openFailApprovedNotification();
+            closeProcessingApproveNotification();
+            openFailApproveNotification();
         }
     }
 
     /**
-     * LESSON REGISTRATION REJECTED OPERATION
+     * LESSON REGISTRATION REJECT OPERATION
      */
-    let [isOpenProcessingRejectedNotification, setIsOpenProcessingRejectedNotification] = useState(false);
+    let [isOpenProcessingRejectNotification, setIsOpenProcessingRejectNotification] = useState(false);
 
-    function closeProcessingRejectedNotification() {
-        setIsOpenProcessingRejectedNotification(false);
+    function closeProcessingRejectNotification() {
+        setIsOpenProcessingRejectNotification(false);
     }
 
-    function openProcessingRejectedNotification() {
-        setIsOpenProcessingRejectedNotification(true);
+    function openProcessingRejectNotification() {
+        setIsOpenProcessingRejectNotification(true);
     }
 
-    let [isOpenSuccessRejectedNotification, setIsOpenSuccessRejectedNotification] = useState(false);
+    let [isOpenSuccessRejectNotification, setIsOpenSuccessRejectNotification] = useState(false);
 
-    function closeSuccessRejectedNotification() {
-        setIsOpenSuccessRejectedNotification(false);
+    function closeSuccessRejectNotification() {
+        setIsOpenSuccessRejectNotification(false);
         router.reload();
     }
 
-    function openSuccessRejectedNotification() {
-        setIsOpenSuccessRejectedNotification(true);
+    function openSuccessRejectNotification() {
+        setIsOpenSuccessRejectNotification(true);
     }
 
-    let [isOpenFailRejectedNotification, setIsOpenFailRejectedNotification] = useState(false);
+    let [isOpenFailRejectNotification, setIsOpenFailRejectNotification] = useState(false);
 
-    function closeFailRejectedNotification() {
-        setIsOpenFailRejectedNotification(false);
+    function closeFailRejectNotification() {
+        setIsOpenFailRejectNotification(false);
     }
 
-    function openFailRejectedNotification() {
-        setIsOpenFailRejectedNotification(true);
+    function openFailRejectNotification() {
+        setIsOpenFailRejectNotification(true);
     }
 
-    const rejectedLessonRegistration = async (event) => {
-        openProcessingRejectedNotification();
+
+    const rejectLessonRegistration = async (event) => {
+        openProcessingRejectNotification();
 
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessRejectedNotification();
-            openSuccessRejectedNotification();
+            closeProcessingRejectNotification();
+            openSuccessRejectNotification();
         } else {
-            closeFailRejectedNotification();
-            openFailRejectedNotification();
+            closeProcessingRejectNotification();
+            openFailRejectNotification();
         }
     }
 
@@ -174,22 +201,22 @@ export default function StudentLessonRegistrationsList({
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        {lessonRegistrations.studentInfoResponse.name} {lessonRegistrations.studentInfoResponse.surname}
+                        {studentsLessonRegistrationsData.studentInfoResponse.name} {studentsLessonRegistrationsData.studentInfoResponse.surname}
                     </a>
-                    {RegistrationStatus.getAll.map((rStatus) => (
-                        lessonRegistrations.status === rStatus.enum
+                    {StudentLessonRegistrationStatus.getAll.map((rStatus) => (
+                        studentsLessonRegistrationsData.status === rStatus.enum
                             ?
                             rStatus.component
                             :
                             null
                     ))}
                     {(
-                      lessonRegistrations.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
                             <button
-                                onClick={rejectedLessonRegistration}
+                                onClick={rejectLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
                             >
@@ -197,12 +224,12 @@ export default function StudentLessonRegistrationsList({
                             </button>
                     )}
                     {(
-                       lessonRegistrations.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== StudentLessonRegistrationStatus.WAITING
                             ?
                             null
                             :
                             <button
-                                onClick={approvedLessonRegistration}
+                                onClick={approveLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                             >
@@ -211,7 +238,7 @@ export default function StudentLessonRegistrationsList({
                     )}
                 </div>
                 {(
-                    lessonRegistrations.length !== 0
+                    studentsLessonRegistrationsData.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -247,7 +274,7 @@ export default function StudentLessonRegistrationsList({
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {lessonRegistrations.lessonResponses.map((studentLessonRegistration) => (
+                                            {studentsLessonRegistrationsData.lessonResponses.map((studentLessonRegistration) => (
                                                 <tr key={studentLessonRegistration.registrationId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
@@ -304,47 +331,47 @@ export default function StudentLessonRegistrationsList({
                         null
                 )}
                 {/**
-                 * Approved
+                 * Approve
                  */}
                 <ProcessNotification
-                    isOpen={isOpenProcessingApprovedNotification}
-                    closeNotification={closeProcessingApprovedNotification}
+                    isOpen={isOpenProcessingApproveNotification}
+                    closeNotification={closeProcessingApproveNotification}
                     title="Öğrenci Ders Kayıt Onay İsteğiniz İşleniyor..."
                 />
 
                 <SuccessNotification
-                    isOpen={isOpenSuccessApprovedNotification}
-                    closeNotification={closeSuccessApprovedNotification}
+                    isOpen={isOpenSuccessApproveNotification}
+                    closeNotification={closeSuccessApproveNotification}
                     title="Öğrenci Ders Kaydı Onaylandı!"
                     description="Öğrenci Ders Kaydı Onaylama İşlemi başarıyla gerçekleşti."
                 />
 
                 <FailNotification
-                    isOpen={isOpenFailApprovedNotification}
-                    closeNotification={closeFailApprovedNotification}
+                    isOpen={isOpenFailApproveNotification}
+                    closeNotification={closeFailApproveNotification}
                     title="Öğrenci Ders Kaydı Onaylanamadı!"
                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />
 
                 {/**
-                 * Rejected
+                 * Reject
                  */}
                 <ProcessNotification
-                    isOpen={isOpenProcessingRejectedNotification}
-                    closeNotification={closeProcessingRejectedNotification}
+                    isOpen={isOpenProcessingRejectNotification}
+                    closeNotification={closeProcessingRejectNotification}
                     title="Öğrenci Ders Kayıt Reddetme İsteğiniz İşleniyor..."
                 />
 
                 <SuccessNotification
-                    isOpen={isOpenSuccessRejectedNotification}
-                    closeNotification={closeSuccessRejectedNotification}
+                    isOpen={isOpenSuccessRejectNotification}
+                    closeNotification={closeSuccessRejectNotification}
                     title="Öğrenci Ders Kaydı Reddedildi!"
                     description="Öğrenci Ders Kaydı Reddetme İşlemi başarıyla gerçekleşti."
                 />
 
                 <FailNotification
-                    isOpen={isOpenFailRejectedNotification}
-                    closeNotification={closeFailRejectedNotification}
+                    isOpen={isOpenFailRejectNotification}
+                    closeNotification={closeFailRejectNotification}
                     title="Öğrenci Ders Kaydı Reddedilemedi!"
                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />

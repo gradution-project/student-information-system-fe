@@ -1,6 +1,5 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
 const getAllStudentsByStatus = async (status) => {
     const apiResult = await fetch(`${SIS_API_URL}/student?status=${status}`, {
@@ -18,13 +17,13 @@ const getStudentDetailByStudentId = async (studentId) => {
     return await apiResult.json();
 };
 
+
 const saveStudent = async (operationUserId, academicInfo, personalInfo) => {
 
     const apiResult = await fetch(`${SIS_API_URL}/student/save`, {
         body: JSON.stringify({
             operationInfoRequest: {
-                userId: operationUserId,
-                feUrl: SIS_FE_URL
+                userId: operationUserId
             },
             academicInfoRequest: {
                 degree: academicInfo.degree,
@@ -134,20 +133,7 @@ const deleteStudent = async (operationUserId, studentId) => {
     return await apiResult.json();
 };
 
-const graduateStudent = async (operationUserId, studentId) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/student/graduate`, {
-        headers: {'Content-Type': 'application/json'},
-        method: 'PATCH',
-        body: JSON.stringify({
-            operationInfoRequest: {
-                userId: operationUserId
-            },
-            studentId: studentId
-        }),
-    });
-    return await apiResult.json();
-};
 
 const StudentController = {
     getAllStudentsByStatus,
@@ -157,8 +143,7 @@ const StudentController = {
     updateStudentPersonalInfo,
     activateStudent,
     passivateStudent,
-    deleteStudent,
-    graduateStudent
+    deleteStudent
 };
 
 export default StudentController;

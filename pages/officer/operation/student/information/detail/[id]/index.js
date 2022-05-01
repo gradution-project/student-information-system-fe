@@ -14,6 +14,8 @@ import StudentStatus from "../../../../../../../public/constants/student/Student
 import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
 import StudentClassLevel from "../../../../../../../public/constants/student/StudentClassLevel";
 import StudentDegree from "../../../../../../../public/constants/student/StudentDegree";
+import PageNotFound from "../../../../../../404";
+import StudentGraduationController from "../../../../../../../public/api/student/graduation/StudentGraduationController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -29,24 +31,39 @@ export async function getServerSideProps(context) {
 
     const {id} = context.query;
     const studentData = await StudentController.getStudentDetailByStudentId(id);
+    const isStudentGraduationEnabledData = await  StudentGraduationController.isStudentGraduationEnabled(id);
     if (studentData.success && departmentsData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 operationUserId: officerId,
                 departments: departmentsData.response,
-                student: studentData.response
+                student: studentData.response,
+                isStudentsGraduationEnabled: isStudentGraduationEnabledData.success
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
 
-export default function StudentDetail({isPagePermissionSuccess, operationUserId, departments, student}) {
-
+export default function StudentDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, student, isStudentsGraduationEnabled}) {
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 
@@ -93,13 +110,13 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
         setIsOpenFailGraduateNotification(true);
     }
 
-    const studentGraduate = async (event) => {
+    const startGraduationOperation = async (event) => {
         openProcessingGraduateNotification();
 
         event.preventDefault();
 
         const studentId = academicInfoResponse.studentId;
-        const studentData = await StudentController.graduateStudent(operationUserId, studentId);
+        const studentData = await StudentGraduationController.saveStudentGraduation(operationUserId, studentId);
         if (studentData.success) {
             closeProcessingGraduateNotification();
             openSuccessGraduateNotification();
@@ -477,13 +494,11 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                 SisOperationButton.getActivateButton(studentActivate, "KAYDI AKTİFLEŞTİR")
                         )}
                         {(
-                            academicInfoResponse.status === StudentStatus.GRADUATED
-                            ||
-                            academicInfoResponse.status === StudentStatus.DELETED
+                           !isStudentsGraduationEnabled
                                 ?
-                                null
+                               null
                                 :
-                                SisOperationButton.getGraduateButton(studentGraduate, "MEZUNİYET İŞLEMİ BAŞLAT")
+                               SisOperationButton.getGraduateButton(startGraduationOperation, "MEZUNİYET İŞLEMİ BAŞLAT")
                         )}
                     </div>
                     <div className="md:col-span-1">
@@ -589,9 +604,9 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                                 {StudentDegree.getAll.map(sDegree => (
                                                     academicInfoResponse.degree === sDegree.enum
                                                         ?
-                                                        <option value={sDegree.enum} selected>{sDegree.tr}</option>
+                                                        <option key={sDegree.enum} value={sDegree.enum} selected>{sDegree.tr}</option>
                                                         :
-                                                        null
+                                                        <option key={sDegree.enum} value={sDegree.enum}>{sDegree.tr}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -896,20 +911,21 @@ export default function StudentDetail({isPagePermissionSuccess, operationUserId,
                                 <ProcessNotification
                                     isOpen={isOpenProcessingGraduateNotification}
                                     closeNotification={closeProcessingGraduateNotification}
-                                    title="Öğrenci Mezun Ediliyor..."
+                                    title="Öğrenci Mezuniyet İşlemi Başlatılıyor..."
                                 />
 
                                 <SuccessNotification
                                     isOpen={isOpenSuccessGraduateNotification}
                                     closeNotification={closeSuccessGraduateNotification}
-                                    title="Öğrenci Mezun Edildi!"
-                                    description="Öğrenci Mezuniyet İşlemi başarıyla gerçekleşti."
+                                    title="Öğrenci Mezuniyet İşlemi Başlatıldı!"
+                                    description="Öğrenci Mezuniyet İşlemi başarıyla başlatıldı.
+                                                 Mezuniyet İşlemleri ekranından takip edebilirsiniz."
                                 />
 
                                 <FailNotification
                                     isOpen={isOpenFailGraduateNotification}
                                     closeNotification={closeFailGraduateNotification}
-                                    title="Öğrenci Mezun Edilemedi!"
+                                    title="Öğrenci Mezuniyet İşlemi Başlatılamadı!"
                                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                                 />
 

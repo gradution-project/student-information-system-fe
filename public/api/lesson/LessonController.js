@@ -1,6 +1,5 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
 const getAllLessonsByStatus = async (status) => {
     const apiResult = await fetch(`${SIS_API_URL}/lesson?status=${status}`, {
@@ -27,6 +26,8 @@ const saveLesson = async (operationUserId, lessonInfo) => {
             lessonInfoRequest: {
                 compulsoryOrElective: lessonInfo.compulsoryOrElective,
                 credit: lessonInfo.credit,
+                theoreticalHours: lessonInfo.theoreticalHours,
+                practiceHours: lessonInfo.practiceHours,
                 departmentId: lessonInfo.departmentId,
                 name: lessonInfo.name,
                 semester: lessonInfo.semester
@@ -49,6 +50,8 @@ const updateLesson = async (operationUserId, lessonId, lessonInfo) => {
             lessonInfoRequest: {
                 compulsoryOrElective: lessonInfo.compulsoryOrElective,
                 credit: lessonInfo.credit,
+                theoreticalHours: lessonInfo.theoreticalHours,
+                practiceHours: lessonInfo.practiceHours,
                 departmentId: lessonInfo.departmentId,
                 name: lessonInfo.name,
                 semester: lessonInfo.semester

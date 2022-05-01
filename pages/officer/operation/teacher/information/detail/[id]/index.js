@@ -14,6 +14,7 @@ import TeacherStatus from "../../../../../../../public/constants/teacher/Teacher
 import SisOperationButton from "../../../../../../../public/components/buttons/SisOperationButton";
 import TeacherDegree from "../../../../../../../public/constants/teacher/TeacherDegree";
 import TeacherRole from "../../../../../../../public/constants/teacher/TeacherRole";
+import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
@@ -33,20 +34,34 @@ export async function getServerSideProps(context) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isDataFound: true,
                 operationUserId: officerId,
                 departments: departmentsData.response,
                 teacher: teacherData.response
+            }
+        }
+    } else {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isDataFound: false
             }
         }
     }
 }
 
 
-export default function TeacherDetail({isPagePermissionSuccess, operationUserId, departments, teacher}) {
+export default function TeacherDetail({isPagePermissionSuccess, isDataFound, operationUserId, departments, teacher}) {
 
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="officer"/>
+        )
+    }
+
+    if (!isDataFound) {
+        return (
+            <PageNotFound user="/officer"/>
         )
     }
 
@@ -514,14 +529,11 @@ export default function TeacherDetail({isPagePermissionSuccess, operationUserId,
                                                     : "font-phenomenaRegular text-gray-700 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                                                 }>
                                                 {departments.map((department) => (
-                                                    departmentResponse.departmentId === department.name
+                                                    departmentResponse.departmentId === department.departmentId
                                                         ?
-                                                        <option key={department.departmentId}
-                                                                value={department.departmentId}
-                                                                selected>{department.name}</option>
+                                                        <option key={department.departmentId} value={department.departmentId} selected>{department.name}</option>
                                                         :
-                                                        <option
-                                                            value={department.departmentId}>{department.name}</option>
+                                                        <option value={department.departmentId}>{department.name}</option>
                                                 ))}
                                             </select>
                                         </div>
