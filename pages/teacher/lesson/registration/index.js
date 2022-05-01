@@ -8,6 +8,9 @@ import StudentLessonRegistrationController
 import RegistrationStatus from "../../../../public/constants/lesson/registration/RegistrationStatus";
 import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
 import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
+import FeatureToggleController from "../../../../public/api/university/FeatureToggleController";
+import FeatureToggleName from "../../../../public/constants/university/FeatureToggleName";
+import PageNotFound from "../../../404";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -19,22 +22,50 @@ export async function getServerSideProps(context) {
             }
         }
     }
+
+    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+
+    const isFirstLessonRegistrationOperationsFeatureToggleEnabled = firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    const isSecondLessonRegistrationOperationsFeatureToggleEnabled = secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: false
+            }
+        }
+    }
+
     const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(RegistrationStatus.ALL);
     if (studentRegistrationData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
                 registrations: studentRegistrationData.response
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationList({isPagePermissionSuccess, registrations}) {
+export default function StudentLessonRegistrationList({
+                                                          isPagePermissionSuccess,
+                                                          isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                          registrations
+}) {
 
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="teacher"/>
+        )
+    }
+
+    if (!isLessonRegistrationOperationsFeatureToggleEnabled) {
+        return (
+            <PageNotFound user="teacher"/>
         )
     }
 
