@@ -1,23 +1,29 @@
 
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
-const SIS_FE_URL = process.env.NEXT_PUBLIC_SIS_FE_URL;
 
 const getAllLessonRegistrationByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
     return await apiResult.json();
 };
 
-const getAllStudentsLessonRegistrationByRegistrationId = async (registrationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/get/${registrationId}`, {
+const getStudentLessonRegistrationByRegistrationId = async (registrationId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/detail/${registrationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
     return await apiResult.json();
 };
 
+const getStudentLessonRegistrationIdByStudentId = async (studentId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/id/${studentId}`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'GET'
+    });
+    return await apiResult.json();
+};
 
 const saveStudentLessonRegistration = async (operationUserId, lessonIds, studentId) => {
 
@@ -26,7 +32,6 @@ const saveStudentLessonRegistration = async (operationUserId, lessonIds, student
         method: 'POST',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             studentLessonRegistrationInfoRequest: {
@@ -46,7 +51,6 @@ const approvedLessonRegistration = async (operationUserId, registrationId) => {
         method: 'PATCH',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             registrationId: registrationId
@@ -62,7 +66,6 @@ const rejectedLessonRegistration = async (operationUserId, registrationId) => {
         method: 'PATCH',
         body: JSON.stringify({
             operationInfoRequest: {
-                feUrl: "",
                 userId: operationUserId
             },
             registrationId: registrationId
@@ -73,7 +76,8 @@ const rejectedLessonRegistration = async (operationUserId, registrationId) => {
 
 const StudentLessonRegistrationController = {
     getAllLessonRegistrationByStatus,
-    getAllStudentsLessonRegistrationByRegistrationId,
+    getStudentLessonRegistrationByRegistrationId,
+    getStudentLessonRegistrationIdByStudentId,
     saveStudentLessonRegistration,
     approvedLessonRegistration,
     rejectedLessonRegistration

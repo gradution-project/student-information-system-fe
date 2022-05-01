@@ -1,62 +1,42 @@
-import SISTitle from "../../../../public/components/page-titles";
-import StudentClassLevel from "../../../../public/constants/student/StudentClassLevel";
-import UnauthorizedAccessPage from "../../../401";
-import StudentDegree from "../../../../public/constants/student/StudentDegree";
-import SisTeacherStorage from "../../../../public/storage/teacher/SisTeacherStorage";
-import TeacherNavbar from "../../../../public/components/navbar/teacher/teacher-navbar";
-import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
-import FeatureToggleController from "../../../../public/api/university/FeatureToggleController";
-import FeatureToggleName from "../../../../public/constants/university/FeatureToggleName";
-import PageNotFound from "../../../404";
-import StudentLessonRegistrationStatus
-    from "../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
-import StudentLessonRegistrationController
-    from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
+import UnauthorizedAccessPage from "../../../../401";
+import SISTitle from "../../../../../public/components/page-titles";
+import StudentDegree from "../../../../../public/constants/student/StudentDegree";
+import StudentClassLevel from "../../../../../public/constants/student/StudentClassLevel";
+import StudentGraduationStatus from "../../../../../public/constants/student/graduated/StudentGraduationStatus";
+import SisTeacherStorage from "../../../../../public/storage/teacher/SisTeacherStorage";
+import TeacherNavbar from "../../../../../public/components/navbar/teacher/teacher-navbar";
+import TeacherRole from "../../../../../public/constants/teacher/TeacherRole";
+import StudentGraduationController from "../../../../../public/api/student/graduation/StudentGraduationController";
+
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
     const teacherRole = SisTeacherStorage.getRoleWithContext(context);
-    if (teacherId === undefined || teacherRole !== TeacherRole.ADVISOR) {
+    if (teacherId === undefined) {
         return {
             props: {
                 isPagePermissionSuccess: false
             }
         }
     }
-
-    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
-        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
-    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
-        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
-
-    const isFirstLessonRegistrationOperationsFeatureToggleEnabled = firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
-    const isSecondLessonRegistrationOperationsFeatureToggleEnabled = secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
-    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
-        return {
-            props: {
-                isPagePermissionSuccess: true,
-                isLessonRegistrationOperationsFeatureToggleEnabled: false
-            }
-        }
+    let studentGraduationStatus;
+    if (teacherRole === TeacherRole.ADVISOR) {
+        studentGraduationStatus = StudentGraduationStatus.WAITING;
+    } else if (teacherRole === TeacherRole.HEAD_OF_DEPARTMENT) {
+       studentGraduationStatus = StudentGraduationStatus.APPROVED;
     }
-
-    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(StudentLessonRegistrationStatus.ALL);
-    if (studentRegistrationData.success) {
+    const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(studentGraduationStatus);
+    if (studentData.success) {
         return {
             props: {
                 isPagePermissionSuccess: true,
-                isLessonRegistrationOperationsFeatureToggleEnabled: true,
-                registrations: studentRegistrationData.response
+                students: studentData.response
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationList({
-                                                          isPagePermissionSuccess,
-                                                          isLessonRegistrationOperationsFeatureToggleEnabled,
-                                                          registrations
-}) {
+export default function StudentGraduationList({isPagePermissionSuccess, students}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -64,26 +44,19 @@ export default function StudentLessonRegistrationList({
         )
     }
 
-    if (!isLessonRegistrationOperationsFeatureToggleEnabled) {
-        return (
-            <PageNotFound user="teacher"/>
-        )
-    }
-
     return (
         <div>
             <SISTitle/>
             <TeacherNavbar/>
-            {(
-                registrations.length !== 0
-                    ?
-                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                            <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                                DERS KAYDI OLUŞTURAN ÖĞRENCİLERİN LİSTESİ
-                            </a>
-                        </div>
-
+            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                    <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                        MEZUNİYET KAYIT LİSTESİ
+                    </a>
+                </div>
+                {(
+                    students.length !== 0
+                        ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -107,13 +80,19 @@ export default function StudentLessonRegistrationList({
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
+                                                    BÖLÜM ADI
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="select-none px-6 py-3 tracking-wider"
+                                                >
                                                     STATÜSÜ
                                                 </th>
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {registrations.map((registration) => (
-                                                <tr key={registration.registrationId}>
+                                            {students.map((student) => (
+                                                <tr key={student.studentId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         {/*<td className="px-6 py-4 whitespace-nowrap">*/}
                                                         <div className="flex items-center">
@@ -124,19 +103,17 @@ export default function StudentLessonRegistrationList({
                                                             {/*</div>*/}
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{registration.studentInfoResponse.name} {registration.studentInfoResponse.surname}</div>
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.name} {student.studentInfoResponse.surname}</div>
                                                                 <div
-                                                                    className="font-phenomenaRegular text-lg text-gray-500">{registration.studentInfoResponse.studentId}</div>
+                                                                    className="font-phenomenaRegular text-lg text-gray-500">{student.studentInfoResponse.studentId}</div>
                                                                 <div
-                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{registration.studentInfoResponse.email}</div>
+                                                                    className="font-phenomenaExtraLight text-lg text-gray-600">{student.studentInfoResponse.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div
-                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{registration.studentInfoResponse.departmentResponse.name}</div>
                                                         {StudentDegree.getAll.map((sDegree) => (
-                                                            registration.studentInfoResponse.degree === sDegree.enum
+                                                            student.studentInfoResponse.degree === sDegree.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{sDegree.tr}</div>
@@ -145,7 +122,7 @@ export default function StudentLessonRegistrationList({
                                                         ))}
 
                                                         {StudentClassLevel.getAll.map((sClassLevel) => (
-                                                            registration.studentInfoResponse.classLevel === sClassLevel.enum
+                                                            student.studentInfoResponse.classLevel === sClassLevel.enum
                                                                 ?
                                                                 <div
                                                                     className="font-phenomenaRegular text-xl text-sis-darkblue">{sClassLevel.tr}</div>
@@ -154,8 +131,12 @@ export default function StudentLessonRegistrationList({
                                                         ))}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        {StudentLessonRegistrationStatus.getAll.map((sStatus) => (
-                                                            registration.status === sStatus.enum
+                                                        <div
+                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{student.studentInfoResponse.departmentResponse.name}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {StudentGraduationStatus.getAll.map((sStatus) => (
+                                                            student.status === sStatus.enum
                                                                 ?
                                                                 sStatus.miniComponent
                                                                 :
@@ -163,7 +144,7 @@ export default function StudentLessonRegistrationList({
                                                         ))}
                                                     </td>
                                                     <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                        <a href={'/teacher/lesson/registration/' + registration.registrationId}
+                                                        <a href={'/teacher/student/graduation/operations/' + student.graduationId}
                                                            className='text-sis-yellow'>
                                                             DETAY
                                                         </a>
@@ -176,19 +157,10 @@ export default function StudentLessonRegistrationList({
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    :
-                    <div className="mt-5 md:mt-0 md:col-span-2">
-                        <div className="px-28 py-5 mx-auto space-y-6">
-                            <div
-                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
-                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
-                                    Henüz Ders Kaydı Oluşturan Öğrenci Bulunmamaktadır!
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-            )}
+                        :
+                        null
+                )}
+            </div>
         </div>
     )
 }

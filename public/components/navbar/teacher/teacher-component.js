@@ -31,7 +31,7 @@ const otherTransactions = [
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
-        href: '/student/transcript',
+        href: '/teacher/student/graduation/operations',
         roles: [TeacherRole.ADVISOR, TeacherRole.HEAD_OF_DEPARTMENT],
         icon: DocumentReportIcon
     }
@@ -149,18 +149,25 @@ export default function TeacherComponent() {
                                             className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                                             <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
                                                 {otherTransactions.map((item) => (
-                                                    <a
-                                                        key={item.name}
-                                                        href={item.href}
-                                                        className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
-                                                    >
-                                                        <item.icon className="flex-shrink-0 h-6 w-6 text-sis-yellow"
-                                                                   aria-hidden="true"/>
-                                                        <div className="ml-4">
-                                                            <p className="font-phenomenaRegular text-xl text-gray-800">{item.name}</p>
-                                                            <p className="mt-1 text-sm text-gray-500">{item.description}</p>
-                                                        </div>
-                                                    </a>
+                                                    item.roles.map((role) => (
+                                                        teacherRole === role
+                                                            ?
+                                                            <a
+                                                                key={item.name}
+                                                                href={item.href}
+                                                                className="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                                                            >
+                                                                <item.icon
+                                                                    className="flex-shrink-0 h-6 w-6 text-sis-yellow"
+                                                                    aria-hidden="true"/>
+                                                                <div className="ml-4">
+                                                                    <p className="font-phenomenaRegular text-xl text-gray-800">{item.name}</p>
+                                                                    <p className="mt-1 text-sm text-gray-500">{item.description}</p>
+                                                                </div>
+                                                            </a>
+                                                            :
+                                                            null
+                                                    ))
                                                 ))}
                                             </div>
                                         </div>

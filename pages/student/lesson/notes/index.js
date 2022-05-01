@@ -16,17 +16,16 @@ export async function getServerSideProps(context) {
     }
 
     const studentLessonsNotesData = await StudentLessonNoteController.getAllStudentLessonsNotesByStudentId(studentId);
-    if (studentLessonsNotesData.success) {
-        return {
-            props: {
-                isPagePermissionSuccess: true,
-                studentLessonsNotes: studentLessonsNotesData.response
-            }
+    return {
+        props: {
+            isPagePermissionSuccess: true,
+            studentLessonsNotesData: studentLessonsNotesData
         }
     }
+
 }
 
-export default function StudentLessonsNotesList({isPagePermissionSuccess, studentLessonsNotes}) {
+export default function StudentLessonsNotesList({isPagePermissionSuccess, studentLessonsNotesData}) {
     if (!isPagePermissionSuccess) {
         return (
             <UnauthorizedAccessPage user="student"/>
@@ -38,7 +37,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
             <SISTitle/>
             <StudentNavbar/>
             {(
-                studentLessonsNotes.length !== 0
+                studentLessonsNotesData.success
                     ?
                     <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                         <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
@@ -93,12 +92,12 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    STATÜSÜ
+                                                    DURUMU
                                                 </th>
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {studentLessonsNotes.map((studentLessonNotes) => (
+                                            {studentLessonsNotesData.response.map((studentLessonNotes) => (
                                                 <tr key={studentLessonNotes.id}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
@@ -173,11 +172,15 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                         </div>
                     </div>
                     :
-                    <div
-                        className="max-w-7xl mt-8 mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
-                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
-                            Ders Kaydınız Yapılmadığı için Notlarınızı Görüntüleyemiyorsunuz!
-                        </a>
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Ders Kaydınız Yapılmadığı için Notlarınızı Görüntüleyemiyorsunuz!
+                                </a>
+                            </div>
+                        </div>
                     </div>
             )}
         </div>
