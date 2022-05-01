@@ -19,6 +19,7 @@ import StudentLessonRegistrationController
 import ProcessNotification from "../../../../public/notifications/process";
 import StudentLessonRegistrationStatus
     from "../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
+import {useRouter} from "next/router";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -102,6 +103,8 @@ export default function StudentLessonRegistration({
         )
     }
 
+    const router = useRouter();
+
     let [isOpenSuccessChooseLessonNotification, setIsOpenSuccessChooseLessonNotification] = useState(false);
 
     function closeSuccessChooseLessonNotification() {
@@ -136,6 +139,7 @@ export default function StudentLessonRegistration({
 
     function closeSuccessRegistrationLessonNotification() {
         setIsOpenSuccessRegistrationLessonNotification(false);
+        router.reload();
     }
 
     function openSuccessRegistrationLessonNotification() {
