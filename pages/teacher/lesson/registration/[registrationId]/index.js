@@ -131,8 +131,8 @@ export default function StudentLessonRegistrationsList({
 
         const lessonRegistrationData = await StudentLessonRegistrationController.approvedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            openSuccessApprovedNotification();
             closeSuccessApprovedNotification();
+            openSuccessApprovedNotification();
         } else {
             closeFailApprovedNotification();
             openFailApprovedNotification();
