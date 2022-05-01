@@ -10,6 +10,8 @@ import FeatureToggleName from "../../../../public/constants/university/FeatureTo
 import PageNotFound from "../../../404";
 import StudentLessonRegistrationStatus
     from "../../../../public/constants/student/registration/StudentLessonRegistrationStatus";
+import StudentLessonRegistrationController
+    from "../../../../public/api/student/lesson/registration/StudentLessonRegistrationController";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -38,7 +40,7 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(RegistrationStatus.ALL);
+    const studentRegistrationData = await StudentLessonRegistrationController.getAllLessonRegistrationByStatus(StudentLessonRegistrationStatus.ALL);
     if (studentRegistrationData.success) {
         return {
             props: {
