@@ -29,35 +29,51 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const lessonRegistrationOperationsToggleData = await FeatureToggleController.isFeatureToggleEnabled(FeatureToggleName.LESSON_REGISTRATION_OPERATIONS);
+    const firstLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.FIRST_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+    const secondLessonRegistrationOperationsToggleData = await FeatureToggleController
+        .isFeatureToggleEnabled(FeatureToggleName.SECOND_SEMESTER_LESSON_REGISTRATION_OPERATIONS)
+
+    const isFirstLessonRegistrationOperationsFeatureToggleEnabled = firstLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    const isSecondLessonRegistrationOperationsFeatureToggleEnabled = secondLessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled;
+    if (!isFirstLessonRegistrationOperationsFeatureToggleEnabled && !isSecondLessonRegistrationOperationsFeatureToggleEnabled) {
+        return {
+            props: {
+                isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: false
+            }
+        }
+    }
+
     const {registrationId} = context.query;
-    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getAllStudentsLessonRegistrationByRegistrationId(registrationId);
+    const studentsLessonRegistrationData = await StudentLessonRegistrationController.getStudentLessonRegistrationByRegistrationId(registrationId);
     if (studentsLessonRegistrationData.success) {
         return {
             props: {
-                lessonRegistrations: studentsLessonRegistrationData.response,
-                isDataFound: true,
                 isPagePermissionSuccess: true,
-                isRegistrationOperationsFeatureToggleEnabled: lessonRegistrationOperationsToggleData.response.isFeatureToggleEnabled,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
+                isDataFound: true,
                 operationUserId: teacherId,
+                studentsLessonRegistrationsData: studentsLessonRegistrationData.response
             }
         }
     } else {
         return {
             props: {
                 isPagePermissionSuccess: true,
+                isLessonRegistrationOperationsFeatureToggleEnabled: true,
                 isDataFound: false
             }
         }
     }
 }
 
-export default function StudentLessonRegistrationsList({
-                                                           isDataFound,
-                                                           lessonRegistrations,
+export default function StudentLessonRegistrationDetail({
                                                            isPagePermissionSuccess,
+                                                           isLessonRegistrationOperationsFeatureToggleEnabled,
+                                                           isDataFound,
                                                            operationUserId,
-                                                           isRegistrationOperationsFeatureToggleEnabled,
+                                                           studentsLessonRegistrationsData
                                                        }) {
 
     if (!isPagePermissionSuccess) {
@@ -66,20 +82,14 @@ export default function StudentLessonRegistrationsList({
         )
     }
 
-    if (!isDataFound) {
-        return (
-            <PageNotFound user="/officer"/>
-        )
-    }
-
-    if (!isRegistrationOperationsFeatureToggleEnabled) {
+    if (!isLessonRegistrationOperationsFeatureToggleEnabled || !isDataFound) {
         return (
             <PageNotFound user="teacher"/>
         )
     }
 
 
-    const registrationId = lessonRegistrations.registrationId
+    const registrationId = studentsLessonRegistrationsData.registrationId
 
     const router = useRouter()
 
@@ -190,17 +200,17 @@ export default function StudentLessonRegistrationsList({
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        {lessonRegistrations.studentInfoResponse.name} {lessonRegistrations.studentInfoResponse.surname}
+                        {studentsLessonRegistrationsData.studentInfoResponse.name} {studentsLessonRegistrationsData.studentInfoResponse.surname}
                     </a>
                     {RegistrationStatus.getAll.map((rStatus) => (
-                        lessonRegistrations.status === rStatus.enum
+                        studentsLessonRegistrationsData.status === rStatus.enum
                             ?
                             rStatus.component
                             :
                             null
                     ))}
                     {(
-                      lessonRegistrations.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== RegistrationStatus.WAITING
                             ?
                             null
                             :
@@ -213,7 +223,7 @@ export default function StudentLessonRegistrationsList({
                             </button>
                     )}
                     {(
-                       lessonRegistrations.status !== RegistrationStatus.WAITING
+                        studentsLessonRegistrationsData.status !== RegistrationStatus.WAITING
                             ?
                             null
                             :
@@ -227,7 +237,7 @@ export default function StudentLessonRegistrationsList({
                     )}
                 </div>
                 {(
-                    lessonRegistrations.length !== 0
+                    studentsLessonRegistrationsData.length !== 0
                         ?
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -263,7 +273,7 @@ export default function StudentLessonRegistrationsList({
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {lessonRegistrations.lessonResponses.map((studentLessonRegistration) => (
+                                            {studentsLessonRegistrationsData.lessonResponses.map((studentLessonRegistration) => (
                                                 <tr key={studentLessonRegistration.registrationId}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
