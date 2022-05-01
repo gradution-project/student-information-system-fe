@@ -95,102 +95,102 @@ export default function StudentLessonRegistrationDetail({
     const router = useRouter()
 
     /**
-     * LESSON REGISTRATION APPROVED OPERATION
+     * LESSON REGISTRATION APPROVE OPERATION
      */
 
-    let [isOpenProcessingApprovedNotification, setIsOpenProcessingApprovedNotification] = useState(false);
+    let [isOpenProcessingApproveNotification, setIsOpenProcessingApproveNotification] = useState(false);
 
-    function closeProcessingApprovedNotification() {
-        setIsOpenProcessingApprovedNotification(false);
+    function closeProcessingApproveNotification() {
+        setIsOpenProcessingApproveNotification(false);
     }
 
-    function openProcessingApprovedNotification() {
-        setIsOpenProcessingApprovedNotification(true);
+    function openProcessingApproveNotification() {
+        setIsOpenProcessingApproveNotification(true);
     }
 
-    let [isOpenSuccessApprovedNotification, setIsOpenSuccessApprovedNotification] = useState(false);
+    let [isOpenSuccessApproveNotification, setIsOpenSuccessApproveNotification] = useState(false);
 
-    function closeSuccessApprovedNotification() {
-        setIsOpenSuccessApprovedNotification(false);
+    function closeSuccessApproveNotification() {
+        setIsOpenSuccessApproveNotification(false);
         router.reload();
     }
 
-    function openSuccessApprovedNotification() {
-        setIsOpenSuccessApprovedNotification(true);
+    function openSuccessApproveNotification() {
+        setIsOpenSuccessApproveNotification(true);
     }
 
-    let [isOpenFailApprovedNotification, setIsOpenFailApprovedNotification] = useState(false);
+    let [isOpenFailApproveNotification, setIsOpenFailApproveNotification] = useState(false);
 
-    function closeFailApprovedNotification() {
-        setIsOpenFailApprovedNotification(false);
+    function closeFailApproveNotification() {
+        setIsOpenFailApproveNotification(false);
     }
 
-    function openFailApprovedNotification() {
-        setIsOpenFailApprovedNotification(true);
+    function openFailApproveNotification() {
+        setIsOpenFailApproveNotification(true);
     }
-
-    const approvedLessonRegistration = async (event) => {
-        openProcessingApprovedNotification();
+    const approveLessonRegistration = async (event) => {
+        openProcessingApproveNotification();
 
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.approvedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            closeSuccessApprovedNotification();
-            openSuccessApprovedNotification();
+            closeProcessingApproveNotification();
+            openSuccessApproveNotification();
 
         } else {
-            closeFailApprovedNotification();
-            openFailApprovedNotification();
+            closeProcessingApproveNotification();
+            openFailApproveNotification();
         }
     }
 
     /**
-     * LESSON REGISTRATION REJECTED OPERATION
+     * LESSON REGISTRATION REJECT OPERATION
      */
-    let [isOpenProcessingRejectedNotification, setIsOpenProcessingRejectedNotification] = useState(false);
+    let [isOpenProcessingRejectNotification, setIsOpenProcessingRejectNotification] = useState(false);
 
-    function closeProcessingRejectedNotification() {
-        setIsOpenProcessingRejectedNotification(false);
+    function closeProcessingRejectNotification() {
+        setIsOpenProcessingRejectNotification(false);
     }
 
-    function openProcessingRejectedNotification() {
-        setIsOpenProcessingRejectedNotification(true);
+    function openProcessingRejectNotification() {
+        setIsOpenProcessingRejectNotification(true);
     }
 
-    let [isOpenSuccessRejectedNotification, setIsOpenSuccessRejectedNotification] = useState(false);
+    let [isOpenSuccessRejectNotification, setIsOpenSuccessRejectNotification] = useState(false);
 
-    function closeSuccessRejectedNotification() {
-        setIsOpenSuccessRejectedNotification(false);
+    function closeSuccessRejectNotification() {
+        setIsOpenSuccessRejectNotification(false);
         router.reload();
     }
 
-    function openSuccessRejectedNotification() {
-        setIsOpenSuccessRejectedNotification(true);
+    function openSuccessRejectNotification() {
+        setIsOpenSuccessRejectNotification(true);
     }
 
-    let [isOpenFailRejectedNotification, setIsOpenFailRejectedNotification] = useState(false);
+    let [isOpenFailRejectNotification, setIsOpenFailRejectNotification] = useState(false);
 
-    function closeFailRejectedNotification() {
-        setIsOpenFailRejectedNotification(false);
+    function closeFailRejectNotification() {
+        setIsOpenFailRejectNotification(false);
     }
 
-    function openFailRejectedNotification() {
-        setIsOpenFailRejectedNotification(true);
+    function openFailRejectNotification() {
+        setIsOpenFailRejectNotification(true);
     }
 
-    const rejectedLessonRegistration = async (event) => {
-        openProcessingRejectedNotification();
+
+    const rejectLessonRegistration = async (event) => {
+        openProcessingRejectNotification();
 
         event.preventDefault();
 
         const lessonRegistrationData = await StudentLessonRegistrationController.rejectedLessonRegistration(operationUserId, registrationId);
         if (lessonRegistrationData.success) {
-            openSuccessRejectedNotification();
-            closeSuccessRejectedNotification();
+            closeProcessingRejectNotification();
+            openSuccessRejectNotification();
         } else {
-            closeFailRejectedNotification();
-            openFailRejectedNotification();
+            closeProcessingRejectNotification();
+            openFailRejectNotification();
         }
     }
 
@@ -216,7 +216,7 @@ export default function StudentLessonRegistrationDetail({
                             null
                             :
                             <button
-                                onClick={rejectedLessonRegistration}
+                                onClick={rejectLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right ml-2 py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-fail hover:bg-sis-darkblue"
                             >
@@ -229,7 +229,7 @@ export default function StudentLessonRegistrationDetail({
                             null
                             :
                             <button
-                                onClick={approvedLessonRegistration}
+                                onClick={approveLessonRegistration}
                                 type="submit"
                                 className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                             >
@@ -331,47 +331,47 @@ export default function StudentLessonRegistrationDetail({
                         null
                 )}
                 {/**
-                 * Approved
+                 * Approve
                  */}
                 <ProcessNotification
-                    isOpen={isOpenProcessingApprovedNotification}
-                    closeNotification={closeProcessingApprovedNotification}
+                    isOpen={isOpenProcessingApproveNotification}
+                    closeNotification={closeProcessingApproveNotification}
                     title="Öğrenci Ders Kayıt Onay İsteğiniz İşleniyor..."
                 />
 
                 <SuccessNotification
-                    isOpen={isOpenSuccessApprovedNotification}
-                    closeNotification={closeSuccessApprovedNotification}
+                    isOpen={isOpenSuccessApproveNotification}
+                    closeNotification={closeSuccessApproveNotification}
                     title="Öğrenci Ders Kaydı Onaylandı!"
                     description="Öğrenci Ders Kaydı Onaylama İşlemi başarıyla gerçekleşti."
                 />
 
                 <FailNotification
-                    isOpen={isOpenFailApprovedNotification}
-                    closeNotification={closeFailApprovedNotification}
+                    isOpen={isOpenFailApproveNotification}
+                    closeNotification={closeFailApproveNotification}
                     title="Öğrenci Ders Kaydı Onaylanamadı!"
                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />
 
                 {/**
-                 * Rejected
+                 * Reject
                  */}
                 <ProcessNotification
-                    isOpen={isOpenProcessingRejectedNotification}
-                    closeNotification={closeProcessingRejectedNotification}
+                    isOpen={isOpenProcessingRejectNotification}
+                    closeNotification={closeProcessingRejectNotification}
                     title="Öğrenci Ders Kayıt Reddetme İsteğiniz İşleniyor..."
                 />
 
                 <SuccessNotification
-                    isOpen={isOpenSuccessRejectedNotification}
-                    closeNotification={closeSuccessRejectedNotification}
+                    isOpen={isOpenSuccessRejectNotification}
+                    closeNotification={closeSuccessRejectNotification}
                     title="Öğrenci Ders Kaydı Reddedildi!"
                     description="Öğrenci Ders Kaydı Reddetme İşlemi başarıyla gerçekleşti."
                 />
 
                 <FailNotification
-                    isOpen={isOpenFailRejectedNotification}
-                    closeNotification={closeFailRejectedNotification}
+                    isOpen={isOpenFailRejectNotification}
+                    closeNotification={closeFailRejectNotification}
                     title="Öğrenci Ders Kaydı Reddedilemedi!"
                     description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                 />
