@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const isPasswordChangeOperationEnabled = async (operationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/teacher/password-operation?operationId=${operationId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/teacher/password/operation/${operationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -10,7 +10,7 @@ const isPasswordChangeOperationEnabled = async (operationId) => {
 };
 
 const changePassword = async (operationId, newPassword, newPasswordRepeat) => {
-    const apiResult = await fetch(`${SIS_API_URL}/teacher/password-operation/change-password`, {
+    const apiResult = await fetch(`${SIS_API_URL}/teacher/password/operation/change`, {
         body: JSON.stringify({
             operationId: operationId,
             newPassword: newPassword,
@@ -23,7 +23,7 @@ const changePassword = async (operationId, newPassword, newPasswordRepeat) => {
 };
 
 const forgotPassword = async (teacherId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/teacher/password-operation/forgot-password`, {
+    const apiResult = await fetch(`${SIS_API_URL}/teacher/password/operation/forgot`, {
         body: JSON.stringify({
             teacherId: teacherId
         }),
