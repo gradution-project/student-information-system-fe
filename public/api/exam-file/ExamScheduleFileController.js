@@ -1,15 +1,15 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllExamScheduleFilesDetailByFacultyId = async (facultyId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/exam-schedule-file/faculty/${facultyId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/exam/schedule/files/by/faculty/${facultyId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
     return await apiResult.json();
 };
 
-const getExamScheduleFileDetailByExamScheduleFileId = async (departmentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/exam-schedule-file/department/${departmentId}`, {
+const getExamScheduleFileDetailByDepartmentId = async (departmentId) => {
+    const apiResult = await fetch(`${SIS_API_URL}/exam/schedule/file/by/department/${departmentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -20,7 +20,7 @@ const saveExamScheduleFile = async (examScheduleFileRequest) => {
 
     examScheduleFileRequest.append('apiUrl', SIS_API_URL);
 
-    const apiResult = await fetch(`${SIS_API_URL}/exam-schedule-file/save`, {
+    const apiResult = await fetch(`${SIS_API_URL}/exam/schedule/file`, {
         body: examScheduleFileRequest,
         method: 'POST'
     });
@@ -28,7 +28,7 @@ const saveExamScheduleFile = async (examScheduleFileRequest) => {
 };
 
 const deleteExamScheduleFile = async (departmentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/exam-schedule-file/delete/department/${departmentId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/exam/schedule/file/by/department/${departmentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE'
     });
@@ -38,7 +38,7 @@ const deleteExamScheduleFile = async (departmentId) => {
 
 const ExamScheduleFileController = {
     getAllExamScheduleFilesDetailByFacultyId,
-    getExamScheduleFileDetailByExamScheduleFileId,
+    getExamScheduleFileDetailByDepartmentId,
     saveExamScheduleFile,
     deleteExamScheduleFile
 };

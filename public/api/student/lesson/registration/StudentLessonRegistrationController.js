@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllLessonRegistrationByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registrations?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -10,7 +10,7 @@ const getAllLessonRegistrationByStatus = async (status) => {
 };
 
 const getStudentLessonRegistrationByRegistrationId = async (registrationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/detail/${registrationId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/${registrationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -18,7 +18,7 @@ const getStudentLessonRegistrationByRegistrationId = async (registrationId) => {
 };
 
 const getStudentLessonRegistrationIdByStudentId = async (studentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/id/${studentId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/id/by/student/${studentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -27,7 +27,7 @@ const getStudentLessonRegistrationIdByStudentId = async (studentId) => {
 
 const saveStudentLessonRegistration = async (operationUserId, lessonIds, studentId) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration/save`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/registration`, {
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
         body: JSON.stringify({
