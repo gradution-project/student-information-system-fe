@@ -21,7 +21,7 @@ export async function getServerSideProps(context) {
     }
 
     const {id} = context.query;
-    const examScheduleFileData = await ExamScheduleFileController.getExamScheduleFileDetailByExamScheduleFileId(id);
+    const examScheduleFileData = await ExamScheduleFileController.getExamScheduleFileDetailByDepartmentId(id);
     if (examScheduleFileData.success) {
         return {
             props: {
