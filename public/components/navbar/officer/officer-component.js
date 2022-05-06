@@ -2,13 +2,13 @@ import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
 import {
     AdjustmentsIcon,
-    BookmarkAltIcon,
-    BriefcaseIcon,
-    CalendarIcon,
-    ChartBarIcon,
-    CursorClickIcon,
-    DocumentReportIcon,
-    ViewGridIcon,
+    DocumentAddIcon,
+    MenuAlt2Icon,
+    AcademicCapIcon,
+    UsersIcon,
+    LibraryIcon,
+    TemplateIcon,
+    MenuIcon
 } from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
 
@@ -17,19 +17,19 @@ const university = [
         name: 'Fakülte İşlemleri',
         description: '',
         href: '/officer/operation/faculty',
-        icon: ChartBarIcon,
+        icon: LibraryIcon,
     },
     {
         name: 'Bölüm İşlemleri',
         description: '',
         href: '/officer/operation/department',
-        icon: CursorClickIcon,
+        icon: TemplateIcon,
     },
     {
         name: 'Ders İşlemleri',
         description: "",
         href: '/officer/operation/lesson',
-        icon: CalendarIcon,
+        icon: MenuIcon,
     },
     {
         name: 'Üniversite Ekran Yönetimi',
@@ -44,7 +44,7 @@ const officer = [
         name: 'Personel İşlemleri',
         description: '',
         href: '/officer/operation/staff',
-        icon: BriefcaseIcon,
+        icon: UsersIcon,
     }
 ]
 
@@ -53,13 +53,13 @@ const teacher = [
         name: 'Öğretmen İşlemleri',
         description: '',
         href: '/officer/operation/teacher',
-        icon: BriefcaseIcon,
+        icon: UsersIcon,
     },
     {
         name: 'Ders Atama İşlemleri',
         description: "",
         href: '/officer/operation/teacher/lesson',
-        icon: CalendarIcon,
+        icon: MenuAlt2Icon,
     },
 ]
 
@@ -68,13 +68,13 @@ const student = [
         name: 'Öğrenci İşlemleri',
         description: '',
         href: '/officer/operation/student',
-        icon: DocumentReportIcon,
+        icon: UsersIcon,
     },
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
         href: '/officer/operation/student/graduation/operations',
-        icon: BookmarkAltIcon,
+        icon: AcademicCapIcon,
     }
 ]
 
@@ -83,13 +83,13 @@ const schedules = [
         name: 'Ders Programları',
         description: '',
         href: '/officer/operation/schedule/lesson/files',
-        icon: ViewGridIcon,
+        icon: DocumentAddIcon,
     },
     {
         name: 'Sınav Programları',
         description: '',
         href: '/officer/operation/schedule/exam/files',
-        icon: DocumentReportIcon,
+        icon: DocumentAddIcon,
     },
 ]
 
