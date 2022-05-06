@@ -17,9 +17,6 @@ const getExamScheduleFileDetailByDepartmentId = async (departmentId) => {
 };
 
 const saveExamScheduleFile = async (examScheduleFileRequest) => {
-
-    examScheduleFileRequest.append('apiUrl', SIS_API_URL);
-
     const apiResult = await fetch(`${SIS_API_URL}/exam/schedule/file`, {
         body: examScheduleFileRequest,
         method: 'POST'
