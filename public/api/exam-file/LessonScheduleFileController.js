@@ -17,9 +17,6 @@ const getLessonScheduleFileDetailByLessonScheduleFileId = async (departmentId) =
 };
 
 const saveLessonScheduleFile = async (lessonScheduleFileRequest) => {
-
-    lessonScheduleFileRequest.append('apiUrl', SIS_API_URL);
-
     const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/file`, {
         body: lessonScheduleFileRequest,
         method: 'POST'
