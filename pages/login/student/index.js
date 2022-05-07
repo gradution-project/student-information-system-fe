@@ -7,6 +7,7 @@ import FailNotification from "../../../public/notifications/fail";
 import {useRouter} from "next/router";
 import StudentController from "../../../public/api/student/StudentController";
 import LoginController from "../../../public/api/login/LoginController";
+import {EyeIcon, EyeOffIcon} from "@heroicons/react/outline";
 
 export default function StudentLogin() {
 
@@ -63,6 +64,12 @@ export default function StudentLogin() {
         openFailLoginNotification();
     }
 
+
+    const [isPasswordShow, setIsPasswordShow] = useState(false);
+    const showPassword = () => {
+        setIsPasswordShow(!isPasswordShow);
+    }
+
     return (
         <div className="bg-sis-gray h-screen">
             <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -109,25 +116,47 @@ export default function StudentLogin() {
                                             </div>
 
                                             <div className="sm:col-span-1">
-                                                <label htmlFor="last-name"
+                                                <label htmlFor="password"
                                                        className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                     ŞİFRE
                                                 </label>
-                                                <input
-                                                    onChange={changePassword}
-                                                    id="password"
-                                                    name="password"
-                                                    type="password"
-                                                    autoComplete="current-password"
-                                                    required
-                                                    className="font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
-                                                />
+                                                <div className="relative w-full">
+                                                    <div className="absolute inset-y-0 right-0 flex items-center px-2">
+                                                        {
+                                                            isPasswordShow
+                                                                ?
+                                                                <EyeIcon
+                                                                    className="h-6 w-8 text-sis-yellow group-hover:text-sis-yellow cursor-pointer"
+                                                                    onClick={showPassword}
+                                                                    aria-hidden="true" htmlFor="password"/>
+                                                                :
+                                                                <EyeOffIcon
+                                                                    className="h-6 w-8 text-sis-yellow group-hover:text-sis-yellow cursor-pointer"
+                                                                    onClick={showPassword}
+                                                                    aria-hidden="true" htmlFor="password"/>
+                                                        }
+                                                    </div>
+                                                    <input
+                                                        onChange={changePassword}
+                                                        id="password"
+                                                        name="password"
+                                                        type={isPasswordShow ? "text" : "password"}
+                                                        autoComplete="password"
+                                                        required
+                                                        className={
+                                                            isPasswordShow
+                                                                ?
+                                                                "font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
+                                                                :
+                                                                "text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
+                                                        }
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-
                                     </div>
-                                    <div className="px-4 py-3 text-right sm:px-6">
 
+                                    <div className="px-4 py-3 text-right sm:px-6">
                                         <div>
                                             <button
                                                 type="submit"
