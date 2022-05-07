@@ -45,7 +45,7 @@ export default function TeacherChangePassword({isDataFound, operationId}) {
 
     function closeSuccessChangePasswordNotification() {
         setIsOpenSuccessChangePasswordNotification(false);
-        router.push("/login/officer");
+        router.push("/login/teacher");
     }
 
     function openSuccessChangePasswordNotification() {
