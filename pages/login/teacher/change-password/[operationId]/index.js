@@ -24,7 +24,7 @@ export default function TeacherChangePassword({isDataFound, operationId}) {
 
     if (!isDataFound) {
         return (
-            <PageNotFound user=""/>
+            <PageNotFound user="teacher"/>
         )
     }
 
@@ -45,7 +45,7 @@ export default function TeacherChangePassword({isDataFound, operationId}) {
 
     function closeSuccessChangePasswordNotification() {
         setIsOpenSuccessChangePasswordNotification(false);
-        router.push("/login/officer");
+        router.push("/login/teacher");
     }
 
     function openSuccessChangePasswordNotification() {
