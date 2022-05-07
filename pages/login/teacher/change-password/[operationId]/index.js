@@ -1,4 +1,4 @@
-import {FingerPrintIcon} from "@heroicons/react/outline";
+import {EyeIcon, EyeOffIcon, FingerPrintIcon} from "@heroicons/react/outline";
 import {useState} from "react";
 import {useRouter} from "next/router";
 import SISTitle from "../../../../../public/components/page-titles";
@@ -110,6 +110,18 @@ export default function TeacherChangePassword({isDataFound, operationId}) {
         }
     }
 
+
+    const [isNewPasswordShow, setIsNewPasswordShow] = useState(false);
+    const showNewPassword = () => {
+        setIsNewPasswordShow(!isNewPasswordShow);
+    }
+
+
+    const [isNewPasswordRepeatShow, setIsNewPasswordRepeatShow] = useState(false);
+    const showNewPasswordRepeat = () => {
+        setIsNewPasswordRepeatShow(!isNewPasswordRepeatShow);
+    }
+
     return (
         <>
             <div className="bg-sis-gray h-screen">
@@ -139,40 +151,85 @@ export default function TeacherChangePassword({isDataFound, operationId}) {
                                         <div className="px-4 py-5 bg-white sm:p-6">
                                             <div className="grid grid-cols-1 gap-6">
                                                 <div className="sm:col-span-1">
-                                                    <label htmlFor="first-name"
+                                                    <label htmlFor="password"
                                                            className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                         YENİ ŞİFRE
                                                     </label>
-                                                    <input
-                                                        onChange={changeNewPassword}
-                                                        id="password"
-                                                        name="password"
-                                                        type="password"
-                                                        autoComplete="current-password"
-                                                        required
-                                                        className="font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
-                                                    />
+                                                    <div className="relative w-full">
+                                                        <div className="absolute inset-y-0 right-0 flex items-center px-2">
+                                                            {
+                                                                isNewPasswordShow
+                                                                    ?
+                                                                    <EyeIcon
+                                                                        className="h-6 w-8 text-sis-yellow group-hover:text-sis-yellow cursor-pointer"
+                                                                        onClick={showNewPassword}
+                                                                        aria-hidden="true" htmlFor="password"/>
+                                                                    :
+                                                                    <EyeOffIcon
+                                                                        className="h-6 w-8 text-sis-yellow group-hover:text-sis-yellow cursor-pointer"
+                                                                        onClick={showNewPassword}
+                                                                        aria-hidden="true" htmlFor="password"/>
+                                                            }
+                                                        </div>
+                                                        <input
+                                                            onChange={changeNewPassword}
+                                                            id="password"
+                                                            name="password"
+                                                            type={isNewPasswordShow ? "text" : "password"}
+                                                            autoComplete="password"
+                                                            required
+                                                            className={
+                                                                isNewPasswordShow
+                                                                    ?
+                                                                    "font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
+                                                                    :
+                                                                    "text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                                 <div className="sm:col-span-1">
-                                                    <label htmlFor="first-name"
+                                                    <label htmlFor="password"
                                                            className="ml-0.5 text-xl text-sis-darkblue font-phenomenaBold">
                                                         YENİ ŞİFRE (TEKRAR)
                                                     </label>
-                                                    <input
-                                                        onChange={changeNewPasswordRepeat}
-                                                        id="password-repeat"
-                                                        name="password-repeat"
-                                                        type="password"
-                                                        autoComplete="current-password"
-                                                        required
-                                                        className="font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
-                                                    />
+                                                    <div className="relative w-full">
+                                                        <div className="absolute inset-y-0 right-0 flex items-center px-2">
+                                                            {
+                                                                isNewPasswordRepeatShow
+                                                                    ?
+                                                                    <EyeIcon
+                                                                        className="h-6 w-8 text-sis-yellow group-hover:text-sis-yellow cursor-pointer"
+                                                                        onClick={showNewPasswordRepeat}
+                                                                        aria-hidden="true" htmlFor="password"/>
+                                                                    :
+                                                                    <EyeOffIcon
+                                                                        className="h-6 w-8 text-sis-yellow group-hover:text-sis-yellow cursor-pointer"
+                                                                        onClick={showNewPasswordRepeat}
+                                                                        aria-hidden="true" htmlFor="password"/>
+                                                            }
+                                                        </div>
+                                                        <input
+                                                            onChange={changeNewPasswordRepeat}
+                                                            id="password-repeat"
+                                                            name="password-repeat"
+                                                            type={isNewPasswordRepeatShow ? "text" : "password"}
+                                                            autoComplete="password"
+                                                            required
+                                                            className={
+                                                                isNewPasswordRepeatShow
+                                                                    ?
+                                                                    "font-phenomenaRegular text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
+                                                                    :
+                                                                    "text-sis-yellow mt-1 focus:ring-sis-yellow focus:border-sis-yellow block w-full shadow-sm sm:text-xl border-gray-300 rounded-md focus:text-sis-darkblue"
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
-
                                         </div>
-                                        <div className="px-4 py-3 text-right sm:px-6">
 
+                                        <div className="px-4 py-3 text-right sm:px-6">
                                             <div>
                                                 <button
                                                     type="submit"
