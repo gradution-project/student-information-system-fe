@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const isPasswordChangeOperationEnabled = async (operationId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/teacher/password/operation/${operationId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/teacher/password/operation/enabled/${operationId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
