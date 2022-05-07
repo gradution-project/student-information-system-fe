@@ -24,7 +24,7 @@ export default function TeacherChangePassword({isDataFound, operationId}) {
 
     if (!isDataFound) {
         return (
-            <PageNotFound user=""/>
+            <PageNotFound user="teacher"/>
         )
     }
 
