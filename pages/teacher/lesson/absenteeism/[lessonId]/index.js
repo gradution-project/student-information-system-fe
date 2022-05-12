@@ -20,10 +20,16 @@ export async function getServerSideProps(context) {
         }
     }
 
-
     const weekData = await StudentLessonAbsenteeismController.getTotalLessonAbsenteeismWeek();
+    const weeks = new Map();
+    var number;
+    for (number = 1; number <= weekData.response; number++){
+    const names = number + '. Hafta';
+        weeks.set(number, names);
+    }
+    const weekList = Array.from(weeks.values())
     const {lessonId} = context.query;
-    const studentsLessonAbsenteeismData = await StudentLessonAbsenteeismController.getAllStudentsLessonsAbsenteeismByLessonId(lessonId,1);
+    const studentsLessonAbsenteeismData = await StudentLessonAbsenteeismController.getAllStudentsLessonsAbsenteeismByLessonId(lessonId, 1);
     if (studentsLessonAbsenteeismData.success) {
         return {
             props: {
@@ -31,7 +37,8 @@ export async function getServerSideProps(context) {
                 isDataFound: true,
                 operationUserId: teacherId,
                 studentsLessonAbsenteeism: studentsLessonAbsenteeismData.response,
-                weekLength: weekData.response
+                weekLength: weekData.response,
+                weekList: weekList,
             }
         }
     } else {
@@ -49,7 +56,8 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                isDataFound,
                                                                operationUserId,
                                                                studentsLessonAbsenteeism,
-                                                               weekLength
+                                                               weekLength,
+                                                               weekList
                                                            }) {
     const router = useRouter();
 
@@ -65,21 +73,21 @@ export default function TeacherLessonAbsenteeismDetailList({
         )
     }
 
-    const weekSize = new Map();
-    const [weekList] = useState([]);
-    const setWeekSize = async (id, week) => {
-        let i;
-        for (i = 1; i < weekLength; i++)
-            week = i + '. Hafta';
-        weekSize.set(i, week);
-    }
-    weekList.push(setWeekSize());
+    //const weekSize = new Map([]);
+    //     var i;
+    //     var week;
+    //     for (i = 1; i <= weekLength; i++){
+    //         week = i + '. Hafta';
+    //         weekSize.set(i, week);
+    //         console.log(weekSize)
+    //     }
+    //     const listWeek = Array.from(weekSize.values())
 
     const [weekName, setWeekName] = useState(studentsLessonAbsenteeism.week);
     const changeWeekName = event => {
-        setWeekName(event.target.value);
+        setWeekName(studentsLessonAbsenteeism.week);
+        router.reload();
     }
-
 
     return (
         <div>
@@ -98,15 +106,17 @@ export default function TeacherLessonAbsenteeismDetailList({
                     <div className="float-right grid grid-cols-2 gap-2">
                         <div className="col-span-7 sm:col-span-6">
                             <select
-                                onChange={changeWeekName}
+                                onChange={weekName}
                                 id="department-id"
                                 name="department-id"
                                 autoComplete="department-id"
                                 className="font-phenomenaRegular text-gray-700 block w-full py-2 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                             >
                                 <option>Haftayı Seçiniz...</option>
-                                    <option></option>
 
+                                {(weekList.map(week =>
+                                    <option key={week.id}>{week}</option>
+                                    ))}
                             </select>
                         </div>
                     </div>
