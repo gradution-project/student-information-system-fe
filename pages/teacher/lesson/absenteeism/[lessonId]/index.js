@@ -20,25 +20,25 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const weekData = await StudentLessonAbsenteeismController.getTotalLessonAbsenteeismWeek();
-    const weeks = new Map();
-    var number;
-    for (number = 1; number <= weekData.response; number++){
-    const names = number + '. Hafta';
-        weeks.set(number, names);
-    }
-    const weekList = Array.from(weeks.values())
     const {lessonId} = context.query;
+    const weekData = await StudentLessonAbsenteeismController.getTotalLessonAbsenteeismWeek();
     const studentsLessonAbsenteeismData = await StudentLessonAbsenteeismController.getAllStudentsLessonsAbsenteeismByLessonId(lessonId, 1);
-    if (studentsLessonAbsenteeismData.success) {
+
+    if (studentsLessonAbsenteeismData.success && weekData.success) {
+
+        const weeksNumbers = [];
+        for (let number = 1; number <= weekData.response; number++) {
+            weeksNumbers.push(number);
+        }
+
         return {
             props: {
                 isPagePermissionSuccess: true,
                 isDataFound: true,
                 operationUserId: teacherId,
-                studentsLessonAbsenteeism: studentsLessonAbsenteeismData.response,
-                weekLength: weekData.response,
-                weekList: weekList,
+                initStudentsLessonAbsenteeism: studentsLessonAbsenteeismData.response,
+                weeksNumbers: weeksNumbers,
+                lessonId: lessonId
             }
         }
     } else {
@@ -55,11 +55,10 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                isPagePermissionSuccess,
                                                                isDataFound,
                                                                operationUserId,
-                                                               studentsLessonAbsenteeism,
-                                                               weekLength,
-                                                               weekList
+                                                               initStudentsLessonAbsenteeism,
+                                                               weeksNumbers,
+                                                               lessonId
                                                            }) {
-    const router = useRouter();
 
     if (!isPagePermissionSuccess) {
         return (
@@ -73,21 +72,32 @@ export default function TeacherLessonAbsenteeismDetailList({
         )
     }
 
-    //const weekSize = new Map([]);
-    //     var i;
-    //     var week;
-    //     for (i = 1; i <= weekLength; i++){
-    //         week = i + '. Hafta';
-    //         weekSize.set(i, week);
-    //         console.log(weekSize)
-    //     }
-    //     const listWeek = Array.from(weekSize.values())
+    const router = useRouter();
 
-    const [weekName, setWeekName] = useState(studentsLessonAbsenteeism.week);
-    const changeWeekName = event => {
-        setWeekName(studentsLessonAbsenteeism.week);
-        router.reload();
+    const [studentsLessonAbsenteeism, setStudentsLessonAbsenteeism] = useState(initStudentsLessonAbsenteeism);
+    const changeStudentsLessonAbsenteeism = async (event) => {
+        const week = event.target.value
+        const studentsLessonAbsenteeismData = await StudentLessonAbsenteeismController.getAllStudentsLessonsAbsenteeismByLessonId(lessonId, week);
+
+        if (studentsLessonAbsenteeismData.success) {
+            setStudentsLessonAbsenteeism(studentsLessonAbsenteeismData.response);
+        } else {
+            await router.push("/404");
+        }
     }
+
+    const numberOfCheckbox = (numberOfCheckbox) => {
+        const checkBoxNumbers = [];
+        for (let number = 1; number <= numberOfCheckbox; number++) {
+            checkBoxNumbers.push(number);
+        }
+        return checkBoxNumbers;
+    }
+
+    const addCheckBoxes = (checkBoxes) =>{
+
+    }
+
 
     return (
         <div>
@@ -103,20 +113,18 @@ export default function TeacherLessonAbsenteeismDetailList({
                     >
                         KAYDET
                     </button>
-                    <div className="float-right grid grid-cols-2 gap-2">
+                    <div className="inline-grid grid-cols-2 gap-2">
                         <div className="col-span-7 sm:col-span-6">
                             <select
-                                onChange={weekName}
+                                onChange={changeStudentsLessonAbsenteeism}
                                 id="department-id"
                                 name="department-id"
                                 autoComplete="department-id"
-                                className="font-phenomenaRegular text-gray-700 block w-full py-2 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
+                                className="font-phenomenaRegular py-1.5 text-gray-700 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sis-yellow focus:border-sis-yellow sm:text-xl"
                             >
-                                <option>Haftayı Seçiniz...</option>
-
-                                {(weekList.map(week =>
-                                    <option key={week.id}>{week}</option>
-                                    ))}
+                                {(weeksNumbers.map((weekNumber) =>
+                                    <option key={weekNumber} value={weekNumber}>{weekNumber + '. Hafta'}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -167,20 +175,40 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonAbsenteeism.studentResponse.name} {studentLessonAbsenteeism.studentResponse.surname}</div>
                                                                 <div
                                                                     className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonAbsenteeism.studentResponse.studentId}</div>
+
+                                                                {/*TODO: iş bitince kaldırılacak ve select-all gibi şeyler olmayacak gerekli olmayan yerlerde*/}
+                                                                <div
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonAbsenteeism.week} .
+                                                                    Hafta
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-2 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <input type="checkbox"
-                                                                   className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow dark:focus:ring-sis-yellow dark:ring-sis-yellow"/>
-                                                        </div>
+                                                        {numberOfCheckbox(studentLessonAbsenteeism.lessonResponse.theoreticalHours).map((number) =>
+                                                            <div className="mt-2 flex items-center">
+                                                                <input type="checkbox"
+                                                                       onChange={addCheckBoxes(studentLessonAbsenteeism.lessonResponse.theoreticalHours)}
+                                                                       className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
+                                                                <a
+                                                                    className="font-phenomenaRegular ml-2 text-lg text-sis-darkblue">
+                                                                    {number}. Saat
+
+                                                                </a>
+                                                            </div>
+                                                        )}
                                                     </td>
                                                     <td className="px-2 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <input type="checkbox"
-                                                                   className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow dark:focus:ring-sis-yellow dark:ring-sis-yellow"/>
-                                                        </div>
+                                                        {numberOfCheckbox(studentLessonAbsenteeism.lessonResponse.practiceHours).map((number) =>
+                                                            <div className="mt-2 flex items-center">
+                                                                <input type="checkbox"
+                                                                       className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
+                                                                <a
+                                                                    className="font-phenomenaRegular ml-2 text-lg text-gray-500">
+                                                                    {number}. Saat
+                                                                </a>
+                                                            </div>
+                                                        )}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span>
