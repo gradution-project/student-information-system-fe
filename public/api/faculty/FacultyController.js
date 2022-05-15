@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllFacultiesByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/faculty?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/faculties?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -18,7 +18,7 @@ const getFacultyByFacultyId = async (facultyId) => {
 };
 
 const saveFaculty = async (operationUserId, name) => {
-    const apiResult = await fetch(`${SIS_API_URL}/faculty/save`, {
+    const apiResult = await fetch(`${SIS_API_URL}/faculty`, {
         body: JSON.stringify({
             operationInfoRequest: {
                 userId: operationUserId
@@ -34,7 +34,7 @@ const saveFaculty = async (operationUserId, name) => {
 };
 
 const updateFaculty = async (operationUserId, faculty, name) => {
-    const apiResult = await fetch(`${SIS_API_URL}/faculty/update/${faculty.facultyId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/faculty/${faculty.facultyId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PUT',
         body: JSON.stringify({
@@ -78,7 +78,7 @@ const passivateFaculty = async (operationUserId, facultyId) => {
 };
 
 const deleteFaculty = async (operationUserId, facultyId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/faculty/delete`, {
+    const apiResult = await fetch(`${SIS_API_URL}/faculty`, {
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE',
         body: JSON.stringify({

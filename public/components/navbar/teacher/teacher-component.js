@@ -1,6 +1,6 @@
 import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
-import {CalendarIcon, DocumentReportIcon, ViewGridIcon,} from '@heroicons/react/outline'
+import {CalendarIcon, ViewGridAddIcon, AcademicCapIcon} from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
 import SisTeacherStorage from "../../../storage/teacher/SisTeacherStorage";
 import TeacherRole from "../../../constants/teacher/TeacherRole";
@@ -16,7 +16,7 @@ const schedules = [
         name: 'Sınav Programı',
         description: "",
         href: '/teacher/schedule/exam/file',
-        icon: ViewGridIcon
+        icon: CalendarIcon
     }
 ]
 
@@ -26,14 +26,14 @@ const otherTransactions = [
         description: '',
         href: '/teacher/lesson/registration',
         roles: [TeacherRole.ADVISOR],
-        icon: CalendarIcon
+        icon: ViewGridAddIcon
     },
     {
         name: 'Mezuniyet İşlemleri',
         description: '',
         href: '/teacher/student/graduation/operations',
         roles: [TeacherRole.ADVISOR, TeacherRole.HEAD_OF_DEPARTMENT],
-        icon: DocumentReportIcon
+        icon: AcademicCapIcon
     }
 ]
 

@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const studentLogin = async (studentId, password) => {
-    const apiResult = await fetch(`${SIS_API_URL}/login/student`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/login`, {
         body: JSON.stringify({
             studentId: studentId,
             password: password
@@ -15,7 +15,7 @@ const studentLogin = async (studentId, password) => {
 
 
 const teacherLogin = async (teacherId, password) => {
-    const apiResult = await fetch(`${SIS_API_URL}/login/teacher`, {
+    const apiResult = await fetch(`${SIS_API_URL}/teacher/login`, {
         body: JSON.stringify({
             teacherId: teacherId,
             password: password
@@ -27,7 +27,7 @@ const teacherLogin = async (teacherId, password) => {
 };
 
 const officerLogin = async (officerId, password) => {
-    const apiResult = await fetch(`${SIS_API_URL}/login/officer`, {
+    const apiResult = await fetch(`${SIS_API_URL}/officer/login`, {
         body: JSON.stringify({
             officerId: officerId,
             password: password

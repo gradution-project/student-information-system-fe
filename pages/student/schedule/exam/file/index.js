@@ -15,7 +15,7 @@ export async function getServerSideProps(context) {
     }
 
     const departmentId = SisStudentStorage.getDepartmentNumberWithContext(context);
-    const examScheduleFileData = await ExamScheduleFileController.getExamScheduleFileDetailByExamScheduleFileId(departmentId);
+    const examScheduleFileData = await ExamScheduleFileController.getExamScheduleFileDetailByDepartmentId(departmentId);
     if (examScheduleFileData.success) {
         return {
             props: {

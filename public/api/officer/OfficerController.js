@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllOfficersByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/officer?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/officers?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -19,7 +19,7 @@ const getOfficerDetailByOfficerId = async (officerId) => {
 
 const saveOfficer = async (operationUserId, academicInfo, personalInfo) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/officer/save`, {
+    const apiResult = await fetch(`${SIS_API_URL}/officer`, {
         body: JSON.stringify({
             operationInfoRequest: {
                 userId: operationUserId
@@ -46,7 +46,7 @@ const saveOfficer = async (operationUserId, academicInfo, personalInfo) => {
 
 const updateOfficerAcademicInfo = async (operationUserId, officerId, academicInfo) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/officer/update/academic-info/${officerId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/officer/academic/info/${officerId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PUT',
         body: JSON.stringify({
@@ -64,7 +64,7 @@ const updateOfficerAcademicInfo = async (operationUserId, officerId, academicInf
 
 const updateOfficerPersonalInfo = async (operationUserId, officerId, personalInfo) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/officer/update/personal-info/${officerId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/officer/personal/info/${officerId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PUT',
         body: JSON.stringify({
@@ -117,7 +117,7 @@ const passivateOfficer = async (operationUserId, officerId) => {
 
 const deleteOfficer = async (operationUserId, officerId) => {
 
-    const apiResult = await fetch(`${SIS_API_URL}/officer/delete`, {
+    const apiResult = await fetch(`${SIS_API_URL}/officer`, {
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE',
         body: JSON.stringify({
