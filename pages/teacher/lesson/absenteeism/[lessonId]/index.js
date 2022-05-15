@@ -235,12 +235,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonAbsenteeism.studentResponse.name} {studentLessonAbsenteeism.studentResponse.surname}</div>
                                                                 <div
                                                                     className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonAbsenteeism.studentResponse.studentId}</div>
-
-                                                                {/*TODO: iş bitince kaldırılacak ve select-all gibi şeyler olmayacak gerekli olmayan yerlerde*/}
-                                                                <div
-                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonAbsenteeism.week} .
-                                                                    Hafta
-                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -254,7 +248,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                        onClick={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id, 'theoreticalHours')}
                                                                        className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
                                                                 <a
-                                                                    className="font-phenomenaRegular ml-2 text-lg text-sis-darkblue">
+                                                                    className="font-phenomenaBold ml-2 text-lg text-sis-darkblue">
                                                                     {number}. Saat
 
                                                                 </a>
@@ -271,7 +265,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                        onClick={(event) => updatePracticeHoursValuesInMap(event, studentLessonAbsenteeism.id)}
                                                                        className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
                                                                 <a
-                                                                    className="font-phenomenaRegular ml-2 text-lg text-gray-500">
+                                                                    className="font-phenomenaBold ml-2 text-lg text-gray-500">
                                                                     {number}. Saat
                                                                 </a>
                                                             </div>
