@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllFeatureToggles = async () => {
-    const apiResult = await fetch(`${SIS_API_URL}/feature-toggle`, {
+    const apiResult = await fetch(`${SIS_API_URL}/feature/toggle`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -10,7 +10,7 @@ const getAllFeatureToggles = async () => {
 };
 
 const isFeatureToggleEnabled = async (name) => {
-    const apiResult = await fetch(`${SIS_API_URL}/feature-toggle/enabled/${name}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/feature/toggle/enabled/${name}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -18,7 +18,7 @@ const isFeatureToggleEnabled = async (name) => {
 };
 
 const enableFeatureToggle = async (operationUserId, name) => {
-    const apiResult = await fetch(`${SIS_API_URL}/feature-toggle/enable`, {
+    const apiResult = await fetch(`${SIS_API_URL}/feature/toggle/enable`, {
         body: JSON.stringify({
             operationInfoRequest: {
                 userId: operationUserId
@@ -32,7 +32,7 @@ const enableFeatureToggle = async (operationUserId, name) => {
 };
 
 const disableFeatureToggle = async (operationUserId, name) => {
-    const apiResult = await fetch(`${SIS_API_URL}/feature-toggle/disable`, {
+    const apiResult = await fetch(`${SIS_API_URL}/feature/toggle/disable`, {
         body: JSON.stringify({
             operationInfoRequest: {
                 userId: operationUserId

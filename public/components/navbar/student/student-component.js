@@ -1,6 +1,6 @@
 import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
-import {CalendarIcon, CursorClickIcon, ViewListIcon} from '@heroicons/react/outline'
+import {CalendarIcon, ViewListIcon, ViewGridAddIcon} from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
 
 const lessonOperations = [
@@ -8,7 +8,7 @@ const lessonOperations = [
         name: 'Ders Kayıt',
         description: '',
         href: '/student/lesson/registration',
-        icon: CursorClickIcon
+        icon: ViewGridAddIcon
     },
     {
         name: 'Derslerim',

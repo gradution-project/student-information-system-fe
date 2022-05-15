@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllLessonsByStatus = async (status) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson?status=${status}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lessons?status=${status}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -18,7 +18,7 @@ const getLessonByLessonId = async (lessonId) => {
 };
 
 const saveLesson = async (operationUserId, lessonInfo) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson/save`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson`, {
         body: JSON.stringify({
             operationInfoRequest: {
                 userId: operationUserId
@@ -40,7 +40,7 @@ const saveLesson = async (operationUserId, lessonInfo) => {
 };
 
 const updateLesson = async (operationUserId, lessonId, lessonInfo) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson/update/${lessonId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson/${lessonId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PUT',
         body: JSON.stringify({
@@ -90,7 +90,7 @@ const passivateLesson = async (operationUserId, lessonId) => {
 };
 
 const deleteLesson = async (operationUserId, lessonId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson/delete`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson`, {
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE',
         body: JSON.stringify({

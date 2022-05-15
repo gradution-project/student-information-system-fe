@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllStudentsLessonNotesByLessonId = async (lessonId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/get/lesson/${lessonId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/notes/by/lesson/${lessonId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -10,7 +10,7 @@ const getAllStudentsLessonNotesByLessonId = async (lessonId) => {
 };
 
 const getAllStudentLessonsNotesByStudentId = async (studentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/note/get/student/${studentId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/notes/by/student/${studentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });

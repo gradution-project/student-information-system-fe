@@ -1,7 +1,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllLessonScheduleFilesDetailByFacultyId = async (facultyId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson-schedule-file/faculty/${facultyId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/file/by/faculty/${facultyId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -9,7 +9,7 @@ const getAllLessonScheduleFilesDetailByFacultyId = async (facultyId) => {
 };
 
 const getLessonScheduleFileDetailByLessonScheduleFileId = async (departmentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson-schedule-file/department/${departmentId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/file/by/department/${departmentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -17,10 +17,7 @@ const getLessonScheduleFileDetailByLessonScheduleFileId = async (departmentId) =
 };
 
 const saveLessonScheduleFile = async (lessonScheduleFileRequest) => {
-
-    lessonScheduleFileRequest.append('apiUrl', SIS_API_URL);
-
-    const apiResult = await fetch(`${SIS_API_URL}/lesson-schedule-file/save`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/file`, {
         body: lessonScheduleFileRequest,
         method: 'POST'
     });
@@ -28,7 +25,7 @@ const saveLessonScheduleFile = async (lessonScheduleFileRequest) => {
 };
 
 const deleteLessonScheduleFile = async (departmentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson-schedule-file/delete/department/${departmentId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/file/by/department/${departmentId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE'
     });
