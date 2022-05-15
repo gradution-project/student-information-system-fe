@@ -116,17 +116,28 @@ export default function FeatureToggleList({isPagePermissionSuccess, operationUse
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-2 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <div className="ml-4">
-                                                                <FeatureToggleSwitch
-                                                                    isToggleEnabled={featureToggle.isEnabled}
-                                                                    operationUserId={operationUserId}
-                                                                    toggleName={featureToggle.name}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </td>
+                                                    {FeatureToggleName.getAll.map((ftName) => (
+                                                        featureToggle.name === ftName.enum
+                                                            ?
+                                                            ftName.switch === true
+                                                                ?
+                                                                <td className="px-2 py-4 whitespace-nowrap">
+                                                                    <div className="flex items-center">
+                                                                        <div className="ml-4">
+                                                                            <FeatureToggleSwitch
+                                                                                isToggleEnabled={featureToggle.isEnabled}
+                                                                                operationUserId={operationUserId}
+                                                                                toggleName={featureToggle.name}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                :
+                                                                <td>
+                                                                </td>
+                                                            :
+                                                            null
+                                                    ))}
                                                 </tr>
                                             ))}
                                             </tbody>
