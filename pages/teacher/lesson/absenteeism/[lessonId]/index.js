@@ -2,14 +2,12 @@ import SisTeacherStorage from "../../../../../public/storage/teacher/SisTeacherS
 import UnauthorizedAccessPage from "../../../../401";
 import SISTitle from "../../../../../public/components/page-titles";
 import TeacherNavbar from "../../../../../public/components/navbar/teacher/teacher-navbar";
-import {useRouter} from "next/router";
 import PageNotFound from "../../../../404";
 import StudentLessonAbsenteeismController
     from "../../../../../public/api/student/absenteeism/StudentLessonAbsenteeismController";
 import StudentLessonAbsenteeismStatus
     from "../../../../../public/constants/student/absenteeism/StudentLessonAbsenteeismStatus";
 import {useState} from 'react'
-import {isBoolean} from "util";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -73,8 +71,6 @@ export default function TeacherLessonAbsenteeismDetailList({
         )
     }
 
-    const router = useRouter();
-
     const [studentsLessonAbsenteeism, setStudentsLessonAbsenteeism] = useState(initStudentsLessonAbsenteeism);
     const changeStudentsLessonAbsenteeism = async (event) => {
         const week = event.target.value
@@ -83,40 +79,85 @@ export default function TeacherLessonAbsenteeismDetailList({
         if (studentsLessonAbsenteeismData.success) {
             setStudentsLessonAbsenteeism(studentsLessonAbsenteeismData.response);
         } else {
-            await router.push("/404");
+            // TODO: Kayıt Bulunamadı Olarak Hata Mesajı Açmalı
         }
     }
 
-    const numberOfCheckbox = (numberOfCheckbox) => {
-        const checkBoxNumbers = [];
-        for (let number = 1; number <= numberOfCheckbox; number++) {
-            checkBoxNumbers.push(number);
-        }
-        return checkBoxNumbers;
-    }
-
-    const [checked, setChecked] = useState([]);
-    let checkBoxesSum = 0;
-    const addCheckBoxes = (event) => {
-        let checkBoxList = [...checked];
-        if (event.target.checked) {
-            checkBoxList = [...checked, event.target.value];
-            for (let i = 0; i < checked.length; i++) {
-                checkBoxesSum += Number(checked[i]);
-            }
-        } else {
-            checkBoxList.splice(checked.indexOf(event.target.value), 1);
-        }
-        setChecked(checkBoxList);
-    }
 
     const absenteeismIdsAndTheoreticalHoursAndPracticeHours = new Map();
-    const setAbsenteeismIdsAndTheoreticalHoursAndPracticeHours = async (id, theoreticalHours, practiceHours) => {
-        if (id === studentsLessonAbsenteeism.id && theoreticalHours <= studentsLessonAbsenteeism.theoreticalHours && practiceHours <= studentsLessonAbsenteeism.practiceHours){
-            absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(id, theoreticalHours, practiceHours)
+    const tempHoursMap = new Map();
+    {
+        studentsLessonAbsenteeism.map((studentLessonAbsenteeism) => (
+            (
+                studentLessonAbsenteeism.lessonResponse.theoreticalHours !== 0
+                    ?
+                    (
+                        tempHoursMap.set("theoreticalHours", studentLessonAbsenteeism.lessonResponse.theoreticalHours),
+                            absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(studentLessonAbsenteeism.id, tempHoursMap)
+                    )
+                    :
+                    null,
+                    studentLessonAbsenteeism.lessonResponse.practiceHours !== 0
+                        ?
+                        (
+                            tempHoursMap.set("practiceHours", studentLessonAbsenteeism.lessonResponse.practiceHours),
+                                absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(studentLessonAbsenteeism.id, tempHoursMap)
+                        )
+                        :
+                        null
+            )
+        ))
+    }
+
+    const updateTheoreticalHoursValuesInMap = (event, absenteeismId) => {
+        const isCheckBoxChecked = event.target.checked
+        if (isCheckBoxChecked) {
+            setTheoreticalHoursToMap(absenteeismId, -1)
+        } else {
+            setTheoreticalHoursToMap(absenteeismId, +1)
         }
     }
-    console.log(absenteeismIdsAndTheoreticalHoursAndPracticeHours)
+
+    const setTheoreticalHoursToMap = (absenteeismId, hours) => {
+        const prevHours = absenteeismIdsAndTheoreticalHoursAndPracticeHours.get(absenteeismId)
+
+        const hoursMap = new Map()
+        const prevTheoreticalHours = prevHours.get('theoreticalHours')
+        hoursMap.set('theoreticalHours', (prevTheoreticalHours + hours))
+        const prevPracticeHours = prevHours.get('practiceHours')
+        hoursMap.set('practiceHours', prevPracticeHours)
+
+        absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(absenteeismId, prevHours)
+    }
+
+    const updatePracticeHoursValuesInMap = (event, absenteeismId) => {
+        const isCheckBoxChecked = event.target.checked
+        if (isCheckBoxChecked) {
+            setPracticeHoursToMap(absenteeismId, -1)
+        } else {
+            setPracticeHoursToMap(absenteeismId, +1)
+        }
+    }
+
+    const setPracticeHoursToMap = (absenteeismId, hours) => {
+        const prevHours = absenteeismIdsAndTheoreticalHoursAndPracticeHours.get(absenteeismId)
+
+        const hoursMap = new Map()
+        const prevTheoreticalHours = prevHours.get('theoreticalHours')
+        hoursMap.set('theoreticalHours', (prevTheoreticalHours))
+        const prevPracticeHours = prevHours.get('practiceHours')
+        hoursMap.set('practiceHours', (prevPracticeHours + hours))
+
+        absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(absenteeismId, prevHours)
+    }
+
+    const createArrayListWithHoursValue = (hours) => {
+        const numbers = [];
+        for (let number = 1; number <= hours; number++) {
+            numbers.push(number);
+        }
+        return numbers;
+    }
 
     return (
         <div>
@@ -125,7 +166,7 @@ export default function TeacherLessonAbsenteeismDetailList({
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none mr-2 font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        ÖĞRENCİ DEVAMSIZLIK LİSTESİ
+                        {studentsLessonAbsenteeism[0].lessonResponse.name.toLocaleUpperCase('TR')} DERSİ ÖĞRENCİ DEVAMSIZLIK LİSTESİ
                     </a>
                     <button
                         className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
@@ -162,12 +203,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    DERS ADI
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="select-none px-6 py-3 tracking-wider"
-                                                >
                                                     ÖĞRENCİ
                                                 </th>
                                                 <th
@@ -197,16 +232,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                         <div className="flex items-center">
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonAbsenteeism.lessonResponse.name}</div>
-                                                                <div
-                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonAbsenteeism.lessonResponse.lessonId}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-2 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <div className="ml-4">
-                                                                <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonAbsenteeism.studentResponse.name} {studentLessonAbsenteeism.studentResponse.surname}</div>
                                                                 <div
                                                                     className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonAbsenteeism.studentResponse.studentId}</div>
@@ -220,13 +245,13 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                         </div>
                                                     </td>
                                                     <td className="px-2 py-4 whitespace-nowrap">
-                                                        {numberOfCheckbox(studentLessonAbsenteeism.lessonResponse.theoreticalHours).map((number) =>
+                                                        {createArrayListWithHoursValue(studentLessonAbsenteeism.lessonResponse.theoreticalHours).map((number) =>
                                                             <div className="mt-2 flex items-center">
                                                                 <input type="checkbox"
-                                                                       id="checkboxTheoreticalHours"
-                                                                       name="checkboxTheoreticalHours"
+                                                                       id="theoretical-hours-checkbox"
+                                                                       name="theoretical-hours-checkbox"
                                                                        value="1"
-                                                                       onClick={addCheckBoxes}
+                                                                       onClick={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id, 'theoreticalHours')}
                                                                        className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
                                                                 <a
                                                                     className="font-phenomenaRegular ml-2 text-lg text-sis-darkblue">
@@ -237,12 +262,13 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                         )}
                                                     </td>
                                                     <td className="px-2 py-4 whitespace-nowrap">
-                                                        {numberOfCheckbox(studentLessonAbsenteeism.lessonResponse.practiceHours).map((number) =>
+                                                        {createArrayListWithHoursValue(studentLessonAbsenteeism.lessonResponse.practiceHours).map((number) =>
                                                             <div className="mt-2 flex items-center">
                                                                 <input type="checkbox"
-                                                                       id="checkboxPracticeHours"
-                                                                       name="checkboxPracticeHours"
+                                                                       id="practice-hours-checkbox"
+                                                                       name="practice-hours-checkbox"
                                                                        value="1"
+                                                                       onClick={(event) => updatePracticeHoursValuesInMap(event, studentLessonAbsenteeism.id)}
                                                                        className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
                                                                 <a
                                                                     className="font-phenomenaRegular ml-2 text-lg text-gray-500">
