@@ -166,12 +166,12 @@ export default function TeacherLessonAbsenteeismDetailList({
             <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
                 <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
                     <a className="select-none mr-2 font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        {studentsLessonAbsenteeism[0].lessonResponse.name.toLocaleUpperCase('TR')} DERSİ ÖĞRENCİ DEVAMSIZLIK LİSTESİ
+                        ÖĞRENCİ DEVAMSIZLIK LİSTESİ
                     </a>
                     <button
                         className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                     >
-                        KAYDET
+                        DEVAMSIZLIKLARI KAYDET
                     </button>
                     <div className="inline-grid grid-cols-2 gap-2">
                         <div className="col-span-7 sm:col-span-6">
