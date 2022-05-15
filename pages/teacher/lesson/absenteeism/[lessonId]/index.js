@@ -69,7 +69,7 @@ export default function TeacherLessonAbsenteeismDetailList({
 
     if (!isDataFound) {
         return (
-            <PageNotFound user="/officer"/>
+            <PageNotFound user="/teacher"/>
         )
     }
 
@@ -95,15 +95,28 @@ export default function TeacherLessonAbsenteeismDetailList({
         return checkBoxNumbers;
     }
 
-    const addCheckBoxes = () => {
-        const checked = true;
-        if (!checked){
-            return false;
-        }else {
-            return true
+    const [checked, setChecked] = useState([]);
+    let checkBoxesSum = 0;
+    const addCheckBoxes = (event) => {
+        let checkBoxList = [...checked];
+        if (event.target.checked) {
+            checkBoxList = [...checked, event.target.value];
+            for (let i = 0; i < checked.length; i++) {
+                checkBoxesSum += Number(checked[i]);
+            }
+        } else {
+            checkBoxList.splice(checked.indexOf(event.target.value), 1);
         }
+        setChecked(checkBoxList);
     }
 
+    const absenteeismIdsAndTheoreticalHoursAndPracticeHours = new Map();
+    const setAbsenteeismIdsAndTheoreticalHoursAndPracticeHours = async (id, theoreticalHours, practiceHours) => {
+        if (id === studentsLessonAbsenteeism.id && theoreticalHours <= studentsLessonAbsenteeism.theoreticalHours && practiceHours <= studentsLessonAbsenteeism.practiceHours){
+            absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(id, theoreticalHours, practiceHours)
+        }
+    }
+    console.log(absenteeismIdsAndTheoreticalHoursAndPracticeHours)
 
     return (
         <div>
@@ -149,7 +162,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    Ders Adı
+                                                    DERS ADI
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -210,8 +223,9 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                         {numberOfCheckbox(studentLessonAbsenteeism.lessonResponse.theoreticalHours).map((number) =>
                                                             <div className="mt-2 flex items-center">
                                                                 <input type="checkbox"
-                                                                       id="checkbox"
-                                                                       name="checkbox"
+                                                                       id="checkboxTheoreticalHours"
+                                                                       name="checkboxTheoreticalHours"
+                                                                       value="1"
                                                                        onClick={addCheckBoxes}
                                                                        className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
                                                                 <a
@@ -226,7 +240,9 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                         {numberOfCheckbox(studentLessonAbsenteeism.lessonResponse.practiceHours).map((number) =>
                                                             <div className="mt-2 flex items-center">
                                                                 <input type="checkbox"
-                                                                       id="checkbox"
+                                                                       id="checkboxPracticeHours"
+                                                                       name="checkboxPracticeHours"
+                                                                       value="1"
                                                                        className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow "/>
                                                                 <a
                                                                     className="font-phenomenaRegular ml-2 text-lg text-gray-500">
