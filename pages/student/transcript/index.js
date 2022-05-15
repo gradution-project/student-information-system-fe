@@ -35,12 +35,6 @@ export default function StudentTranscriptDetail({isPagePermissionSuccess, transc
     }
 
     const transcriptDetail = transcriptDetailData.response;
-    let semesterResponses = new Map();
-    {
-        for (let [key, value] of Object.entries(transcriptDetail.studentLessonsSemestersNotesResponse)) {
-            semesterResponses.set(key, value)
-        }
-    }
 
     return (
         <div>
@@ -67,9 +61,8 @@ export default function StudentTranscriptDetail({isPagePermissionSuccess, transc
                                         TRANSKRİPT DOSYASINI İNDİR
                                     </a>
                                 </div>
-
-                                {
-                                    [...semesterResponses.keys()].map((semester) =>
+                                {(
+                                    Object.entries(transcriptDetail.studentLessonsSemestersNotesResponse).map(([semester, semesterResponse]) => (
                                         <>
                                             <div>
                                                 {LessonSemester.getAll.map((lSemester) => (
@@ -81,7 +74,7 @@ export default function StudentTranscriptDetail({isPagePermissionSuccess, transc
                                                                 {lSemester.tr}
                                                                 <span
                                                                     className="ml-4 select-none px-4 inline-flex leading-10 rounded-full bg-sis-blue font-phenomenaBold text-2xl text-sis-white ">
-                                                                    Not Ortalaması : {semesterResponses.get(semester).meanOfAllNotes}
+                                                                    Not Ortalaması : {semesterResponse.meanOfAllNotes}
                                                                 </span>
                                                             </a>
                                                         </div>
@@ -139,7 +132,7 @@ export default function StudentTranscriptDetail({isPagePermissionSuccess, transc
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody className="bg-white divide-y divide-gray-200">
-                                                                {semesterResponses.get(semester).studentTranscriptLessonNoteResponse.map((transcriptLessonNoteResponse) => (
+                                                                {semesterResponse.studentTranscriptLessonNoteResponse.map((transcriptLessonNoteResponse) => (
                                                                     <tr key={transcriptLessonNoteResponse.lessonId}>
                                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                                             <div className="flex items-center">
@@ -203,7 +196,7 @@ export default function StudentTranscriptDetail({isPagePermissionSuccess, transc
                                                 </div>
                                             </div>
                                         </>
-                                    )
+                                    )))
                                 }
                             </div>
                             :
