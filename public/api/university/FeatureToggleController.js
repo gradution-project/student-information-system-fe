@@ -2,7 +2,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllFeatureToggles = async () => {
-    const apiResult = await fetch(`${SIS_API_URL}/feature/toggle`, {
+    const apiResult = await fetch(`${SIS_API_URL}/feature/toggles`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });

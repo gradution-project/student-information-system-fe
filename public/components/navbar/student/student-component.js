@@ -1,6 +1,6 @@
 import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
-import {CalendarIcon, ViewListIcon, ViewGridAddIcon} from '@heroicons/react/outline'
+import {CalendarIcon, ViewGridAddIcon, ViewListIcon} from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
 
 const lessonOperations = [
@@ -163,6 +163,11 @@ export default function StudentComponent() {
                     </>
                 )}
             </Popover>
+
+            <a href="/student/transcript"
+               className="text-xl font-medium text-gray-500 hover:text-sis-yellow">
+                TRANSKRİPT
+            </a>
 
         </Popover.Group>
     )

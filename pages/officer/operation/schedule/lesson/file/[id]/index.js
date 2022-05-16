@@ -7,7 +7,8 @@ import ProcessNotification from "../../../../../../../public/notifications/proce
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
 import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
-import LessonScheduleFileController from "../../../../../../../public/api/exam-file/LessonScheduleFileController";
+import LessonScheduleFileController
+    from "../../../../../../../public/api/schedule/file/lesson/LessonScheduleFileController";
 import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {

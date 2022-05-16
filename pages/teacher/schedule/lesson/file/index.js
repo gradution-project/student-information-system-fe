@@ -2,7 +2,7 @@ import SISTitle from "../../../../../public/components/page-titles";
 import TeacherNavbar from "../../../../../public/components/navbar/teacher/teacher-navbar";
 import UnauthorizedAccessPage from "../../../../401";
 import SisTeacherStorage from "../../../../../public/storage/teacher/SisTeacherStorage";
-import LessonScheduleFileController from "../../../../../public/api/exam-file/LessonScheduleFileController";
+import LessonScheduleFileController from "../../../../../public/api/schedule/file/lesson/LessonScheduleFileController";
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
