@@ -9,7 +9,8 @@ import FailNotification from "../../../../../../../public/notifications/fail";
 import SisOfficerStorage from "../../../../../../../public/storage/officer/SisOfficerStorage";
 import DepartmentController from "../../../../../../../public/api/department/DepartmentController";
 import DepartmentStatus from "../../../../../../../public/constants/department/DepartmentStatus";
-import LessonScheduleFileController from "../../../../../../../public/api/exam-file/LessonScheduleFileController";
+import LessonScheduleFileController
+    from "../../../../../../../public/api/schedule/file/lesson/LessonScheduleFileController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
