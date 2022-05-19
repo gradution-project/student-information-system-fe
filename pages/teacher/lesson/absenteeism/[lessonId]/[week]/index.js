@@ -287,7 +287,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                         <input type="checkbox"
                                                                                id="theoretical-hours-checkbox"
                                                                                name="theoretical-hours-checkbox"
-                                                                               value="1"
                                                                                checked={!(studentLessonAbsenteeism.theoreticalHours > (studentLessonAbsenteeism.lessonResponse.theoreticalHours - number))}
                                                                                disabled
                                                                                className="w-6 h-6 text-gray-300 rounded bg-gray-50"/>
@@ -305,7 +304,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                         <input type="checkbox"
                                                                                id="theoretical-hours-checkbox"
                                                                                name="theoretical-hours-checkbox"
-                                                                               value="1"
                                                                                onClick={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id)}
                                                                                className="w-6 h-6 text-sis-yellow border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                         <a
@@ -326,7 +324,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                         <input type="checkbox"
                                                                                id="theoretical-hours-checkbox"
                                                                                name="theoretical-hours-checkbox"
-                                                                               value="1"
                                                                                checked={!(studentLessonAbsenteeism.practiceHours > (studentLessonAbsenteeism.lessonResponse.practiceHours - number))}
                                                                                disabled
                                                                                onClick={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id)}
@@ -345,7 +342,6 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                         <input type="checkbox"
                                                                                id="theoretical-hours-checkbox"
                                                                                name="theoretical-hours-checkbox"
-                                                                               value="1"
                                                                                onClick={(event) => updatePracticeHoursValuesInMap(event, studentLessonAbsenteeism.id)}
                                                                                className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                         <a
