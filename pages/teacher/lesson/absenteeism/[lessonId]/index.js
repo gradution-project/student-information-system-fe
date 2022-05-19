@@ -8,6 +8,11 @@ import StudentLessonAbsenteeismController
 import StudentLessonAbsenteeismStatus
     from "../../../../../public/constants/student/absenteeism/StudentLessonAbsenteeismStatus";
 import {useState} from 'react'
+import {useRouter} from "next/router";
+import ProcessNotification from "../../../../../public/notifications/process";
+import SuccessNotification from "../../../../../public/notifications/success";
+import FailNotification from "../../../../../public/notifications/fail";
+
 
 export async function getServerSideProps(context) {
     const teacherId = SisTeacherStorage.getNumberWithContext(context);
@@ -71,6 +76,16 @@ export default function TeacherLessonAbsenteeismDetailList({
         )
     }
 
+    let [isOpenFailAbsenteeismApiNotification, setIsOpenFailAbsenteeismApiNotification] = useState(false);
+
+    function closeFailAbsenteeismApiNotification() {
+        setIsOpenFailAbsenteeismApiNotification(false);
+    }
+
+    function openFailAbsenteeismApiNotification() {
+        setIsOpenFailAbsenteeismApiNotification(true);
+    }
+
     const [studentsLessonAbsenteeism, setStudentsLessonAbsenteeism] = useState(initStudentsLessonAbsenteeism);
     const changeStudentsLessonAbsenteeism = async (event) => {
         const week = event.target.value
@@ -79,7 +94,7 @@ export default function TeacherLessonAbsenteeismDetailList({
         if (studentsLessonAbsenteeismData.success) {
             setStudentsLessonAbsenteeism(studentsLessonAbsenteeismData.response);
         } else {
-            // TODO: Kayıt Bulunamadı Olarak Hata Mesajı Açmalı
+            openFailAbsenteeismApiNotification();
         }
     }
 
@@ -107,6 +122,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                         null
             )
         ))
+
     }
 
     const updateTheoreticalHoursValuesInMap = (event, absenteeismId) => {
@@ -128,6 +144,7 @@ export default function TeacherLessonAbsenteeismDetailList({
         hoursMap.set('practiceHours', prevPracticeHours)
 
         absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(absenteeismId, prevHours)
+
     }
 
     const updatePracticeHoursValuesInMap = (event, absenteeismId) => {
@@ -137,6 +154,7 @@ export default function TeacherLessonAbsenteeismDetailList({
         } else {
             setPracticeHoursToMap(absenteeismId, +1)
         }
+
     }
 
     const setPracticeHoursToMap = (absenteeismId, hours) => {
@@ -149,6 +167,7 @@ export default function TeacherLessonAbsenteeismDetailList({
         hoursMap.set('practiceHours', (prevPracticeHours + hours))
 
         absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(absenteeismId, prevHours)
+
     }
 
     const createArrayListWithHoursValue = (hours) => {
@@ -157,6 +176,54 @@ export default function TeacherLessonAbsenteeismDetailList({
             numbers.push(number);
         }
         return numbers;
+    }
+
+    const router = useRouter();
+
+    let [isOpenProcessingLessonAbsenteeismNotification, setIsOpenProcessingLessonAbsenteeismNotification] = useState(false);
+
+    function closeProcessingLessonAbsenteeismNotification() {
+        setIsOpenProcessingLessonAbsenteeismNotification(false);
+    }
+
+    function openProcessingLessonAbsenteeismNotification() {
+        setIsOpenProcessingLessonAbsenteeismNotification(true);
+    }
+
+    let [isOpenSuccessLessonAbsenteeismNotification, setIsOpenSuccessLessonAbsenteeismNotification] = useState(false);
+
+    function closeSuccessLessonAbsenteeismNotification() {
+        setIsOpenSuccessLessonAbsenteeismNotification(false);
+        router.reload();
+    }
+
+    function openSuccessLessonAbsenteeismNotification() {
+        setIsOpenSuccessLessonAbsenteeismNotification(true);
+    }
+
+    let [isOpenFailLessonAbsenteeismNotification, setIsOpenFailLessonAbsenteeismNotification] = useState(false);
+
+    function closeFailLessonAbsenteeismNotification() {
+        setIsOpenFailLessonAbsenteeismNotification(false);
+    }
+
+    function openFailLessonAbsenteeismNotification() {
+        setIsOpenFailLessonAbsenteeismNotification(true);
+    }
+
+    const updateStudentsLessonAbsenteeism = async (event) => {
+        openProcessingLessonAbsenteeismNotification();
+
+        event.preventDefault();
+
+        const studentsLessonAbsenteeismData = await StudentLessonAbsenteeismController.updateStudentsLessonAbsenteeism(operationUserId, Object.fromEntries(absenteeismIdsAndTheoreticalHoursAndPracticeHours));
+        if (studentsLessonAbsenteeismData.success) {
+            closeProcessingLessonAbsenteeismNotification();
+            openSuccessLessonAbsenteeismNotification();
+        } else {
+            closeProcessingLessonAbsenteeismNotification();
+            openFailLessonAbsenteeismNotification();
+        }
     }
 
     return (
@@ -169,6 +236,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                         ÖĞRENCİ DEVAMSIZLIK LİSTESİ
                     </a>
                     <button
+                        onClick={updateStudentsLessonAbsenteeism}
                         className="font-phenomenaBold float-right ml-2 py-2 px-4 shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
                     >
                         DEVAMSIZLIKLARI KAYDET
@@ -244,9 +312,8 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                 <input type="checkbox"
                                                                        id="theoretical-hours-checkbox"
                                                                        name="theoretical-hours-checkbox"
-                                                                       value="1"
-                                                                       onClick={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id)}
-                                                                       className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
+                                                                       onChange={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id)}
+                                                                       className="w-6 h-6 text-sis-yellow border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                 <a
                                                                     className="font-phenomenaBold ml-2 text-lg text-sis-darkblue">
                                                                     {number}. Saat
@@ -261,9 +328,8 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                 <input type="checkbox"
                                                                        id="practice-hours-checkbox"
                                                                        name="practice-hours-checkbox"
-                                                                       value="1"
                                                                        onClick={(event) => updatePracticeHoursValuesInMap(event, studentLessonAbsenteeism.id)}
-                                                                       className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
+                                                                       className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                 <a
                                                                     className="font-phenomenaBold ml-2 text-lg text-gray-500">
                                                                     {number}. Saat
@@ -285,6 +351,39 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                 </tr>
                                             ))}
                                             </tbody>
+                                            {/**
+                                             * Lesson Absenteeism Notification
+                                             */}
+                                            <ProcessNotification
+                                                isOpen={isOpenProcessingLessonAbsenteeismNotification}
+                                                closeNotification={closeProcessingLessonAbsenteeismNotification}
+                                                title="Öğrenci Ders Devamsızlıkları Kaydedeliyor..."
+                                            />
+
+                                            <SuccessNotification
+                                                isOpen={isOpenSuccessLessonAbsenteeismNotification}
+                                                closeNotification={closeSuccessLessonAbsenteeismNotification}
+                                                title="Öğrenci Ders Devamsızlıkları Kaydedildi"
+                                                description="Öğrencilere ait ders devamsızlıkları kaydedildi."
+
+                                            />
+
+                                            <FailNotification
+                                                isOpen={isOpenFailLessonAbsenteeismNotification}
+                                                closeNotification={closeFailLessonAbsenteeismNotification}
+                                                title="Öğrenci Ders Devamsızlıkları Kaydedilemedi!"
+                                                description="Sistemsel bir hatadan dolayı öğrenci ders devamsızlıkları kaydedilemedi."
+                                            />
+
+                                            {/**
+                                             * Lesson Absenteeism Api Notification
+                                             */}
+
+                                            <FailNotification
+                                                isOpen={isOpenFailAbsenteeismApiNotification}
+                                                closeNotification={closeFailAbsenteeismApiNotification}
+                                                title="Kayıt Bulunamadı"
+                                            />
                                         </table>
                                     </div>
                                 </div>

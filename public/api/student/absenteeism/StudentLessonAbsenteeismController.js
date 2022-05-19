@@ -25,10 +25,26 @@ const getTotalLessonAbsenteeismWeek = async () => {
     return await apiResult.json();
 };
 
+const updateStudentsLessonAbsenteeism = async (operationUserId, absenteeismIdsAndTheoreticalHoursAndPracticeHours) => {
+
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/absenteeism`, {
+        headers: {'Content-Type': 'application/json'},
+        method: 'PUT',
+        body: JSON.stringify({
+            absenteeismIdsAndTheoreticalHoursAndPracticeHours,
+            operationInfoRequest: {
+                userId: operationUserId
+            }
+        })
+    });
+    return await apiResult.json();
+};
+
 const StudentLessonAbsenteeismController = {
     getAllStudentsLessonsAbsenteeismByLessonId,
     getAllStudentLessonsAbsenteeismByStudentId,
-    getTotalLessonAbsenteeismWeek
+    getTotalLessonAbsenteeismWeek,
+    updateStudentsLessonAbsenteeism
 };
 
 export default StudentLessonAbsenteeismController;
