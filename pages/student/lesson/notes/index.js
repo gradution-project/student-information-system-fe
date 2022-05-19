@@ -62,7 +62,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    DERS
+                                                    DERS BİLGİLERİ
                                                 </th>
                                                 <th
                                                     scope="col"
