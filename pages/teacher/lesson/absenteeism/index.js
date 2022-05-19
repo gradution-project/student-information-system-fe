@@ -181,7 +181,7 @@ export default function TeacherLessonsList({isPagePermissionSuccess, lessons}) {
                                                         lesson.lessonResponse.status === LessonStatus.ACTIVE
                                                             ?
                                                             <td className="ml-10 px-6 py-4 text-right font-phenomenaBold text-xl">
-                                                                <a href={`/teacher/lesson/absenteeism/${lesson.lessonResponse.lessonId}`}
+                                                                <a href={`/teacher/lesson/absenteeism/${lesson.lessonResponse.lessonId}/1`}
                                                                    className='text-sis-yellow'>
                                                                     DEVAMSIZLIK İŞLEMLERİ
                                                                 </a>
