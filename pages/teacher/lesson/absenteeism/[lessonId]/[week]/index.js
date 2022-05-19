@@ -132,7 +132,6 @@ export default function TeacherLessonAbsenteeismDetailList({
         }
 
         absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(absenteeismId, hoursMap)
-        console.log(absenteeismIdsAndTheoreticalHoursAndPracticeHours)
     }
 
     const updatePracticeHoursValuesInMap = (event, absenteeismId) => {
@@ -159,7 +158,6 @@ export default function TeacherLessonAbsenteeismDetailList({
         }
 
         absenteeismIdsAndTheoreticalHoursAndPracticeHours.set(absenteeismId, hoursMap)
-        console.log(absenteeismIdsAndTheoreticalHoursAndPracticeHours)
     }
 
     const createArrayListWithHoursValue = (hours) => {
@@ -285,28 +283,19 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                             ?
                                                             <td className="px-2 py-4 whitespace-nowrap">
                                                                 {createArrayListWithHoursValue((studentLessonAbsenteeism.lessonResponse.theoreticalHours)).map((number) =>
-                                                                    (
-
-                                                                        (
-                                                                            console.log("studentId : " + studentLessonAbsenteeism.studentResponse.studentId),
-                                                                            console.log("base : " + studentLessonAbsenteeism.lessonResponse.theoreticalHours),
-                                                                                console.log("current : " + studentLessonAbsenteeism.theoreticalHours),
-                                                                                console.log("number : " + number)
-                                                                        ),
-                                                                        <div className="mt-2 flex items-center">
-                                                                            <input type="checkbox"
-                                                                                   id="theoretical-hours-checkbox"
-                                                                                   name="theoretical-hours-checkbox"
-                                                                                   value="1"
-                                                                                   checked={!(studentLessonAbsenteeism.theoreticalHours > (studentLessonAbsenteeism.lessonResponse.theoreticalHours - number))}
-                                                                                   disabled
-                                                                                   className="w-6 h-6 text-gray-300 rounded bg-gray-50"/>
-                                                                            <a
-                                                                                className="font-phenomenaBold ml-2 text-lg text-gray-400">
-                                                                                {number}. Saat
-                                                                            </a>
-                                                                        </div>
-                                                                    )
+                                                                    <div className="mt-2 flex items-center">
+                                                                        <input type="checkbox"
+                                                                               id="theoretical-hours-checkbox"
+                                                                               name="theoretical-hours-checkbox"
+                                                                               value="1"
+                                                                               checked={!(studentLessonAbsenteeism.theoreticalHours > (studentLessonAbsenteeism.lessonResponse.theoreticalHours - number))}
+                                                                               disabled
+                                                                               className="w-6 h-6 text-gray-300 rounded bg-gray-50"/>
+                                                                        <a
+                                                                            className="font-phenomenaBold ml-2 text-lg text-gray-400">
+                                                                            {number}. Saat
+                                                                        </a>
+                                                                    </div>
                                                                 )}
                                                             </td>
                                                             :
