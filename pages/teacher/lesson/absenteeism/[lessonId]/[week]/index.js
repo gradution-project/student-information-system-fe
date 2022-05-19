@@ -307,7 +307,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                                name="theoretical-hours-checkbox"
                                                                                value="1"
                                                                                onClick={(event) => updateTheoreticalHoursValuesInMap(event, studentLessonAbsenteeism.id)}
-                                                                               className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
+                                                                               className="w-6 h-6 text-sis-yellow border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                         <a
                                                                             className="font-phenomenaBold ml-2 text-lg text-sis-darkblue">
                                                                             {number}. Saat
@@ -347,7 +347,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                                name="theoretical-hours-checkbox"
                                                                                value="1"
                                                                                onClick={(event) => updatePracticeHoursValuesInMap(event, studentLessonAbsenteeism.id)}
-                                                                               className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-sis-yellow focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
+                                                                               className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                         <a
                                                                             className="font-phenomenaBold ml-2 text-lg text-sis-darkblue">
                                                                             {number}. Saat
