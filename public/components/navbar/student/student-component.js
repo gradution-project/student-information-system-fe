@@ -2,6 +2,7 @@ import {Fragment} from 'react'
 import {Popover, Transition} from '@headlessui/react'
 import {CalendarIcon, ViewListIcon, ViewGridAddIcon} from '@heroicons/react/outline'
 import {ChevronDownIcon} from '@heroicons/react/solid'
+import SisStudentStorage from "../../../storage/student/SisStudentStorage";
 
 const lessonOperations = [
     {
@@ -38,6 +39,7 @@ function classNames(...classes) {
 }
 
 export default function StudentComponent() {
+    const studentId = SisStudentStorage.getNumber();
 
     return (
         <Popover.Group as="nav" className="hidden md:flex space-x-10 font-phenomenaBold">
@@ -104,7 +106,7 @@ export default function StudentComponent() {
                 NOTLARIM
             </a>
 
-            <a href="/student/roll-call-system"
+            <a href={'/student/lesson/absenteeism/' + studentId}
                className="text-xl font-medium text-gray-500 hover:text-sis-yellow">
                 YOKLAMA SİSTEMİ
             </a>
