@@ -193,6 +193,7 @@ export default function StudentLessonRegistration({
         }
     }
 
+    let studentDepartmentNumber = SisStudentStorage.getDepartmentNumber();
 
     let [lessonsBySemesters] = useState({
         First: [],
@@ -215,45 +216,55 @@ export default function StudentLessonRegistration({
             isFirstLessonRegistrationOperationsFeatureToggleEnabled
                 ?
                 lessons.map((lesson) => (
-                    lesson.semester === LessonSemester.FIRST
-                        ?
-                        lessonsBySemesters.First.push(lesson)
-                        :
-                        lesson.semester === LessonSemester.THIRD
+                    (studentDepartmentNumber == lesson.departmentResponse.departmentId
                             ?
-                            lessonsBySemesters.Second.push(lesson)
-                            :
-                            lesson.semester === LessonSemester.FIFTH
+                            lesson.semester === LessonSemester.FIRST
                                 ?
-                                lessonsBySemesters.Third.push(lesson)
+                                lessonsBySemesters.First.push(lesson)
                                 :
-                                lesson.semester === LessonSemester.SEVENTH
+                                lesson.semester === LessonSemester.THIRD
                                     ?
-                                    lessonsBySemesters.Fourth.push(lesson)
+                                    lessonsBySemesters.Second.push(lesson)
                                     :
-                                    null
+                                    lesson.semester === LessonSemester.FIFTH
+                                        ?
+                                        lessonsBySemesters.Third.push(lesson)
+                                        :
+                                        lesson.semester === LessonSemester.SEVENTH
+                                            ?
+                                            lessonsBySemesters.Fourth.push(lesson)
+                                            :
+                                            null
+                            :
+                            null
+                    )
                 ))
                 :
                 isSecondLessonRegistrationOperationsFeatureToggleEnabled
                     ?
                     lessons.map((lesson) => (
-                        lesson.semester === LessonSemester.SECOND
-                            ?
-                            lessonsBySemesters.First.push(lesson)
-                            :
-                            lesson.semester === LessonSemester.FOURTH
+                        (studentDepartmentNumber == lesson.departmentResponse.departmentId
                                 ?
-                                lessonsBySemesters.Second.push(lesson)
-                                :
-                                lesson.semester === LessonSemester.SIXTH
+                                lesson.semester === LessonSemester.SECOND
                                     ?
-                                    lessonsBySemesters.Third.push(lesson)
+                                    lessonsBySemesters.First.push(lesson)
                                     :
-                                    lesson.semester === LessonSemester.EIGHTH
+                                    lesson.semester === LessonSemester.FOURTH
                                         ?
-                                        lessonsBySemesters.Fourth.push(lesson)
+                                        lessonsBySemesters.Second.push(lesson)
                                         :
-                                        null
+                                        lesson.semester === LessonSemester.SIXTH
+                                            ?
+                                            lessonsBySemesters.Third.push(lesson)
+                                            :
+                                            lesson.semester === LessonSemester.EIGHTH
+                                                ?
+                                                lessonsBySemesters.Fourth.push(lesson)
+                                                :
+                                                null
+                                :
+                                null
+                        )
                     ))
                     :
                     null
@@ -377,259 +388,260 @@ export default function StudentLessonRegistration({
                             </div>
                         </div>
 
-                    :
-                    registrationData.response.status === StudentLessonRegistrationStatus.APPROVED
-                        ?
-                        <div className="mt-5 md:mt-0 md:col-span-2">
-                            <div className="px-28 py-5 mx-auto space-y-6">
-                                <div
-                                    className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
-                                    <a className="select-none font-phenomenaExtraBold text-4xl text-sis-success">
-                                        Ders Kaydınız Başarıyla Tamamlandı Derslerim Ekranından Derslerinizi Kontrol Edebilirsiniz!
-                                    </a>
+                        :
+                        registrationData.response.status === StudentLessonRegistrationStatus.APPROVED
+                            ?
+                            <div className="mt-5 md:mt-0 md:col-span-2">
+                                <div className="px-28 py-5 mx-auto space-y-6">
+                                    <div
+                                        className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                        <a className="select-none font-phenomenaExtraBold text-4xl text-sis-success">
+                                            Ders Kaydınız Başarıyla Tamamlandı Derslerim Ekranından Derslerinizi Kontrol
+                                            Edebilirsiniz!
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
+                            :
+                            null
+                    :
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                DERS KAYIT
+                            </a>
+                            <button
+                                onClick={saveRegistrationLesson}
+                                type="submit"
+                                className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
+                            >
+                                DANIŞMAN'IN ONAYINA GÖNDER
+                            </button>
                         </div>
-                        :
-                    null
-                        :
-                        <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                            <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                                <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                                    DERS KAYIT
-                                </a>
-                                <button
-                                    onClick={saveRegistrationLesson}
-                                    type="submit"
-                                    className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-sis-darkblue"
-                                >
-                                    DANIŞMAN'IN ONAYINA GÖNDER
-                                </button>
-                            </div>
-                            <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                                <Tab.Group>
-                                    <Tab.List className="flex p-1 space-x-1 bg-blue-900/20 rounded-xl">
-                                        {StudentClassLevel.getAll.map((sClassLevel) => (
-                                            sClassLevel.enum !== StudentClassLevel.PREPARATORY
-                                            &&
-                                            sClassLevel.enum !== StudentClassLevel.FIFTH
-                                            &&
-                                            sClassLevel.enum !== StudentClassLevel.SIXTH
-                                                ?
-                                                <Tab
-                                                    key={sClassLevel.value}
-                                                    className={({selected}) =>
-                                                        classNames(
-                                                            'w-full py-2.5 text-xl leading-5 font-phenomenaBold text-sis-yellow rounded-lg',
-                                                            'ring-offset-sis-yellow ring-opacity-60',
-                                                            selected
-                                                                ? 'bg-white shadow'
-                                                                : 'text-sis-yellow hover:bg-white/[0.12] hover:text-sis-darkblue'
-                                                        )
-                                                    }
-                                                >
-                                                    {sClassLevel.tr}
-                                                </Tab>
-                                                :
-                                                null
-                                        ))}
-                                    </Tab.List>
-                                    <Tab.Panels className="mt-2">
-                                        {Object.values(lessonsBySemesters).map((lessons) => (
-                                            lessons.length !== 0
-                                                ?
-                                                <Tab.Panel key={lessons.id}
-                                                           className={classNames(
-                                                               'bg-white rounded-xl p-3',
-                                                               ''
-                                                           )}>
-                                                    {lessons.map((lesson) => (
-                                                        <ul>
-                                                            <li
-                                                                key={lesson.lessonId}
-                                                                className="relative p-3 rounded-md hover:bg-coolGray-100"
-                                                            >
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <Tab.Group>
+                                <Tab.List className="flex p-1 space-x-1 bg-blue-900/20 rounded-xl">
+                                    {StudentClassLevel.getAll.map((sClassLevel) => (
+                                        sClassLevel.enum !== StudentClassLevel.PREPARATORY
+                                        &&
+                                        sClassLevel.enum !== StudentClassLevel.FIFTH
+                                        &&
+                                        sClassLevel.enum !== StudentClassLevel.SIXTH
+                                            ?
+                                            <Tab
+                                                key={sClassLevel.value}
+                                                className={({selected}) =>
+                                                    classNames(
+                                                        'w-full py-2.5 text-xl leading-5 font-phenomenaBold text-sis-yellow rounded-lg',
+                                                        'ring-offset-sis-yellow ring-opacity-60',
+                                                        selected
+                                                            ? 'bg-white shadow'
+                                                            : 'text-sis-yellow hover:bg-white/[0.12] hover:text-sis-darkblue'
+                                                    )
+                                                }
+                                            >
+                                                {sClassLevel.tr}
+                                            </Tab>
+                                            :
+                                            null
+                                    ))}
+                                </Tab.List>
+                                <Tab.Panels className="mt-2">
+                                    {Object.values(lessonsBySemesters).map((lessons) => (
+                                        lessons.length !== 0
+                                            ?
+                                            <Tab.Panel key={lessons.id}
+                                                       className={classNames(
+                                                           'bg-white rounded-xl p-3',
+                                                           ''
+                                                       )}>
+                                                {lessons.map((lesson) => (
+                                                    <ul>
+                                                        <li
+                                                            key={lesson.lessonId}
+                                                            className="relative p-3 rounded-md hover:bg-coolGray-100"
+                                                        >
 
-                                                                <a className=" text-sis-darkblue">
-                                                                    <h2 className="text-xl font-phenomenaExtraBold">
-                                                                        {lesson.name}
-                                                                    </h2>
+                                                            <a className=" text-sis-darkblue">
+                                                                <h2 className="text-xl font-phenomenaExtraBold">
+                                                                    {lesson.name}
+                                                                </h2>
 
-                                                                    <h2 className="text-sis-success float-right font-phenomenaBold text-xl mb-4">
-                                                                        <button
-                                                                            onClick={() => insertLesson(lesson)}>
-                                                                            DERSİ SEÇ
-                                                                        </button>
-                                                                    </h2>
-                                                                    <h2 className="select-all text-xl font-phenomenaBold">
-                                                                        {lesson.lessonId}
-                                                                    </h2>
-                                                                </a>
-                                                                <ul className="flex mt-1 space-x-1 text-xl font-phenomenaRegular leading-4 text-sis-darkblue">
-                                                                    {LessonSemester.getAll.map((lSemester) => (
-                                                                        lesson.semester === lSemester.enum
-                                                                            ?
-                                                                            <li>
-                                                                                {lSemester.tr} -
-                                                                            </li>
-                                                                            :
-                                                                            null
-                                                                    ))}
-                                                                    <li> {lesson.credit} Kredi</li>
-                                                                    {
-                                                                        lesson.theoreticalHours !== 0
-                                                                            ?
-                                                                            <li> - {lesson.theoreticalHours} Saat
-                                                                                Teori </li>
-                                                                            :
-                                                                            null
-                                                                    }
-                                                                    {
-                                                                        lesson.practiceHours !== 0
-                                                                            ?
-                                                                            <li> - {lesson.practiceHours} Saat
-                                                                                Uygulama</li>
-                                                                            :
-                                                                            null
-                                                                    }
-                                                                    {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
-                                                                        lesson.compulsoryOrElective === lCompulsory.enum
-                                                                            ?
-                                                                            <li> - {lCompulsory.tr}</li>
-                                                                            :
-                                                                            null
-                                                                    ))}
-                                                                </ul>
-                                                            </li>
-                                                        </ul>
-
-                                                    ))}
-                                                </Tab.Panel>
-                                                :
-                                                <Tab.Panel key={lessons.id}
-                                                           className={classNames(
-                                                               'bg-white rounded-xl p-3',
-                                                               'text-center font-phenomenaBold text-sis-fail text-xl'
-                                                           )}>
-                                                    DERS BULUNAMADI!
-                                                </Tab.Panel>
-                                        ))}
-                                    </Tab.Panels>
-                                </Tab.Group>
-                            </div>
-                            {(
-                                studentLessons.length !== 0
-                                    ?
-                                    <div className="flex flex-col">
-                                        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                            <div
-                                                className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                                                <div
-                                                    className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                                    <table
-                                                        className="bg-gray-50 min-w-full divide-y divide-gray-200">
-                                                        <thead
-                                                            className="font-phenomenaBold text-xl text-gray-500 text-left">
-                                                        <tr>
-                                                            <th
-                                                                scope="col"
-                                                                className="select-none px-6 py-3 tracking-wider"
-                                                            >
-                                                                DERS
-                                                            </th>
-                                                            <th
-                                                                scope="col"
-                                                                className="select-none px-6 py-3 tracking-wider"
-                                                            >
-                                                                KREDİ
-                                                            </th>
-                                                            <th
-                                                                scope="col"
-                                                                className="select-none px-6 py-3 tracking-wider"
-                                                            >
-                                                                TEORİ
-                                                            </th>
-                                                            <th
-                                                                scope="col"
-                                                                className="select-none px-6 py-3 tracking-wider"
-                                                            >
-                                                                UYGULAMA
-                                                            </th>
-                                                            <th
-                                                                scope="col"
-                                                                className="select-none px-6 py-3 tracking-wider"
-                                                            >
-                                                                DERS DURUMU
-                                                            </th>
-                                                            <th
-                                                                scope="col"
-                                                                className="select-none px-6 py-3 tracking-wider"
-                                                            >
-                                                                STATÜSÜ
-                                                            </th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody className="bg-white divide-y divide-gray-200">
-                                                        {studentLessons.map((lesson) => (
-                                                            <tr key={lesson.lessonId}>
-                                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                                    <div className="flex items-center">
-                                                                        <div className="ml-0.5">
-                                                                            <div
-                                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name}</div>
-                                                                            <div
-                                                                                className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
-                                                                            {LessonSemester.getAll.map((lSemester) => (
-                                                                                lesson.semester === lSemester.enum
-                                                                                    ?
-                                                                                    <div
-                                                                                        className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
-                                                                                    :
-                                                                                    null
-                                                                            ))}
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-
-                                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                                    <div
-                                                                        className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
-                                                                </td>
+                                                                <h2 className="text-sis-success float-right font-phenomenaBold text-xl mb-4">
+                                                                    <button
+                                                                        onClick={() => insertLesson(lesson)}>
+                                                                        DERSİ SEÇ
+                                                                    </button>
+                                                                </h2>
+                                                                <h2 className="select-all text-xl font-phenomenaBold">
+                                                                    {lesson.lessonId}
+                                                                </h2>
+                                                            </a>
+                                                            <ul className="flex mt-1 space-x-1 text-xl font-phenomenaRegular leading-4 text-sis-darkblue">
+                                                                {LessonSemester.getAll.map((lSemester) => (
+                                                                    lesson.semester === lSemester.enum
+                                                                        ?
+                                                                        <li>
+                                                                            {lSemester.tr} -
+                                                                        </li>
+                                                                        :
+                                                                        null
+                                                                ))}
+                                                                <li> {lesson.credit} Kredi</li>
                                                                 {
                                                                     lesson.theoreticalHours !== 0
                                                                         ?
-                                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                                            <div
-                                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.theoreticalHours} Saat
-                                                                            </div>
-                                                                        </td>
+                                                                        <li> - {lesson.theoreticalHours} Saat
+                                                                            Teori </li>
                                                                         :
-                                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                                        </td>
+                                                                        null
                                                                 }
                                                                 {
                                                                     lesson.practiceHours !== 0
                                                                         ?
-                                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                                            <div
-                                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.practiceHours} Saat
-                                                                            </div>
-                                                                        </td>
+                                                                        <li> - {lesson.practiceHours} Saat
+                                                                            Uygulama</li>
                                                                         :
-                                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                                        </td>
+                                                                        null
                                                                 }
-                                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                                    {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
-                                                                        lesson.compulsoryOrElective === lCompulsory.enum
-                                                                            ?
-                                                                            <div
-                                                                                className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
-                                                                            :
-                                                                            null
-                                                                    ))}
-                                                                </td>
-                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
+                                                                    lesson.compulsoryOrElective === lCompulsory.enum
+                                                                        ?
+                                                                        <li> - {lCompulsory.tr}</li>
+                                                                        :
+                                                                        null
+                                                                ))}
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+
+                                                ))}
+                                            </Tab.Panel>
+                                            :
+                                            <Tab.Panel key={lessons.id}
+                                                       className={classNames(
+                                                           'bg-white rounded-xl p-3',
+                                                           'text-center font-phenomenaBold text-sis-fail text-xl'
+                                                       )}>
+                                                DERS BULUNAMADI!
+                                            </Tab.Panel>
+                                    ))}
+                                </Tab.Panels>
+                            </Tab.Group>
+                        </div>
+                        {(
+                            studentLessons.length !== 0
+                                ?
+                                <div className="flex flex-col">
+                                    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                        <div
+                                            className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                            <div
+                                                className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                                <table
+                                                    className="bg-gray-50 min-w-full divide-y divide-gray-200">
+                                                    <thead
+                                                        className="font-phenomenaBold text-xl text-gray-500 text-left">
+                                                    <tr>
+                                                        <th
+                                                            scope="col"
+                                                            className="select-none px-6 py-3 tracking-wider"
+                                                        >
+                                                            DERS
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="select-none px-6 py-3 tracking-wider"
+                                                        >
+                                                            KREDİ
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="select-none px-6 py-3 tracking-wider"
+                                                        >
+                                                            TEORİ
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="select-none px-6 py-3 tracking-wider"
+                                                        >
+                                                            UYGULAMA
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="select-none px-6 py-3 tracking-wider"
+                                                        >
+                                                            DERS DURUMU
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="select-none px-6 py-3 tracking-wider"
+                                                        >
+                                                            STATÜSÜ
+                                                        </th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody className="bg-white divide-y divide-gray-200">
+                                                    {studentLessons.map((lesson) => (
+                                                        <tr key={lesson.lessonId}>
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div className="flex items-center">
+                                                                    <div className="ml-0.5">
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.name}</div>
+                                                                        <div
+                                                                            className="select-all font-phenomenaRegular text-lg text-gray-500">{lesson.lessonId}</div>
+                                                                        {LessonSemester.getAll.map((lSemester) => (
+                                                                            lesson.semester === lSemester.enum
+                                                                                ?
+                                                                                <div
+                                                                                    className="font-phenomenaBold text-xl text-gray-500">{lSemester.tr}</div>
+                                                                                :
+                                                                                null
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div
+                                                                    className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.credit}</div>
+                                                            </td>
+                                                            {
+                                                                lesson.theoreticalHours !== 0
+                                                                    ?
+                                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.theoreticalHours} Saat
+                                                                        </div>
+                                                                    </td>
+                                                                    :
+                                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                                    </td>
+                                                            }
+                                                            {
+                                                                lesson.practiceHours !== 0
+                                                                    ?
+                                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lesson.practiceHours} Saat
+                                                                        </div>
+                                                                    </td>
+                                                                    :
+                                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                                    </td>
+                                                            }
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                {LessonCompulsoryOrElective.getAll.map((lCompulsory) => (
+                                                                    lesson.compulsoryOrElective === lCompulsory.enum
+                                                                        ?
+                                                                        <div
+                                                                            className="font-phenomenaBold text-xl text-sis-darkblue">{lCompulsory.tr}</div>
+                                                                        :
+                                                                        null
+                                                                ))}
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap">
                                                         <span>
                                                             {LessonStatus.getAll.map((lStatus) => (
                                                                 lesson.status === lStatus.enum
@@ -639,53 +651,53 @@ export default function StudentLessonRegistration({
                                                                     null
                                                             ))}
                                                         </span>
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
-                                    :
-                                    null
-                            )}
+                                </div>
+                                :
+                                null
+                        )}
 
-                            <SuccessNotification
-                                isOpen={isOpenSuccessChooseLessonNotification}
-                                closeNotification={closeSuccessChooseLessonNotification}
-                                title="Ders Seçildi!"
-                                description="Seçtiğiniz Ders başarıyla listeye eklendi."
-                            />
+                        <SuccessNotification
+                            isOpen={isOpenSuccessChooseLessonNotification}
+                            closeNotification={closeSuccessChooseLessonNotification}
+                            title="Ders Seçildi!"
+                            description="Seçtiğiniz Ders başarıyla listeye eklendi."
+                        />
 
-                            <FailNotification
-                                isOpen={isOpenFailChooseLessonNotification}
-                                closeNotification={closeFailChooseLessonNotification}
-                                title="Bu Dersi Zaten Seçtiniz!"
-                                description="Bu Ders seçtiğiniz ders listesinde mevcut, lütfen farklı bir ders seçmeyi deneyiniz."
-                            />
+                        <FailNotification
+                            isOpen={isOpenFailChooseLessonNotification}
+                            closeNotification={closeFailChooseLessonNotification}
+                            title="Bu Dersi Zaten Seçtiniz!"
+                            description="Bu Ders seçtiğiniz ders listesinde mevcut, lütfen farklı bir ders seçmeyi deneyiniz."
+                        />
 
-                            <ProcessNotification
-                                isOpen={isOpenProcessingRegistrationNotification}
-                                closeNotification={closeProcessingRegistrationNotification}
-                                title="Ders Kaydınızı Danışman Onayına Gönderme İsteğiniz İşleniyor..."
-                            />
+                        <ProcessNotification
+                            isOpen={isOpenProcessingRegistrationNotification}
+                            closeNotification={closeProcessingRegistrationNotification}
+                            title="Ders Kaydınızı Danışman Onayına Gönderme İsteğiniz İşleniyor..."
+                        />
 
-                            <SuccessNotification
-                                isOpen={isOpenSuccessRegistrationLessonNotification}
-                                closeNotification={closeSuccessRegistrationLessonNotification}
-                                title="Ders Kaydınız Başarıyla Oluşturuldu!"
-                                description="Ders Kaydınız Danışman Onayına Gönderildi"
-                            />
+                        <SuccessNotification
+                            isOpen={isOpenSuccessRegistrationLessonNotification}
+                            closeNotification={closeSuccessRegistrationLessonNotification}
+                            title="Ders Kaydınız Başarıyla Oluşturuldu!"
+                            description="Ders Kaydınız Danışman Onayına Gönderildi"
+                        />
 
-                            <FailNotification
-                                isOpen={isOpenFailRegistrationLessonNotification}
-                                closeNotification={closeFailRegistrationLessonNotification}
-                                title="Ders Kaydınız Oluşturulamadı!"
-                                description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
-                            />
-                        </div>
+                        <FailNotification
+                            isOpen={isOpenFailRegistrationLessonNotification}
+                            closeNotification={closeFailRegistrationLessonNotification}
+                            title="Ders Kaydınız Oluşturulamadı!"
+                            description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
+                        />
+                    </div>
             )}
         </div>
     )
