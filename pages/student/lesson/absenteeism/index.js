@@ -1,12 +1,12 @@
-import UnauthorizedAccessPage from "../../../../401";
-import SISTitle from "../../../../../public/components/page-titles";
-import PageNotFound from "../../../../404";
-import SisStudentStorage from "../../../../../public/storage/student/SisStudentStorage";
+import UnauthorizedAccessPage from "../../../401";
+import SISTitle from "../../../../public/components/page-titles";
+import PageNotFound from "../../../404";
+import SisStudentStorage from "../../../../public/storage/student/SisStudentStorage";
 import StudentLessonAbsenteeismController
-    from "../../../../../public/api/student/lesson/absenteeism/StudentLessonAbsenteeismController";
-import StudentNavbar from "../../../../../public/components/navbar/student/student-navbar";
+    from "../../../../public/api/student/lesson/absenteeism/StudentLessonAbsenteeismController";
+import StudentNavbar from "../../../../public/components/navbar/student/student-navbar";
 import StudentLessonAbsenteeismHoursState
-    from "../../../../../public/constants/student/absenteeism/StudentLessonAbsenteeismHoursState";
+    from "../../../../public/constants/student/absenteeism/StudentLessonAbsenteeismHoursState";
 
 
 export async function getServerSideProps(context) {
@@ -40,7 +40,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function StudentLessonAbsenteeismDetailList({
+export default function StudentLessonAbsenteeismDetail({
                                                                isPagePermissionSuccess,
                                                                isDataFound,
                                                                studentLessonAbsenteeism,
