@@ -39,15 +39,15 @@ export default function TeacherLessonsList({isPagePermissionSuccess, lessons}) {
         <div>
             <SISTitle/>
             <TeacherNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        DERSLERİM
-                    </a>
-                </div>
-                {(
-                    lessons.length !== 0
-                        ?
+            {(
+                lessons.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="select-none font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                DERSLERİM
+                            </a>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -199,10 +199,19 @@ export default function TeacherLessonsList({isPagePermissionSuccess, lessons}) {
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Size Ait Kayıtlı Dersiniz Bulunmadığından Yoklama Girişi Yapamazsınız!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+            )}
         </div>
     )
 }
