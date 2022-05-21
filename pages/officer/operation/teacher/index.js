@@ -5,7 +5,7 @@ import SisOfficerStorage from "../../../../public/storage/officer/SisOfficerStor
 import UnauthorizedAccessPage from "../../../401";
 import TeacherController from "../../../../public/api/teacher/TeacherController";
 import TeacherStatus from "../../../../public/constants/teacher/TeacherStatus";
-import TeacherRole from "../../../../public/constants/teacher/TeacherDegree";
+import TeacherRole from "../../../../public/constants/teacher/TeacherRole";
 import TeacherDegree from "../../../../public/constants/teacher/TeacherDegree";
 
 

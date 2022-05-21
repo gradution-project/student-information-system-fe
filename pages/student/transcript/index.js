@@ -203,7 +203,7 @@ export default function StudentTranscriptDetail({isPagePermissionSuccess, transc
                             <div
                                 className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
                                 <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
-                                    Kesinleştirilmiş Bir Notunuz Bulunmadığından Transcript Detayları Oluşturulamadı!
+                                    Kesinleştirilmiş Bir Notunuz Bulunmadığından Transkript Detayları Oluşturulamadı!
                                 </a>
                             </div>
                     )}

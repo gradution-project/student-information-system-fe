@@ -21,13 +21,12 @@ export async function getServerSideProps(context) {
 
     const studentLessonAbsenteeismData = await StudentLessonAbsenteeismController.getAllStudentLessonsAbsenteeismByStudentId(studentId);
 
-    if (studentLessonAbsenteeismData.success) {
-
+    if (studentLessonAbsenteeismData) {
         return {
             props: {
                 isPagePermissionSuccess: true,
                 isDataFound: true,
-                studentLessonAbsenteeism: studentLessonAbsenteeismData.response,
+                studentLessonAbsenteeism: studentLessonAbsenteeismData,
             }
         }
     } else {
@@ -41,10 +40,10 @@ export async function getServerSideProps(context) {
 }
 
 export default function StudentLessonAbsenteeismDetail({
-                                                               isPagePermissionSuccess,
-                                                               isDataFound,
-                                                               studentLessonAbsenteeism,
-                                                           }) {
+                                                           isPagePermissionSuccess,
+                                                           isDataFound,
+                                                           studentLessonAbsenteeism,
+                                                       }) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -62,15 +61,15 @@ export default function StudentLessonAbsenteeismDetail({
         <div>
             <SISTitle/>
             <StudentNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="select-none mr-2 font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        DEVAMSIZLIK LİSTESİ
-                    </a>
-                </div>
-                {(
-                    studentLessonAbsenteeism.length !== 0
-                        ?
+            {(
+                studentLessonAbsenteeism.success
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="select-none mr-2 font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                DEVAMSIZLIK DURUMU
+                            </a>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -121,7 +120,7 @@ export default function StudentLessonAbsenteeismDetail({
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {studentLessonAbsenteeism.map((studentLessonAbsenteeism) => (
+                                            {studentLessonAbsenteeism.response.map((studentLessonAbsenteeism) => (
                                                 <tr key={studentLessonAbsenteeism.id}>
                                                     <td className="px-2 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
@@ -270,10 +269,19 @@ export default function StudentLessonAbsenteeismDetail({
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
-        </div>
-    )
-}
+                    </div>
+                    :
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Henüz Ders Kaydınız Olmadığı İçin Devamsızlık Durumunuzu Görüntüleyemezsiniz!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+            )}
+                </div>
+                )
+            }

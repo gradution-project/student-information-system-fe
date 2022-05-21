@@ -30,7 +30,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
+export default function OfficerLessonList({isPagePermissionSuccess, lessons}) {
 
     if (!isPagePermissionSuccess) {
         return (
@@ -44,6 +44,8 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
         event.preventDefault();
         await router.push('/officer/operation/lesson/save');
     }
+
+    let officerFacultyNumber = SisOfficerStorage.getFacultyNumber();
 
     return (
         <div>
@@ -100,6 +102,8 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
                                             {lessons.map((lesson) => (
+                                                (officerFacultyNumber == lesson.departmentResponse.facultyResponse.facultyId
+                                                ?
                                                 <tr key={lesson.lessonId}>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
@@ -153,6 +157,9 @@ export default function TeacherLessonList({isPagePermissionSuccess, lessons}) {
                                                         </a>
                                                     </td>
                                                 </tr>
+                                                        :
+                                                        null
+                                                )
                                             ))}
                                             </tbody>
                                         </table>
