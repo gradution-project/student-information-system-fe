@@ -56,13 +56,13 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    ÖĞRETMEN
+                                                    ÖĞRETMEN BİLGİLERİ
                                                 </th>
                                                 <th
                                                     scope="col"
                                                     className="select-none px-6 py-3 tracking-wider"
                                                 >
-                                                    DERS
+                                                    DERS BİLGİLERİ
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -105,7 +105,7 @@ export default function StudentLessonsNotesList({isPagePermissionSuccess, studen
                                                                 <div
                                                                     className="font-phenomenaBold text-xl text-sis-darkblue">{studentLessonNotes.teacherResponse.name} {studentLessonNotes.teacherResponse.surname}</div>
                                                                 <div
-                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonNotes.teacherResponse.teacherId}</div>
+                                                                    className="select-all font-phenomenaRegular text-lg text-gray-500">{studentLessonNotes.teacherResponse.email}</div>
                                                             </div>
                                                         </div>
                                                     </td>

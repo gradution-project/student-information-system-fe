@@ -104,7 +104,7 @@ export default function StudentComponent() {
                 NOTLARIM
             </a>
 
-            <a href="/student/roll-call-system"
+            <a href="/student/lesson/absenteeism"
                className="text-xl font-medium text-gray-500 hover:text-sis-yellow">
                 YOKLAMA SİSTEMİ
             </a>
