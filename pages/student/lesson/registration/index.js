@@ -75,7 +75,8 @@ export async function getServerSideProps(context) {
                 isFirstLessonRegistrationOperationsFeatureToggleEnabled: isFirstLessonRegistrationOperationsFeatureToggleEnabled,
                 isSecondLessonRegistrationOperationsFeatureToggleEnabled: isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                 isLessonRegistrationExist: false,
-                lessons: lessonsData.response
+                lessons: lessonsData.response,
+                operationUserId: studentId
             }
         }
     }
@@ -88,7 +89,8 @@ export default function StudentLessonRegistration({
                                                       isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                                                       isLessonRegistrationExist,
                                                       registrationData,
-                                                      lessons
+                                                      lessons,
+                                                      operationUserId
                                                   }) {
 
     if (!isPagePermissionSuccess) {
@@ -135,25 +137,25 @@ export default function StudentLessonRegistration({
         setIsOpenProcessingRegistrationNotification(true);
     }
 
-    let [isOpenSuccessRegistrationLessonNotification, setIsOpenSuccessRegistrationLessonNotification] = useState(false);
+    let [isOpenSuccessRegistrationNotification, setIsOpenSuccessRegistrationNotification] = useState(false);
 
-    function closeSuccessRegistrationLessonNotification() {
-        setIsOpenSuccessRegistrationLessonNotification(false);
+    function closeSuccessRegistrationNotification() {
+        setIsOpenSuccessRegistrationNotification(false);
         router.reload();
     }
 
-    function openSuccessRegistrationLessonNotification() {
-        setIsOpenSuccessRegistrationLessonNotification(true);
+    function openSuccessRegistrationNotification() {
+        setIsOpenSuccessRegistrationNotification(true);
     }
 
-    let [isOpenFailRegistrationLessonNotification, setIsOpenFailRegistrationLessonNotification] = useState(false);
+    let [isOpenFailRegistrationNotification, setIsOpenFailRegistrationNotification] = useState(false);
 
-    function closeFailRegistrationLessonNotification() {
-        setIsOpenFailRegistrationLessonNotification(false);
+    function closeFailRegistrationNotification() {
+        setIsOpenFailRegistrationNotification(false);
     }
 
-    function openFailRegistrationLessonNotification() {
-        setIsOpenFailRegistrationLessonNotification(true);
+    function openFailRegistrationNotification() {
+        setIsOpenFailRegistrationNotification(true);
     }
 
     const [studentLessons] = useState([])
@@ -181,15 +183,13 @@ export default function StudentLessonRegistration({
         openProcessingRegistrationNotification();
 
         event.preventDefault();
-        const studentId = SisStudentStorage.getNumber();
-        const operationUserId = SisStudentStorage.getNumber();
-        const studentData = await StudentLessonRegistrationController.saveStudentLessonRegistration(operationUserId, studentLessonIds, studentId);
+        const studentData = await StudentLessonRegistrationController.saveStudentLessonRegistration(operationUserId, studentLessonIds, operationUserId);
         if (studentData.success) {
-            closeSuccessRegistrationLessonNotification()
-            openSuccessRegistrationLessonNotification()
+            closeProcessingRegistrationNotification();
+            openSuccessRegistrationNotification();
         } else {
-            closeFailRegistrationLessonNotification()
-            openFailRegistrationLessonNotification();
+            closeProcessingRegistrationNotification();
+            openFailRegistrationNotification();
         }
     }
 
@@ -685,15 +685,15 @@ export default function StudentLessonRegistration({
                         />
 
                         <SuccessNotification
-                            isOpen={isOpenSuccessRegistrationLessonNotification}
-                            closeNotification={closeSuccessRegistrationLessonNotification}
+                            isOpen={isOpenSuccessRegistrationNotification}
+                            closeNotification={closeSuccessRegistrationNotification}
                             title="Ders Kaydınız Başarıyla Oluşturuldu!"
                             description="Ders Kaydınız Danışman Onayına Gönderildi"
                         />
 
                         <FailNotification
-                            isOpen={isOpenFailRegistrationLessonNotification}
-                            closeNotification={closeFailRegistrationLessonNotification}
+                            isOpen={isOpenFailRegistrationNotification}
+                            closeNotification={closeFailRegistrationNotification}
                             title="Ders Kaydınız Oluşturulamadı!"
                             description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                         />
