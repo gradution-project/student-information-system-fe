@@ -23,7 +23,7 @@ export async function getServerSideProps(context) {
     if (teacherRole === TeacherRole.ADVISOR) {
         studentGraduationStatus = StudentGraduationStatus.WAITING;
     } else if (teacherRole === TeacherRole.HEAD_OF_DEPARTMENT) {
-       studentGraduationStatus = StudentGraduationStatus.APPROVED;
+        studentGraduationStatus = StudentGraduationStatus.APPROVED;
     }
     const studentData = await StudentGraduationController.getAllStudentGraduationsByStatus(studentGraduationStatus);
     if (studentData.success) {
@@ -48,15 +48,15 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
         <div>
             <SISTitle/>
             <TeacherNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        MEZUNİYET KAYIT LİSTESİ
-                    </a>
-                </div>
-                {(
-                    students.length !== 0
-                        ?
+            {(
+                students.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                MEZUNİYET KAYIT LİSTESİ
+                            </a>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -157,10 +157,19 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Henüz Mezun Kaydı Yapılan Öğrenci Bulunmamaktadır!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+            )}
         </div>
     )
 }
