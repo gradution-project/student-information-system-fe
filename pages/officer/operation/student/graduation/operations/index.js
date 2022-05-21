@@ -49,22 +49,22 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
         <div>
             <SISTitle/>
             <OfficerNavbar/>
-            <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
-                <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
-                    <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
-                        MEZUNİYET İŞLEM LİSTESİ
-                    </a>
-                    <button
-                        type="submit"
-                        onClick={pushSavePage}
-                        className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
-                    >
-                        MEZUN OLAN ÖĞRENCİLER
-                    </button>
-                </div>
-                {(
-                    students.length !== 0
-                        ?
+            {(
+                students.length !== 0
+                    ?
+                    <div className="max-w-7xl select-none py-5 mx-auto space-y-6">
+                        <div className="px-12 py-10 text-left bg-gray-50 rounded-2xl shadow-xl">
+                            <a className="font-phenomenaExtraBold text-left text-4xl text-sis-darkblue">
+                                MEZUNİYET İŞLEM LİSTESİ
+                            </a>
+                            <button
+                                type="submit"
+                                onClick={pushSavePage}
+                                className="font-phenomenaBold float-right py-2 px-4 border border-transparent shadow-sm text-xl rounded-md text-white bg-sis-success hover:bg-green-600"
+                            >
+                                MEZUN OLAN ÖĞRENCİLER
+                            </button>
+                        </div>
                         <div className="flex flex-col">
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -159,10 +159,19 @@ export default function StudentGraduationList({isPagePermissionSuccess, students
                                 </div>
                             </div>
                         </div>
-                        :
-                        null
-                )}
-            </div>
+                    </div>
+                    :
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                        <div className="px-28 py-5 mx-auto space-y-6">
+                            <div
+                                className="max-w-7xl mx-auto px-12 py-10 text-center bg-gray-50 rounded-2xl shadow-xl">
+                                <a className="select-none font-phenomenaExtraBold text-4xl text-sis-fail">
+                                    Henüz Mezuniyet İşlemi Başlatılan Öğrenci Bulunmamaktadır!
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+            )}
         </div>
     )
 }
