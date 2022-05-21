@@ -1,7 +1,7 @@
 const SIS_API_URL = process.env.NEXT_PUBLIC_SIS_API_URL;
 
 const getAllLessonScheduleFilesDetailByFacultyId = async (facultyId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/file/by/faculty/${facultyId}`, {
+    const apiResult = await fetch(`${SIS_API_URL}/lesson/schedule/files/by/faculty/${facultyId}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
