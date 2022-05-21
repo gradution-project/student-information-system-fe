@@ -4,7 +4,7 @@ import SISTitle from "../../../../../../public/components/page-titles";
 import TeacherNavbar from "../../../../../../public/components/navbar/teacher/teacher-navbar";
 import PageNotFound from "../../../../../404";
 import StudentLessonAbsenteeismController
-    from "../../../../../../public/api/student/absenteeism/StudentLessonAbsenteeismController";
+    from "../../../../../../public/api/student/lesson/absenteeism/StudentLessonAbsenteeismController";
 import StudentLessonAbsenteeismStatus
     from "../../../../../../public/constants/student/absenteeism/StudentLessonAbsenteeismStatus";
 import {useState} from 'react'
