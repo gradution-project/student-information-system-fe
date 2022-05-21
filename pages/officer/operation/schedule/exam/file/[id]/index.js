@@ -7,7 +7,7 @@ import UnauthorizedAccessPage from "../../../../../../401";
 import SuccessNotification from "../../../../../../../public/notifications/success";
 import FailNotification from "../../../../../../../public/notifications/fail";
 import ProcessNotification from "../../../../../../../public/notifications/process";
-import ExamScheduleFileController from "../../../../../../../public/api/exam-file/ExamScheduleFileController";
+import ExamScheduleFileController from "../../../../../../../public/api/schedule/file/exam/ExamScheduleFileController";
 import PageNotFound from "../../../../../../404";
 
 export async function getServerSideProps(context) {

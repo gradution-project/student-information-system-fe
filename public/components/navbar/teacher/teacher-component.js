@@ -52,7 +52,7 @@ export default function TeacherComponent() {
                 DERSLERİM
             </a>
 
-            <a href="/teacher/roll-call-system"
+            <a href="/teacher/lesson/absenteeism"
                className="text-xl font-medium text-gray-500 hover:text-sis-yellow">
                 YOKLAMA SİSTEMİ
             </a>

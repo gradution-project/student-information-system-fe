@@ -3,7 +3,7 @@ import OfficerNavbar from "../../../../../../public/components/navbar/officer/of
 import {useRouter} from "next/router";
 import SisOfficerStorage from "../../../../../../public/storage/officer/SisOfficerStorage";
 import UnauthorizedAccessPage from "../../../../../401";
-import ExamScheduleFileController from "../../../../../../public/api/exam-file/ExamScheduleFileController";
+import ExamScheduleFileController from "../../../../../../public/api/schedule/file/exam/ExamScheduleFileController";
 
 export async function getServerSideProps(context) {
     const officerId = SisOfficerStorage.getNumberWithContext(context);
