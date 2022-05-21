@@ -9,8 +9,8 @@ const getAllStudentsLessonsAbsenteeismByLessonId = async (lessonId, week) => {
     return await apiResult.json();
 };
 
-const getAllStudentLessonsAbsenteeismByStudentId = async (studentId) => {
-    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/absenteeism/by/student/${studentId}`, {
+const getAllStudentLessonsAbsenteeismByStudentId = async (studentId, week) => {
+    const apiResult = await fetch(`${SIS_API_URL}/student/lesson/absenteeism/by/student/${studentId}?week=${week}`, {
         headers: {'Content-Type': 'application/json'},
         method: 'GET'
     });
@@ -27,15 +27,20 @@ const getTotalLessonAbsenteeismWeek = async () => {
 
 const updateStudentsLessonAbsenteeism = async (operationUserId, absenteeismIdsAndTheoreticalHoursAndPracticeHours) => {
 
+    let jsonAbsenteeismIdsAndTheoreticalHoursAndPracticeHours = {};
+    absenteeismIdsAndTheoreticalHoursAndPracticeHours.forEach((value, key) => {
+        jsonAbsenteeismIdsAndTheoreticalHoursAndPracticeHours[key] = Object.fromEntries(value)
+    });
+
     const apiResult = await fetch(`${SIS_API_URL}/student/lesson/absenteeism`, {
         headers: {'Content-Type': 'application/json'},
         method: 'PUT',
         body: JSON.stringify({
-            absenteeismIdsAndTheoreticalHoursAndPracticeHours,
             operationInfoRequest: {
                 userId: operationUserId
-            }
-        })
+            },
+            absenteeismIdsAndTheoreticalHoursAndPracticeHours: jsonAbsenteeismIdsAndTheoreticalHoursAndPracticeHours
+        }),
     });
     return await apiResult.json();
 };
