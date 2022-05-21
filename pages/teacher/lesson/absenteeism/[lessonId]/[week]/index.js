@@ -343,7 +343,7 @@ export default function TeacherLessonAbsenteeismDetailList({
                                                                                id="theoretical-hours-checkbox"
                                                                                name="theoretical-hours-checkbox"
                                                                                onClick={(event) => updatePracticeHoursValuesInMap(event, studentLessonAbsenteeism.id)}
-                                                                               className="w-6 h-6 text-sis-darkblue border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
+                                                                               className="w-6 h-6 text-sis-yellow border border-sis-yellow rounded bg-gray-50 focus:ring-0 focus:ring-sis-yellow dark:border-sis-yellow cursor-pointer"/>
                                                                         <a
                                                                             className="font-phenomenaBold ml-2 text-lg text-sis-darkblue">
                                                                             {number}. Saat
