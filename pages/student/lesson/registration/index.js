@@ -76,7 +76,8 @@ export async function getServerSideProps(context) {
                 isSecondLessonRegistrationOperationsFeatureToggleEnabled: isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                 isLessonRegistrationExist: false,
                 lessons: lessonsData.response,
-                operationUserId: studentId
+                operationUserId: studentId,
+                studentId: studentId
             }
         }
     }
@@ -90,7 +91,8 @@ export default function StudentLessonRegistration({
                                                       isLessonRegistrationExist,
                                                       registrationData,
                                                       lessons,
-                                                      operationUserId
+                                                      operationUserId,
+                                                      studentId
                                                   }) {
 
     if (!isPagePermissionSuccess) {
@@ -127,35 +129,35 @@ export default function StudentLessonRegistration({
         setIsOpenFailChooseLessonNotification(true);
     }
 
-    let [isOpenProcessingRegistrationNotification, setIsOpenProcessingRegistrationNotification] = useState(false);
+    let [isOpenProcessingRegistrationLessonNotification, setIsOpenProcessingRegistrationLessonNotification] = useState(false);
 
-    function closeProcessingRegistrationNotification() {
-        setIsOpenProcessingRegistrationNotification(false);
+    function closeProcessingRegistrationLessonNotification() {
+        setIsOpenProcessingRegistrationLessonNotification(false);
     }
 
-    function openProcessingRegistrationNotification() {
-        setIsOpenProcessingRegistrationNotification(true);
+    function openProcessingRegistrationLessonNotification() {
+        setIsOpenProcessingRegistrationLessonNotification(true);
     }
 
-    let [isOpenSuccessRegistrationNotification, setIsOpenSuccessRegistrationNotification] = useState(false);
+    let [isOpenSuccessRegistrationLessonNotification, setIsOpenSuccessRegistrationLessonNotification] = useState(false);
 
-    function closeSuccessRegistrationNotification() {
-        setIsOpenSuccessRegistrationNotification(false);
+    function closeSuccessRegistrationLessonNotification() {
+        setIsOpenSuccessRegistrationLessonNotification(false);
         router.reload();
     }
 
-    function openSuccessRegistrationNotification() {
-        setIsOpenSuccessRegistrationNotification(true);
+    function openSuccessRegistrationLessonNotification() {
+        setIsOpenSuccessRegistrationLessonNotification(true);
     }
 
-    let [isOpenFailRegistrationNotification, setIsOpenFailRegistrationNotification] = useState(false);
+    let [isOpenFailRegistrationLessonNotification, setIsOpenFailRegistrationLessonNotification] = useState(false);
 
-    function closeFailRegistrationNotification() {
-        setIsOpenFailRegistrationNotification(false);
+    function closeFailRegistrationLessonNotification() {
+        setIsOpenFailRegistrationLessonNotification(false);
     }
 
-    function openFailRegistrationNotification() {
-        setIsOpenFailRegistrationNotification(true);
+    function openFailRegistrationLessonNotification() {
+        setIsOpenFailRegistrationLessonNotification(true);
     }
 
     const [studentLessons] = useState([])
@@ -180,16 +182,16 @@ export default function StudentLessonRegistration({
     }
 
     const saveRegistrationLesson = async (event) => {
-        openProcessingRegistrationNotification();
+        openProcessingRegistrationLessonNotification();
 
         event.preventDefault();
-        const studentData = await StudentLessonRegistrationController.saveStudentLessonRegistration(operationUserId, studentLessonIds, operationUserId);
+        const studentData = await StudentLessonRegistrationController.saveStudentLessonRegistration(operationUserId, studentLessonIds, studentId);
         if (studentData.success) {
-            closeProcessingRegistrationNotification();
-            openSuccessRegistrationNotification();
+            closeProcessingRegistrationLessonNotification();
+            openSuccessRegistrationLessonNotification();
         } else {
-            closeProcessingRegistrationNotification();
-            openFailRegistrationNotification();
+            closeProcessingRegistrationLessonNotification();
+            openFailRegistrationLessonNotification();
         }
     }
 
@@ -679,21 +681,21 @@ export default function StudentLessonRegistration({
                         />
 
                         <ProcessNotification
-                            isOpen={isOpenProcessingRegistrationNotification}
-                            closeNotification={closeProcessingRegistrationNotification}
+                            isOpen={isOpenProcessingRegistrationLessonNotification}
+                            closeNotification={closeProcessingRegistrationLessonNotification}
                             title="Ders Kaydınızı Danışman Onayına Gönderme İsteğiniz İşleniyor..."
                         />
 
                         <SuccessNotification
-                            isOpen={isOpenSuccessRegistrationNotification}
-                            closeNotification={closeSuccessRegistrationNotification}
+                            isOpen={isOpenSuccessRegistrationLessonNotification}
+                            closeNotification={closeSuccessRegistrationLessonNotification}
                             title="Ders Kaydınız Başarıyla Oluşturuldu!"
                             description="Ders Kaydınız Danışman Onayına Gönderildi"
                         />
 
                         <FailNotification
-                            isOpen={isOpenFailRegistrationNotification}
-                            closeNotification={closeFailRegistrationNotification}
+                            isOpen={isOpenFailRegistrationLessonNotification}
+                            closeNotification={closeFailRegistrationLessonNotification}
                             title="Ders Kaydınız Oluşturulamadı!"
                             description="Sistemsel bir hatadan dolayı isteğiniz sonuçlandıralamamış olabilir."
                         />
