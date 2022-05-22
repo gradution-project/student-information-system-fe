@@ -75,7 +75,9 @@ export async function getServerSideProps(context) {
                 isFirstLessonRegistrationOperationsFeatureToggleEnabled: isFirstLessonRegistrationOperationsFeatureToggleEnabled,
                 isSecondLessonRegistrationOperationsFeatureToggleEnabled: isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                 isLessonRegistrationExist: false,
-                lessons: lessonsData.response
+                lessons: lessonsData.response,
+                operationUserId: studentId,
+                studentId: studentId
             }
         }
     }
@@ -88,7 +90,9 @@ export default function StudentLessonRegistration({
                                                       isSecondLessonRegistrationOperationsFeatureToggleEnabled,
                                                       isLessonRegistrationExist,
                                                       registrationData,
-                                                      lessons
+                                                      lessons,
+                                                      operationUserId,
+                                                      studentId
                                                   }) {
 
     if (!isPagePermissionSuccess) {
@@ -125,14 +129,14 @@ export default function StudentLessonRegistration({
         setIsOpenFailChooseLessonNotification(true);
     }
 
-    let [isOpenProcessingRegistrationNotification, setIsOpenProcessingRegistrationNotification] = useState(false);
+    let [isOpenProcessingRegistrationLessonNotification, setIsOpenProcessingRegistrationLessonNotification] = useState(false);
 
-    function closeProcessingRegistrationNotification() {
-        setIsOpenProcessingRegistrationNotification(false);
+    function closeProcessingRegistrationLessonNotification() {
+        setIsOpenProcessingRegistrationLessonNotification(false);
     }
 
-    function openProcessingRegistrationNotification() {
-        setIsOpenProcessingRegistrationNotification(true);
+    function openProcessingRegistrationLessonNotification() {
+        setIsOpenProcessingRegistrationLessonNotification(true);
     }
 
     let [isOpenSuccessRegistrationLessonNotification, setIsOpenSuccessRegistrationLessonNotification] = useState(false);
@@ -178,17 +182,15 @@ export default function StudentLessonRegistration({
     }
 
     const saveRegistrationLesson = async (event) => {
-        openProcessingRegistrationNotification();
+        openProcessingRegistrationLessonNotification();
 
         event.preventDefault();
-        const studentId = SisStudentStorage.getNumber();
-        const operationUserId = SisStudentStorage.getNumber();
         const studentData = await StudentLessonRegistrationController.saveStudentLessonRegistration(operationUserId, studentLessonIds, studentId);
         if (studentData.success) {
-            closeSuccessRegistrationLessonNotification()
-            openSuccessRegistrationLessonNotification()
+            closeProcessingRegistrationLessonNotification();
+            openSuccessRegistrationLessonNotification();
         } else {
-            closeFailRegistrationLessonNotification()
+            closeProcessingRegistrationLessonNotification();
             openFailRegistrationLessonNotification();
         }
     }
@@ -679,8 +681,8 @@ export default function StudentLessonRegistration({
                         />
 
                         <ProcessNotification
-                            isOpen={isOpenProcessingRegistrationNotification}
-                            closeNotification={closeProcessingRegistrationNotification}
+                            isOpen={isOpenProcessingRegistrationLessonNotification}
+                            closeNotification={closeProcessingRegistrationLessonNotification}
                             title="Ders Kaydınızı Danışman Onayına Gönderme İsteğiniz İşleniyor..."
                         />
 
