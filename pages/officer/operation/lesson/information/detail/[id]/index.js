@@ -639,7 +639,7 @@ export default function LessonDetail({isPagePermissionSuccess, isDataFound, oper
                                     <ProcessNotification
                                         isOpen={isOpenProcessingPassivateNotification}
                                         closeNotification={closeProcessingPassivateNotification}
-                                        title="Ders Bilgi Güncelleme İsteğiniz İşleniyor..."
+                                        title="Ders Pasifleştirme İsteğiniz İşleniyor..."
                                     />
 
                                     <SuccessNotification
