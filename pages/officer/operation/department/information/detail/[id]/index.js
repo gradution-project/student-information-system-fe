@@ -502,7 +502,7 @@ export default function DepartmentDetail({
                                     <ProcessNotification
                                         isOpen={isOpenProcessingPassivateNotification}
                                         closeNotification={closeProcessingPassivateNotification}
-                                        title="Bölüm Bilgi Güncelleme İsteğiniz İşleniyor..."
+                                        title="Bölüm Pasifleştirme İsteğiniz İşleniyor..."
                                     />
 
                                     <SuccessNotification
