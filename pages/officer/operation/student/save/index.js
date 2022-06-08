@@ -62,7 +62,7 @@ export default function SaveStudent({isPagePermissionSuccess, operationUserId, d
 
     function closeSuccessSaveNotification() {
         setIsOpenSuccessSaveNotification(false);
-        router.push("/officer/operation/teacher").then(() => router.reload());
+        router.push("/officer/operation/student").then(() => router.reload());
     }
 
     function openSuccessSaveNotification() {
