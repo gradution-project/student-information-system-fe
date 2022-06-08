@@ -279,21 +279,21 @@ export default function FacultyDetail({isPagePermissionSuccess, isDataFound, ope
                                     ?
                                     null
                                     :
-                                    SisOperationButton.getDeleteButton({facultyDelete}, "FAKÜLTEYİ SİL")
+                                    SisOperationButton.getDeleteButton(facultyDelete, "FAKÜLTEYİ SİL")
                             )}
                             {(
                                 faculty.status === FacultyStatus.PASSIVE || faculty.status === FacultyStatus.DELETED
                                     ?
                                     null
                                     :
-                                    SisOperationButton.getPassivateButton({facultyPassivate}, "FAKÜLTEYİ PASİFLEŞTİR")
+                                    SisOperationButton.getPassivateButton(facultyPassivate, "FAKÜLTEYİ PASİFLEŞTİR")
                             )}
                             {(
                                 faculty.status === FacultyStatus.ACTIVE || faculty.status === FacultyStatus.DELETED
                                     ?
                                     null
                                     :
-                                    SisOperationButton.getActivateButton({facultyActivate}, "FAKÜLTEYİ AKTİFLEŞTİR")
+                                    SisOperationButton.getActivateButton(facultyActivate, "FAKÜLTEYİ AKTİFLEŞTİR")
                             )}
                         </div>
                         <div className="select-none mt-10 py-4 sm:mt-0">
